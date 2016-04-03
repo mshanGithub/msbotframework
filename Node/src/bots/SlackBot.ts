@@ -1,15 +1,15 @@
-﻿// 
+﻿//
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-// 
+//
 // Microsoft Bot Framework: http://botframework.com
-// 
+//
 // Bot Builder SDK Github:
 // https://github.com/Microsoft/BotBuilder
-// 
+//
 // Copyright (c) Microsoft Corporation
 // All rights reserved.
-// 
+//
 // MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -18,10 +18,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -103,13 +103,13 @@ export class SlackBot extends collection.DialogCollection {
         defaultDialogId: '/',
         ambientMentionDuration: 300000  // <-- default duration of 5 minutes
     };
-    
+
     constructor(private controller: BotKitController, private bot: Bot, options?: ISlackBotOptions) {
         super();
         this.configure(options);
         ['message_received','bot_channel_join','user_channel_join','bot_group_join','user_group_join'].forEach((type) => {
             this.controller.on(type, (bot: Bot, msg: ISlackMessage) => {
-               this.emit(type, bot, msg); 
+               this.emit(type, bot, msg);
             });
         });
     }
@@ -124,7 +124,7 @@ export class SlackBot extends collection.DialogCollection {
         }
         return this;
     }
-    
+
     public listen(types: string[], dialogId?: string, dialogArgs?: any): this {
         dialogId = dialogId || this.options.defaultDialogId;
         dialogArgs = dialogArgs || this.options.defaultDialogArgs;
@@ -138,7 +138,7 @@ export class SlackBot extends collection.DialogCollection {
         });
         return this;
     }
-    
+
     public listenForMentions(dialogId?: string, dialogArgs?: any): this {
         var sessions: { [key: string]: ISessionState; } = {};
         var dispatch = (bot: Bot, msg: ISlackMessage, ss?: ISessionState) => {
@@ -147,7 +147,7 @@ export class SlackBot extends collection.DialogCollection {
                 this.dispatchMessage(bot, msg, dialogId, dialogArgs, ss);
             });
         };
-        
+
         dialogId = dialogId || this.options.defaultDialogId;
         dialogArgs = dialogArgs || this.options.defaultDialogArgs;
         this.controller.on('direct_message', (bot: Bot, msg: ISlackMessage) => {
@@ -185,7 +185,7 @@ export class SlackBot extends collection.DialogCollection {
         if (!this.hasDialog(dialogId)) {
             throw new Error('Invalid dialog passed to SlackBot.beginDialog().');
         }
-        
+
         // Dispatch message
         this.dispatchMessage(null, <ISlackMessage>address, dialogId, dialogArgs);
         return this;
@@ -211,7 +211,7 @@ export class SlackBot extends collection.DialogCollection {
             if (channelData && !smartState) {
                 channelData[consts.Data.SessionState] = ses.sessionState;
             }
-            
+
             // Save data
             this.saveData(teamData, channelData, userData, () => {
                 // If we have no message text then we're just saving state.
@@ -256,7 +256,7 @@ export class SlackBot extends collection.DialogCollection {
                 if (!data.userData && msg.user) {
                     data.userData = { id: msg.user };
                 }
-                
+
                 // Unpack session state
                 if (smartState) {
                     sessionState = smartState;
@@ -264,7 +264,7 @@ export class SlackBot extends collection.DialogCollection {
                     sessionState = (<any>data.channelData)[consts.Data.SessionState];
                     delete (<any>data.channelData)[consts.Data.SessionState];
                 }
-               
+
                 // Dispatch message
                 ses.teamData = data.teamData;
                 ses.channelData = data.channelData;

@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------
-A bot for managing a users to-do list.  See the README.md file for usage 
+A bot for managing a users to-do list.  See the README.md file for usage
 instructions.
 -----------------------------------------------------------------------------*/
 
@@ -27,5 +27,5 @@ bot.add('/', index);
 const server = restify.createServer();
 server.post('/v1/chat', skype.messagingHandler(botService));
 server.listen(process.env.PORT || 8080, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+   console.log('%s listening to %s', server.name, server.url);
 });

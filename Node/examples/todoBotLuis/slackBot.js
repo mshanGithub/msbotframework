@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------
-A bot for managing a users to-do list.  See the README.md file for usage 
+A bot for managing a users to-do list.  See the README.md file for usage
 instructions.
 -----------------------------------------------------------------------------*/
 

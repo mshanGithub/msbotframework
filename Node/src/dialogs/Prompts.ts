@@ -1,15 +1,15 @@
-﻿// 
+﻿//
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-// 
+//
 // Microsoft Bot Framework: http://botframework.com
-// 
+//
 // Bot Builder SDK Github:
 // https://github.com/Microsoft/BotBuilder
-// 
+//
 // Copyright (c) Microsoft Corporation
 // All rights reserved.
-// 
+//
 // MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -18,10 +18,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -100,7 +100,7 @@ export class SimplePromptRecognizer implements IPromptRecognizer {
                     case PromptType.text:
                         // This is an open ended question so it's a little tricky to know what to pass as a confidence
                         // score. Currently we're saying that we have 0.1 confidence that we understand the users intent
-                        // which will give all of the prompts parents a chance to capture the utterance. If no one 
+                        // which will give all of the prompts parents a chance to capture the utterance. If no one
                         // captures the utterance we'll return the full text of the utterance as the result.
                         score = 0.1;
                         response = text;
@@ -124,7 +124,7 @@ export class SimplePromptRecognizer implements IPromptRecognizer {
                         if (entity) {
                             score = entity.entity.length / text.length;
                             response = entity;
-                        } 
+                        }
                         break;
                     case PromptType.choice:
                         var best = entities.EntityRecognizer.findBestMatch(args.enumValues, text);
@@ -163,7 +163,7 @@ export class SimplePromptRecognizer implements IPromptRecognizer {
             callback({ resumed: dialog.ResumeReason.canceled, promptType: args.promptType });
         }
     }
-} 
+}
 
 export class Prompts extends dialog.Dialog {
     private static options: IPromptsOptions = {
@@ -172,7 +172,7 @@ export class Prompts extends dialog.Dialog {
 
     public begin(session: ISession, args: IPromptArgs): void {
         args = <any>args || {};
-        args.maxRetries = args.maxRetries || 1; 
+        args.maxRetries = args.maxRetries || 1;
         for (var key in args) {
             if (args.hasOwnProperty(key)) {
                 session.dialogData[key] = (<any>args)[key];
@@ -247,7 +247,7 @@ export class Prompts extends dialog.Dialog {
         args.prompt = prompt;
         args.enumValues = entities.EntityRecognizer.expandChoices(choices);
         args.listStyle = args.listStyle || ListStyle.list;
-        
+
         // Format list
         var connector = '', list: string;
         switch (args.listStyle) {
@@ -267,7 +267,7 @@ export class Prompts extends dialog.Dialog {
                         connector = index == 0 ? ' or ' : ', or ';
                     } else {
                         connector = ', ';
-                    } 
+                    }
                 });
                 args.prompt += list;
                 break;

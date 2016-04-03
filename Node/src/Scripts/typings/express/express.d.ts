@@ -3,7 +3,7 @@
 // Definitions by: Boris Yankov <https://github.com/borisyankov/>
 // DefinitelyTyped: https://github.com/borisyankov/DefinitelyTyped
 
-/* =================== USAGE =================== 
+/* =================== USAGE ===================
 
     import express = require('express');
     var app = express();
@@ -1176,11 +1176,11 @@ declare module "express" {
 
         /**
          * Body parser:
-         * 
+         *
          *   Parse request bodies, supports _application/json_,
          *   _application/x-www-form-urlencoded_, and _multipart/form-data_.
          *
-         *   This is equivalent to: 
+         *   This is equivalent to:
          *
          *     app.use(connect.json());
          *     app.use(connect.urlencoded());
@@ -1228,9 +1228,9 @@ declare module "express" {
 
         /**
          * Method Override:
-         * 
+         *
          * Provides faux HTTP method support.
-         * 
+         *
          * Pass an optional `key` to use when checking for
          * a method override, othewise defaults to _\_method_.
          * The original method is available via `req.originalMethod`.
@@ -1262,7 +1262,7 @@ declare module "express" {
 
         /**
          * Session:
-         * 
+         *
          *   Setup session store with the given `options`.
          *
          *   Session data is _not_ saved in the cookie itself, however
@@ -1286,13 +1286,13 @@ declare module "express" {
          * Cookie option:
          *
          *  By default `cookie.maxAge` is `null`, meaning no "expires" parameter is set
-         *  so the cookie becomes a browser-session cookie. When the user closes the 
+         *  so the cookie becomes a browser-session cookie. When the user closes the
          *  browser the cookie (and session) will be removed.
          *
          * ## req.session
          *
          *  To store or access session data, simply use the request property `req.session`,
-         *  which is (generally) serialized as JSON by the store, so nested objects 
+         *  which is (generally) serialized as JSON by the store, so nested objects
          *  are typically fine. For example below is a user-specific view counter:
          *
          *       connect()
@@ -1330,7 +1330,7 @@ declare module "express" {
          *      req.session.destroy(function(err){
          *        // cannot access session here
          *      });
-         * 
+         *
          * ## Session#reload()
          *
          *  Reloads the session data.
@@ -1790,7 +1790,7 @@ declare module "express" {
 
         /**
          * Vhost:
-         * 
+         *
          *   Setup vhost for the given `hostname` and `server`.
          *
          *     connect()
@@ -1799,7 +1799,7 @@ declare module "express" {
          *       .use(connect.vhost('*.com', mainApp))
          *
          *  The `server` may be a Connect server or
-         *  a regular Node `http.Server`. 
+         *  a regular Node `http.Server`.
          *
          * @param hostname
          * @param server

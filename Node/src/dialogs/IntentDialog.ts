@@ -1,15 +1,15 @@
-﻿// 
+﻿//
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-// 
+//
 // Microsoft Bot Framework: http://botframework.com
-// 
+//
 // Bot Builder SDK Github:
 // https://github.com/Microsoft/BotBuilder
-// 
+//
 // Copyright (c) Microsoft Corporation
 // All rights reserved.
-// 
+//
 // MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -18,10 +18,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -121,7 +121,7 @@ export abstract class IntentDialog extends dialog.Dialog {
                     // Ensure capture handler is worth invoking. Requirements are the top intents
                     // score should be greater then the childs score and there should be a handler
                     // registered for that intent. The last requirement addresses the fact that the
-                    // 'None' intent from LUIS is likely to have a score that's greater then the 
+                    // 'None' intent from LUIS is likely to have a score that's greater then the
                     // intent threshold.
                     var matches: IHandlerMatch;
                     var topIntent = this.findTopIntent(intents);
@@ -142,7 +142,7 @@ export abstract class IntentDialog extends dialog.Dialog {
                                     }
                                 });
                             },
-                            send: action.send 
+                            send: action.send
                         }, topIntent, entities);
                     } else {
                         action.next();

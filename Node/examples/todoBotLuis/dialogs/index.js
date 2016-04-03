@@ -16,7 +16,7 @@ dialog.on('SaveTask', [
         var title = builder.EntityRecognizer.findEntity(args.entities, 'TaskTitle');
         if (!title) {
             // Prompt user to enter title.
-            builder.Prompts.text(session, prompts.saveTaskMissing);    
+            builder.Prompts.text(session, prompts.saveTaskMissing);
         } else {
             // Pass title to next step.
             next({ response: title.entity });
@@ -49,7 +49,7 @@ dialog.on('FinishTask', [
                 // Find it in our list of tasks
                 topTask = builder.EntityRecognizer.findBestMatch(session.userData.tasks, title.entity);
             }
-            
+
             // Prompt user if task missing or not found
             if (!topTask) {
                 builder.Prompts.choice(session, prompts.finishTaskMissing, session.userData.tasks);

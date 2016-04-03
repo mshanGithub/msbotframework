@@ -176,8 +176,8 @@ export interface ILocalizer {
     ngettext(language: string, msgid: string, msgid_plural: string, count: number): string;
 }
 
-/** 
- * Action object which exposes a partial set of session functionality and can be used to capture 
+/**
+ * Action object which exposes a partial set of session functionality and can be used to capture
  * messages sent to a child dialog.
  */
 interface ISessionAction {
@@ -191,18 +191,18 @@ interface ISessionAction {
     next(): void;
 
     /**
-     * Ends all of the dialogs children and returns control to the current dialog. This permanently 
+     * Ends all of the dialogs children and returns control to the current dialog. This permanently
      * captures back the users replies.
      * @param result Optional results to pass to dialogResumed().
      */
     endDialog<T>(result?: IDialogResult<T>): void;
-    
+
     /**
-     * Sends a simple text message to the user. The message will be localized using the sessions 
+     * Sends a simple text message to the user. The message will be localized using the sessions
      * configured ILocalizer and if arguments are passed in the message will be formatted using
-     * sprintf-js. See https://github.com/alexei/sprintf.js for documentation. 
+     * sprintf-js. See https://github.com/alexei/sprintf.js for documentation.
      * @param msg Text of the message to send.
-     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation. 
+     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation.
      */
     send(msg: string, ...args: any[]): void;
     /**
@@ -230,8 +230,8 @@ export interface IDialogState {
     state: any;
 }
 
-/** 
-  * Results returned by a child dialog to its parent via a call to session.endDialog(). 
+/**
+  * Results returned by a child dialog to its parent via a call to session.endDialog().
   */
 export interface IDialogResult<T> {
     /** The reason why the current dialog is being resumed. */
@@ -293,7 +293,7 @@ export interface IPromptTextResult extends IPromptResult<string> { }
 export interface IPromptNumberResult extends IPromptResult<number> { }
 
 /** Strongly typed Confirm Prompt Result. */
-export interface IPromptConfirmResult extends IPromptResult<boolean> { } 
+export interface IPromptConfirmResult extends IPromptResult<boolean> { }
 
 /** Strongly typed Choice Prompt Result. */
 export interface IPromptChoiceResult extends IPromptResult<IFindMatchResult> { }
@@ -329,9 +329,9 @@ export interface IPromptRecognizerArgs {
     refDate?: number;
 
     /**
-     * Lets a prompt recognizer compare its confidence that it understood an utterance with the prompts parent. 
+     * Lets a prompt recognizer compare its confidence that it understood an utterance with the prompts parent.
      * The callback will return true if the utterance was processed by the parent. This function lets a
-     * parent of the prompt handle utterances like "what can I say?" or "nevermind". 
+     * parent of the prompt handle utterances like "what can I say?" or "nevermind".
      * @param language The langauge of the utterance taken from IMessage.language.
      * @param utterance The users utterance taken from IMessage.text.
      * @param score The dialogs confidence level on a scale of 0 to 1.0 that it understood the users intent.
@@ -481,7 +481,7 @@ export interface IBotConnectorOptions {
 
     /** Default "from" address used in calls to ConnectorSession.beginDialog(). */
     defaultFrom?: IChannelAccount;
-    
+
     /** Optional localizer used to localize the bots responses to the user. */
     localizer?: ILocalizer;
 
@@ -550,7 +550,7 @@ export interface ISlackBotOptions {
 
     /** Optional arguments to pass to the initial dialog for a conversation. */
     defaultDialogArgs?: any;
-    
+
     /** Maximum time (in milliseconds) that a bot continues to recieve ambient messages after its been @mentioned. Default 5 minutes.  */
     ambientMentionDuration?: number;
 }
@@ -559,7 +559,7 @@ export interface ISlackBotOptions {
 export interface ISlackBeginDialogAddress {
     /** ID of the user to begin a conversation with. If this is specified channel should be blank. */
     user?: string;
-    
+
     /** ID of the channel to begin a conversation with. If this is specified user should be blank. */
     channel?: string;
 
@@ -648,15 +648,15 @@ export enum PromptType {
 }
 
 /** Type of list to render for PromptType.choice prompt. */
-export enum ListStyle { 
+export enum ListStyle {
     /** No list is rendered. This is used when the list is included as part of the prompt. */
-    none, 
-    
+    none,
+
     /** Choices are rendered as an inline list of the form "1. red, 2. green, or 3. blue". */
-    inline, 
-    
+    inline,
+
     /** Choices are rendered as a numbered list. */
-    list 
+    list
 }
 
 //=============================================================================
@@ -701,7 +701,7 @@ export class Session {
      * Dispatches a message for processing. The session will call thr appropriate middleware based
      * on the messages type. Consumers can install middleware to either intercept or augment certain
      * messages.
-     * @param sessionState The current session state. 
+     * @param sessionState The current session state.
      * @param message The message to dispatch.
      */
     dispatch(sessionState: ISessionState, message: IMessage): Session;
@@ -722,21 +722,21 @@ export class Session {
     dialogData: any;
 
     /**
-     * Signals that an error occured. 
+     * Signals that an error occured.
      * @param err Error that occured.
      */
     error(err: Error): Session;
 
     /**
      * Loads a localized string for the messages language. If arguments are passed the localized string
-     * will be treated as a template and formatted using sprintf-js. See https://github.com/alexei/sprintf.js for documentation. 
+     * will be treated as a template and formatted using sprintf-js. See https://github.com/alexei/sprintf.js for documentation.
      * @param msgid String to use as a key in the localized string table. Typically this will just be the english version of the string.
-     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation. 
+     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation.
      */
     gettext(msgid: string, ...args: any[]): string;
 
     /**
-     * Loads the plural form of a localized string for the messages language. The output string will be formatted to 
+     * Loads the plural form of a localized string for the messages language. The output string will be formatted to
      * include the count by replacing %d in the string with the count.
      * @param msgid Singular form of the string to use as a key in the localized string table. Use %d to specify where the count should go.
      * @param msgid_plural Plural form of the string to use as a key in the localized string table. Use %d to specify where the count should go.
@@ -745,16 +745,16 @@ export class Session {
     ngettext(msgid: string, msgid_plural: string, count: number): string;
 
     /**
-     * Ends the session without sending a message. For user originated conversations the bot always 
-     * needs to reply with something, even if it's an empty message. 
+     * Ends the session without sending a message. For user originated conversations the bot always
+     * needs to reply with something, even if it's an empty message.
      */
     send(): Session;
     /**
-     * Sends a simple text message to the user. The message will be localized using the sessions 
+     * Sends a simple text message to the user. The message will be localized using the sessions
      * configured ILocalizer and if arguments are passed in the message will be formatted using
-     * sprintf-js. See https://github.com/alexei/sprintf.js for documentation. 
+     * sprintf-js. See https://github.com/alexei/sprintf.js for documentation.
      * @param msg Text of the message to send.
-     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation. 
+     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation.
      */
     send(msg: string, ...args: any[]): Session;
     /**
@@ -765,7 +765,7 @@ export class Session {
 
     /** Returns a native message the bot receieved. */
     getMessageReceived(): any;
-    
+
     /**
      * Sends a message in the channels native format.
      * @param msg Message formated in the channels native format.
@@ -778,17 +778,17 @@ export class Session {
     messageSent(): boolean;
 
     /**
-     * Passes control of the conversation to a new dialog. The current dialog will be suspended 
+     * Passes control of the conversation to a new dialog. The current dialog will be suspended
      * until the child dialog completes. Once the child ends the current dialog will receive a
-     * call to dialogResumed() where it can inspect any results returned from the child. 
+     * call to dialogResumed() where it can inspect any results returned from the child.
      * @param id Unique ID of the dialog to start.
      * @param args Optional arguments to pass to the dialogs begin() method.
      */
     beginDialog<T>(id: string, args?: T): Session;
 
     /**
-     * Ends the current dialog and starts a new one its place. The parent dialog will not be 
-     * resumed until the new dialog completes. 
+     * Ends the current dialog and starts a new one its place. The parent dialog will not be
+     * resumed until the new dialog completes.
      * @param id Unique ID of the dialog to start.
      * @param args Optional arguments to pass to the dialogs begin() method.
      */
@@ -822,7 +822,7 @@ export class Session {
     /**
      * Lets a dialog compare its confidence that it understood an utterance with it's parent. The
      * callback will return true if the utterance was processed by the parent. This function lets a
-     * parent of the dialog handle messages not understood by the dialog. 
+     * parent of the dialog handle messages not understood by the dialog.
      * @param language The langauge of the utterance taken from IMessage.language.
      * @param utterance The users utterance taken from IMessage.text.
      * @param score The dialogs confidence level on a scale of 0 to 1.0 that it understood the users intent.
@@ -844,18 +844,18 @@ export class Session {
 
     /**
      * Creates a reply message object with a formatted text string. The text will be localized and
-     * the languge of the original message will be copied over. Derived classes can use this to 
-     * manually format a reply message.   
+     * the languge of the original message will be copied over. Derived classes can use this to
+     * manually format a reply message.
      * @param text Text or template string for the reply. This will be localized using session.gettext().
-     * @param args Optional arguments used to format the message text when Text is a template. 
+     * @param args Optional arguments used to format the message text when Text is a template.
      */
     public createMessage(text: string, args?: any[]): IMessage;
 }
 
 /**
- * Base class for all dialogs. Dialogs are the core component of the BotBuilder 
+ * Base class for all dialogs. Dialogs are the core component of the BotBuilder
  * framework. Bots use Dialogs to manage arbitrarily complex conversations with
- * a user. 
+ * a user.
  */
 export abstract class Dialog {
     /**
@@ -883,8 +883,8 @@ export abstract class Dialog {
     /**
      * Called when a child dialog is wanting to compare its confidence for an utterance with its parent.
      * This lets the parent determine if it can do a better job of responding to the utterance then
-     * the child can. This is useful for handling things like "quit" or "what can I say?".  
-     * @param action Methods to lookup dialog state data and control what happens as a result of the 
+     * the child can. This is useful for handling things like "quit" or "what can I say?".
+     * @param action Methods to lookup dialog state data and control what happens as a result of the
      * comparison. Dialogs should at least call action.next() to signal a non-match.
      * @param language The langauge of the utterance taken from IMessage.language.
      * @param utterance The users utterance taken from IMessage.text.
@@ -905,8 +905,8 @@ export class DialogCollection {
     /**
      * Adds a simple dialog to the collection thats based on the passed in closure.
      * @param id Unique ID of the dialog.
-     * @param fn Closure to base dialog on. The closure will be called anytime a message is recieved 
-     * from the user or when the dialog is being resumed. You can check for args.resumed to tell that 
+     * @param fn Closure to base dialog on. The closure will be called anytime a message is recieved
+     * from the user or when the dialog is being resumed. You can check for args.resumed to tell that
      * your being resumed.
      */
     add(id: string, fn: (session: Session, args?: any) => void): DialogCollection;
@@ -926,18 +926,18 @@ export class DialogCollection {
 
     /**
      * Returns a dialog given its ID.
-     * @param id ID of the dialog to lookup. 
+     * @param id ID of the dialog to lookup.
      */
     getDialog(id: string): Dialog;
 
     /**
-     * Returns an array of middleware to invoke. 
+     * Returns an array of middleware to invoke.
      */
     getMiddleware(): { (session: Session, next: Function): void; }[];
 
     /**
      * Returns true if a dialog with a given ID exists within the collection.
-     * @param id ID of the dialog to lookup. 
+     * @param id ID of the dialog to lookup.
      */
     hasDialog(id: string): boolean;
 
@@ -950,18 +950,18 @@ export class DialogCollection {
 /** Dialog actions offer shortcuts to implementing common actions. */
 export class DialogAction {
     /**
-     * Returns a closure that will send a simple text message to the user. 
+     * Returns a closure that will send a simple text message to the user.
      * @param msg Text of the message to send.
-     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation. 
+     * @param args Optional arguments used to format the final output string. See https://github.com/alexei/sprintf.js for documentation.
      */
     static send(msg: string, ...args: any[]): (session: Session) => void;
 
     /**
-     * Returns a closure that will passes control of the conversation to a new dialog.  
+     * Returns a closure that will passes control of the conversation to a new dialog.
      * @param id Unique ID of the dialog to start.
      * @param args Optional arguments to pass to the dialogs begin() method.
      */
-    static beginDialog<T>(id: string, args?: T): (session: Session, args: T) => void; 
+    static beginDialog<T>(id: string, args?: T): (session: Session, args: T) => void;
 
     /**
      * Returns a closure that will end the current dialog.
@@ -970,17 +970,17 @@ export class DialogAction {
     static endDialog(result?: any): (session: Session) => void;
 
     /**
-     * Returns a closure that will prompt the user for information in an async waterfall like 
+     * Returns a closure that will prompt the user for information in an async waterfall like
      * sequence. When the closure is first invoked it will execute the first function in the
      * waterfall and the results of that prompt will be passed as input to the second function
-     * and the result of the second passed to the third and so on.  
+     * and the result of the second passed to the third and so on.
      *
-     * Each step within the waterfall may optionally return a ResumeReson to influence the flow 
+     * Each step within the waterfall may optionally return a ResumeReson to influence the flow
      * of the waterfall:
      * - ResumeReason.forward: skips the next function in the waterfall.
      * - ResumeReason.back: returns to the previous function in the waterfall.
      * - ResumeReason.canceled: ends the waterfall all together.
-     * 
+     *
      * Calling other dialog like built-in prompts can influence the flow as well. If a child dialog
      * returns either ResumeReason.forward or ResumeReason.back it will automatically be handled.
      * If ResumeReason.canceled is returnd it will be handed to the step for processing which can
@@ -991,23 +991,23 @@ export class DialogAction {
 }
 
 /**
- * Built in built-in prompts that can be called from any dialog. 
+ * Built in built-in prompts that can be called from any dialog.
  */
 export class Prompts extends Dialog {
     /**
-     * Processes messages received from the user. Called by the dialog system. 
+     * Processes messages received from the user. Called by the dialog system.
      * @param session Session object for the current conversation.
      */
     replyReceived(session: Session): void;
 
     /**
-     * Updates global options for the Prompts dialog. 
+     * Updates global options for the Prompts dialog.
      * @param options Options to set.
      */
     static configure(options: IPromptsOptions): void;
 
     /**
-     * Captures from the user a raw string of text. 
+     * Captures from the user a raw string of text.
      * @param session Session object for the current conversation.
      * @param prompt Message to send to the user.
      */
@@ -1064,9 +1064,9 @@ export class Prompts extends Dialog {
 }
 
 /**
- * Implements a simple pattern based recognizer for parsing the built-in prompts. Derived classes can 
+ * Implements a simple pattern based recognizer for parsing the built-in prompts. Derived classes can
  * inherit from SimplePromptRecognizer and override the recognize() method to change the recognition
- * of one or more prompt types. 
+ * of one or more prompt types.
  */
 export class SimplePromptRecognizer implements IPromptRecognizer {
     /**
@@ -1079,18 +1079,18 @@ export class SimplePromptRecognizer implements IPromptRecognizer {
 
 /**
  * Base class for an intent based dialog where the incoming message is sent to an intent recognizer
- * to first identify any intents & entities. The top intent will be used to lookup a handler that 
+ * to first identify any intents & entities. The top intent will be used to lookup a handler that
  * will be used process the recieved message.
 */
 export abstract class IntentDialog extends Dialog {
     /**
-     * Processes messages received from the user. Called by the dialog system. 
+     * Processes messages received from the user. Called by the dialog system.
      * @param session Session object for the current conversation.
      */
     replyReceived(session: Session): void;
 
     /**
-     * Adds a IntentGroup to the dialog. 
+     * Adds a IntentGroup to the dialog.
      * @param group Group to add to dialog.
      */
     addGroup(group: IntentGroup): IntentDialog;
@@ -1105,9 +1105,9 @@ export abstract class IntentDialog extends Dialog {
      * Executes a block of code when the given intent is recognized. Use DialogAction.send() or
      * DialogEnd.endDialog() to implement common actions.
      * @param intent Intent to trigger on.
-     * @param fn Handler to invoke when the intent is triggered. The handler will be passed any 
+     * @param fn Handler to invoke when the intent is triggered. The handler will be passed any
      * recognized intents & entities via the args. The handler will also be invoked when a dialog
-     * started by the handler returns. Check for args.resumed to detect that you're being resumed. 
+     * started by the handler returns. Check for args.resumed to detect that you're being resumed.
      */
     on(intent: string, fn: (session: Session, args?: IIntentArgs) => void): IntentDialog;
     /**
@@ -1118,10 +1118,10 @@ export abstract class IntentDialog extends Dialog {
      */
     on(intent: string, waterfall: IDialogWaterfallStep[]): IntentDialog;
    /**
-     * Begins a dialog anytime the intent is triggered. 
+     * Begins a dialog anytime the intent is triggered.
      * @param intent Intent to trigger on.
      * @param dialogId ID of the dialog to begin.
-     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the IIntentArgs 
+     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the IIntentArgs
      * generated by the dialog.
      */
     on(intent: string, dialogId: string, dialogArgs?: any): IntentDialog;
@@ -1129,13 +1129,13 @@ export abstract class IntentDialog extends Dialog {
     /**
      * Executes a block of code when an unknown intent is recognized. Use DialogAction.send() or
      * DialogAction.endDialog() to implement common actions.
-     * @param fn Handler to invoke when the intent is triggered. The handler will be passed any 
+     * @param fn Handler to invoke when the intent is triggered. The handler will be passed any
      * recognized intents & entities via the args. The handler will also be invoked when a dialog
-     * started by the handler returns. Check for args.resumed to detect that you're being resumed. 
+     * started by the handler returns. Check for args.resumed to detect that you're being resumed.
      */
     onDefault(fn: (session: Session, args?: IIntentArgs) => void): IntentDialog;
     /**
-     * Executes a waterfall of steps when an unknown intent is recognized. See DialogAction.waterfall() 
+     * Executes a waterfall of steps when an unknown intent is recognized. See DialogAction.waterfall()
      * for details.
      * @param waterfall Waterfall steps to execute.
      */
@@ -1143,7 +1143,7 @@ export abstract class IntentDialog extends Dialog {
     /**
      * Begins a dialog when an unknown intent is recognized.
      * @param dialogId ID of the dialog to begin.
-     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the IIntentArgs 
+     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the IIntentArgs
      * generated by the dialog.
      */
     onDefault(dialogId: string, dialogArgs?: any): IntentDialog;
@@ -1168,8 +1168,8 @@ export abstract class IntentDialog extends Dialog {
 }
 
 /**
- * Defines a related group of intent handlers. Primarily useful for dialogs with a large number of 
- * intents or for team development where you want seperate developers to more easily work on the same bot. 
+ * Defines a related group of intent handlers. Primarily useful for dialogs with a large number of
+ * intents or for team development where you want seperate developers to more easily work on the same bot.
  */
 export class IntentGroup {
     /**
@@ -1188,9 +1188,9 @@ export class IntentGroup {
      * Executes a block of code when the given intent is recognized. Use DialogAction.send() or
      * DialogAction.endDialog() to implement common actions.
      * @param intent Intent to trigger on.
-     * @param fn Handler to invoke when the intent is triggered. The handler will be passed any 
+     * @param fn Handler to invoke when the intent is triggered. The handler will be passed any
      * recognized intents & entities via the args. The handler will also be invoked when a dialog
-     * started by the handler returns. Check for args.resumed to detect that you're being resumed. 
+     * started by the handler returns. Check for args.resumed to detect that you're being resumed.
      */
     on(intent: string, fn: (session: Session, args?: IIntentArgs) => void): IntentDialog;
     /**
@@ -1201,10 +1201,10 @@ export class IntentGroup {
      */
     on(intent: string, waterfall: IDialogWaterfallStep[]): IntentDialog;
     /**
-     * Begins a dialog anytime the intent is triggered. 
+     * Begins a dialog anytime the intent is triggered.
      * @param intent Intent to trigger on.
      * @param dialogId ID of the dialog to begin.
-     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the IIntentArgs 
+     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the IIntentArgs
      * generated by the dialog.
      */
     on(intent: string, dialogId: string, dialogArgs?: any): IntentDialog;
@@ -1213,7 +1213,7 @@ export class IntentGroup {
 /**
  * Routes incoming messages to a Luis app hosted on http://luis.ai for intent recognition.
  * Once a messages intent has been recognized it will rerouted to a registered intent handler, along
- * with any entities, for further processing. 
+ * with any entities, for further processing.
  */
 export class LuisDialog extends IntentDialog {
     /**
@@ -1240,7 +1240,7 @@ export class EntityRecognizer {
      * @param type Type of entity to find.
      */
     static findEntity(entities: IEntity[], type: string): IEntity;
-    
+
     /**
      * Finds all occurences of a specific entity type within a set.
      * @param entities Set of entities to search over.
@@ -1250,9 +1250,9 @@ export class EntityRecognizer {
 
     /**
      * Parses and resolves a time from a user utterance.
-     * @param utterance Text utterance to parse. 
+     * @param utterance Text utterance to parse.
      * @returns A valid Date object if the user spoke a time otherwise null.
-     */   
+     */
     static parseTime(utterance: string): Date;
 
     /**
@@ -1265,7 +1265,7 @@ export class EntityRecognizer {
     /**
      * Calculates a Date from a set of datetime entities.
      * @param entities List of entities to extract date from.
-     * @returns The successfully calculated Date or null if a date couldn't be determined. 
+     * @returns The successfully calculated Date or null if a date couldn't be determined.
      */
     static resolveTime(entities: IEntity[]): Date;
 
@@ -1273,41 +1273,41 @@ export class EntityRecognizer {
      * Recognizes a time from a users uetterance.
      * @param utterance Text utterance to parse.
      * @param refDate Optional reference date user to calculate the finale date.
-     * @returns An entity containing the resolved date if successfull or null if a date couldn't be determined. 
+     * @returns An entity containing the resolved date if successfull or null if a date couldn't be determined.
      */
     static recognizeTime(utterance: string, refDate?: Date): IEntity;
 
     /**
      * Parses a number from a users utterance.
      * @param utterance Text utterance to parse.
-     * @returns A valid number otherwise undefined. 
+     * @returns A valid number otherwise undefined.
      */
     static parseNumber(utterance: string): number;
 
     /**
      * Resolves a number from a set of entities.
      * @param entities List of entities to extract number from.
-     * @returns A valid number otherwise undefined. 
+     * @returns A valid number otherwise undefined.
      */
     static parseNumber(entities: IEntity[]): number;
 
     /**
      * Parses a boolean from a users utterance.
      * @param utterance Text utterance to parse.
-     * @returns A valid boolean otherwise undefined. 
+     * @returns A valid boolean otherwise undefined.
      */
     static parseBoolean(utterance: string): boolean;
-    
+
     /**
      * Finds the best match for a users utterance in a list of values.
-     * @param choices Pipe ('|') delimited list of values to compare against the users utterance. 
+     * @param choices Pipe ('|') delimited list of values to compare against the users utterance.
      * @param utterance Text utterance to parse.
      * @param threshold Optional minimum score needed for a match to be considered. The default value is 0.6.
      */
     static findBestMatch(choices: string, utterance: string, threshold?: number): IFindMatchResult;
     /**
      * Finds the best match for a users utterance in a list of values.
-     * @param choices Object used to generate the list of choices. The objects field names will be used to 
+     * @param choices Object used to generate the list of choices. The objects field names will be used to
      * build the list of choices.
      * @param utterance Text utterance to parse.
      * @param threshold Optional minimum score needed for a match to be considered. The default value is 0.6.
@@ -1323,14 +1323,14 @@ export class EntityRecognizer {
 
     /**
      * Finds all possible matches for a users utterance in a list of values.
-     * @param choices Pipe ('|') delimited list of values to compare against the users utterance. 
+     * @param choices Pipe ('|') delimited list of values to compare against the users utterance.
      * @param utterance Text utterance to parse.
      * @param threshold Optional minimum score needed for a match to be considered. The default value is 0.6.
      */
     static findAllMatches(choices: string, utterance: string, threshold?: number): IFindMatchResult[];
     /**
      * Finds all possible matches for a users utterance in a list of values.
-     * @param choices Object used to generate the list of choices. The objects field names will be used to 
+     * @param choices Object used to generate the list of choices. The objects field names will be used to
      * build the list of choices.
      * @param utterance Text utterance to parse.
      * @param threshold Optional minimum score needed for a match to be considered. The default value is 0.6.
@@ -1346,12 +1346,12 @@ export class EntityRecognizer {
 
     /**
      * Returns an array of choices give a pipe delimted string.
-     * @param choices Pipe ('|') delimited list of values to compare against the users utterance. 
+     * @param choices Pipe ('|') delimited list of values to compare against the users utterance.
      */
     static expandChoices(choices: string): string[];
     /**
      * Returns an array of choices given an Object.
-     * @param choices Object used to generate the list of choices. The objects field names will be used to 
+     * @param choices Object used to generate the list of choices. The objects field names will be used to
      * build the list of choices.
      */
     static expandChoices(choices: Object): string[];
@@ -1368,7 +1368,7 @@ export class EntityRecognizer {
  */
 export class CommandDialog extends Dialog {
     /**
-     * Processes messages received from the user. Called by the dialog system. 
+     * Processes messages received from the user. Called by the dialog system.
      * @param session Session object for the current conversation.
      */
     replyReceived(session: Session): void;
@@ -1384,8 +1384,8 @@ export class CommandDialog extends Dialog {
      * DialogAction.endDialog() to implement common actions.
      * @param pattern A regular expression to match against.
      * @param fn Handler to invoke when the pattern is matched. The handler will be passed the expression
-     * that was matched via the args. The handler will also be invoked when a dialog started by the 
-     * handler returns. Check for args.resumed to detect that you're being resumed. 
+     * that was matched via the args. The handler will also be invoked when a dialog started by the
+     * handler returns. Check for args.resumed to detect that you're being resumed.
      */
     matches(pattern: string, fn: (session: Session, args?: ICommandArgs) => void): CommandDialog;
     /**
@@ -1393,8 +1393,8 @@ export class CommandDialog extends Dialog {
      * DialogAction.endDialog() to implement common actions.
      * @param patterns Array of regular expressions to match against.
      * @param fn Handler to invoke when the pattern is matched. The handler will be passed the expression
-     * that was matched via the args. The handler will also be invoked when a dialog started by the 
-     * handler returns. Check for args.resumed to detect that you're being resumed. 
+     * that was matched via the args. The handler will also be invoked when a dialog started by the
+     * handler returns. Check for args.resumed to detect that you're being resumed.
      */
     matches(patterns: string[], fn: (session: Session, args?: ICommandArgs) => void): CommandDialog;
     /**
@@ -1415,7 +1415,7 @@ export class CommandDialog extends Dialog {
      * Begins a dialog when the pattern is matched.
      * @param pattern A regular expression to match against.
      * @param dialogId ID of the dialog to begin.
-     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the ICommandArgs 
+     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the ICommandArgs
      * generated by the dialog.
      */
     matches(pattern: string, dialogId: string, dialogArgs?: any): CommandDialog;
@@ -1423,7 +1423,7 @@ export class CommandDialog extends Dialog {
      * Begins a dialog when one of the specified patterns is matched.
      * @param patterns Array of regular expressions to match against.
      * @param dialogId ID of the dialog to begin.
-     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the ICommandArgs 
+     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the ICommandArgs
      * generated by the dialog.
      */
     matches(patterns: string[], dialogId: string, dialogArgs?: any): CommandDialog;
@@ -1431,12 +1431,12 @@ export class CommandDialog extends Dialog {
     /**
      * Executes a block of code when an unknown pattern is received.
      * @param fn Handler to invoke when the pattern is matched. The handler will be passed the expression
-     * that was matched via the args. The handler will also be invoked when a dialog started by the 
-     * handler returns. Check for args.resumed to detect that you're being resumed. 
+     * that was matched via the args. The handler will also be invoked when a dialog started by the
+     * handler returns. Check for args.resumed to detect that you're being resumed.
      */
     onDefault(fn: (session: Session, args?: ICommandArgs) => void): CommandDialog;
     /**
-     * Executes a waterfall of steps when an unknown pattern is received. See DialogAction.waterfall() 
+     * Executes a waterfall of steps when an unknown pattern is received. See DialogAction.waterfall()
      * for details.
      * @param waterfall Waterfall steps to execute.
      */
@@ -1444,7 +1444,7 @@ export class CommandDialog extends Dialog {
     /**
      * Begins a dialog when an unknown pattern is received.
      * @param dialogId ID of the dialog to begin.
-     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the ICommandArgs 
+     * @param dialogArgs Optional args to pass to the dialog. These will be merged with the ICommandArgs
      * generated by the dialog.
      */
     onDefault(dialogId: string, dialogArgs?: any): CommandDialog;
@@ -1484,7 +1484,7 @@ export class BotConnectorBot extends DialogCollection {
     constructor(options?: IBotConnectorOptions);
 
     /**
-     * Registers an event listener to get notified of bot related events. 
+     * Registers an event listener to get notified of bot related events.
      * The message to passed to events will be of type IBotConnectorMessage. Events:
      * - error: An error occured. [IBotErrorEvent]
      * - reply: A reply to an existing message was sent. [IBotMessageEvent]
@@ -1521,7 +1521,7 @@ export class BotConnectorBot extends DialogCollection {
     verifyBotFramework(options?: IBotConnectorOptions): (req, res, next) => void;
 
     /**
-     * Returns a piece of Express or Restify compliant middleware that will route incoming messages to the bot. 
+     * Returns a piece of Express or Restify compliant middleware that will route incoming messages to the bot.
      * NOTE: The middleware should be mounted to route that receives an HTTPS POST.
      * @param options Optional configuration options to pass in.
      * @example
@@ -1563,7 +1563,7 @@ export class SkypeBot extends DialogCollection {
     constructor(botService: any, options?: ISkypeBotOptions);
 
     /**
-     * Registers an event listener to get notified of bot related events. 
+     * Registers an event listener to get notified of bot related events.
      * The message to passed to events will be a skype message. Events:
      * - error: An error occured. [IBotErrorEvent]
      * - reply: A reply to an existing message was sent. [IBotMessageEvent]
@@ -1589,7 +1589,7 @@ export class SkypeBot extends DialogCollection {
      * @param options Configuration options to set.
      */
     configure(options: ISkypeBotOptions): SkypeBot;
-    
+
     /**
      * Starts a new conversation with a user.
      * @param address Address of the user to begin the conversation with.
@@ -1604,11 +1604,11 @@ export class SkypeBot extends DialogCollection {
  */
 export class SkypeSession extends Session {
     /**
-     * Escapes &, <, and > characters in a text string. These characters are reserved in Slack for 
+     * Escapes &, <, and > characters in a text string. These characters are reserved in Slack for
      * control codes so should always be escaped when returning user generated text.
      */
     escapeText(text: string): string;
-    
+
     /**
      * Unescapes &amp;, &lt;, and &gt; characters in a text string. This restores a previously
      * escaped string.
@@ -1621,15 +1621,15 @@ export class SkypeSession extends Session {
  */
 export class SlackBot extends DialogCollection {
     /**
-     * Creates a new instance of the Slack bot using BotKit. 
+     * Creates a new instance of the Slack bot using BotKit.
      * @param controller Controller created from a call to Botkit.slackbot().
-     * @param bot The bot created from a call to controller.spawn(). 
+     * @param bot The bot created from a call to controller.spawn().
      * @param options Optional configuration settings for the bot.
      */
     constructor(controller: any, bot: any, options?: ISlackBotOptions);
 
     /**
-     * Registers an event listener to get notified of bot related events. 
+     * Registers an event listener to get notified of bot related events.
      * The message to passed to events will a slack message. Events:
      * - error: An error occured. [IBotErrorEvent]
      * - reply: A reply to an existing message was sent. [IBotMessageEvent]
@@ -1655,8 +1655,8 @@ export class SlackBot extends DialogCollection {
      * Begins listening for incoming messages of the specified types. Types:
      * - ambient: Ambient messages are messages that the bot can hear in a channel, but that do not mention the bot in any way.
      * - direct_mention: Direct mentions are messages that begin with the bot's name, as in "@bot hello".
-     * - mention: Mentions are messages that contain the bot's name, but not at the beginning, as in "hello @bot". 
-     * - direct_message: Direct messages are sent via private 1:1 direct message channels. 
+     * - mention: Mentions are messages that contain the bot's name, but not at the beginning, as in "hello @bot".
+     * - direct_message: Direct messages are sent via private 1:1 direct message channels.
      * @param types The type of events to listen for,
      * @param dialogId Optional ID of the bots dialog to begin for new conversations.
      * @param dialogArgs Optional arguments to pass to the dialog.
@@ -1664,7 +1664,7 @@ export class SlackBot extends DialogCollection {
     listen(types: string[], dialogId?: string, dialogArgs?: any): SlackBot;
 
     /**
-     * Begins listening for messages sent to the bot. The bot will recieve direct messages, 
+     * Begins listening for messages sent to the bot. The bot will recieve direct messages,
      * direct mentions, and mentions. One the bot has been mentioned it will continue to receive
      * ambient messages from the user that mentioned them for a short period of time. This time
      * can be configured using ISlackBotOptions.ambientMentionDuration.
@@ -1691,13 +1691,13 @@ export class SlackSession extends Session {
 
     /** Data that's persisted on a per channel basis. */
     channelData: any;
-    
+
     /**
-     * Escapes &, <, and > characters in a text string. These characters are reserved in Slack for 
+     * Escapes &, <, and > characters in a text string. These characters are reserved in Slack for
      * control codes so should always be escaped when returning user generated text.
      */
     escapeText(text: string): string;
-    
+
     /**
      * Unescapes &amp;, &lt;, and &gt; characters in a text string. This restores a previously
      * escaped string.
@@ -1713,7 +1713,7 @@ export class SlackSession extends Session {
  * mixed mode where you pass a callback to the TextBot.processMessage() method and also listen
  * for events. In this second mode the first reply or error will be returned via the callback and
  * any additonal replies will be delivered as events. Should you decide to ignore the events just
- * be aware that any additional replies from the bot will be lost. 
+ * be aware that any additional replies from the bot will be lost.
  */
 export class TextBot extends DialogCollection {
     /**
@@ -1722,7 +1722,7 @@ export class TextBot extends DialogCollection {
     constructor(options?: ITextBotOptions);
 
     /**
-     * Registers an event listener to get notified of bot related events. 
+     * Registers an event listener to get notified of bot related events.
      * The message to passed to events will be an IMessage. Events:
      * - error: An error occured. [IBotErrorEvent]
      * - reply: A reply to an existing message was sent. [IBotMessageEvent]
@@ -1751,7 +1751,7 @@ export class TextBot extends DialogCollection {
     /**
      * Processes a message received from the user.
      * @param message Message to process.
-     * @param callback Optional callback used to return bots initial reply or an error. If ommited all 
+     * @param callback Optional callback used to return bots initial reply or an error. If ommited all
      * replies and errors will be returned as events.
      */
     processMessage(message: IMessage, callback?: (err: Error, reply: IMessage) => void): void;

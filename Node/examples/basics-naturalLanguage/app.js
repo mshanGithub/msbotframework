@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------
 This Bot demonstrates how to use a LuisDialog to add natural language support
-to a bot. The example also shows how to use TextBot.beginDialog() to push 
+to a bot. The example also shows how to use TextBot.beginDialog() to push
 notifications or start a new conversation with the user.
 
 For a complete walkthrough of creating this bot see the article below.
@@ -25,13 +25,13 @@ dialog.on('builtin.intent.alarm.set_alarm', [
         var time = builder.EntityRecognizer.resolveTime(args.entities);
         var alarm = session.dialogData.alarm = {
           title: title ? title.entity : null,
-          timestamp: time ? time.getTime() : null  
+          timestamp: time ? time.getTime() : null
         };
-        
+
         if (time) {
             var diff = time.getTime() - new Date().getTime();
         }
-        
+
         // Prompt for title
         if (!alarm.title) {
             builder.Prompts.text(session, 'What would you like to call your alarm?');
@@ -44,7 +44,7 @@ dialog.on('builtin.intent.alarm.set_alarm', [
         if (results.response) {
             alarm.title = results.response;
         }
-        
+
         // Prompt for time (title will be blank if the user said cancel)
         if (alarm.title && !alarm.timestamp) {
             builder.Prompts.time(session, 'What time would you like to set the alarm for?');
@@ -58,14 +58,14 @@ dialog.on('builtin.intent.alarm.set_alarm', [
             var time = builder.EntityRecognizer.resolveTime([results.response]);
             alarm.timestamp = time ? time.getTime() : null;
         }
-        
+
         // Set the alarm (if title or timestamp is blank the user said cancel)
         if (alarm.title && alarm.timestamp) {
             // Save address of who to notify and write to scheduler.
             alarm.to = session.message.from;
             alarm.from = session.message.to;
             alarms[alarm.title] = alarm;
-            
+
             // Send confirmation to user
             var date = new Date(alarm.timestamp);
             var isAM = date.getHours() < 12;
@@ -88,7 +88,7 @@ dialog.on('builtin.intent.alarm.delete_alarm', [
             // Verify its in our set of alarms.
             title = builder.EntityRecognizer.findBestMatch(alarms, entity.entity);
         }
-        
+
         // Prompt for alarm name
         if (!title) {
             builder.Prompts.choice(session, 'Which alarm would you like to delete?', alarms);
@@ -112,7 +112,7 @@ dialog.onDefault(builder.DialogAction.send("I'm sorry I didn't understand. I can
 // Add notification dialog
 cortanaBot.add('/notify', function (session, alarm) {
    session.send("Here's your '%s' alarm.", alarm.title);
-   session.endDialog(); // <= we don't want replies coming to us 
+   session.endDialog(); // <= we don't want replies coming to us
 });
 
 cortanaBot.listenStdin();

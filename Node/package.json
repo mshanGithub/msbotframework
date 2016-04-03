@@ -23,10 +23,10 @@
     "request": "^2.69.0",
     "sprintf-js": "^1.0.3"
   },
-  "devDependencies": { 
-    "mocha": "^2.4.5" 
-  }, 
-  "scripts": { 
-    "test": "mocha tests/*.js" 
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  },
+  "scripts": {
+    "test": "mocha tests/*.js"
   }
 }
