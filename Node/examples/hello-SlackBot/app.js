@@ -5,8 +5,8 @@ do pretty much anything you can do in Botkit.
 More details about setting up Botkit can be found at:
 
     http://howdy.ai/botkit
- 
-A detailed walkthrough of creating and running this bot can be found at the 
+
+A detailed walkthrough of creating and running this bot can be found at the
 link below.
 
     http://docs.botframework.com/builder/node/bots/SlackBot
@@ -23,7 +23,7 @@ var bot = controller.spawn({
 
 var slackBot = new builder.SlackBot(controller, bot);
 slackBot.add('/', function (session) {
-   session.send('Hello World'); 
+   session.send('Hello World');
 });
 
 slackBot.listenForMentions();

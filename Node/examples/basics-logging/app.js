@@ -1,11 +1,11 @@
 /*-----------------------------------------------------------------------------
-This example demonstrates how to add logging/filtering of incoming messages 
-using a piece of middleware. Users can turn logging on and off individually by 
+This example demonstrates how to add logging/filtering of incoming messages
+using a piece of middleware. Users can turn logging on and off individually by
 sending a "/log on" or "/log off" message.
 
 # RUN THE BOT:
 
-    Run the bot from the command line using "node app.js" and then type 
+    Run the bot from the command line using "node app.js" and then type
     "hello" to wake the bot up.
 
 -----------------------------------------------------------------------------*/

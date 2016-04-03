@@ -4,10 +4,10 @@ var builder = require('../');
 describe('Dialogs', function() {
     this.timeout(5000);
     it('should redirect to another dialog with arguments', function (done) {
-        var bot = new builder.TextBot(); 
+        var bot = new builder.TextBot();
         bot.add('/', [
             function (session) {
-                session.beginDialog('/child', { foo: 'bar' }) 
+                session.beginDialog('/child', { foo: 'bar' })
             },
             function (session, results) {
                 assert(results.response.bar === 'foo');

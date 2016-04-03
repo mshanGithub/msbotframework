@@ -22,10 +22,10 @@ namespace Microsoft.Bot.Sample.SimpleAlarmBot
             return await Conversation.SendAsync(message, () => new SimpleAlarmDialog());
         }
 
-        // ------  to send a message 
+        // ------  to send a message
         // ConnectorClient botConnector = new BotConnector();
         // ... use message.CreateReplyMessage() to create a message, or
-        // ... create a new message and set From, To, Text 
+        // ... create a new message and set From, To, Text
         // await botConnector.Messages.SendMessageAsync(message);
     }
 }

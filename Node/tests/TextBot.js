@@ -26,7 +26,7 @@ describe('TextBot', function() {
         });
         bot.processMessage({ text: 'hello' });
     });
-    
+
     it('should reply inline with "msg1" and then reply via event with "msg2"', function (done) {
         var inlineReply = false;
         var bot = new builder.TextBot();
@@ -43,9 +43,9 @@ describe('TextBot', function() {
             assert(reply && reply.text == 'msg1');
             inlineReply = true;
         });
-        
+
     });
-    
+
     it('should reply inline with "msg1" and then quit', function (done) {
         var inlineReply = false;
         var bot = new builder.TextBot();
@@ -61,6 +61,6 @@ describe('TextBot', function() {
             assert(reply && reply.text == 'msg1');
             inlineReply = true;
         });
-        
+
     });
 });
