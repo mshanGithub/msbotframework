@@ -34,6 +34,17 @@ namespace Microsoft.Bot.Builder.Luis
             set { this._type = value; }
         }
 
+        private double _score;
+
+        /// <summary>
+        /// Required.
+        /// </summary>
+        public double Score
+        {
+            get { return this._score; }
+            set { this._score = value; }
+        }
+
         /// <summary>
         /// Initializes a new instance of the EntityRecommendation class.
         /// </summary>
@@ -72,6 +83,11 @@ namespace Microsoft.Bot.Builder.Luis
                 {
                     this.Type = ((string)typeValue);
                 }
+                JToken scoreValue = inputObject["Score"];
+                if (scoreValue != null && scoreValue.Type != JTokenType.Null)
+                {
+                    this.Score = ((double)scoreValue);
+                }
             }
         }
 
@@ -99,6 +115,8 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 outputObject["Type"] = this.Type;
             }
+
+            outputObject["Score"] = this.Score;
             return outputObject;
         }
     }
