@@ -86,13 +86,12 @@ namespace Microsoft.Bot.Builder.Luis
 
         Uri ILuisService.BuildUri(string text)
         {
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["id"] = this.model.ModelID;
-            queryString["subscription-key"] = this.model.SubscriptionKey;
-            queryString["q"] = text;
+            var modelId = HttpUtility.UrlEncode(this.model.ModelID);
+            var subscriptionKey = HttpUtility.UrlEncode(this.model.SubscriptionKey);
+            var q = HttpUtility.UrlEncode(text);
 
             var builder = new UriBuilder(UriBase);
-            builder.Query = queryString.ToString();
+            builder.Query = $"id={modelId}&subscription-key={subscriptionKey}&q={q}";
             return builder.Uri;
         }
 
