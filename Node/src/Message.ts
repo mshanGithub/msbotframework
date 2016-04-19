@@ -45,7 +45,7 @@ export class Message implements IMessage {
     public setText(ses: session.Session, prompts: string[], ...args: any[]): this;
     public setText(ses: session.Session, prompts: any, ...args: any[]): this {
         var m = <IMessage>this;
-        var msg: string = typeof prompts == 'string' ? msg : Message.randomPrompt(prompts);
+        var msg: string = typeof (msg || prompts) == 'string' ? (msg || prompts) : Message.randomPrompt(prompts);
         args.unshift(msg);
         m.text = session.Session.prototype.gettext.apply(ses, args);
         return this;
