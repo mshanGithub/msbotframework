@@ -225,7 +225,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                     string feedback;
                     string prompt = step.Start(context, _state, _formState);
                     var matches = MatchAnalyzer.Coalesce(step.Match(context, _state, _formState, input), input);
-                    if (MatchAnalyzer.IsFullMatch(input, matches, 0.5))
+                    if (MatchAnalyzer.IsFullMatch(input, matches, 0.5) || !step.Field.Values.Any())
                     {
                         // TODO: In the case of clarification I could
                         // 1) Go through them while supporting only quit or back and reset
