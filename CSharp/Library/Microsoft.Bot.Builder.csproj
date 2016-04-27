@@ -153,6 +153,10 @@
     <None Include="pushpackage.cmd" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.it.resx">
+      <LastGenOutput>Resources.it.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
