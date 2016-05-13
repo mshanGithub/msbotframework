@@ -32,13 +32,12 @@
 //
 
 using System;
-using System.Linq;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
 using Newtonsoft.Json;
-using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
 
 namespace Microsoft.Bot.Builder.Luis
@@ -69,7 +68,7 @@ namespace Microsoft.Bot.Builder.Luis
     [Serializable]
     public sealed class LuisService : ILuisService
     {
-        private readonly LuisModelAttribute model;
+        private readonly NameValueCollection query;
 
         /// <summary>
         /// Construct the LUIS service using the model information.
@@ -77,7 +76,9 @@ namespace Microsoft.Bot.Builder.Luis
         /// <param name="model">The LUIS model information.</param>
         public LuisService(LuisModelAttribute model)
         {
-            SetField.NotNull(out this.model, nameof(model), model);
+            this.query = HttpUtility.ParseQueryString(string.Empty);
+            this.query["id"] = model.ModelID;
+            this.query["subscription-key"] = model.SubscriptionKey;
         }
 
         /// <summary>
@@ -87,13 +88,9 @@ namespace Microsoft.Bot.Builder.Luis
 
         Uri ILuisService.BuildUri(string text)
         {
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["id"] = this.model.ModelID;
-            queryString["subscription-key"] = this.model.SubscriptionKey;
-            queryString["q"] = text;
-
+            this.query["q"] = text;
             var builder = new UriBuilder(UriBase);
-            builder.Query = queryString.ToString();
+            builder.Query = this.query.ToString();
             return builder.Uri;
         }
 
