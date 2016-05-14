@@ -75,10 +75,20 @@ namespace Microsoft.Bot.Builder.Luis
         /// </summary>
         /// <param name="model">The LUIS model information.</param>
         public LuisService(LuisModelAttribute model)
+            : this(model.ModelID, model.SubscriptionKey)
+        {
+        }
+
+        /// <summary>
+        /// Construct the LUIS service using the model parameters.
+        /// </summary>
+        /// <param name="modelID">The LUIS model ID.</param>
+        /// <param name="subscriptionKey">The LUIS subscription key.</param>
+        public LuisService(string modelID, string subscriptionKey)
         {
             this.query = HttpUtility.ParseQueryString(string.Empty);
-            this.query["id"] = model.ModelID;
-            this.query["subscription-key"] = model.SubscriptionKey;
+            this.query["id"] = modelID;
+            this.query["subscription-key"] = subscriptionKey;
         }
 
         /// <summary>
