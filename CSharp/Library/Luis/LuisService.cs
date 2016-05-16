@@ -32,13 +32,12 @@
 //
 
 using System;
-using System.Linq;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
 using Newtonsoft.Json;
-using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
 
 namespace Microsoft.Bot.Builder.Luis
@@ -69,15 +68,27 @@ namespace Microsoft.Bot.Builder.Luis
     [Serializable]
     public sealed class LuisService : ILuisService
     {
-        private readonly LuisModelAttribute model;
+        private readonly NameValueCollection query;
 
         /// <summary>
         /// Construct the LUIS service using the model information.
         /// </summary>
         /// <param name="model">The LUIS model information.</param>
         public LuisService(LuisModelAttribute model)
+            : this(model.ModelID, model.SubscriptionKey)
         {
-            SetField.NotNull(out this.model, nameof(model), model);
+        }
+
+        /// <summary>
+        /// Construct the LUIS service using the model parameters.
+        /// </summary>
+        /// <param name="modelID">The LUIS model ID.</param>
+        /// <param name="subscriptionKey">The LUIS subscription key.</param>
+        public LuisService(string modelID, string subscriptionKey)
+        {
+            this.query = HttpUtility.ParseQueryString(string.Empty);
+            this.query["id"] = modelID;
+            this.query["subscription-key"] = subscriptionKey;
         }
 
         /// <summary>
@@ -87,13 +98,9 @@ namespace Microsoft.Bot.Builder.Luis
 
         Uri ILuisService.BuildUri(string text)
         {
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["id"] = this.model.ModelID;
-            queryString["subscription-key"] = this.model.SubscriptionKey;
-            queryString["q"] = text;
-
+            this.query["q"] = text;
             var builder = new UriBuilder(UriBase);
-            builder.Query = queryString.ToString();
+            builder.Query = this.query.ToString();
             return builder.Uri;
         }
 
