@@ -125,7 +125,7 @@ export class TextBot extends collection.DialogCollection {
                         callback = null;
                     } else if (message.id || message.conversationId) {
                         reply.from = message.to;
-                        reply.to = reply.replyTo || reply.to;
+                        reply.to = reply.replyTo || reply.to || {address: userId};
                         reply.conversationId = message.conversationId;
                         reply.language = message.language;
                         this.emit('reply', reply);
