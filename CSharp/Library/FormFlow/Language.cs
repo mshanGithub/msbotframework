@@ -297,22 +297,25 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             return builder.ToString();
         }
 
-        /// <summary>   Normalize a string. </summary>
-        /// <param name="value">            The value to normalize. </param>
-        /// <param name="normalization">    The normalization to apply. </param>
-        /// <returns>   A normalized string. </returns>
+        /// <summary>
+        /// Normalize a string.
+        /// </summary>
+        /// <param name="value">The value to normalize.</param>
+        /// <param name="normalization">The normalization to apply.</param>
+        /// <returns>A normalized string.</returns>
         public static string Normalize(string value, CaseNormalization normalization)
         {
             switch (normalization)
             {
                 case CaseNormalization.InitialUpper:
-                    string.Join(" ", (from word in Language.WordBreak(value)
-                                      select char.ToUpper(word[0]) + word.Substring(1).ToLower()));
-                    break;
-                case CaseNormalization.Lower: value = value.ToLower(); break;
-                case CaseNormalization.Upper: value = value.ToUpper(); break;
+                    return string.Join(" ", WordBreak(value).Select(word => char.ToUpper(word[0]) + word.Substring(1).ToLower()));
+                case CaseNormalization.Lower:
+                    return value.ToLower();
+                case CaseNormalization.Upper:
+                    return value.ToUpper();
+                default:
+                    return value;
             }
-            return value;
         }
     }
 }
