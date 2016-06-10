@@ -43,6 +43,7 @@ interface IMessage {
     attachments?: IAttachment[];
     from?: IChannelAccount;
     to?: IChannelAccount;
+    userId?: string;
     replyTo?: IChannelAccount;
     replyToMessageId?: string;
     participants?: IChannelAccount[];
@@ -57,15 +58,28 @@ interface IMessage {
     eTag?: string;
 }
 
+interface IBotConnectorMessage extends IMessage {
+    botUserData?: any;
+    botConversationData?: any;
+    botPerUserInConversationData?: any;
+}
+
 interface IAttachment {
-    contentType: string;
+    actions?: IAction[];
+    contentType?: string;
     contentUrl?: string;
-    content?: any;
     fallbackText?: string;
     title?: string;
     titleLink?: string;
     text?: string;
     thumbnailUrl?: string;
+}
+
+interface IAction {
+    title?: string;
+    message?: string;
+    url?: string;
+    image?: string;    
 }
 
 interface IChannelAccount {

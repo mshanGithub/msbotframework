@@ -60,7 +60,7 @@ var builder = require('../../');
 var prompts = require('./prompts');
 
 /** Use CrunchBot LUIS model for the root dialog. */
-var model = process.env.model || 'https://api.projectoxford.ai/luis/v1/application?id=56c73d36-e6de-441f-b2c2-6ba7ea73a1bf&subscription-key=6d0966209c6e4f6b835ce34492f3e6d9&q';
+var model = process.env.model || 'https://api.projectoxford.ai/luis/v1/application?id=56c73d36-e6de-441f-b2c2-6ba7ea73a1bf&subscription-key=6d0966209c6e4f6b835ce34492f3e6d9&q=';
 var dialog = new builder.LuisDialog(model);
 var crunchBot = new builder.TextBot();
 crunchBot.add('/', dialog);
@@ -69,6 +69,7 @@ crunchBot.listenStdin();
 
 /** Answer help related questions like "what can I say?" */
 dialog.on('Help', builder.DialogAction.send(prompts.helpMessage));
+dialog.onDefault(builder.DialogAction.send(prompts.helpMessage));
 
 /** Answer acquisition related questions like "how many companies has microsoft bought?" */
 dialog.on('Acquisitions', [askCompany, answerQuestion('acquisitions', prompts.answerAcquisitions)]);
@@ -112,7 +113,7 @@ function askCompany(session, args, next) {
     // Prompt the user to pick a ocmpany if they didn't specify a valid one.
     if (!company) {
         // Lets see if the user just asked for a company we don't know about.
-        var txt = entity ? session.gettext(prompts.companyUnknown, { company: entity.entity }) : prompts.companyUnknown;
+        var txt = entity ? session.gettext(prompts.companyUnknown, { company: entity.entity }) : prompts.companyMissing;
         
         // Prompt the user to pick a company from the list. They can also ask to cancel the operation.
         builder.Prompts.choice(session, txt, data);

@@ -42,6 +42,7 @@ export interface ITextBotOptions {
     sessionStore?: storage.IStorage;
     maxSessionAge?: number;
     localizer?: ILocalizer;
+    minSendDelay?: number;
     defaultDialogId?: string;
     defaultDialogArgs?: any;
 }
@@ -49,7 +50,8 @@ export interface ITextBotOptions {
 export class TextBot extends collection.DialogCollection {
     private options: ITextBotOptions = {
         maxSessionAge: 14400000,    // <-- default max session age of 4 hours
-        defaultDialogId: '/'
+        defaultDialogId: '/',
+        minSendDelay: 1000
     };
 
     constructor(options?: ITextBotOptions) {
@@ -86,6 +88,9 @@ export class TextBot extends collection.DialogCollection {
         if (!message.from) {
             message.from = { channelId: 'text', address: 'user' };
         }
+        if (!message.to) {
+            message.to = { channelId: 'text', address: 'bot' };
+        }
         this.dispatchMessage(message.from.address, message, callback, this.options.defaultDialogId, this.options.defaultDialogArgs);
     }
 
@@ -109,6 +114,7 @@ export class TextBot extends collection.DialogCollection {
         // Initialize session
         var ses = new session.Session({
             localizer: this.options.localizer,
+            minSendDelay: this.options.minSendDelay,
             dialogs: this,
             dialogId: dialogId,
             dialogArgs: dialogArgs
@@ -122,7 +128,7 @@ export class TextBot extends collection.DialogCollection {
                         callback = null;
                     } else if (message.id || message.conversationId) {
                         reply.from = message.to;
-                        reply.to = reply.replyTo || reply.to;
+                        reply.to = reply.replyTo || reply.to || message.from;
                         reply.conversationId = message.conversationId;
                         reply.language = message.language;
                         this.emit('reply', reply);
@@ -146,8 +152,12 @@ export class TextBot extends collection.DialogCollection {
 
         // Dispatch message
         this.getData(userId, (err, userData, sessionState) => {
-            ses.userData = userData || {};
-            ses.dispatch(newSessionState ? null : sessionState, message);
+            if (!err) {
+                ses.userData = userData || {};
+                ses.dispatch(newSessionState ? null : sessionState, message);
+            } else {
+                this.emit('error', err, message);
+            }
         });
     }
 

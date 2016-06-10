@@ -7,16 +7,17 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.Luis;
 using Newtonsoft.Json;
+using Microsoft.Bot.Builder.Luis.Models;
 
 namespace Microsoft.Bot.Sample.PizzaBot
 {
     [LuisModel("4311ccf1-5ed1-44fe-9f10-a6adbad05c14", "6d0966209c6e4f6b835ce34492f3e6d9")]
     [Serializable]
-    public class PizzaOrderDialog : LuisDialog
+    class PizzaOrderDialog : LuisDialog<PizzaOrder>
     {
-        private readonly BuildForm<PizzaOrder> MakePizzaForm;
+        private readonly BuildFormDelegate<PizzaOrder> MakePizzaForm;
 
-        internal PizzaOrderDialog(BuildForm<PizzaOrder> makePizzaForm)
+        internal PizzaOrderDialog(BuildFormDelegate<PizzaOrder> makePizzaForm)
         {
             this.MakePizzaForm = makePizzaForm;
         }
@@ -50,7 +51,7 @@ namespace Microsoft.Bot.Sample.PizzaBot
                     }
                     if (kind != null)
                     {
-                        entities.Add(new EntityRecommendation("Kind") { Entity = kind });
+                        entities.Add(new EntityRecommendation(type: "Kind") { Entity = kind });
                         break;
                     }
                 }

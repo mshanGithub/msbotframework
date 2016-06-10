@@ -4,7 +4,7 @@ var builder = require('../');
 describe('Dialogs', function() {
     this.timeout(5000);
     it('should redirect to another dialog with arguments', function (done) {
-        var bot = new builder.TextBot(); 
+        var bot = new builder.TextBot({ minSendDelay: 0 }); 
         bot.add('/', [
             function (session) {
                 session.beginDialog('/child', { foo: 'bar' }) 
@@ -27,7 +27,7 @@ describe('Dialogs', function() {
 
     it('should process a waterfall of all built-in prompt types', function (done) {
         var step = 0;
-        var bot = new builder.TextBot();
+        var bot = new builder.TextBot({ minSendDelay: 0 });
         bot.add('/', [
             function (session) {
                 assert(session.message.text == 'start');
@@ -43,6 +43,10 @@ describe('Dialogs', function() {
             },
             function (session, results) {
                 assert(results.response && results.response.entity === 'green');
+                builder.Prompts.confirm(session, 'Is green your choice?');
+            },
+            function (session, results) {
+                assert(results.response && results.response === true);
                 builder.Prompts.time(session, 'enter a time');
             },
             function (session, results) {
@@ -65,9 +69,12 @@ describe('Dialogs', function() {
                     bot.processMessage({ text: 'green' });
                     break;
                 case 4:
-                    bot.processMessage({ text: 'in 5 minutes' });
+                    bot.processMessage({ text: 'yes' });
                     break;
                 case 5:
+                    bot.processMessage({ text: 'in 5 minutes' });
+                    break;
+                case 6:
                     assert(message.text == 'done');
                     done();
                     break;

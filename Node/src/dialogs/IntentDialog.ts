@@ -172,18 +172,12 @@ export abstract class IntentDialog extends dialog.Dialog {
         return this;
     }
 
-    public on(intent: string, fn: IDialogHandler<IIntentArgs>): this;
-    public on(intent: string, waterfall: actions.IDialogWaterfallStep[]): this;
-    public on(intent: string, dialogId: string, dialogArgs?: any): this;
-    public on(intent: string, dialogId: any, dialogArgs?: any): this {
+    public on(intent: string, dialogId: string | actions.IDialogWaterfallStep[] | actions.IDialogWaterfallStep, dialogArgs?: any): this {
         this.getDefaultGroup().on(intent, dialogId, dialogArgs);
         return this;
     }
 
-    public onDefault(fn: IDialogHandler<IIntentArgs>): this;
-    public onDefault(waterfall: actions.IDialogWaterfallStep[]): this;
-    public onDefault(dialogId: string, dialogArgs?: any): this;
-    public onDefault(dialogId: any, dialogArgs?: any): this {
+    public onDefault(dialogId: string | actions.IDialogWaterfallStep[] | actions.IDialogWaterfallStep, dialogArgs?: any): this {
         this.getDefaultGroup().on(consts.Intents.Default, dialogId, dialogArgs);
         return this;
     }
@@ -206,14 +200,15 @@ export abstract class IntentDialog extends dialog.Dialog {
                 match = this.findHandler(topIntent);
             }
             if (!match) {
+                topIntent = { intent: consts.Intents.Default, score: 1.0 };
                 match = {
                     groupId: consts.Id.DefaultGroup,
-                    handler: this.getDefaultGroup()._intentHandler(consts.Intents.Default)
+                    handler: this.getDefaultGroup()._intentHandler(topIntent.intent)
                 };
             }
 
             // Invoke handler
-            if (match) {
+            if (match && match.handler) {
                 session.dialogData[consts.Data.Group] = match.groupId;
                 session.dialogData[consts.Data.Intent] = topIntent.intent;
                 match.handler(session, { intents: intents, entities: entities });
@@ -221,18 +216,20 @@ export abstract class IntentDialog extends dialog.Dialog {
                 session.send();
             }
         } catch (e) {
-            session.endDialog({ error: new Error('Exception handling intent: ' + e.message) });
+            session.error(e instanceof Error ? e : new Error(e.toString()));
         }
     }
 
     private findTopIntent(intents: IIntent[]): IIntent {
         var topIntent: IIntent;
-        for (var i = 0; i < intents.length; i++) {
-            var intent = intents[i];
-            if (!topIntent) {
-                topIntent = intent;
-            } else if (intent.score > topIntent.score) {
-                topIntent = intent;
+        if (intents) {
+            for (var i = 0; i < intents.length; i++) {
+                var intent = intents[i];
+                if (!topIntent) {
+                    topIntent = intent;
+                } else if (intent.score > topIntent.score) {
+                    topIntent = intent;
+                }
             }
         }
         return topIntent;
@@ -274,17 +271,14 @@ export class IntentGroup {
         return this.handlers[intent];
     }
 
-    public on(intent: string, fn: IDialogHandler<IIntentArgs>): this;
-    public on(intent: string, waterfall: actions.IDialogWaterfallStep[]): this;
-    public on(intent: string, dialogId: string, dialogArgs?: any): this;
-    public on(intent: string, dialogId: any, dialogArgs?: any): this {
+    public on(intent: string, dialogId: string | actions.IDialogWaterfallStep[] | actions.IDialogWaterfallStep, dialogArgs?: any): this {
         if (!this.handlers.hasOwnProperty(intent)) {
             if (Array.isArray(dialogId)) {
-                this.handlers[intent] = actions.DialogAction.waterfall(dialogId);
+                this.handlers[intent] = actions.waterfall(dialogId);
             } else if (typeof dialogId == 'string') {
-                this.handlers[intent] = actions.DialogAction.beginDialog(dialogId, dialogArgs);
+                this.handlers[intent] = actions.DialogAction.beginDialog(<string>dialogId, dialogArgs);
             } else {
-                this.handlers[intent] = dialogId;
+                this.handlers[intent] = actions.waterfall([<actions.IDialogWaterfallStep>dialogId]);
             }
         } else {
             throw new Error('Intent[' + intent + '] already exists.');

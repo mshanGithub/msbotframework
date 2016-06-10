@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
 
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Utilities;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
 
@@ -13,9 +10,9 @@ namespace Microsoft.Bot.Sample.SimpleSandwichBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        internal static IFormDialog<SandwichOrder> MakeRootDialog()
+        internal static IDialog<SandwichOrder> MakeRootDialog()
         {
-            return FormDialog.FromForm(SandwichOrder.BuildForm);
+            return Chain.From(() => FormDialog.FromForm(SandwichOrder.BuildForm));
         }
 
         /// <summary>

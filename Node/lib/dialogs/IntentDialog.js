@@ -138,12 +138,13 @@ var IntentDialog = (function (_super) {
                 match = this.findHandler(topIntent);
             }
             if (!match) {
+                topIntent = { intent: consts.Intents.Default, score: 1.0 };
                 match = {
                     groupId: consts.Id.DefaultGroup,
-                    handler: this.getDefaultGroup()._intentHandler(consts.Intents.Default)
+                    handler: this.getDefaultGroup()._intentHandler(topIntent.intent)
                 };
             }
-            if (match) {
+            if (match && match.handler) {
                 session.dialogData[consts.Data.Group] = match.groupId;
                 session.dialogData[consts.Data.Intent] = topIntent.intent;
                 match.handler(session, { intents: intents, entities: entities });
@@ -153,18 +154,20 @@ var IntentDialog = (function (_super) {
             }
         }
         catch (e) {
-            session.endDialog({ error: new Error('Exception handling intent: ' + e.message) });
+            session.error(e instanceof Error ? e : new Error(e.toString()));
         }
     };
     IntentDialog.prototype.findTopIntent = function (intents) {
         var topIntent;
-        for (var i = 0; i < intents.length; i++) {
-            var intent = intents[i];
-            if (!topIntent) {
-                topIntent = intent;
-            }
-            else if (intent.score > topIntent.score) {
-                topIntent = intent;
+        if (intents) {
+            for (var i = 0; i < intents.length; i++) {
+                var intent = intents[i];
+                if (!topIntent) {
+                    topIntent = intent;
+                }
+                else if (intent.score > topIntent.score) {
+                    topIntent = intent;
+                }
             }
         }
         return topIntent;
@@ -203,13 +206,13 @@ var IntentGroup = (function () {
     IntentGroup.prototype.on = function (intent, dialogId, dialogArgs) {
         if (!this.handlers.hasOwnProperty(intent)) {
             if (Array.isArray(dialogId)) {
-                this.handlers[intent] = actions.DialogAction.waterfall(dialogId);
+                this.handlers[intent] = actions.waterfall(dialogId);
             }
             else if (typeof dialogId == 'string') {
                 this.handlers[intent] = actions.DialogAction.beginDialog(dialogId, dialogArgs);
             }
             else {
-                this.handlers[intent] = dialogId;
+                this.handlers[intent] = actions.waterfall([dialogId]);
             }
         }
         else {

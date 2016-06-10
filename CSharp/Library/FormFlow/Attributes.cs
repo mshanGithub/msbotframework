@@ -39,10 +39,25 @@ using Microsoft.Bot.Builder.FormFlow.Advanced;
 namespace Microsoft.Bot.Builder.FormFlow
 {
     /// <summary>
+    /// Abstract base class for FormFlow attributes.
+    /// </summary>
+    public abstract class FormFlowAttribute : Attribute
+    {
+        /// <summary>
+        /// True if attribute is localizable.
+        /// </summary>
+        /// <remarks>
+        /// Attributes that are used on classes, fields and properties should have this set.
+        /// That way those attributes will be in the localization files that are generated.
+        /// </remarks>
+        public bool IsLocalizable { get; set; } = true;
+    }
+
+    /// <summary>
     /// Attribute to override the default description of a field, property or enum value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Enum | AttributeTargets.Property)]
-    public class DescribeAttribute : Attribute
+    public class DescribeAttribute : FormFlowAttribute
     {
         public readonly string Description;
 
@@ -66,7 +81,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// maximum phrase length you specify.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class TermsAttribute : Attribute
+    public class TermsAttribute : FormFlowAttribute
     {
         /// <summary>
         /// Regular expressions for matching user input.
@@ -109,14 +124,19 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// </summary>
     public enum ChoiceStyleOptions {
         /// <summary>
-        /// Use the default <see cref="ChoiceStyle"/> from the <see cref="FormConfiguration.DefaultPrompt"/>.
+        /// Use the default <see cref="TemplateBaseAttribute.ChoiceStyle"/> from the <see cref="FormConfiguration.DefaultPrompt"/>.
         /// </summary>
         Default,
 
         /// <summary>
-        /// Automatically switch between the <see cref="Inline"/> and <see cref="PerLine"/> styles based on the number of choices.
+        /// Automatically choose how to render choices.
         /// </summary>
         Auto,
+
+        /// <summary>
+        /// Automatically generate text and switch between the <see cref="Inline"/> and <see cref="PerLine"/> styles based on the number of choices.
+        /// </summary>
+        AutoText,
 
         /// <summary>
         /// Show choices on the same line.
@@ -126,7 +146,11 @@ namespace Microsoft.Bot.Builder.FormFlow
         /// <summary>
         /// Show choices with one per line.
         /// </summary>
-        PerLine };
+        PerLine,
+
+        /// <summary>   Show choices on the same line without surrounding parentheses. </summary>
+        InlineNoParen
+    };
 
 
     /// <summary>
@@ -229,6 +253,7 @@ namespace Microsoft.Bot.Builder.FormFlow
         public PromptAttribute(TemplateAttribute pattern)
             : base(pattern)
         {
+            IsLocalizable = false;
         }
     }
 
@@ -240,6 +265,9 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// </remarks>
     public enum TemplateUsage
     {
+        /// <summary>   An enum constant representing the none option. </summary>
+        None,
+
         /// <summary>
         /// How to ask for a boolean.
         /// </summary>
@@ -258,6 +286,11 @@ namespace Microsoft.Bot.Builder.FormFlow
         /// </summary>
         /// <remarks>This template can use {0} to capture the term that was ambiguous.</remarks>
         Clarify,
+
+        /// <summary>
+        /// Default confirmation.
+        /// </summary>
+        Confirmation,
 
         /// <summary>
         /// Show the current choice.
@@ -401,7 +434,6 @@ namespace Microsoft.Bot.Builder.FormFlow
         /// <summary>
         /// What you can enter while entering an integer.
         /// </summary>
-        /// </remarks>
         /// <remarks>
         /// Within this template, {0} is current choice if any, {1} is no preference for optional  and {1} and {2} are min/max if specified.
         /// </remarks>
@@ -497,6 +529,16 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             Usage = usage;
         }
+
+        #region Documentation
+        /// <summary>   Initialize from another template. </summary>
+        /// <param name="other">    The other template. </param>
+        #endregion
+        public TemplateAttribute(TemplateAttribute other)
+            : base(other)
+        {
+            Usage = other.Usage;
+        }
     }
 
     /// <summary>
@@ -552,9 +594,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
     /// <summary>
     /// Abstract base class used by all attributes that use \ref patterns.
     /// </summary>
-    public abstract class TemplateBaseAttribute : Attribute
+    public abstract class TemplateBaseAttribute : FormFlowAttribute
     {
-        private readonly string[] _patterns;
         private static Random _generator = new Random();
 
         /// <summary>
@@ -562,11 +603,31 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         /// </summary>
         public BoolDefault AllowDefault { get; set; }
 
+        /// <summary>  
+        /// Control case when showing choices in {||} references in a \ref patterns string. 
+        /// </summary>
+        public CaseNormalization ChoiceCase { get; set; }
+
         /// <summary>
         /// Format string used for presenting each choice when showing {||} choices in a \ref patterns string.
         /// </summary>
         /// <remarks>The choice format is passed two arguments, {0} is the number of the choice and {1} is the field name.</remarks>
         public string ChoiceFormat { get; set; }
+
+        /// <summary>   
+        /// When constructing inline lists of choices using {||} in a \ref patterns string, the string used before the last choice. 
+        /// </summary>
+        public string ChoiceLastSeparator { get; set; }
+
+        /// <summary>  
+        /// When constructing inline choice lists for {||} in a \ref patterns string controls whether to include parentheses around choices. 
+        /// </summary>
+        public BoolDefault ChoiceParens { get; set; }
+
+        /// <summary>
+        /// When constructing inline lists using {||} in a \ref patterns string, the string used between all choices except the last. 
+        /// </summary>
+        public string ChoiceSeparator { get; set; }
 
         /// <summary>
         /// How to display choices {||} when processed in a \ref patterns string.
@@ -579,7 +640,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         public FeedbackOptions Feedback { get; set; }
 
         /// <summary>
-        /// Control case when showing {&} field name references in a \ref patterns string.
+        /// Control case when showing {&amp;} field name references in a \ref patterns string.
         /// </summary>
         public CaseNormalization FieldCase { get; set; }
 
@@ -603,7 +664,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             get
             {
                 // You can match on numbers only if they are included in Choices and choices are shown
-                return ChoiceFormat.Contains("{0}") && _patterns.Any((pattern) => pattern.Contains("{||}"));
+                return ChoiceFormat.Contains("{0}") && Patterns.Any((pattern) => pattern.Contains("{||}"));
             }
         }
 
@@ -615,39 +676,37 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         public string Pattern()
         {
             var choice = 0;
-            if (_patterns.Length > 1)
+            if (Patterns.Length > 1)
             {
                 lock (_generator)
                 {
-                    choice = _generator.Next(_patterns.Length);
+                    choice = _generator.Next(Patterns.Length);
                 }
             }
-            return _patterns[choice];
+            return Patterns[choice];
         }
 
         /// <summary>
         /// All possible templates.
         /// </summary>
         /// <returns>The possible templates.</returns>
-        public string[] Patterns
-        {
-            get
-            {
-                return _patterns;
-            }
-        }
+        public string[] Patterns { get; set; }
 
         /// <summary>
-        /// Any default values in this template will be overridden by the supplied <see cref="defaultTemplate"/>.
+        /// Any default values in this template will be overridden by the supplied <paramref name="defaultTemplate"/>.
         /// </summary>
         /// <param name="defaultTemplate">Default template to use to override default values.</param>
         public void ApplyDefaults(TemplateBaseAttribute defaultTemplate)
         {
             if (AllowDefault == BoolDefault.Default) AllowDefault = defaultTemplate.AllowDefault;
+            if (ChoiceCase == CaseNormalization.Default) ChoiceCase = defaultTemplate.ChoiceCase;
+            if (ChoiceFormat == null) ChoiceFormat = defaultTemplate.ChoiceFormat;
+            if (ChoiceLastSeparator == null) ChoiceLastSeparator = defaultTemplate.ChoiceLastSeparator;
+            if (ChoiceParens == BoolDefault.Default) ChoiceParens = defaultTemplate.ChoiceParens;
+            if (ChoiceSeparator == null) ChoiceSeparator = defaultTemplate.ChoiceSeparator;
             if (ChoiceStyle == ChoiceStyleOptions.Default) ChoiceStyle = defaultTemplate.ChoiceStyle;
             if (FieldCase == CaseNormalization.Default) FieldCase = defaultTemplate.FieldCase;
             if (Feedback == FeedbackOptions.Default) Feedback = defaultTemplate.Feedback;
-            if (ChoiceFormat == null) ChoiceFormat = defaultTemplate.ChoiceFormat;
             if (LastSeparator == null) LastSeparator = defaultTemplate.LastSeparator;
             if (Separator == null) Separator = defaultTemplate.Separator;
             if (ValueCase == CaseNormalization.Default) ValueCase = defaultTemplate.ValueCase;
@@ -659,7 +718,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         /// <param name="patterns">Possible patterns.</param>
         public TemplateBaseAttribute(params string[] patterns)
         {
-            _patterns = patterns;
+            Patterns = patterns;
             Initialize();
         }
 
@@ -669,12 +728,16 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         /// <param name="other">The template to copy from.</param>
         public TemplateBaseAttribute(TemplateBaseAttribute other)
         {
-            _patterns = other._patterns;
+            Patterns = other.Patterns;
             AllowDefault = other.AllowDefault;
+            ChoiceCase = other.ChoiceCase;
+            ChoiceFormat = other.ChoiceFormat;
+            ChoiceLastSeparator = other.ChoiceLastSeparator;
+            ChoiceParens = other.ChoiceParens;
+            ChoiceSeparator = other.ChoiceSeparator;
             ChoiceStyle = other.ChoiceStyle;
             FieldCase = other.FieldCase;
             Feedback = other.Feedback;
-            ChoiceFormat = other.ChoiceFormat;
             LastSeparator = other.LastSeparator;
             Separator = other.Separator;
             ValueCase = other.ValueCase;
@@ -683,10 +746,14 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         private void Initialize()
         {
             AllowDefault = BoolDefault.Default;
+            ChoiceCase = CaseNormalization.Default;
+            ChoiceFormat = null;
+            ChoiceLastSeparator = null;
+            ChoiceParens = BoolDefault.Default;
+            ChoiceSeparator = null;
             ChoiceStyle = ChoiceStyleOptions.Default;
             FieldCase = CaseNormalization.Default;
             Feedback = FeedbackOptions.Default;
-            ChoiceFormat = null;
             LastSeparator = null;
             Separator = null;
             ValueCase = CaseNormalization.Default;

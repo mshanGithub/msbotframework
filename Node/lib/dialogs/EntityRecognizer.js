@@ -34,7 +34,8 @@ var EntityRecognizer = (function () {
         var time;
         entities.forEach(function (entity) {
             if (entity.resolution) {
-                switch (entity.resolution.resolution_type) {
+                switch (entity.resolution.resolution_type || entity.type) {
+                    case 'builtin.datetime':
                     case 'builtin.datetime.date':
                     case 'builtin.datetime.time':
                         var parts = (entity.resolution.date || entity.resolution.time).split('T');
@@ -119,7 +120,7 @@ var EntityRecognizer = (function () {
                 return Number(match[0]);
             }
         }
-        return undefined;
+        return Number.NaN;
     };
     EntityRecognizer.parseBoolean = function (utterance) {
         utterance = utterance.trim();
@@ -193,8 +194,8 @@ var EntityRecognizer = (function () {
         }
     };
     EntityRecognizer.dateExp = /^\d{4}-\d{2}-\d{2}/i;
-    EntityRecognizer.yesExp = /^(1|y|yes|yep|sure|ok|true)\z/i;
-    EntityRecognizer.noExp = /^(0|n|no|nope|not|false)\z/i;
+    EntityRecognizer.yesExp = /^(y|yes|yep|sure|ok|true)/i;
+    EntityRecognizer.noExp = /^(n|no|nope|not|false)/i;
     EntityRecognizer.numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
     return EntityRecognizer;
 })();

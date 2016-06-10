@@ -1,15 +1,15 @@
-﻿// 
+﻿//
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-// 
+//
 // Microsoft Bot Framework: http://botframework.com
-// 
+//
 // Bot Builder SDK Github:
 // https://github.com/Microsoft/BotBuilder
-// 
+//
 // Copyright (c) Microsoft Corporation
 // All rights reserved.
-// 
+//
 // MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -18,10 +18,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -36,25 +36,26 @@ import session = require('../Session');
 import consts = require('../consts');
 import utils = require('../utils');
 import request = require('request');
+import storage = require('../storage/Storage');
+import bcStorage = require('../storage/BotConnectorStorage');
+import uuid = require('node-uuid');
+import http = require('http');
 
 export interface IBotConnectorOptions {
     endpoint?: string;
     appId?: string;
     appSecret?: string;
-    subscriptionKey?: string;
     defaultFrom?: IChannelAccount;
+    userStore?: storage.IStorage;
+    conversationStore?: storage.IStorage;
+    perUserInConversationStore?: storage.IStorage;
     localizer?: ILocalizer;
+    minSendDelay?: number;
     defaultDialogId?: string;
     defaultDialogArgs?: any;
     groupWelcomeMessage?: string;
     userWelcomeMessage?: string;
     goodbyeMessage?: string;
-}
-
-export interface IBotConnectorMessage extends IMessage {
-    botUserData?: any;
-    botConversationData?: any;
-    botPerUserInConversationData?: any;
 }
 
 /** Express or Restify Request object. */
@@ -77,13 +78,25 @@ interface IMiddleware {
     (req: IRequest, res: IResponse, next?: Function): void;
 }
 
+interface IStoredData {
+    userData: any;
+    conversationData: any;
+    perUserConversationData: any;
+}
+
+interface IDispatchOptions {
+    dialogId?: string;
+    dialogArgs?: any;
+    replyToDialogId?: string;
+}
+
 export class BotConnectorBot extends collection.DialogCollection {
     private options: IBotConnectorOptions = {
-        endpoint: process.env['endpoint'] || 'https://intercomppe.azure-api.net',
+        endpoint: process.env['endpoint'],
         appId: process.env['appId'] || '',
         appSecret: process.env['appSecret'] || '',
-        subscriptionKey: process.env['subscriptionKey'] || '',
-        defaultDialogId: '/'
+        defaultDialogId: '/',
+        minSendDelay: 1000
     }
 
     constructor(options?: IBotConnectorOptions) {
@@ -106,8 +119,9 @@ export class BotConnectorBot extends collection.DialogCollection {
         return (req: IRequest, res: IResponse, next: Function) => {
             // Check authorization
             var authorized: boolean;
-            if (this.options.appId && this.options.appSecret) {
-                if (req.headers && req.headers.hasOwnProperty('authorization')) {
+            var isSecure = req.headers['x-forwarded-proto'] === 'https' || req.headers['x-arr-ssl'];
+            if (isSecure && this.options.appId && this.options.appSecret) {
+                if (req.headers.hasOwnProperty('authorization')) {
                     var tmp = req.headers['authorization'].split(' ');
                     var buf = new Buffer(tmp[1], 'base64');
                     var cred = buf.toString().split(':');
@@ -130,11 +144,10 @@ export class BotConnectorBot extends collection.DialogCollection {
         };
     }
 
-    public listen(options?: IBotConnectorOptions): IMiddleware {
-        this.configure(options);
+    public listen(dialogId?: string, dialogArgs?: any): IMiddleware {
         return (req: IRequest, res: IResponse) => {
             if (req.body) {
-                this.processMessage(req.body, this.options.defaultDialogId, this.options.defaultDialogArgs, res);
+                this.dispatchMessage(null, req.body, { dialogId: dialogId, dialogArgs: dialogArgs }, res);
             } else {
                 var requestData = '';
                 req.on('data', (chunk: string) => {
@@ -143,7 +156,7 @@ export class BotConnectorBot extends collection.DialogCollection {
                 req.on('end', () => {
                     try {
                         var msg = JSON.parse(requestData);
-                        this.processMessage(msg, this.options.defaultDialogId, this.options.defaultDialogArgs, res);
+                        this.dispatchMessage(null, msg, { dialogId: dialogId, dialogArgs: dialogArgs }, res);
                     } catch (e) {
                         this.emit('error', new Error('Invalid Bot Framework Message'));
                         res.send(400);
@@ -155,14 +168,14 @@ export class BotConnectorBot extends collection.DialogCollection {
 
     public beginDialog(address: IBeginDialogAddress, dialogId: string, dialogArgs?: any): void {
         // Fixup address fields
-        var msg: IBotConnectorMessage = address;
-        msg.type = 'Message';
-        if (!msg.from) {
-            msg.from = this.options.defaultFrom;
+        var message: IBotConnectorMessage = address;
+        message.type = 'Message';
+        if (!message.from) {
+            message.from = this.options.defaultFrom;
         }
 
         // Validate args
-        if (!msg.to || !msg.from) {
+        if (!message.to || !message.from) {
             throw new Error('Invalid address passed to BotConnectorBot.beginDialog().');
         }
         if (!this.hasDialog(dialogId)) {
@@ -170,15 +183,85 @@ export class BotConnectorBot extends collection.DialogCollection {
         }
 
         // Dispatch message
-        this.processMessage(msg, dialogId, dialogArgs);
+        this.dispatchMessage(message.to.id, message, { dialogId: dialogId, dialogArgs: dialogArgs });
     }
 
-    private processMessage(message: IBotConnectorMessage, dialogId: string, dialogArgs: any, res?: IResponse) {
+    /** IN DEVELOPMENT
+    public continueDialog(message: IBotConnectorMessage, replyToDialogId?: string): void {
+        // Validate args
+        message.type = 'Message';
+        if (!message.from || !message.conversationId) {
+            throw new Error('Invalid message passed to BotConnectorBot.continueDialog().');
+        }
+
+        // Calculate storage paths
+        var userId = message.from.id;
+        var botPath = '/' + this.options.appId;
+        var userPath = botPath + '/users/' + userId;
+        var convoPath = botPath + '/conversations/' + message.conversationId;
+        var perUserConvoPath = botPath + '/conversations/' + message.conversationId + '/users/' + userId;
+
+        // Load botData fields from connector
+        // - We'll optimize for the use of custom stores. If custom stores are being
+        //   we need to at least retrieve the botConversationData field which contains
+        //   the sessionId.
+        var connector = new bcStorage.BotConnectorStorage(<any>this.options);
+        var ops = 3;
+        function load(id: string, field: string) {
+            connector.get(id, (err, item) => {
+                if (!err) {
+                    (<any>message)[field] = item;
+                    if (--ops == 0) {
+                        this.dispatchMessage(null, message, { replyToDialogId: replyToDialogId });
+                    }
+                } else {
+                    this.emit('error', err, message);
+                }
+            });
+        }
+        if (!this.options.userStore) {
+            load(userPath, 'botUserData');
+        } else {
+            message.botUserData = {};
+            ops--;
+        }
+        if (!this.options.perUserInConversationStore) {
+            load(perUserConvoPath, 'botPerUserInConversationData');
+        } else {
+            message.botPerUserInConversationData = {};
+            ops--;
+        }
+        load(convoPath, 'botConversationData');
+    }
+    */
+
+    private dispatchMessage(userId: string, message: IBotConnectorMessage, options: IDispatchOptions, res?: IResponse) {
         try {
             // Validate message
             if (!message || !message.type) {
                 this.emit('error', new Error('Invalid Bot Framework Message'));
-                return res.send(400);
+                return  res ? res.send(400) : null;
+            }
+            if (!userId) {
+                if (message.from && message.from.id) {
+                    userId = message.from.id;
+                } else {
+                    this.emit('error', new Error('Invalid Bot Framework Message'));
+                    return  res ? res.send(400) : null;
+                }
+            }
+
+            // Generate a session ID
+            // - We're storing this at the conversation level because we're using it in
+            //   place of the Bot Connectors conversationId for storage purposes. We just
+            //   call it a session ID to avoid confusion.
+            var sessionId: string;
+            if (message.botConversationData && message.botConversationData[consts.Data.SessionId]) {
+                sessionId = message.botConversationData[consts.Data.SessionId];
+            } else {
+                sessionId = uuid.v1();
+                message.botConversationData = message.botConversationData || {};
+                message.botConversationData[consts.Data.SessionId] = sessionId;
             }
 
             // Dispatch messages
@@ -187,49 +270,75 @@ export class BotConnectorBot extends collection.DialogCollection {
                 // Initialize session
                 var ses = new BotConnectorSession({
                     localizer: this.options.localizer,
+                    minSendDelay: this.options.minSendDelay,
                     dialogs: this,
-                    dialogId: dialogId,
-                    dialogArgs: dialogArgs
+                    dialogId: options.dialogId || this.options.defaultDialogId,
+                    dialogArgs: options.dialogArgs || this.options.defaultDialogArgs
                 });
-                ses.on('send', (message: IMessage) => {
+                ses.on('send', (reply: IBotConnectorMessage) => {
                     // Compose reply
-                    var reply: IBotConnectorMessage = message || {};
-                    reply.botUserData = utils.clone(ses.userData);
-                    reply.botConversationData = utils.clone(ses.conversationData);
-                    reply.botPerUserInConversationData = utils.clone(ses.perUserInConversationData);
-                    reply.botPerUserInConversationData[consts.Data.SessionState] = ses.sessionState;
-                    if (reply.text && !reply.language) {
-                        reply.language = ses.message.language;
+                    reply = reply || {};
+                    reply.botConversationData = message.botConversationData;    // <-- Ensures we save the session ID
+                    if (reply.text && !reply.language && message.language) {
+                        reply.language = message.language;
                     }
 
-                    // Send message
-                    if (res) {
-                        this.emit('reply', reply);
-                        res.send(200, reply);
-                        res = null;
-                    } else if (ses.message.conversationId) {
-                        // Post an additional reply
-                        reply.from = ses.message.to;
-                        reply.to = ses.message.replyTo ? ses.message.replyTo : ses.message.from;
-                        reply.replyToMessageId = ses.message.id;
-                        reply.conversationId = ses.message.conversationId;
-                        reply.channelConversationId = ses.message.channelConversationId;
-                        reply.channelMessageId = ses.message.channelMessageId;
-                        reply.participants = ses.message.participants;
-                        reply.totalParticipants = ses.message.totalParticipants;
-                        this.emit('reply', reply);
-                        this.post('/bot/v1.0/messages', reply, (err) => {
-                            this.emit('error', err);
-                        });
-                    } else {
-                        // Start a new conversation
-                        reply.from = ses.message.from;
-                        reply.to = ses.message.to;
-                        this.emit('send', reply);
-                        this.post('/bot/v1.0/messages', reply, (err) => {
-                            this.emit('error', err);
-                        });
+                    // Save data
+                    var data: IStoredData = {
+                        userData: ses.userData,
+                        conversationData: ses.conversationData,
+                        perUserConversationData: ses.perUserInConversationData
                     }
+                    data.perUserConversationData[consts.Data.SessionState] = ses.sessionState;
+                    this.saveData(userId, sessionId, data, reply, (err) =>{
+                        // Check for emulator
+                        var endpoint: string;
+                        if (ses.message.to.channelId == 'emulator') {
+                            endpoint = this.options.endpoint || 'http://localhost:9000';
+                        } else {
+                            endpoint = this.options.endpoint || 'https://api.botframework.com';
+                        }
+                        
+                        // Send message
+                        if (res) {
+                            this.emit('reply', reply);
+                            res.send(200, reply);
+                            res = null;
+                        } else if (ses.message.conversationId) {
+                            // Post an additional reply
+                            reply.from = ses.message.to;
+                            reply.to = ses.message.replyTo ? ses.message.replyTo : ses.message.from;
+                            reply.replyToMessageId = ses.message.id;
+                            reply.conversationId = ses.message.conversationId;
+                            reply.channelConversationId = ses.message.channelConversationId;
+                            reply.channelMessageId = ses.message.channelMessageId;
+                            reply.participants = ses.message.participants;
+                            reply.totalParticipants = ses.message.totalParticipants;
+                            if (!reply.language && ses.message.language) {
+                                reply.language = ses.message.language;
+                            }
+                            this.emit('reply', reply);
+                            post(this.options, endpoint, '/bot/v1.0/messages', reply, (err, response) => {
+                                if (err) {
+                                    this.emit('error', err);
+                                } else if (response.statusCode >= 400) {
+                                    console.error(response.statusMessage);
+                                }
+                            });
+                        } else {
+                            // Start a new conversation
+                            reply.from = ses.message.from;
+                            reply.to = ses.message.to;
+                            this.emit('send', reply);
+                            post(this.options, endpoint, '/bot/v1.0/messages', reply, (err, response) => {
+                                if (err) {
+                                    this.emit('error', err);
+                                } else if (response.statusCode >= 400) {
+                                    console.error(response.statusMessage);
+                                }
+                            });
+                        }
+                    });
                 });
                 ses.on('error', (err: Error) => {
                     this.emit('error', err, ses.message);
@@ -241,43 +350,42 @@ export class BotConnectorBot extends collection.DialogCollection {
                     this.emit('quit', ses.message);
                 });
 
-                // Unpack data fields
-                var sessionState: ISessionState;
-                if (message.botUserData) {
-                    ses.userData = message.botUserData;
-                    delete message.botUserData;
-                } else {
-                    ses.userData = {};
-                }
-                if (message.botConversationData) {
-                    ses.conversationData = message.botConversationData;
-                    delete message.botConversationData;
-                } else {
-                    ses.conversationData = {};
-                }
-                if (message.botPerUserInConversationData) {
-                    if (message.botPerUserInConversationData.hasOwnProperty(consts.Data.SessionState)) {
-                        sessionState = message.botPerUserInConversationData[consts.Data.SessionState];
-                        delete message.botPerUserInConversationData[consts.Data.SessionState];
-                    }
-                    ses.perUserInConversationData = message.botPerUserInConversationData;
-                    delete message.botPerUserInConversationData;
-                } else {
-                    ses.perUserInConversationData = {};
-                }
+                // Load data from storage
+                this.getData(userId, sessionId, message, (err, data) => {
+                    if (!err) {
+                        // Initialize session data
+                        var sessionState: ISessionState;
+                        ses.userData = data.userData || {};
+                        ses.conversationData = data.conversationData || {};
+                        ses.perUserInConversationData = data.perUserConversationData || {};
+                        if (ses.perUserInConversationData.hasOwnProperty(consts.Data.SessionState)) {
+                            sessionState = ses.perUserInConversationData[consts.Data.SessionState];
+                            delete ses.perUserInConversationData[consts.Data.SessionState];
+                        }
 
-                // Dispatch message
-                ses.dispatch(sessionState, message);
+                        // Dispatch message
+                        if (options.replyToDialogId) {
+                            // Enforce that the required dialog is active
+                            if (sessionState && sessionState.callstack[sessionState.callstack.length - 1].id == options.replyToDialogId) {
+                                ses.dispatch(sessionState, message);
+                            }
+                        } else {
+                            ses.dispatch(sessionState, message);
+                        }
+                    } else {
+                        this.emit('error', err, message);
+                    }
+                });
             } else if (res) {
                 var msg: string;
                 switch (message.type) {
-                    case "botAddedToConversation":
+                    case "BotAddedToConversation":
                         msg = this.options.groupWelcomeMessage;
                         break;
-                    case "userAddedToConversation":
+                    case "UserAddedToConversation":
                         msg = this.options.userWelcomeMessage;
                         break;
-                    case "endOfConversation":
+                    case "EndOfConversation":
                         msg = this.options.goodbyeMessage;
                         break;
                 }
@@ -289,26 +397,95 @@ export class BotConnectorBot extends collection.DialogCollection {
         }
     }
 
-    protected post(path: string, body: any, callback?: (error: any) => void): void {
-        var settings = this.options;
-        var options: request.Options = {
-            url: settings.endpoint + path,
-            body: body
-        };
-        if (settings.appId && settings.appSecret) {
-            options.auth = {
-                username: settings.appId,
-                password: settings.appSecret
-            };
-            options.headers = {
-                'Ocp-Apim-Subscription-Key': settings.appSecret
-            };
+    private getData(userId: string, sessionId: string, msg: IBotConnectorMessage, callback?: (err: Error, data: IStoredData) => void): void {
+        // Calculate storage paths
+        var botPath = '/' + this.options.appId;
+        var userPath = botPath + '/users/' + userId;
+        var convoPath = botPath + '/conversations/' + sessionId;
+        var perUserConvoPath = botPath + '/conversations/' + sessionId + '/users/' + userId;
+
+        // Load data
+        var ops = 3;
+        var data = <IStoredData>{};
+        function load(id: string, field: string, store: storage.IStorage, botData: any) {
+            (<any>data)[field] = botData;
+            if (store) {
+                store.get(id, (err, item) => {
+                    if (callback) {
+                        if (!err) {
+                            (<any>data)[field] = item;
+                            if (--ops == 0) {
+                                callback(null, data);
+                            }
+                        } else {
+                            callback(err, null);
+                            callback = null;
+                        }
+                    }
+                });
+            } else if (callback && --ops == 0) {
+                callback(null, data);
+            }
         }
-        request.post(options, callback);
+        load(userPath, 'userData', this.options.userStore, msg.botUserData);
+        load(convoPath, 'conversationData', this.options.conversationStore, msg.botConversationData);
+        load(perUserConvoPath, 'perUserConversationData', this.options.perUserInConversationStore, msg.botPerUserInConversationData);
+    }
+
+    private saveData(userId: string, sessionId: string, data: IStoredData, msg: IBotConnectorMessage, callback: (err: Error) => void): void {
+        // Calculate storage paths
+        var botPath = '/' + this.options.appId;
+        var userPath = botPath + '/users/' + userId;
+        var convoPath = botPath + '/conversations/' + sessionId;
+        var perUserConvoPath = botPath + '/conversations/' + sessionId + '/users/' + userId;
+
+        // Save data
+        var ops = 3;
+        function save(id: string, field: string, store: storage.IStorage, botData: any) {
+            if (store) {
+                store.save(id, botData, (err) => {
+                    if (callback) {
+                        if (!err && --ops == 0) {
+                            callback(null);
+                        } else {
+                            callback(err);
+                            callback = null;
+                        }
+                    }
+                });
+            } else {
+                (<any>msg)[field] = botData;
+                if (callback && --ops == 0) {
+                    callback(null);
+                }
+            }
+        }
+        save(userPath, 'botUserData', this.options.userStore, data.userData);
+        save(convoPath, 'botConversationData', this.options.conversationStore, data.conversationData);
+        save(perUserConvoPath, 'botPerUserInConversationData', this.options.perUserInConversationStore, data.perUserConversationData);
     }
 }
 
 export class BotConnectorSession extends session.Session {
     public conversationData: any;
     public perUserInConversationData: any;
+}
+
+function post(settings: IBotConnectorOptions, endpoint: string, path: string, body: any, callback?: (error: any, response?: http.IncomingMessage, body?: any) => void): void {
+    var options: request.Options = {
+        method: 'POST',
+        url: endpoint + path,
+        body: body,
+        json: true
+    };
+    if (settings.appId && settings.appSecret) {
+        options.auth = {
+            username: settings.appId,
+            password: settings.appSecret
+        };
+        options.headers = {
+            'Ocp-Apim-Subscription-Key': settings.appSecret
+        };
+    }
+    request(options, callback);
 }

@@ -31,11 +31,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.Dialogs
 {
@@ -78,61 +79,43 @@ namespace Microsoft.Bot.Builder.Dialogs
     public static partial class Extensions
     {
         /// <summary>
-        /// Call a child dialog and add it to the top of the stack.
-        /// </summary>
-        /// <typeparam name="R">The type of result expected from the child dialog.</typeparam>
-        /// <param name="context">The dialog context.</param>
-        /// <param name="child">The child dialog.</param>
-        /// <param name="resume">The method to resume when the child dialog has completed.</param>
-        public static void Call<R>(this IDialogContext context, IDialog child, ResumeAfter<R> resume)
-        {
-            context.Call<R>(child, resume);
-        }
-
-        /// <summary>
         /// Post a message to be sent to the bot, using previous messages to establish a conversation context.
         /// </summary>
+        /// <remarks>
+        /// If the language parameter is not set, language of the incoming message will be used for reply.
+        /// </remarks>
+        /// <param name="botToUser">Communication channel to use.</param>
         /// <param name="text">The message text.</param>
+        /// <param name="language">The language of the text.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task that represents the post operation.</returns>
-        public static async Task PostAsync(this IBotToUser botToUser, string text, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task PostAsync(this IBotToUser botToUser, string text, string language = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var message = botToUser.MakeMessage();
             message.Text = text;
+
+            if (!string.IsNullOrEmpty(language))
+            {
+                message.Language = language;
+            }
+
             await botToUser.PostAsync(message, cancellationToken);
+        }
+
+        /// <summary>
+        /// Suspend the current dialog until the user has sent a message to the bot.
+        /// </summary>
+        /// <param name="stack">The dialog stack.</param>
+        /// <param name="resume">The method to resume when the message has been received.</param>
+        public static void Wait(this IDialogStack stack, ResumeAfter<Message> resume)
+        {
+            stack.Wait<Message>(resume);
         }
     }
 }
 
 namespace Microsoft.Bot.Builder.Dialogs.Internals
 {
-    /// <summary>
-    /// The stack of dialogs in the conversational process.
-    /// </summary>
-    public interface IDialogStack
-    {
-        /// <summary>
-        /// Suspend the current dialog until the user has sent a message to the bot.
-        /// </summary>
-        /// <param name="resume">The method to resume when the message has been received.</param>
-        void Wait(ResumeAfter<Message> resume);
-
-        /// <summary>
-        /// Call a child dialog and add it to the top of the stack.
-        /// </summary>
-        /// <typeparam name="R">The type of result expected from the child dialog.</typeparam>
-        /// <param name="child">The child dialog.</param>
-        /// <param name="resume">The method to resume when the child dialog has completed.</param>
-        void Call<R>(IDialog child, ResumeAfter<R> resume);
-
-        /// <summary>
-        /// Complete the current dialog and return a result to the parent dialog.
-        /// </summary>
-        /// <typeparam name="R">The type of the result dialog.</typeparam>
-        /// <param name="value">The value of the result.</param>
-        void Done<R>(R value);
-    }
-
     /// <summary>
     /// Methods to send a message from the bot to the user. 
     /// </summary>
@@ -151,19 +134,5 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// </summary>
         /// <returns>The new message.</returns>
         Message MakeMessage();
-    }
-
-    /// <summary>
-    /// Methods to send a message from the user to the bot.
-    /// </summary>
-    public interface IUserToBot
-    {
-        /// <summary>
-        /// Send a message to the bot with the option of an inline response.
-        /// </summary>
-        /// <param name="message">The message for the bot.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A task that represents the completion of the send.</returns>
-        Task SendAsync(Message message, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -35,11 +35,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 
 namespace Microsoft.Bot.Builder.Dialogs
 {
@@ -73,13 +76,34 @@ namespace Microsoft.Bot.Builder.Dialogs
     public delegate Task IntentHandler(IDialogContext context, LuisResult luisResult);
 
     /// <summary>
+    /// An exception for invalid intent handlers.
+    /// </summary>
+    [Serializable]
+    public sealed class InvalidIntentHandlerException : InvalidOperationException
+    {
+        public readonly MethodInfo Method;
+
+        public InvalidIntentHandlerException(string message, MethodInfo method)
+            : base(message)
+        {
+            SetField.NotNull(out this.Method, nameof(method), method);
+        }
+
+        private InvalidIntentHandlerException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+    }
+
+    /// <summary>
     /// A dialog specialized to handle intents and entities from LUIS.
     /// </summary>
     [Serializable]
-    public class LuisDialog : IDialog
+    public class LuisDialog<R> : IDialog<R>
     {
         private readonly ILuisService service;
 
+        /// <summary>   Mapping from intent string to the appropriate handler. </summary>
         [NonSerialized]
         protected Dictionary<string, IntentHandler> handlerByIntent;
 
@@ -109,18 +133,23 @@ namespace Microsoft.Bot.Builder.Dialogs
             context.Wait(MessageReceived);
         }
 
-        protected async Task MessageReceived(IDialogContext context, IAwaitable<Message> item)
+        protected virtual IntentRecommendation BestIntentFrom(LuisResult result)
+        {
+            return result.Intents.MaxBy(i => i.Score ?? 0);
+        }
+
+        protected virtual async Task MessageReceived(IDialogContext context, IAwaitable<Message> item)
         {
             if (this.handlerByIntent == null)
             {
-                this.handlerByIntent = EnumerateHandlers(this).ToDictionary(kv => kv.Key, kv => kv.Value);
+                this.handlerByIntent = new Dictionary<string, IntentHandler>(GetHandlersByIntent());
             }
 
             var message = await item;
-            var luisRes = await this.service.QueryAsync(message.Text);
+            var messageText = await GetLuisQueryTextAsync(context, message);
+            var luisRes = await this.service.QueryAsync(messageText);
 
-            var maximum = luisRes.Intents.Max(t => t.Score);
-            var intent = luisRes.Intents.FirstOrDefault(i => i.Score == maximum);
+            var intent = BestIntentFrom(luisRes);
 
             IntentHandler handler = null;
             if (intent == null || !this.handlerByIntent.TryGetValue(intent.Intent, out handler))
@@ -139,6 +168,19 @@ namespace Microsoft.Bot.Builder.Dialogs
             }
         }
 
+        protected virtual Task<string> GetLuisQueryTextAsync(IDialogContext context, Message message)
+        {
+            return Task.FromResult(message.Text);
+        }
+
+        protected virtual IDictionary<string, IntentHandler> GetHandlersByIntent()
+        {
+            return LuisDialog.EnumerateHandlers(this).ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+    }
+
+    internal static class LuisDialog
+    {
         /// <summary>
         /// Enumerate the handlers based on the attributes on the dialog instance.
         /// </summary>
@@ -150,16 +192,23 @@ namespace Microsoft.Bot.Builder.Dialogs
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             foreach (var method in methods)
             {
+                var intents = method.GetCustomAttributes<LuisIntentAttribute>(inherit: true).ToArray();
                 var intentHandler = (IntentHandler)Delegate.CreateDelegate(typeof(IntentHandler), dialog, method, throwOnBindFailure: false);
                 if (intentHandler != null)
                 {
-                    var intents = method.GetCustomAttributes<LuisIntentAttribute>(inherit: true);
                     var intentNames = intents.Select(i => i.IntentName).DefaultIfEmpty(method.Name);
 
                     foreach (var intentName in intentNames)
                     {
                         var key = string.IsNullOrWhiteSpace(intentName) ? string.Empty : intentName;
                         yield return new KeyValuePair<string, IntentHandler>(intentName, intentHandler);
+                    }
+                }
+                else
+                {
+                    if (intents.Length > 0)
+                    {
+                        throw new InvalidIntentHandlerException(string.Join(";", intents.Select(i => i.IntentName)), method);
                     }
                 }
             }

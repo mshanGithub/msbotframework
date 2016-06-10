@@ -33,14 +33,18 @@
 
 export var Data = {
     SessionState: 'BotBuilder.Data.SessionState',
+    SessionId: 'BotBuilder.Data.SessionId',
     Handler: 'BotBuilder.Data.Handler',
     Group: 'BotBuilder.Data.Group',
     Intent: 'BotBuilder.Data.Intent',
-    WaterfallStep: 'BotBuilder.Data.WaterfallStep'
+    WaterfallStep: 'BotBuilder.Data.WaterfallStep',
+    Form: 'BotBuilder.Data.Form',
+    Field: 'BotBuilder.Data.Field'
 };
 
 export var DialogId = {
-    Prompts: 'BotBuilder.Dialogs.Prompts'
+    Prompts: 'BotBuilder.Dialogs.Prompts',
+    Field: 'BotBuilder.Dialogs.Field'
 };
 
 export var Id = {
