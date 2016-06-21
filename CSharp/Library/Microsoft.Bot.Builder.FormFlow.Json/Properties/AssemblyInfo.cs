@@ -1,16 +1,16 @@
-﻿using System.Resources;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Microsoft.Bot.Builder")]
+[assembly: AssemblyTitle("Microsoft.Bot.Builder.FormFlow.Json")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Microsoft Bot Builder")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Microsoft.Bot.Builder.FormFlow.Json")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("cdfec7d6-847e-4c13-956b-0a960ae3eb60")]
+[assembly: Guid("8674f271-4437-4178-b4e2-15f91b322e5d")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -39,4 +39,3 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Microsoft.Bot.Builder.Tests")]
 [assembly: InternalsVisibleTo("Microsoft.Bot.Sample.Tests")]
 [assembly: NeutralResourcesLanguage("en")]
-
