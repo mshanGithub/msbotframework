@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Specialized;
 
 namespace Microsoft.Bot.Builder.Calling
 {
@@ -98,6 +99,17 @@ namespace Microsoft.Bot.Builder.Calling
         /// Method responsible for processing the data sent with POST request to incoming call URL
         /// </summary>
         /// <param name="content">The content of request</param>
+        /// <param name="queryParameters">The query parameters of request</param>
+        /// <returns>Returns the response that should be sent to the sender of POST request</returns>
+        public string ProcessIncomingCall(string content, IEnumerable<KeyValuePair<string, string>> queryParameters)
+        {
+            return Task.Factory.StartNew(s => ((ICallingBotService)s).ProcessIncomingCallAsync(content, queryParameters), this, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Method responsible for processing the data sent with POST request to incoming call URL
+        /// </summary>
+        /// <param name="content">The content of request</param>
         /// <returns>Returns the response that should be sent to the sender of POST request</returns>
         public async Task<string> ProcessIncomingCallAsync(string content)
         {
@@ -106,6 +118,26 @@ namespace Microsoft.Bot.Builder.Calling
             var conversation = Serializer.DeserializeFromJson<Conversation>(content);
             conversation.Validate();
             var workflow = await HandleIncomingCall(conversation).ConfigureAwait(false);
+            if (workflow == null)
+                throw new BotCallingServiceException("Incoming call not handled. No workflow produced for incoming call.");
+            workflow.Validate();
+            var serializedResponse = Serializer.SerializeToJson(workflow);
+            return serializedResponse;
+        }
+
+        /// <summary>
+        /// Method responsible for processing the data sent with POST request to incoming call URL
+        /// </summary>
+        /// <param name="content">The content of request</param>
+        /// <param name="queryParameters">The query parameters of request</param>
+        /// <returns>Returns the response that should be sent to the sender of POST request</returns>
+        public async Task<string> ProcessIncomingCallAsync(string content, IEnumerable<KeyValuePair<string, string>> queryParameters)
+        {
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+            var conversation = Serializer.DeserializeFromJson<Conversation>(content);
+            conversation.Validate();
+            var workflow = await HandleIncomingCall(conversation, queryParameters).ConfigureAwait(false);
             if (workflow == null)
                 throw new BotCallingServiceException("Incoming call not handled. No workflow produced for incoming call.");
             workflow.Validate();
@@ -158,11 +190,11 @@ namespace Microsoft.Bot.Builder.Calling
             }
             throw new BotCallingServiceException($"Unknown conversation result type {receivedConversationResult.OperationOutcome.Type}");
         }
-        
-        private async Task<Workflow> HandleIncomingCall(Conversation conversation)
+
+        private async Task<Workflow> HandleIncomingCall(Conversation conversation, IEnumerable<KeyValuePair<string, string>> queryParameters = null)
         {
             Trace.TraceInformation($"CallingBotService: Received incoming call, callId: {conversation.Id}");
-            var incomingCall = new IncomingCallEvent(conversation, CreateInitialWorkflow());
+            var incomingCall = new IncomingCallEvent(conversation, CreateInitialWorkflow(), queryParameters);
             var eventHandler = OnIncomingCallReceived;
             if (eventHandler != null)
                 await eventHandler.Invoke(incomingCall).ConfigureAwait(false);
@@ -263,7 +295,7 @@ namespace Microsoft.Bot.Builder.Calling
                 throw new BotCallingServiceException("Failed to deserialize Calling Service callback content", e);
             }
         }
-
+        
         #endregion
     }
 }

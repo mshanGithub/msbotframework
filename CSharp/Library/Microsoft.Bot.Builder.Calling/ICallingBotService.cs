@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using Microsoft.Bot.Builder.Calling.Events;
+using System.Collections.Generic;
 
 namespace Microsoft.Bot.Builder.Calling
 {
@@ -75,7 +76,23 @@ namespace Microsoft.Bot.Builder.Calling
         /// Method responsible for processing the data sent with POST request to incoming call URL
         /// </summary>
         /// <param name="content">The content of request</param>
+        /// <param name="queryParameters">The query parameters of request</param>
+        /// <returns>Returns the response that should be sent to the sender of POST request</returns>
+        string ProcessIncomingCall(string content, IEnumerable<KeyValuePair<string, string>> queryParameters);
+
+        /// <summary>
+        /// Method responsible for processing the data sent with POST request to incoming call URL
+        /// </summary>
+        /// <param name="content">The content of request</param>
         /// <returns>Returns the response that should be sent to the sender of POST request</returns>
         Task<string> ProcessIncomingCallAsync(string content);
+
+        /// <summary>
+        /// Method responsible for processing the data sent with POST request to incoming call URL
+        /// </summary>
+        /// <param name="content">The content of request</param>
+        /// <param name="queryParameters">The query parameters of request</param>
+        /// <returns>Returns the response that should be sent to the sender of POST request</returns>
+        Task<string> ProcessIncomingCallAsync(string content, IEnumerable<KeyValuePair<string, string>> queryParameters);
     }
 }
