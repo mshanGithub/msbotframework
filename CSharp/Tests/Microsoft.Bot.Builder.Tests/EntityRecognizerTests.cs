@@ -1,5 +1,5 @@
-﻿// 
-// Copyright (c) Microsoft. All rights reserved.
+﻿//  
+// Copyright (c) Microsoft. All rights reserved
 // Licensed under the MIT license.
 // 
 // Microsoft Bot Framework: http://botframework.com
