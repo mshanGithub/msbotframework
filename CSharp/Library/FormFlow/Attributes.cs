@@ -514,6 +514,22 @@ namespace Microsoft.Bot.Builder.FormFlow
     };
 
     /// <summary>
+    /// Specifies how choices are displayed.
+    /// </summary>
+    public class ChoiceFormatOptions
+    {
+        /// <summary>
+        /// Number of the choice.
+        /// </summary>
+        public const string Number = "{0}";
+
+        /// <summary>
+        /// Field name of the choice.
+        /// </summary>
+        public const string FieldName = "{1}";
+    }
+
+    /// <summary>
     /// Define a template for generating strings.
     /// </summary>
     /// <remarks>
