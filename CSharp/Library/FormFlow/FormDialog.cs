@@ -114,7 +114,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <returns>An <see cref="IForm{T}"/>.</returns>
     /// <remarks>This is a delegate so that we can rebuild the form and don't have to serialize
     /// the form definition with every message.</remarks>
-    public delegate IForm<T> BuildFormDelegate<T>();
+    public delegate IForm<T> BuildFormDelegate<T>() where T : class;
 
     /// <summary>
     /// Form dialog to fill in your state.
@@ -160,7 +160,11 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             buildForm = buildForm ?? BuildDefaultForm;
             entities = entities ?? Enumerable.Empty<EntityRecommendation>();
-            cultureInfo = cultureInfo ?? CultureInfo.InvariantCulture;
+            if (cultureInfo != null)
+            {
+                CultureInfo.CurrentUICulture = cultureInfo;
+                CultureInfo.CurrentCulture = cultureInfo;
+            }
 
             // constructor arguments
             SetField.NotNull(out this._state, nameof(state), state);
@@ -289,22 +293,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                 FormPrompt lastPrompt = _formState.LastPrompt;
                 Func<FormPrompt, Task<FormPrompt>> PostAsync = async (prompt) =>
                 {
-                    if (prompt != null)
-                    {
-                        var msg = context.MakeMessage();
-                        msg.AttachmentLayout = AttachmentLayoutTypes.List;
-                        if (prompt.Buttons?.Count > 0)
-                        {
-                            msg.AttachmentLayout = AttachmentLayoutTypes.List;
-                            msg.Attachments = prompt.Buttons.GenerateAttachments(prompt.Prompt);
-                        }
-                        else
-                        {
-                            msg.Text = prompt.Prompt;
-                        }
-                        await context.PostAsync(msg);
-                    }
-                    return prompt;
+                    return await _form.Prompt(context, prompt);
                 };
                 Func<IStep<T>, IEnumerable<TermMatch>, Task<bool>> DoStepAsync = async (step, matches) =>
                 {
@@ -765,12 +754,12 @@ namespace Microsoft.Bot.Builder.FormFlow
                             var navigation = new Prompter<T>(field.Template(TemplateUsage.NavigationCommandHelp), _form, null);
                             var active = (from istep in _form.Steps
                                           where !form.ProcessInputs && istep.Type == StepType.Field && istep.Active(state)
-                                          select istep.Field.FieldDescription).ToArray();
+                                          select istep.Field.FieldDescription.Description).ToArray();
                             if (active.Length > 1)
                             {
                                 var activeList = Language.BuildList(active, navigation.Annotation.ChoiceSeparator, navigation.Annotation.ChoiceLastSeparator);
                                 builder.Append("* ");
-                                builder.Append(navigation.Prompt(state, "", activeList));
+                                builder.Append(navigation.Prompt(state, null, activeList));
                             }
                             feedback = step.Help(state, form, builder.ToString());
                         }
@@ -780,7 +769,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                     case FormCommand.Status:
                         {
                             var prompt = new PromptAttribute("{*}");
-                            feedback = new Prompter<T>(prompt, _form, null).Prompt(state, "");
+                            feedback = new Prompter<T>(prompt, _form, null).Prompt(state, null);
                         }
                         break;
                 }

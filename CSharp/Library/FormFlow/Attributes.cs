@@ -41,6 +41,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <summary>
     /// Abstract base class for FormFlow attributes.
     /// </summary>
+    [Serializable]
     public abstract class FormFlowAttribute : Attribute
     {
         /// <summary>
@@ -56,6 +57,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <summary>
     /// Attribute to override the default description of a field, property or enum value.
     /// </summary>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Enum | AttributeTargets.Property)]
     public class DescribeAttribute : FormFlowAttribute
     {
@@ -70,14 +72,21 @@ namespace Microsoft.Bot.Builder.FormFlow
         public string Image;
 
         /// <summary>
+        /// Message to return when a button is pressed.
+        /// </summary>
+        public string Message;
+
+        /// <summary>
         /// Description for field, property or enum value.
         /// </summary>
         /// <param name="description">Description of field, property or enum value.</param>
         /// <param name="image">URL of image to use when generating buttons.</param>
-        public DescribeAttribute(string description = null, string image = null)
+        /// <param name="message">Message to return from button.</param>
+        public DescribeAttribute(string description = null, string image = null, string message = null)
         {
             Description = description;
             Image = image;
+            Message = message;
         }
     }
 
@@ -90,6 +99,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <see cref="MaxPhrase"/> attribute you can cause <see cref="Advanced.Language.GenerateTerms(string, int)"/> to be called on your strings with the
     /// maximum phrase length you specify.
     /// </remarks>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class TermsAttribute : FormFlowAttribute
     {
@@ -159,7 +169,17 @@ namespace Microsoft.Bot.Builder.FormFlow
         PerLine,
 
         /// <summary>   Show choices on the same line without surrounding parentheses. </summary>
-        InlineNoParen
+        InlineNoParen,
+
+        /// <summary>
+        /// Show choices as buttons if possible.
+        /// </summary>
+        Buttons,
+
+        /// <summary>
+        /// Show choices as a carousel if possibe.
+        /// </summary>
+        Carousel
     };
 
 
@@ -245,6 +265,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <remarks>
     /// Prompts use \ref Templates to provide control over what goes into a prompt.
     /// </remarks>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class PromptAttribute : TemplateBaseAttribute
     {
@@ -521,6 +542,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// You can also look at <see cref="FormConfiguration.Templates"/> to see all the default templates that are provided.  Templates can be overriden at the form, class/struct of field level.  
     /// They also support randomly selecting between templates which is a good way to introduce some variation in your responses.
     /// </remarks>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public class TemplateAttribute : TemplateBaseAttribute
     {
@@ -557,6 +579,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <remarks>
     /// An optional field is one where having no value is an acceptable response.  By default every field is considered required and must be filled in to complete the form.
     /// </remarks>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class OptionalAttribute : Attribute
     {
@@ -573,6 +596,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <remarks>
     /// By default the limits are the min and max of the underlying field type.
     /// </remarks>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class NumericAttribute : Attribute
     {
@@ -604,6 +628,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <remarks>
     /// If the regular expression is not matched the <see cref="TemplateUsage.NotUnderstood"/> template will be used for feedback.
     /// </remarks>
+    [Serializable]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class PatternAttribute: Attribute
     {
