@@ -630,6 +630,8 @@ namespace Microsoft.Bot.Builder.FormFlow
                             {
                                 _formState.StepState = null;
                                 _formState.Next = null;
+                                if (_form.Steps[istep].Field.IsUnknown(_state) && _formState.Phase(istep) == StepPhase.Completed)
+                                    _formState.SetPhase(StepPhase.Ready);
                             }
                             if ((_formState.Phase(istep) == StepPhase.Ready || _formState.Phase(istep) == StepPhase.Responding)
                                 && step.Active(_state))
