@@ -65,7 +65,7 @@ namespace Microsoft.Bot.Builder.Calling
                         switch (callRequestType)
                         {
                             case CallRequestType.IncomingCall:
-                                res = await bot.CallingBotService.ProcessIncomingCallAsync(parsedRequest.Content);
+                                res = await bot.CallingBotService.ProcessIncomingCallAsync(parsedRequest.Content, parsedRequest.QueryParameters);
                                 break;
                             case CallRequestType.CallingEvent:
                                 res = await bot.CallingBotService.ProcessCallbackAsync(parsedRequest.Content, parsedRequest.AdditionalData);
