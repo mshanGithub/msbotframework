@@ -136,6 +136,7 @@ export class LuisRecognizer implements intent.IIntentRecognizer {
                     }
                 } catch (e) {
                     console.error(e.toString());
+                    callback(e);
                 }
             });
         } catch (err) {
