@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder.Internals.Fibers;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace Microsoft.Bot.Builder.Calling
         /// The calling request content.
         /// </summary>
         public string Content { set; get; }
+
+        /// <summary>
+        /// The calling request query parameters
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, string>> QueryParameters { set; get; }
         
         /// <summary>
         /// The additional data when calling request has multipart content. 
@@ -122,7 +128,8 @@ namespace Microsoft.Bot.Builder.Calling
                 }
 
                 var content = await Request.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return GenerateParsedResults(HttpStatusCode.OK, content);                
+                IEnumerable<KeyValuePair<string, string>> queryParameters = Request.GetQueryNameValuePairs();
+                return GenerateParsedResults(HttpStatusCode.OK, content, null, queryParameters);                
             }
             catch (Exception e)
             {
@@ -154,14 +161,15 @@ namespace Microsoft.Bot.Builder.Calling
                 return GenerateParsedResults(HttpStatusCode.InternalServerError);
             }
         }
-        
-        private ParsedCallingRequest GenerateParsedResults(HttpStatusCode statusCode, string content = null, Task<Stream> additionalData = null)
+
+        private ParsedCallingRequest GenerateParsedResults(HttpStatusCode statusCode, string content = null, Task<Stream> additionalData = null, IEnumerable<KeyValuePair<string, string>> queryParameters = null)
         {
             return new ParsedCallingRequest
             {
                 Content = content,
                 ParseStatusCode = statusCode, 
-                AdditionalData = additionalData
+                AdditionalData = additionalData,
+                QueryParameters = queryParameters
             };
         }
 
