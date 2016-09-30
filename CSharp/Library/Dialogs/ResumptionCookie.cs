@@ -76,6 +76,11 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// </summary>
         public string Locale { set; get; }
 
+        public ResumptionCookie()
+        {
+
+        }
+
         /// <summary>
         /// Creates an instance of the resumption cookie. 
         /// </summary>
