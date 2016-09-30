@@ -44,6 +44,11 @@ namespace Microsoft.Bot.Builder.Dialogs
     [Serializable]
     public sealed class Address : IEquatable<Address>
     {
+        public Address()
+        {
+
+        }
+
         public Address(IActivity activity)
             : this(
                       // purposefully using named arguments because these all have the same type
@@ -70,11 +75,11 @@ namespace Microsoft.Bot.Builder.Dialogs
             this.ConversationId = conversationId;
             this.ServiceUrl = serviceUrl;
         }
-        public string BotId { get; }
-        public string ChannelId { get; }
-        public string UserId { get; }
-        public string ConversationId { get; }
-        public string ServiceUrl { get; }
+        public string BotId { get; set;  }
+        public string ChannelId { get; set;  }
+        public string UserId { get; set; }
+        public string ConversationId { get; set; }
+        public string ServiceUrl { get; set; }
 
         public bool Equals(Address other)
         {
