@@ -108,12 +108,6 @@ export class UniversalBot extends events.EventEmitter {
 
         if (connector) {
             this.connector(consts.defaultConnector, connector);
-            var asStorage: bs.IBotStorage = <any>connector;
-            if (!this.settings.storage && 
-                typeof asStorage.getData === 'function' &&
-                typeof asStorage.saveData === 'function') {
-                this.settings.storage = asStorage;
-            }
         }
     }
     
@@ -136,7 +130,14 @@ export class UniversalBot extends events.EventEmitter {
     
     public connector(channelId: string, connector?: IConnector): IConnector {
         var c: IConnector;
+
         if (connector) {
+            var asStorage: bs.IBotStorage = <any>connector;
+            if (!this.settings.storage && 
+                typeof asStorage.getData === 'function' &&
+                typeof asStorage.saveData === 'function') {
+                this.settings.storage = asStorage;
+            }
             this.connectors[channelId || consts.defaultConnector] = c = connector;
             c.onEvent((events, cb) => this.receive(events, cb));
         } else if (this.connectors.hasOwnProperty(channelId)) {
