@@ -497,6 +497,8 @@ var ChatConnector = (function () {
             'channelData': 'sourceEvent'
         });
         msg.text = msg.text || '';
+        if (msg.conversation.isGroup)
+            msg.text = /<\/at>\s?(.*?)$/g.exec(msg.text)[1];
         msg.attachments = msg.attachments || [];
         msg.entities = msg.entities || [];
         var address = {};
