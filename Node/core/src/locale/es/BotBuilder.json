@@ -1,6 +1,13 @@
 {
+    "default_text": "No entiendo. Por favor, inténtalo de nuevo.",
+    "default_number": "No parece un número. Por favor, escribe un número.",
+    "default_confirm": "Por favor, responde 'si' o 'no'.",
     "list_or": " o ",
     "list_or_more": ", o ",
     "confirm_yes": "si",
-    "confirm_no": "no"    
-}   
+    "confirm_no": "no",
+    "default_choice": "No entiendo. Por favor, elige una opción de la lista.",
+    "default_time": "No entiendo a cuándo te refieres. Por favor, inténtalo de nuevo.",
+    "default_file": "No he recibido un fichero. Por favor, inténtalo de nuevo.",
+    "default_error": "Uy. Algo fue mal y necesitamos empezar de nuevo."
+}
