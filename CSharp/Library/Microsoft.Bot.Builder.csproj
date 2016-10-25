@@ -84,6 +84,7 @@
     <Compile Include="Dialogs\Exceptions.cs" />
     <Compile Include="Dialogs\Address.cs" />
     <Compile Include="Dialogs\IActivityLogger.cs" />
+    <Compile Include="Dialogs\QnADialog.cs" />
     <Compile Include="Dialogs\DispatchDialog.cs" />
     <Compile Include="Dialogs\ResumptionCookie.cs" />
     <Compile Include="Dialogs\ScorableDialogs.cs" />
