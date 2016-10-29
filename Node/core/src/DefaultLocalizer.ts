@@ -44,6 +44,11 @@ export class DefaultLocalizer implements ILocalizer {
     private locales: { [locale:string]: ILocaleEntry; } = {}
 
     constructor(root: lib.Library, defaultLocale = 'en') {
+        if (!defaultLocale) {
+            // All "falsy" values can be considered invalid so
+            // fallback to the default instead.
+            defaultLocale = 'en';
+        }
         this.defaultLocale(defaultLocale);
 
         // Find all of the searchable 
