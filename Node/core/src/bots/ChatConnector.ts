@@ -120,8 +120,10 @@ export class ChatConnector implements IConnector, IBotStorage {
     private verifyBotFramework(req: IWebRequest, res: IWebResponse): void {
         var token: string;
         var isEmulator = req.body['channelId'] === 'emulator';
-        if (req.headers && req.headers.hasOwnProperty('authorization')) {
-            var auth = req.headers['authorization'].trim().split(' ');
+        var authorizationHeaderValue = req.headers &&
+            req.headers['authorization'] || req.headers['Authorization'];
+        if (authorizationHeaderValue) {
+            var auth = authorizationHeaderValue.trim().split(' ');
             if (auth.length == 2 && auth[0].toLowerCase() == 'bearer') {
                 token = auth[1];
             }
