@@ -17,10 +17,12 @@ namespace Microsoft.Bot.Connector
 {
     public class MicrosoftAppCredentials : ServiceClientCredentials
     {
-        protected static ConcurrentDictionary<string, DateTime> TrustedHostNames = new ConcurrentDictionary<string, DateTime>(
-                                                                                        new Dictionary<string, DateTime>() {
-                                                                                            { "state.botframework.com", DateTime.MaxValue }
-                                                                                        });
+        protected static ConcurrentDictionary<string, DateTime> TrustedHostNames = 
+            new ConcurrentDictionary<string, DateTime>(
+                new Dictionary<string, DateTime>() {
+                    { "state.botframework.com", DateTime.MaxValue },
+                    { "facebook.botframework.com", DateTime.MaxValue }
+            });
 
         public MicrosoftAppCredentials(string appId = null, string password = null)
         {
