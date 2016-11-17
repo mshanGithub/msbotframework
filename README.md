@@ -18,3 +18,15 @@ Get started quickly with our samples:
 Join the conversation on **[Gitter] (https://gitter.im/Microsoft/BotBuilder)**.
 
 See all the support options **[here](https://docs.botframework.com/en-us/support/)**.
+
+[Microsoft BotBuilder on GitHub](https://github.com/Microsoft/BotBuilder/)
+
+[Microsoft BotBuilder on Gitter](https://gitter.im/Microsoft/BotBuilder)
+
+[Developers guide for BotFramework from MSFT](https://dev.botframework.com/)
+
+[Bot Builder for NodeJS](https://docs.botframework.com/en-us/node/builder/overview/)
+
+[Bot Builder for .NET](https://docs.botframework.com/en-us/csharp/builder/sdkreference/)
+
+[Nuget Bot Builder Package](https://www.nuget.org/packages/Microsoft.Bot.Builder/)
