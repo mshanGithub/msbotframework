@@ -57,6 +57,7 @@ import * as IntentRecognizerSet from './dialogs/IntentRecognizerSet';
 import * as RegExpRecognizer from './dialogs/RegExpRecognizer';
 import * as LuisRecognizer from './dialogs/LuisRecognizer';
 import * as IntentDialog from './dialogs/IntentDialog';
+import * as QADialog from './dialogs/QADialog';
 
 declare var exports: any;
 
@@ -94,6 +95,7 @@ exports.ChatConnector = ChatConnector.ChatConnector;
 exports.ConsoleConnector = ConsoleConnector.ConsoleConnector;
 exports.MemoryBotStorage = BotStorage.MemoryBotStorage;
 exports.Middleware = Middleware.Middleware;
+exports.QADialog = QADialog.QADialog;
 
 // Deprecated classes
 import * as deprecatedBCB from './deprecated/BotConnectorBot';
