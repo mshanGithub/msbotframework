@@ -35,17 +35,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Dialogs.Internals;
-using Microsoft.Bot.Builder.Internals.Fibers;
-using Microsoft.Bot.Builder.Internals.Scorables;
+using Microsoft.Bot.Builder.Scorables.Internals;
 using Microsoft.Bot.Builder.Luis;
-using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Builder.Scorables;
 
 namespace Microsoft.Bot.Builder.Dialogs
 {
@@ -62,51 +59,48 @@ namespace Microsoft.Bot.Builder.Dialogs
 
         protected virtual IResolver MakeResolver(IDialogContext context, IActivity activity)
         {
-            var resolver = NullResolver.Instance;
+            var resolver = NoneResolver.Instance;
             resolver = new ArrayResolver(resolver, context, activity, this);
             resolver = new ActivityResolver(resolver);
 
             return resolver;
         }
+
         protected virtual ILuisService MakeService(ILuisModel model)
         {
             return new LuisService(model);
         }
+
         protected virtual Regex MakeRegex(string pattern)
         {
             return new Regex(pattern);
         }
+
+        protected virtual BindingFlags MakeBindingFlags()
+        {
+            return BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+        }
+
         protected virtual IEnumerable<MethodInfo> MakeMethods(IDialogContext context, IActivity activity)
         {
-            return this.GetType().GetMethods();
+            var type = this.GetType();
+            var flags = this.MakeBindingFlags();
+            var methods = type.GetMethods(flags);
+            return methods;
         }
+
         protected virtual IScorableFactory<IResolver, object> MakeFactory(IDialogContext context, IActivity activity)
         {
-            var cache = new DictionaryCache<ILuisService, Uri, LuisResult>(EqualityComparer<Uri>.Default);
-
-            var serviceByModel = new Dictionary<ILuisModel, ILuisService>();
-
-            Func<ILuisModel, ILuisService> MakeLuisService = model =>
-            {
-                ILuisService service;
-                if (!serviceByModel.TryGetValue(model, out service))
-                {
-                    service = new CachingLuisService(MakeService(model), cache);
-                    serviceByModel.Add(model, service);
-                }
-
-                return service;
-            };
-
             IScorableFactory<IResolver, object> factory = new OrderScorableFactory<IResolver, object>
                 (
-                    new LuisIntentScorableFactory(MakeLuisService),
+                    new LuisIntentScorableFactory(MakeService),
                     new RegexMatchScorableFactory(MakeRegex),
                     new MethodScorableFactory()
                 );
 
             return factory;
         }
+
         protected virtual IScorable<IResolver, object> MakeScorable(IDialogContext context, IActivity activity)
         {
             var factory = MakeFactory(context, activity);

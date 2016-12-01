@@ -31,41 +31,24 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Microsoft.Bot.Builder.Internals.Fibers;
-
-namespace Microsoft.Bot.Builder.Scorables.Internals
+namespace Microsoft.Bot.Builder.Luis.Models
 {
-    public abstract class ResolverScope<InnerScore> : Token<IResolver, InnerScore>, IResolver
+    public partial class DialogResponse
     {
-        protected readonly IResolver inner;
-
-        public ResolverScope(IResolver inner)
+        /// <summary>
+        /// Possible values for <see cref="DialogResponse.Status"/>
+        /// </summary>
+        public static class DialogStatus
         {
-            SetField.NotNull(out this.inner, nameof(inner), inner);
-        }
+            /// <summary>
+            /// Send the prompt in <see cref="DialogResponse.Prompt"/>
+            /// </summary>
+            public const string Question = "Question";
 
-        public virtual bool TryResolve(Type type, object tag, out object value)
-        {
-            return inner.TryResolve(type, tag, out value);
-        }
-    }
-
-    [Serializable]
-    public abstract class ResolverScorable<OuterState, OuterScore, InnerState, InnerScore> : ScorableAggregator<IResolver, OuterState, OuterScore, IResolver, InnerState, InnerScore>
-        where OuterState : ResolverScope<InnerScore>
-    {
-        protected readonly IScorable<IResolver, InnerScore> inner;
-
-        public ResolverScorable(IScorable<IResolver, InnerScore> inner)
-        {
-            SetField.NotNull(out this.inner, nameof(inner), inner);
+            /// <summary>
+            /// Dialog is finished.
+            /// </summary>
+            public const string Finished = "Finished";
         }
     }
 }
