@@ -467,17 +467,16 @@ export class UniversalBot extends Library {
 
     private eventMiddleware(event: IEvent, middleware: IEventMiddleware[], done: Function, error?: (err: Error) => void): void {
         var i = -1;
-        var _this = this;
         function next() {
             if (++i < middleware.length) {
-                _this.tryCatch(() => {
+                this.tryCatch(() => {
                     middleware[i](event, next);
                 }, () => next());
             } else {
-                _this.tryCatch(() => done(), error);
+                this.tryCatch(() => done(), error);
             }
         }
-        next();
+        next.apply(this);
     }
 
     private isMessage(message: IMessage): boolean {
