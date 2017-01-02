@@ -129,7 +129,7 @@ namespace Microsoft.Bot.Builder.Calling
 
                 var content = await Request.Content.ReadAsStringAsync().ConfigureAwait(false);
                 IEnumerable<KeyValuePair<string, string>> queryParameters = Request.GetQueryNameValuePairs();
-                return GenerateParsedResults(HttpStatusCode.OK, content, null, queryParameters);                
+                return GenerateParsedResults(HttpStatusCode.OK, content, null,  queryParameters);                
             }
             catch (Exception e)
             {

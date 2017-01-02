@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Specialized;
 
 namespace Microsoft.Bot.Builder.Calling
 {
