@@ -43,6 +43,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.Bot.Builder.Dialogs.PromptDialog;
 
 namespace Microsoft.Bot.Builder.Tests
 {
@@ -127,12 +128,12 @@ namespace Microsoft.Bot.Builder.Tests
                 jpgAttachment,
                 pdfAttachment
             };
-            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText), toBot, actual => new [] { jpgAttachment, pdfAttachment }.SequenceEqual(actual));
-            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new [] { "image/jpeg" }), toBot, actual => new[] { jpgAttachment }.SequenceEqual(actual));
-            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new [] { "application/pdf" }), toBot, actual => new[] { pdfAttachment }.SequenceEqual(actual));
-            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new [] { "image/jpeg", "application/pdf" }), toBot, actual => new[] { jpgAttachment, pdfAttachment }.SequenceEqual(actual));
+            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText), toBot, actual => new[] { jpgAttachment, pdfAttachment }.SequenceEqual(actual));
+            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new[] { "image/jpeg" }), toBot, actual => new[] { jpgAttachment }.SequenceEqual(actual));
+            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new[] { "application/pdf" }), toBot, actual => new[] { pdfAttachment }.SequenceEqual(actual));
+            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new[] { "image/jpeg", "application/pdf" }), toBot, actual => new[] { jpgAttachment, pdfAttachment }.SequenceEqual(actual));
             toBot.Attachments.Add(bJpgAttachment);
-            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new [] { "image/jpeg" }), toBot, actual => new[] { jpgAttachment, bJpgAttachment }.SequenceEqual(actual));
+            await PromptSuccessAsync<IEnumerable<Attachment>>((context, resume) => PromptDialog.Attachment(context, resume, PromptText, new[] { "image/jpeg" }), toBot, actual => new[] { jpgAttachment, bJpgAttachment }.SequenceEqual(actual));
         }
 
         [TestMethod]
@@ -197,6 +198,23 @@ namespace Microsoft.Bot.Builder.Tests
             var choices = new[] { "19", "9", "else" };
             await PromptSuccessAsync((context, resume) => PromptDialog.Choice(context, resume, choices, PromptText, promptStyle: PromptStyle.None), "9", "9");
         }
+
+        [TestMethod]
+        public async Task PromptSuccess_Choice_Descriptions()
+        {
+            var choices = new[] { "19", "9", "else" };
+            await Script.VerifyDialogScript(@"..\..\Scripts\ChoiceDescriptions.script", 
+                new PromptChoice<string>(choices, PromptText, null, 0, promptStyle: PromptStyle.Auto, descriptions: new List<string>() { "choice19", "choice9", "choiceelse" }), true, "9");
+        }
+
+
+        [TestMethod]
+        public async Task PromptRetry_Choice_Descriptions()
+        {
+            var choices = new[] { "19", "9", "else" };
+            await Script.VerifyDialogScript(@"..\..\Scripts\ChoiceDescriptionsRetry.script",
+                new PromptChoice<string>(choices, PromptText, null, 1, promptStyle: PromptStyle.Auto, descriptions: new List<string>() { "choice19", "choice9", "choiceelse" }), true, "10", "9");
+        }
     }
 
     [TestClass]
@@ -204,7 +222,7 @@ namespace Microsoft.Bot.Builder.Tests
     {
         private const string PromptText = "hello there";
         private const string RetryText = "hello there again";
-        private const int MaximumAttempts = 2;
+        private const int MaximumAttempts = 1;
 
         public async Task PromptFailureAsync<T>(Action<IDialogContext, ResumeAfter<T>> prompt)
         {

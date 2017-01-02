@@ -12,8 +12,11 @@ and even send a caller a chat message.
     * Create a bot on https://dev.botframework.com and follow the steps to setup
       a Skype channel. Ensure that you enable calling support for your bots skype
       channel. 
+    * For the messaging endpoint in the Details for your Bot at dev.botframework.com,
+      ensure you enter the https link from ngrok setup and set
+      "<ngrok link>/api/messages" as your bots calling endpoint.
     * For the calling endpoint you setup on dev.botframework.com, copy the https 
-      link ngrok setup and set "<ngrok link>/api/calling" as your bots calling 
+      link from ngrok setup and set "<ngrok link>/api/calls" as your bots calling 
       endpoint.
     * Next you need to configure your bots CALLBACK_URL, MICROSOFT_APP_ID, and
       MICROSOFT_APP_PASSWORD environment variables. If you're running VSCode you 
@@ -26,7 +29,7 @@ and even send a caller a chat message.
     * To use the bot you'll need to click the join link in the portal which will
       add it as a contact to your skype account. When you click on the bot in 
       your skype client you should see an option to call your bot. If you're 
-      adding calling to an existing bot can take a few minutes for the calling 
+      adding calling to an existing bot can take up to 24 hours for the calling 
       option to show up.
     * You can run the bot by launching it from VSCode or running "node app.js"
       from a console window.  Then call your bot from a skype client to start

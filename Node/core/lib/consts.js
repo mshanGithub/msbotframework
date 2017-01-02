@@ -1,7 +1,12 @@
+"use strict";
 exports.agent = 'botbuilder';
 exports.messageType = 'message';
 exports.defaultConnector = '*';
 exports.emulatorChannel = 'emulator';
+exports.Errors = {
+    EMSGSIZE: 'EMSGSIZE',
+    EBADMSG: 'EBADMSG'
+};
 exports.Library = {
     system: 'BotBuilder',
     default: '*'
@@ -15,12 +20,16 @@ exports.Data = {
     WaterfallStep: 'BotBuilder.Data.WaterfallStep',
     Form: 'BotBuilder.Data.Form',
     Field: 'BotBuilder.Data.Field',
-    FirstRunVersion: 'BotBuilder.Data.FirstRunVersion'
+    FirstRunVersion: 'BotBuilder.Data.FirstRunVersion',
+    PreferredLocale: 'BotBuilder.Data.PreferredLocale'
 };
 exports.DialogId = {
     Prompts: 'BotBuilder:Prompts',
     FirstRun: 'BotBuilder:FirstRun',
-    Field: 'BotBuilder:Field'
+    ConfirmCancel: 'BotBuilder:ConfirmCancel',
+    ConfirmInterruption: 'BotBuilder:ConfirmInterruption',
+    Interruption: 'BotBuilder:Interruption',
+    Disambiguate: 'BotBuilder:Disambiguate'
 };
 exports.Id = {
     DefaultGroup: 'BotBuilder.Id.DefaultGroup'

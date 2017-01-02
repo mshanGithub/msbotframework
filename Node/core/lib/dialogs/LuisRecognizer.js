@@ -1,3 +1,4 @@
+"use strict";
 var request = require('request');
 var LuisRecognizer = (function () {
     function LuisRecognizer(models) {
@@ -12,7 +13,7 @@ var LuisRecognizer = (function () {
         var result = { score: 0.0, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            var locale = context.message.textLocale || '*';
+            var locale = context.locale || '*';
             var model = this.models.hasOwnProperty(locale) ? this.models[locale] : this.models['*'];
             if (model) {
                 LuisRecognizer.recognize(utterance, model, function (err, intents, entities) {
@@ -31,13 +32,12 @@ var LuisRecognizer = (function () {
                             }
                         });
                         if (top) {
+                            result.score = top.score;
+                            result.intent = top.intent;
                             switch (top.intent.toLowerCase()) {
                                 case 'builtin.intent.none':
                                 case 'none':
-                                    break;
-                                default:
-                                    result.score = top.score;
-                                    result.intent = top.intent;
+                                    result.score = 0.1;
                                     break;
                             }
                         }
@@ -70,6 +70,9 @@ var LuisRecognizer = (function () {
                         result = JSON.parse(body);
                         result.intents = result.intents || [];
                         result.entities = result.entities || [];
+                        if (result.topScoringIntent && result.intents.length == 0) {
+                            result.intents.push(result.topScoringIntent);
+                        }
                         if (result.intents.length == 1 && typeof result.intents[0].score !== 'number') {
                             result.intents[0].score = 1.0;
                         }
@@ -83,7 +86,8 @@ var LuisRecognizer = (function () {
                         callback(null, result.intents, result.entities);
                     }
                     else {
-                        callback(err instanceof Error ? err : new Error(err.toString()));
+                        var m = err.toString();
+                        callback(err instanceof Error ? err : new Error(m));
                     }
                 }
                 catch (e) {
@@ -96,5 +100,5 @@ var LuisRecognizer = (function () {
         }
     };
     return LuisRecognizer;
-})();
+}());
 exports.LuisRecognizer = LuisRecognizer;

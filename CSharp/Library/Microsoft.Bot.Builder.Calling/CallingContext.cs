@@ -89,7 +89,7 @@ namespace Microsoft.Bot.Builder.Calling
         /// <returns> the parsed calling request.</returns>
         public virtual async Task<ParsedCallingRequest> ProcessRequest(CallRequestType callType)
         {
-            ParsedCallingRequest parsedRequest; 
+            ParsedCallingRequest parsedRequest;
             switch (callType)
             {
                 case CallRequestType.IncomingCall:
@@ -103,18 +103,18 @@ namespace Microsoft.Bot.Builder.Calling
                     break;
             }
             parsedRequest.SkypeChaindId = ExtractSkypeChainId();
-            return parsedRequest; 
+            return parsedRequest;
         }
 
         protected virtual string ExtractSkypeChainId()
         {
             string chaindId = null;
-            IEnumerable<string> headerValues; 
+            IEnumerable<string> headerValues;
             if (Request.Headers.TryGetValues("X-Microsoft-Skype-Chain-ID", out headerValues))
             {
-                chaindId = headerValues.FirstOrDefault(); 
+                chaindId = headerValues.FirstOrDefault();
             }
-            return chaindId; 
+            return chaindId;
         }
 
         protected virtual async Task<ParsedCallingRequest> ProcessIncomingCallAsync()

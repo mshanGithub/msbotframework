@@ -31,39 +31,60 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import ses = require('./Session');
+import { Session } from './Session';
+import { IRecognizeContext } from './dialogs/IntentRecognizerSet';
 
 export var channels = {
     facebook: 'facebook',
     skype: 'skype',
+    skypeteams: 'skypeteams',
     telegram: 'telegram',
     kik: 'kik',
     email: 'email',
     slack: 'slack',
     groupme: 'groupme',
     sms: 'sms',
-    emulator: 'emulator'
+    emulator: 'emulator',
+    directline: 'directline',
+    webchat: 'webchat',
+    console: 'console'
 };
 
-export function preferButtons(session: ses.Session, choiceCnt: number, rePrompt: boolean): boolean {
+export function supportsKeyboards(session: Session, buttonCnt = 100) {
     switch (getChannelId(session)) {
         case channels.facebook:
-        case channels.skype:
-            return (choiceCnt <= 3);
-        case channels.telegram:
+            return (buttonCnt <= 10);
         case channels.kik:
-        case channels.emulator:
-            return true;
+            return (buttonCnt <= 20);
+        case channels.slack:
+        case channels.telegram:
+            return (buttonCnt <= 100);
         default:
             return false;
     }
 }
 
-export function getChannelId(addressable: ses.Session|IMessage|IAddress): string {
+export function supportsCardActions(session: Session, buttonCnt = 100) {
+    switch (getChannelId(session)) {
+        case channels.facebook:
+        case channels.skype:
+        case channels.skypeteams:
+            return (buttonCnt <= 3);
+        case channels.slack:
+        case channels.emulator:
+        case channels.directline:
+        case channels.webchat:
+            return (buttonCnt <= 100);
+        default:
+            return false;
+    }
+}
+
+export function getChannelId(addressable: Session|IRecognizeContext|IMessage|IAddress): string {
     var channelId: string;
     if (addressable) {
         if (addressable.hasOwnProperty('message')) {
-            channelId = (<ses.Session>addressable).message.address.channelId;
+            channelId = (<Session>addressable).message.address.channelId;
         } else if (addressable.hasOwnProperty('address')) {
             channelId = (<IMessage>addressable).address.channelId;
         } else if (addressable.hasOwnProperty('channelId')) {

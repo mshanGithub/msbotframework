@@ -36,6 +36,11 @@ export var messageType = 'message';
 export var defaultConnector = '*';
 export var emulatorChannel = 'emulator';
 
+export var Errors = {
+    EMSGSIZE: 'EMSGSIZE',
+    EBADMSG: 'EBADMSG'
+};
+
 export var Library =  {
     system: 'BotBuilder',
     default: '*'
@@ -50,13 +55,17 @@ export var Data = {
     WaterfallStep: 'BotBuilder.Data.WaterfallStep',
     Form: 'BotBuilder.Data.Form',
     Field: 'BotBuilder.Data.Field',
-    FirstRunVersion: 'BotBuilder.Data.FirstRunVersion'
+    FirstRunVersion: 'BotBuilder.Data.FirstRunVersion',
+    PreferredLocale: 'BotBuilder.Data.PreferredLocale'
 };
 
 export var DialogId = {
     Prompts: 'BotBuilder:Prompts',
     FirstRun: 'BotBuilder:FirstRun',
-    Field: 'BotBuilder:Field'
+    ConfirmCancel: 'BotBuilder:ConfirmCancel',
+    ConfirmInterruption: 'BotBuilder:ConfirmInterruption',
+    Interruption: 'BotBuilder:Interruption',
+    Disambiguate: 'BotBuilder:Disambiguate'
 };
 
 export var Id = {

@@ -33,6 +33,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,14 +42,19 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.FormFlow;
+using Microsoft.Bot.Builder.FormFlow.Advanced;
 using Microsoft.Bot.Builder.FormFlow.Json;
+using Microsoft.Bot.Builder.FormFlowTest;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Sample.AnnotatedSandwichBot;
 
 using Moq;
 using Autofac;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -58,6 +65,80 @@ namespace Microsoft.Bot.Builder.Tests
     [TestClass]
     public sealed class FormTests : DialogTestBase
     {
+        // http://stackoverflow.com/questions/3330989/order-of-serialized-fields-using-json-net
+        public class OrderedContractResolver : DefaultContractResolver
+        {
+            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+            {
+                return base.CreateProperties(type, memberSerialization).OrderBy(p => p.PropertyName).ToList();
+            }
+        }
+
+        public static string SerializeToJson(object item)
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                ContractResolver = new OrderedContractResolver()
+            };
+            return JsonConvert.SerializeObject(item, settings);
+        }
+
+        public async Task RecordFormScript<T>(string filePath,
+            string locale, BuildFormDelegate<T> buildForm, FormOptions options, T initialState, IEnumerable<EntityRecommendation> entities,
+            params string[] inputs)
+            where T : class
+        {
+            using (var stream = new StreamWriter(filePath))
+            using (var container = Build(Options.ResolveDialogFromContainer | Options.Reflection))
+            {
+                var root = new FormDialog<T>(initialState, buildForm, options, entities, CultureInfo.GetCultureInfo(locale));
+                stream.WriteLine($"{locale}");
+                stream.WriteLine($"{SerializeToJson(initialState)}");
+                stream.WriteLine($"{SerializeToJson(entities)}");
+                var builder = new ContainerBuilder();
+                builder
+                    .RegisterInstance(root)
+                    .AsSelf()
+                    .As<IDialog<object>>();
+                builder.Update(container);
+                await Script.RecordScript(container, false, stream, () => "State:" + SerializeToJson(initialState), inputs);
+            }
+        }
+
+        public async Task VerifyFormScript<T>(string filePath,
+            string locale, BuildFormDelegate<T> buildForm, FormOptions options, T initialState, IEnumerable<EntityRecommendation> entities,
+            params string[] inputs)
+            where T : class
+        {
+            var newPath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "-new" + Path.GetExtension(filePath));
+            File.Delete(newPath);
+            var currentState = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(initialState));
+            try
+            {
+                using (var stream = new StreamReader(filePath))
+                using (var container = Build(Options.ResolveDialogFromContainer | Options.Reflection))
+                {
+                    var root = new FormDialog<T>(currentState, buildForm, options, entities, CultureInfo.GetCultureInfo(locale));
+                    var builder = new ContainerBuilder();
+                    builder
+                        .RegisterInstance(root)
+                        .AsSelf()
+                        .As<IDialog<object>>();
+                    builder.Update(container);
+                    Assert.AreEqual(locale, stream.ReadLine());
+                    Assert.AreEqual(SerializeToJson(initialState), stream.ReadLine());
+                    Assert.AreEqual(SerializeToJson(entities), stream.ReadLine());
+                    await Script.VerifyScript(container, false, stream, (state) => Assert.AreEqual(state, SerializeToJson(currentState)), inputs);
+                }
+            }
+            catch (Exception)
+            {
+                // There was an error, so record new script and pass on error
+                await RecordFormScript(newPath, locale, buildForm, options, initialState, entities, inputs);
+                throw;
+            }
+        }
+
         public interface IFormTarget
         {
             string Text { get; set; }
@@ -80,6 +161,28 @@ namespace Microsoft.Bot.Builder.Tests
             string IFormTarget.Text { get; set; }
         }
 
+        public enum SimpleChoices
+        {
+            One = 1,
+            [Terms("Two", "More than one")]
+            Two,
+            [Terms("Three", "More than one")]
+            Three,
+            [Terms("word", @"\bpword\(123\)", @"32 jump\b")]
+            Four
+        };
+
+        [Serializable]
+        private sealed class SimpleForm
+        {
+            public string Text { get; set; }
+            public int Integer { get; set; }
+            public float? Float { get; set; }
+            [Template(TemplateUsage.NotUnderstood, "Choices {||}")]
+            public SimpleChoices SomeChoices { get; set; }
+            public DateTime Date { get; set; }
+        }
+
         private static async Task RunScriptAgainstForm(IEnumerable<EntityRecommendation> entities, params string[] script)
         {
             IFormTarget target = new FormTarget();
@@ -96,12 +199,341 @@ namespace Microsoft.Bot.Builder.Tests
                 }
 
                 await AssertScriptAsync(container, script);
-
                 {
                     Assert.AreEqual(Input.Text, target.Text);
                     Assert.AreEqual(Input.Integer, target.Integer);
                     Assert.AreEqual(Input.Float, target.Float);
                 }
+            }
+        }
+
+        [TestMethod]
+        public async Task Simple_Form_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\SimpleForm.script",
+                "en-us", () => new FormBuilder<SimpleForm>().AddRemainingFields().Build(), FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "Hi",
+
+                "?",
+                "some text here",
+
+                "?",
+                "99",
+                "back",
+                "c",
+
+                "?",
+                "1.5",
+
+                "?",
+                "one",
+
+                "help",
+                "status",
+                "1/1/2016"
+                );
+        }
+
+        [TestMethod]
+        public async Task SimpleForm_Next_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\SimpleForm-next.script",
+                "en-us", () => new FormBuilder<SimpleForm>()
+                    .Field(new FieldReflector<SimpleForm>("Text")
+                        .SetNext((value, state) => new NextStep(new string[] { "Float" })))
+                    .AddRemainingFields()
+                    .Build(),
+                FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "Hi",
+                "some text here",
+                "1.5",
+                "one",
+                "1/1/2016",
+                "99"
+                );
+        }
+
+        [TestMethod]
+        public async Task SimpleForm_Dependency_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\SimpleForm-dependency.script",
+                "en-us",
+                () => new FormBuilder<SimpleForm>()
+                    .Field("Float")
+                    .Field("SomeChoices",
+                        validate: async (state, value) =>
+                        {
+                            var result = new ValidateResult { IsValid = true, Value = value };
+                            if ((SimpleChoices)value == SimpleChoices.One)
+                            {
+                                state.Float = null;
+                            }
+                            return result;
+                        })
+                    .Confirm("All OK?")
+                    .Build(),
+            FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+            "Hi",
+            "1.0",
+            "one",
+            "2.0",
+            "no",
+            "Some Choices",
+            "one",
+            "3.0",
+            "no",
+            "some choices",
+            "two",
+            "yes"
+        );
+        }
+
+        [TestMethod]
+        public async Task SimpleForm_NotUnderstood_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\SimpleForm-NotUnderstood.script",
+                "en-us", () => new FormBuilder<SimpleForm>().AddRemainingFields().Build(), FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "Hi",
+                "some text here",
+                "99",
+                "1.5",
+                "more than one",
+                "foo",
+                "two",
+                "1/1/2016"
+                );
+        }
+
+        [TestMethod]
+        public async Task Pizza_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\PizzaForm.script",
+                "en-us", () => PizzaOrder.BuildForm(), FormOptions.None, new PizzaOrder(), Array.Empty<EntityRecommendation>(),
+                "hi",
+                "garbage",
+                "2",
+                "med",
+                "4",
+                "help",
+                "drink bread",
+                "back",
+                "c",
+                "garbage",
+                "no",
+                "thin",
+                "1",
+                "?",
+                "garbage",
+                "beef, onion, ice cream",
+                "garbage",
+                "onions",
+                "status",
+                "abc",
+                "2",
+                "garbage",
+                "iowa",
+                "y",
+                "1 2",
+                "none",
+                "garbage",
+                "2.5",
+                "garbage",
+                "2/25/1962 3pm",
+                "no",
+                "1234",
+                "123-4567",
+                "no",
+                "toppings",
+                "everything but spinach",
+                "y"
+                );
+        }
+
+        [TestMethod]
+        public async Task Pizza_Entities_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\PizzaForm-entities.script",
+                "en-us", () => PizzaOrder.BuildForm(), FormOptions.None, new PizzaOrder(),
+                new Luis.Models.EntityRecommendation[] {
+                                new Luis.Models.EntityRecommendation("DeliveryAddress","Address", "abc"),
+                                new Luis.Models.EntityRecommendation("Kind", "Kind", "byo"),
+                                // This should be skipped because it is not active
+                                new Luis.Models.EntityRecommendation("Signature", "Signature", "Hawaiian"),
+                                new Luis.Models.EntityRecommendation("BYO.Toppings", "Toppings", "onions"),
+                                new Luis.Models.EntityRecommendation("BYO.Toppings", "Toppings", "peppers"),
+                                new Luis.Models.EntityRecommendation("BYO.Toppings", "Toppings", "ice"),
+                                new Luis.Models.EntityRecommendation("Notfound", "NotFound", "OK")
+                            },
+                "hi",
+                "1", // onions for topping clarification
+                "2",
+                "med",
+                // Kind "4",
+                "drink bread",
+                "thin",
+                "1",
+                "?",
+                // "beef, onion, ice cream",
+                "3",
+                "y",
+                "1 2",
+                "none",
+                "2.5",
+                "2/25/1962 3pm",
+                "no",
+                "123-4567",
+                "y"
+                );
+        }
+
+        [TestMethod]
+        public async Task Pizza_Button_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\PizzaFormButton.script",
+                "en-us", () => PizzaOrder.BuildForm(style: ChoiceStyleOptions.Auto), FormOptions.None, new PizzaOrder(), Array.Empty<EntityRecommendation>(),
+                "hi",
+                "garbage",
+                "2",
+                "med",
+                "4",
+                "help",
+                "drink bread",
+                "back",
+                "c",
+                "garbage",
+                "no",
+                "thin",
+                "1",
+                "?",
+                "garbage",
+                "beef, onion, ice cream",
+                "garbage",
+                "onions",
+                "status",
+                "abc",
+                "2",
+                "garbage",
+                "iowa",
+                "y",
+                "1 2",
+                "none",
+                "garbage",
+                "2.5",
+                "garbage",
+                "2/25/1962 3pm",
+                "no",
+                "1234",
+                "123-4567",
+                "no",
+                "toppings",
+                "everything but spinach",
+                "y"
+                );
+        }
+
+        [TestMethod]
+        public async Task Pizza_fr_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\PizzaForm-fr.script",
+                "fr", () => PizzaOrder.BuildForm(), FormOptions.None, new PizzaOrder(), Array.Empty<EntityRecommendation>(),
+                "bonjour",
+                "2",
+                "moyen",
+                "4",
+                "?",
+                "1 2",
+                "retourner",
+                "c",
+                "non",
+                "fine",
+                "1",
+                "?",
+                "bovine, oignons, ice cream",
+                "oignons",
+                "statut",
+                "abc",
+                "1 state street",
+                "oui",
+                "1 2",
+                "non",
+                "2,5",
+                "25/2/1962 3pm",
+                "non",
+                "1234",
+                "123-4567",
+                "non",
+                "nappages",
+                "non epinards",
+                "oui"
+                );
+        }
+
+        [TestMethod]
+        public async Task JSON_Script()
+        {
+            await VerifyFormScript(@"..\..\Scripts\JSON.script",
+                "en-us", () => SandwichOrder.BuildJsonForm(), FormOptions.None, new JObject(), Array.Empty<EntityRecommendation>(),
+                "hi",
+                "ham",
+                "six",
+                "nine grain",
+                "wheat",
+                "1",
+                "peppers",
+                "1",
+                "2",
+                "n",
+                "no",
+                "ok",
+                "abc",
+                "1 state st",
+                "",
+                "9/9/2016 1pm",
+                "status",
+                "y",
+                "2.5"
+                );
+        }
+
+        public class MyClass
+        {
+            [Prompt("I didn't get you")]
+            public string xxx { get; set; }
+
+            [Optional]
+            public string yyy { get; set; }
+
+            public static IForm<MyClass> Build()
+            {
+                return new FormBuilder<MyClass>()
+                    .Message("Welcome")
+                    .Field(nameof(xxx))
+                    .Field(nameof(yyy), validate: async (state, value) =>
+                        new ValidateResult() { IsValid = true })
+                    .Build()
+                    ;
+            }
+        }
+
+        [TestMethod]
+        public async Task Optional()
+        {
+            await VerifyFormScript(@"..\..\Scripts\Optional.script",
+                "en-us", () => MyClass.Build(), FormOptions.None, new MyClass(), Array.Empty<EntityRecommendation>(),
+                "ok",
+                "This is something",
+                ""
+                );
+        }
+
+        [TestMethod]
+        public async Task FormFlow_Localization()
+        {
+            // This ensures there are no bad templates in resources
+            foreach (var locale in new string[] { "ar", "cs", "de", "en", "es", "fa", "fr", "it", "ja", "ru", "zh-Hans", "cs", "de-DE" })
+            {
+                var root = new FormDialog<PizzaOrder>(new PizzaOrder(), () => PizzaOrder.BuildForm(), cultureInfo: CultureInfo.GetCultureInfo(locale));
+                Assert.AreNotEqual(null, root);
             }
         }
 
@@ -145,6 +577,41 @@ namespace Microsoft.Bot.Builder.Tests
                     Input.Integer.ToString(),
                     "Please enter a number for float (current choice: 0)",
                     Input.Float.ToString()
+                );
+        }
+
+        [TestMethod]
+        public async Task Form_Term_Matching()
+        {
+            // [Terms("word", @"\bpword\(123\)", @"32 jump\b")]
+            await VerifyFormScript(@"..\..\Scripts\Form_Term_Matching.script",
+                "en-us", () => new FormBuilder<SimpleForm>().Build(), FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "Hi",
+
+                "some choices",
+                "aword",
+                "wordb",
+                "word",
+
+                "back",
+                "3pword(123)",
+                "pword(123)",
+
+                "back",
+                "32 jumped",
+                "32 jump",
+
+                "back",
+                "this word",
+
+                "back",
+                "word that",
+                
+                "back",
+                "-word",
+
+                "back",
+                "word-"
                 );
         }
 

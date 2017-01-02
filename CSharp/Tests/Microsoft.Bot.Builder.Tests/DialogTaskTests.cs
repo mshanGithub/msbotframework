@@ -40,7 +40,9 @@ using System.Threading.Tasks;
 
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Builder.Scorables;
 using Microsoft.Bot.Builder.Internals.Fibers;
+using Microsoft.Bot.Builder.Scorables.Internals;
 using Microsoft.Bot.Connector;
 
 using Autofac;
@@ -130,7 +132,7 @@ namespace Microsoft.Bot.Builder.Tests
                 using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
                 {
                     var connectorFactory = scope.Resolve<IConnectorClientFactory>();
-                    var botDataStore = scope.Resolve<IBotDataStore>();
+                    var botDataStore = scope.Resolve<IBotDataStore<BotData>>();
                     var botData = scope.Resolve<IBotData>();
                     await botData.LoadAsync(default(CancellationToken));
                     Assert.AreEqual(1, botData.PrivateConversationData.Count);
@@ -174,7 +176,7 @@ namespace Microsoft.Bot.Builder.Tests
                 .Returns<IDialogContext>(async context => { PromptDialog.Text(context, dialog.Object.ItemReceived, "blah"); });
 
             Func<IDialog<object>> MakeRoot = () => dialog.Object;
-            var toBot = MakeTestMessage(); 
+            var toBot = MakeTestMessage();
 
             using (new FiberTestBase.ResolveMoqAssembly(dialog.Object))
             using (var container = Build(Options.None, dialog.Object))
@@ -183,16 +185,118 @@ namespace Microsoft.Bot.Builder.Tests
                 {
                     DialogModule_MakeRoot.Register(scope, MakeRoot);
 
-                    var task = scope.Resolve<IPostToBot>();
-                    await scope.Resolve<IBotData>().LoadAsync(default(CancellationToken));
+                    var botData = scope.Resolve<IBotData>();
+                    await botData.LoadAsync(default(CancellationToken));
+
                     var stack = scope.Resolve<IDialogStack>();
                     Assert.AreEqual(0, stack.Frames.Count);
 
+                    var task = scope.Resolve<IPostToBot>();
                     await task.PostAsync(toBot, CancellationToken.None);
 
                     Assert.AreEqual(3, stack.Frames.Count);
                     Assert.IsInstanceOfType(stack.Frames[0].Target, typeof(PromptDialog.PromptString));
                     Assert.IsInstanceOfType(stack.Frames[1].Target, dialog.Object.GetType());
+
+                    await botData.FlushAsync(default(CancellationToken));
+                }
+
+                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                {
+                    var botData = scope.Resolve<IBotData>();
+                    await botData.LoadAsync(default(CancellationToken));
+
+                    // validate that the fiber state was persisted in IPostToBot.PostAsnc
+                    var stack = scope.Resolve<IDialogStack>();
+                    Assert.AreEqual(3, stack.Frames.Count);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task DialogTask_CancellationToken_Propagated_Through_Context()
+        {
+            var dialog = new Mock<IDialogFrames<object>>(MockBehavior.Strict);
+
+            var source = new CancellationTokenSource();
+
+            dialog
+                .Setup(d => d.StartAsync(It.Is<IDialogContext>(c => c.CancellationToken.Equals(source.Token))))
+                .Returns<IDialogContext>(async context =>
+                {
+                    context.Wait(dialog.Object.ItemReceived);
+                });
+
+            dialog
+                .Setup(d => d.ItemReceived(It.Is<IDialogContext>(c => c.CancellationToken.Equals(source.Token)), It.IsAny<IAwaitable<IMessageActivity>>()))
+                .Returns<IDialogContext, IAwaitable<IMessageActivity>>(async (context, item) =>
+                {
+                    context.Wait(dialog.Object.ItemReceived);
+                });
+
+            var toBot = MakeTestMessage();
+
+            using (new FiberTestBase.ResolveMoqAssembly(dialog.Object))
+            using (var container = Build(Options.ResolveDialogFromContainer, dialog.Object))
+            {
+                var builder = new ContainerBuilder();
+                builder.RegisterInstance(dialog.Object).As<IDialog<object>>();
+                builder.Update(container);
+
+                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                {
+                    await PostActivityAsync(container, toBot, source.Token);
+                    await PostActivityAsync(container, toBot, source.Token);
+                }
+            }
+
+            dialog.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task DialogTask_Frames_After_Poll_No_Post()
+        {
+            var dialog = new Mock<IDialogFrames<object>>(MockBehavior.Loose);
+
+            dialog
+                .Setup(d => d.StartAsync(It.IsAny<IDialogContext>()))
+                .Returns<IDialogContext>(async context => { PromptDialog.Text(context, dialog.Object.ItemReceived, "blah"); });
+
+            var toBot = MakeTestMessage();
+
+            using (new FiberTestBase.ResolveMoqAssembly(dialog.Object))
+            using (var container = Build(Options.None, dialog.Object))
+            {
+                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                {
+                    var botData = scope.Resolve<IBotData>();
+                    await botData.LoadAsync(default(CancellationToken));
+
+                    var stack = scope.Resolve<IDialogStack>();
+                    Assert.AreEqual(0, stack.Frames.Count);
+
+                    // this is modeling a proactive scenario, where we may want to modify the
+                    // dialog stack and run some code, but there is no corresponding message
+                    // to post to the bot
+                    stack.Call(dialog.Object, null);
+                    await stack.PollAsync(CancellationToken.None);
+
+                    Assert.AreEqual(2, stack.Frames.Count);
+                    Assert.IsInstanceOfType(stack.Frames[0].Target, typeof(PromptDialog.PromptString));
+                    Assert.IsInstanceOfType(stack.Frames[1].Target, dialog.Object.GetType());
+
+                    await botData.FlushAsync(default(CancellationToken));
+                }
+
+                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                {
+                    var botData = scope.Resolve<IBotData>();
+                    await botData.LoadAsync(default(CancellationToken));
+
+                    // and now we need to validate that the fiber state was persisted even though
+                    // we only called IDialogStack.PollAsync and not IPostToBot.PostAsnc
+                    var stack = scope.Resolve<IDialogStack>();
+                    Assert.AreEqual(2, stack.Frames.Count);
                 }
             }
         }
@@ -260,7 +364,7 @@ namespace Microsoft.Bot.Builder.Tests
                 }
             }
         }
-        
+
         [TestMethod]
         public async Task DialogTask_Frame_Scoring()
         {
@@ -310,26 +414,34 @@ namespace Microsoft.Bot.Builder.Tests
             // ScoringDialogTask.IScorable
 
             dialogOne
-                .As<IScorable<double>>()
-                .Setup(s => s.PrepareAsync(It.IsAny<IMessageActivity>(), It.IsAny<Delegate>(), It.IsAny<CancellationToken>()))
-                .Returns<IMessageActivity, Delegate, CancellationToken>(async (m, d, t) => m);
+                .As<IScorable<IActivity, double>>()
+                .Setup(s => s.PrepareAsync(It.IsAny<IMessageActivity>(), It.IsAny<CancellationToken>()))
+                .Returns<IMessageActivity, CancellationToken>(async (m, t) => m);
 
-            double scoreOne = 1.0;
+            const double scoreOne = 1.0;
             dialogOne
-                .As<IScorable<double>>()
-                .Setup(s => s.TryScore(It.IsAny<IMessageActivity>(), out scoreOne))
-                .Returns<IMessageActivity, double>((m, s) => m.Text == TriggerTextNew);
+                .As<IScorable<IActivity, double>>()
+                .Setup(s => s.HasScore(It.IsAny<IMessageActivity>(), It.IsAny<IMessageActivity>()))
+                .Returns<IMessageActivity, IMessageActivity>((m, s) => m.Text == TriggerTextNew);
+            dialogOne
+                .As<IScorable<IActivity, double>>()
+                .Setup(s => s.GetScore(It.IsAny<IMessageActivity>(), It.IsAny<IMessageActivity>()))
+                .Returns<IMessageActivity, IMessageActivity>((m, s) => scoreOne);
 
             dialogTwo
-                .As<IScorable<double>>()
-                .Setup(s => s.PrepareAsync(It.IsAny<IMessageActivity>(), It.IsAny<Delegate>(), It.IsAny<CancellationToken>()))
-                .Returns<IMessageActivity, Delegate, CancellationToken>(async (m, d, t) => m);
+                .As<IScorable<IActivity, double>>()
+                .Setup(s => s.PrepareAsync(It.IsAny<IMessageActivity>(), It.IsAny<CancellationToken>()))
+                .Returns<IMessageActivity, CancellationToken>(async (m, t) => m);
 
-            double scoreTwo = 0.5;
+            const double scoreTwo = 0.5;
             dialogTwo
-                .As<IScorable<double>>()
-                .Setup(s => s.TryScore(It.IsAny<IMessageActivity>(), out scoreTwo))
-                .Returns<IMessageActivity, double>((m, s) => m.Text == TriggerTextNew);
+                .As<IScorable<IActivity, double>>()
+                .Setup(s => s.HasScore(It.IsAny<IMessageActivity>(), It.IsAny<IMessageActivity>()))
+                .Returns<IMessageActivity, IMessageActivity>((m, s) => m.Text == TriggerTextNew);
+            dialogTwo
+                .As<IScorable<IActivity, double>>()
+                .Setup(s => s.GetScore(It.IsAny<IMessageActivity>(), It.IsAny<IMessageActivity>()))
+                .Returns<IMessageActivity, IMessageActivity>((m, s) => scoreTwo);
 
             Func<IDialog<object>> MakeRoot = () => dialogOne.Object;
             var toBot = MakeTestMessage();
@@ -347,11 +459,11 @@ namespace Microsoft.Bot.Builder.Tests
 
                     // set up dialogOne to call dialogNew when triggered
                     dialogOne
-                        .As<IScorable<double>>()
-                        .Setup(s => s.PostAsync(It.IsAny<IPostToBot>(), It.IsAny<IMessageActivity>(), It.IsAny<IMessageActivity>(), It.IsAny<CancellationToken>()))
-                        .Returns<IPostToBot, IMessageActivity, IMessageActivity, CancellationToken>(async (inner, message, state, token) =>
+                        .As<IScorable<IActivity, double>>()
+                        .Setup(s => s.PostAsync(It.IsAny<IMessageActivity>(), It.IsAny<IMessageActivity>(), It.IsAny<CancellationToken>()))
+                        .Returns<IMessageActivity, IMessageActivity, CancellationToken>(async (message, state, token) =>
                         {
-                            stack.Call(dialogNew.Object.Void<DateTime, IMessageActivity>(), null);
+                            stack.Call(dialogNew.Object.Void(stack), null);
                             await stack.PollAsync(token);
                         });
 
@@ -403,17 +515,21 @@ namespace Microsoft.Bot.Builder.Tests
             dialogNew.VerifyAll();
         }
 
-        public static Mock<IScorable<T>> MockScorable<T>(object item, Delegate method, object state, T score)
+        public static Mock<IScorable<object, T>> MockScorable<T>(object item, object state, T score)
         {
-            var scorable = new Mock<IScorable<T>>(MockBehavior.Strict);
+            var scorable = new Mock<IScorable<object, T>>(MockBehavior.Strict);
 
             scorable
-                .Setup(s => s.PrepareAsync(item, method, It.IsAny<CancellationToken>()))
+                .Setup(s => s.PrepareAsync(item, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(state);
 
             scorable
-                .Setup(s => s.TryScore(state, out score))
+                .Setup(s => s.HasScore(item, state))
                 .Returns(true);
+
+            scorable
+                .Setup(s => s.GetScore(item, state))
+                .Returns(score);
 
             return scorable;
         }
@@ -422,18 +538,14 @@ namespace Microsoft.Bot.Builder.Tests
         {
             var state = new object();
             var item = new object();
-            var scorable = MockScorable(item, null, state, score);
+            var scorable = MockScorable(item, state, score);
 
             var inner = new Mock<IPostToBot>();
-            var stack = new Mock<IDialogStack>();
-            IPostToBot task = new ScoringDialogTask<double>(inner.Object, stack.Object, Comparer<double>.Default, new NormalizedTraits(), scorable.Object);
-            stack
-                .SetupGet(i => i.Frames)
-                    .Returns(Array.Empty<Delegate>());
+            IPostToBot task = new ScoringDialogTask<double>(inner.Object, new TraitsScorable<IActivity, double>(NormalizedTraits.Instance, Comparer<double>.Default, new[] { scorable.Object }));
 
             var token = new CancellationToken();
             scorable
-                .Setup(s => s.PostAsync(It.IsAny<IPostToBot>(), item, state, token))
+                .Setup(s => s.PostAsync(item, state, token))
                 .Returns(Task.FromResult(0));
 
             await task.PostAsync(item, token);
@@ -456,15 +568,11 @@ namespace Microsoft.Bot.Builder.Tests
         public static async Task DialogTask_Frame_Scoring_Throws_Out_Of_Range(double score)
         {
             var state = new object();
-            var item = new object();
-            var scorable = MockScorable(item, null, state, score);
+            var item = new Activity();
+            var scorable = MockScorable(item, state, score);
 
             var inner = new Mock<IPostToBot>();
-            var stack = new Mock<IDialogStack>();
-            IPostToBot task = new ScoringDialogTask<double>(inner.Object, stack.Object, Comparer<double>.Default, new NormalizedTraits(), scorable.Object);
-            stack
-                .SetupGet(i => i.Frames)
-                    .Returns(Array.Empty<Delegate>());
+            IPostToBot task = new ScoringDialogTask<double>(inner.Object, new TraitsScorable<IActivity, double>(NormalizedTraits.Instance, Comparer<double>.Default, new[] { scorable.Object }));
 
             try
             {
@@ -496,25 +604,139 @@ namespace Microsoft.Bot.Builder.Tests
         {
             var state1 = new object();
             var item = new object();
-            var scorable1 = MockScorable(item, null, state1, 1.0);
-            var scorable2 = new Mock<IScorable<double>>(MockBehavior.Strict);
+            var scorable1 = MockScorable(item, state1, 1.0);
+            var scorable2 = new Mock<IScorable<object, double>>(MockBehavior.Strict);
 
             var inner = new Mock<IPostToBot>();
-            var stack = new Mock<IDialogStack>();
-            IPostToBot task = new ScoringDialogTask<double>(inner.Object, stack.Object, Comparer<double>.Default, new NormalizedTraits(), scorable1.Object, scorable2.Object);
-            stack
-                .SetupGet(i => i.Frames)
-                    .Returns(Array.Empty<Delegate>());
+            IPostToBot task = new ScoringDialogTask<double>(inner.Object, new TraitsScorable<object, double>(NormalizedTraits.Instance, Comparer<double>.Default, new[] { scorable1.Object, scorable2.Object }));
 
             var token = new CancellationToken();
             scorable1
-                .Setup(s => s.PostAsync(It.IsAny<IPostToBot>(), item, state1, token))
+                .Setup(s => s.PostAsync(item, state1, token))
                 .Returns(Task.FromResult(0));
 
             await task.PostAsync(item, token);
 
             scorable1.Verify();
             scorable2.Verify();
+        }
+
+        [TestMethod]
+        public async Task DialogTask_RememberLastWait()
+        {
+            var dialogOne = new Mock<IDialogFrames<string>>(MockBehavior.Strict);
+            const string testMessage = "foo";
+
+            dialogOne
+                .Setup(d => d.StartAsync(It.IsAny<IDialogContext>()))
+                .Returns<IDialogContext>(async context => { context.Wait(dialogOne.Object.ItemReceived); });
+
+            dialogOne
+                .Setup(d => d.ItemReceived(It.IsAny<IDialogContext>(), It.IsAny<IAwaitable<IMessageActivity>>()))
+                .Returns<IDialogContext, IAwaitable<IMessageActivity>>(async (context, message) =>
+                {
+                    var msg = await message;
+                    var reply = context.MakeMessage();
+                    reply.Text = msg.Text;
+                    await context.PostAsync(reply);
+                    // no need to call context.Wait(...) since frame remembers the last wait from StartAsync(...)
+                });
+
+            Func<IDialog<object>> MakeRoot = () => dialogOne.Object;
+            var toBot = MakeTestMessage();
+
+            using (new FiberTestBase.ResolveMoqAssembly(dialogOne.Object))
+            using (var container = Build(Options.None, dialogOne.Object))
+            {
+                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                {
+                    DialogModule_MakeRoot.Register(scope, MakeRoot);
+                    var task = scope.Resolve<IPostToBot>();
+                    toBot.Text = testMessage;
+                    await task.PostAsync(toBot, CancellationToken.None);
+
+                    dialogOne.Verify(d => d.StartAsync(It.IsAny<IDialogContext>()), Times.Once);
+                    dialogOne.Verify(d => d.ItemReceived(It.IsAny<IDialogContext>(), It.IsAny<IAwaitable<IMessageActivity>>()), Times.Once);
+                }
+
+                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                {
+                    DialogModule_MakeRoot.Register(scope, MakeRoot);
+                    var task = scope.Resolve<IPostToBot>();
+                    toBot.Text = testMessage;
+                    await task.PostAsync(toBot, CancellationToken.None);
+
+                    dialogOne.Verify(d => d.StartAsync(It.IsAny<IDialogContext>()), Times.Once);
+                    dialogOne.Verify(d => d.ItemReceived(It.IsAny<IDialogContext>(), It.IsAny<IAwaitable<IMessageActivity>>()), Times.Exactly(2));
+                }
+            }
+
+        }
+
+        [Serializable]
+        public class DialogOne : IDialog
+        {
+            public async Task StartAsync(IDialogContext context)
+            {
+                context.Wait(ItemReceived);
+            }
+
+            public async Task ItemReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
+            {
+                await context.Forward(new DialogTwo(), DialogTwoDone, await item, CancellationToken.None);
+            }
+
+            public async Task DialogTwoDone(IDialogContext context, IAwaitable<string> item)
+            {
+                var reply = context.MakeMessage();
+                reply.Text = await item;
+                await context.PostAsync(reply);
+                // no need to wait here because of the frame memory
+            }
+        }
+
+        [Serializable]
+        public class DialogTwo : IDialog<string>
+        {
+            public async Task StartAsync(IDialogContext context)
+            {
+                context.Wait(ItemReceived);
+            }
+
+            public async Task ItemReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
+            {
+                var msg = await item;
+                context.Done(msg.Text);
+            }
+        }
+
+
+        [TestMethod]
+        public async Task DialogTask_RememberLastWait_ReturningFromChild()
+        {
+            string testMessage = "foo";
+            Func<IDialog<object>> MakeRoot = () => new DialogOne();
+            var toBot = MakeTestMessage();
+            toBot.Text = testMessage;
+
+
+            using (var container = Build(Options.MockConnectorFactory))
+            {
+                int count = 2;
+                for (int i = 0; i < count; i++)
+                {
+                    using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                    {
+                        DialogModule_MakeRoot.Register(scope, MakeRoot);
+                        var task = scope.Resolve<IPostToBot>();
+                        await task.PostAsync(toBot, CancellationToken.None);
+                    }
+                }
+
+                var queue = container.Resolve<Queue<IMessageActivity>>();
+                Assert.AreEqual(count, queue.Count);
+                Assert.AreEqual(testMessage, queue.Dequeue().Text);
+            }
         }
     }
 }

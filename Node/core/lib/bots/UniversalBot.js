@@ -1,49 +1,71 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var dl = require('./Library');
-var ses = require('../Session');
-var bs = require('../storage/BotStorage');
+var Library_1 = require('./Library');
+var Session_1 = require('../Session');
+var DefaultLocalizer_1 = require('../DefaultLocalizer');
+var BotStorage_1 = require('../storage/BotStorage');
 var consts = require('../consts');
 var utils = require('../utils');
-var events = require('events');
 var async = require('async');
 var UniversalBot = (function (_super) {
     __extends(UniversalBot, _super);
-    function UniversalBot(connector, settings) {
-        _super.call(this);
+    function UniversalBot(connector, defaultDialog, libraryName) {
+        _super.call(this, libraryName || consts.Library.default);
         this.settings = {
             processLimit: 4,
             persistUserData: true,
             persistConversationData: false
         };
         this.connectors = {};
-        this.lib = new dl.Library(consts.Library.default);
         this.mwReceive = [];
         this.mwSend = [];
         this.mwSession = [];
-        this.lib.library(dl.systemLib);
-        if (settings) {
-            for (var name in settings) {
-                if (settings.hasOwnProperty(name)) {
-                    this.set(name, settings[name]);
+        this.localePath('./locale/');
+        this.library(Library_1.systemLib);
+        if (defaultDialog) {
+            if (typeof defaultDialog === 'function' || Array.isArray(defaultDialog)) {
+                this.dialog('/', defaultDialog);
+            }
+            else {
+                var settings = defaultDialog;
+                for (var name in settings) {
+                    if (settings.hasOwnProperty(name)) {
+                        this.set(name, settings[name]);
+                    }
                 }
             }
         }
         if (connector) {
             this.connector(consts.defaultConnector, connector);
-            var asStorage = connector;
-            if (!this.settings.storage &&
-                typeof asStorage.getData === 'function' &&
-                typeof asStorage.saveData === 'function') {
-                this.settings.storage = asStorage;
-            }
         }
     }
+    UniversalBot.prototype.clone = function (copyTo, newName) {
+        var obj = copyTo || new UniversalBot(null, null, newName || this.name);
+        for (var name in this.settings) {
+            if (this.settings.hasOwnProperty(name)) {
+                this.set(name, this.settings[name]);
+            }
+        }
+        for (var channel in this.connectors) {
+            obj.connector(channel, this.connectors[channel]);
+        }
+        obj.mwReceive = this.mwReceive.slice(0);
+        obj.mwSession = this.mwSession.slice(0);
+        obj.mwSend = this.mwSend.slice(0);
+        return _super.prototype.clone.call(this, obj);
+    };
     UniversalBot.prototype.set = function (name, value) {
         this.settings[name] = value;
+        if (value && name === 'localizerSettings') {
+            var settings = value;
+            if (settings.botLocalePath) {
+                this.localePath(settings.botLocalePath);
+            }
+        }
         return this;
     };
     UniversalBot.prototype.get = function (name) {
@@ -55,6 +77,12 @@ var UniversalBot = (function (_super) {
         if (connector) {
             this.connectors[channelId || consts.defaultConnector] = c = connector;
             c.onEvent(function (events, cb) { return _this.receive(events, cb); });
+            var asStorage = connector;
+            if (!this.settings.storage &&
+                typeof asStorage.getData === 'function' &&
+                typeof asStorage.saveData === 'function') {
+                this.settings.storage = asStorage;
+            }
         }
         else if (this.connectors.hasOwnProperty(channelId)) {
             c = this.connectors[channelId];
@@ -63,12 +91,6 @@ var UniversalBot = (function (_super) {
             c = this.connectors[consts.defaultConnector];
         }
         return c;
-    };
-    UniversalBot.prototype.dialog = function (id, dialog) {
-        return this.lib.dialog(id, dialog);
-    };
-    UniversalBot.prototype.library = function (lib) {
-        return this.lib.library(lib);
     };
     UniversalBot.prototype.use = function () {
         var _this = this;
@@ -119,7 +141,7 @@ var UniversalBot = (function (_super) {
                             persistUserData: _this.settings.persistUserData,
                             persistConversationData: _this.settings.persistConversationData
                         };
-                        _this.route(storageCtx, message, _this.settings.defaultDialogId || '/', _this.settings.defaultDialogArgs, cb);
+                        _this.dispatch(storageCtx, message, _this.settings.defaultDialogId || '/', _this.settings.defaultDialogArgs, cb);
                     }
                     else {
                         _this.emit(message.type, message);
@@ -141,18 +163,17 @@ var UniversalBot = (function (_super) {
                 text: '',
                 user: user
             };
-            if (msg.address.conversation) {
-                delete msg.address.conversation;
-            }
             _this.ensureConversation(msg.address, function (adr) {
                 msg.address = adr;
+                var conversationId = msg.address.conversation ? msg.address.conversation.id : null;
                 var storageCtx = {
                     userId: msg.user.id,
+                    conversationId: conversationId,
                     address: msg.address,
                     persistUserData: _this.settings.persistUserData,
                     persistConversationData: _this.settings.persistConversationData
                 };
-                _this.route(storageCtx, msg, dialogId, dialogArgs, _this.errorLogger(done));
+                _this.dispatch(storageCtx, msg, dialogId, dialogArgs, _this.errorLogger(done), true);
             }, _this.errorLogger(done));
         }, this.errorLogger(done));
     };
@@ -189,7 +210,7 @@ var UniversalBot = (function (_super) {
                 }, _this.errorLogger(done));
             }
             else if (done) {
-                done;
+                done(null);
             }
         }));
     };
@@ -216,14 +237,22 @@ var UniversalBot = (function (_super) {
             }, _this.errorLogger(cb));
         }, this.errorLogger(cb));
     };
-    UniversalBot.prototype.route = function (storageCtx, message, dialogId, dialogArgs, done) {
+    UniversalBot.prototype.onDisambiguateRoute = function (handler) {
+        this._onDisambiguateRoute = handler;
+    };
+    UniversalBot.prototype.dispatch = function (storageCtx, message, dialogId, dialogArgs, done, newStack) {
         var _this = this;
+        if (newStack === void 0) { newStack = false; }
         var loadedData;
         this.getStorageData(storageCtx, function (data) {
-            var session = new ses.Session({
-                localizer: _this.settings.localizer,
+            if (!_this.localizer) {
+                var defaultLocale = _this.settings.localizerSettings ? _this.settings.localizerSettings.defaultLocale : null;
+                _this.localizer = new DefaultLocalizer_1.DefaultLocalizer(_this, defaultLocale);
+            }
+            var session = new Session_1.Session({
+                localizer: _this.localizer,
                 autoBatchDelay: _this.settings.autoBatchDelay,
-                library: _this.lib,
+                library: _this,
                 middleware: _this.mwSession,
                 dialogId: dialogId,
                 dialogArgs: dialogArgs,
@@ -246,14 +275,53 @@ var UniversalBot = (function (_super) {
             session.conversationData = data.conversationData || {};
             session.privateConversationData = data.privateConversationData || {};
             if (session.privateConversationData.hasOwnProperty(consts.Data.SessionState)) {
-                sessionState = session.privateConversationData[consts.Data.SessionState];
+                sessionState = newStack ? null : session.privateConversationData[consts.Data.SessionState];
                 delete session.privateConversationData[consts.Data.SessionState];
             }
             loadedData = data;
             _this.emit('routing', session);
-            session.dispatch(sessionState, message);
-            done(null);
+            session.dispatch(sessionState, message, function () { return _this.routeMessage(session, done); });
         }, done);
+    };
+    UniversalBot.prototype.routeMessage = function (session, done) {
+        var _this = this;
+        var context = session.toRecognizeContext();
+        this.recognize(context, function (err, topIntent) {
+            if (topIntent && topIntent.score > 0) {
+                context.intent = topIntent;
+                context.libraryName = _this.name;
+            }
+            var results = Library_1.Library.addRouteResult({ score: 0.0, libraryName: _this.name });
+            async.each(_this.libraryList(), function (lib, cb) {
+                lib.findRoutes(context, function (err, routes) {
+                    if (!err && routes) {
+                        routes.forEach(function (r) { return results = Library_1.Library.addRouteResult(r, results); });
+                    }
+                    cb(err);
+                });
+            }, function (err) {
+                if (!err) {
+                    var disambiguateRoute = function (session, routes) {
+                        var route = Library_1.Library.bestRouteResult(results, session.dialogStack(), _this.name);
+                        if (route) {
+                            _this.library(route.libraryName).selectRoute(session, route);
+                        }
+                        else {
+                            session.routeToActiveDialog();
+                        }
+                    };
+                    if (_this._onDisambiguateRoute) {
+                        disambiguateRoute = _this._onDisambiguateRoute;
+                    }
+                    disambiguateRoute(session, results);
+                    done(null);
+                }
+                else {
+                    session.error(err);
+                    done(err);
+                }
+            });
+        });
     };
     UniversalBot.prototype.eventMiddleware = function (event, middleware, done, error) {
         var i = -1;
@@ -348,7 +416,7 @@ var UniversalBot = (function (_super) {
     };
     UniversalBot.prototype.getStorage = function () {
         if (!this.settings.storage) {
-            this.settings.storage = new bs.MemoryBotStorage();
+            this.settings.storage = new BotStorage_1.MemoryBotStorage();
         }
         return this.settings.storage;
     };
@@ -380,14 +448,15 @@ var UniversalBot = (function (_super) {
         };
     };
     UniversalBot.prototype.emitError = function (err) {
-        var e = err instanceof Error ? err : new Error(err.toString());
+        var m = err.toString();
+        var e = err instanceof Error ? err : new Error(m);
         if (this.listenerCount('error') > 0) {
             this.emit('error', e);
         }
         else {
-            console.log(e.stack);
+            console.error(e.stack);
         }
     };
     return UniversalBot;
-})(events.EventEmitter);
+}(Library_1.Library));
 exports.UniversalBot = UniversalBot;

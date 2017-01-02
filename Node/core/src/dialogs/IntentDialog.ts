@@ -31,73 +31,70 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import ses = require('../Session');
-import dlg = require('./Dialog');
-import actions = require('./DialogAction');
-import consts = require('../consts');
-import logger = require('../logger');
-import async = require('async');
+import { Session } from '../Session';
+import { IDialogWaterfallStep, createWaterfall } from './SimpleDialog';
+import { DialogAction, IDialogHandler } from './DialogAction';
+import { Dialog, IRecognizeDialogContext, IDialogResult } from './Dialog';
+import { IntentRecognizerSet, IIntentRecognizerSetOptions, IIntentRecognizer, IIntentRecognizerResult } from './IntentRecognizerSet';
+import { RegExpRecognizer } from './RegExpRecognizer';
+import * as consts from '../consts';
+import * as logger from '../logger';
+import * as async from 'async';
 
-export enum RecognizeOrder { parallel, series }
+export enum RecognizeMode { onBegin, onBeginIfRoot, onReply }
 
-export interface IIntentDialogOptions {
-    intentThreshold?: number;
-    recognizeOrder?: RecognizeOrder;
-    recognizers?: IIntentRecognizer[];
-    processLimit?: number;
+export interface IIntentDialogOptions extends IIntentRecognizerSetOptions {
+    recognizeMode?: RecognizeMode;
 } 
 
-export interface IIntentRecognizer {
-    recognize(context: dlg.IRecognizeContext, cb: (err: Error, result: IIntentRecognizerResult) => void): void;
+export interface IBeginDialogHandler {
+    (session: Session, args: any, next: (handled: boolean) => void): void; 
 }
 
-export interface IIntentRecognizerResult extends dlg.IRecognizeResult {
-    intent: string;
-    expression?: RegExp;
-    matched?: string; 
-    intents?: IIntent[];
-    entities?: IEntity[]; 
-}
-
-export class IntentDialog extends dlg.Dialog {
+export class IntentDialog extends Dialog {
     private beginDialog: IBeginDialogHandler;
     private handlers = <IIntentHandlerMap>{};
-    private expressions = <RegExp[]>[];
+    private recognizers: IntentRecognizerSet;
+    private recognizeMode: RecognizeMode
 
-    constructor(private options: IIntentDialogOptions = {}) {
+    constructor(options: IIntentDialogOptions = {}) {
         super();
-        if (typeof this.options.intentThreshold !== 'number') {
-            this.options.intentThreshold = 0.1;
+        this.recognizers = new IntentRecognizerSet(options);
+        if(typeof options.recognizeMode !== "undefined") {
+            this.recognizeMode = options.recognizeMode;
         }
-        if (!this.options.hasOwnProperty('recognizeOrder')) {
-            this.options.recognizeOrder = RecognizeOrder.parallel;
-        }
-        if (!this.options.recognizers) {
-            this.options.recognizers = [];
-        }
-        if (!this.options.processLimit) {
-            this.options.processLimit = 4;
+        else {
+            this.recognizeMode = RecognizeMode.onBeginIfRoot;
         }
     }
 
-    public begin<T>(session: ses.Session, args: any): void {
+    public begin<T>(session: Session, args: any): void {
+        var mode = this.recognizeMode;
+        var isRoot = (session.sessionState.callstack.length == 1);
+        var recognize = (mode == RecognizeMode.onBegin || (isRoot && mode == RecognizeMode.onBeginIfRoot)); 
         if (this.beginDialog) {
             try {
                 logger.info(session, 'IntentDialog.begin()');
                 this.beginDialog(session, args, () => {
-                    super.begin(session, args);
+                    if (recognize) {
+                        this.replyReceived(session);
+                    }
                 });
             } catch (e) {
                 this.emitError(session, e);
             }
-        } else {
-            super.begin(session, args);
+        } else if (recognize) {
+            this.replyReceived(session);
         }
     }
 
-    public replyReceived(session: ses.Session, recognizeResult?: dlg.IRecognizeResult): void {
+    public replyReceived(session: Session, recognizeResult?: IIntentRecognizerResult): void {
         if (!recognizeResult) {
-            this.recognize({ message: session.message, activeDialog: true }, (err, result) => {
+            var locale = session.preferredLocale();
+            var context = <IRecognizeDialogContext>session.toRecognizeContext();
+            context.dialogData = session.dialogData;
+            context.activeDialog = true;
+            this.recognize(context, (err, result) => {
                 if (!err) {
                     this.invokeIntent(session, <IIntentRecognizerResult>result);
                 } else {
@@ -109,7 +106,7 @@ export class IntentDialog extends dlg.Dialog {
         }
     }
 
-    public dialogResumed(session: ses.Session, result: dlg.IDialogResult<any>): void {
+    public dialogResumed(session: Session, result: IDialogResult<any>): void {
         var activeIntent: string = session.dialogData[consts.Data.Intent];
         if (activeIntent && this.handlers.hasOwnProperty(activeIntent)) {
             try {
@@ -122,59 +119,8 @@ export class IntentDialog extends dlg.Dialog {
         }
     }
 
-    public recognize(context: dlg.IRecognizeContext, cb: (err: Error, result: dlg.IRecognizeResult) => void): void {
-        function done(err: Error, r: IIntentRecognizerResult) {
-            if (!err) {
-                if (r.score > result.score) {
-                    cb(null, r);
-                } else {
-                    cb(null, result);
-                }
-            } else {
-                cb(err, null);
-            }
-        }
-
-        var result: IIntentRecognizerResult = { score: 0.0, intent: null };
-        if (context.message && context.message.text) {
-            // Match regular expressions first
-            if (this.expressions) {
-                for (var i = 0; i < this.expressions.length; i++ ) {
-                    var exp = this.expressions[i];
-                    var matches = exp.exec(context.message.text);
-                    if (matches && matches.length) {
-                        var matched = matches[0];
-                        var score = matched.length / context.message.text.length;
-                        if (score > result.score && score >= this.options.intentThreshold) {
-                            result.score = score;
-                            result.intent = exp.toString();
-                            result.expression = exp;
-                            result.matched = matched;
-                            if (score == 1.0) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Match using registered recognizers 
-            if (result.score < 1.0 && this.options.recognizers.length) {
-                switch (this.options.recognizeOrder) {
-                    default:
-                    case RecognizeOrder.parallel:
-                        this.recognizeInParallel(context, done);
-                        break;
-                    case RecognizeOrder.series:
-                        this.recognizeInSeries(context, done);
-                        break;
-                }
-            } else {
-                cb(null, result);
-            }
-        } else {
-            cb(null, result);
-        }
+    public recognize(context: IRecognizeDialogContext, cb: (err: Error, result: IIntentRecognizerResult) => void): void {
+        this.recognizers.recognize(context, cb);
     }
 
     public onBegin(handler: IBeginDialogHandler): this {
@@ -182,7 +128,7 @@ export class IntentDialog extends dlg.Dialog {
         return this;
     }
 
-    public matches(intent: string|RegExp, dialogId: string|actions.IDialogWaterfallStep[]|actions.IDialogWaterfallStep, dialogArgs?: any): this {
+    public matches(intent: string|RegExp, dialogId: string|IDialogWaterfallStep[]|IDialogWaterfallStep, dialogArgs?: any): this {
         // Find ID and verify unique
         var id: string;
         if (intent) {
@@ -190,7 +136,7 @@ export class IntentDialog extends dlg.Dialog {
                 id = intent;
             } else {
                 id = (<RegExp>intent).toString();
-                this.expressions.push(intent);
+                this.recognizers.recognizer(new RegExpRecognizer(id, <RegExp>intent));
             }
         }
         if (this.handlers.hasOwnProperty(id)) {
@@ -199,76 +145,41 @@ export class IntentDialog extends dlg.Dialog {
 
         // Register handler
         if (Array.isArray(dialogId)) {
-            this.handlers[id] = actions.waterfall(dialogId);
+            this.handlers[id] = createWaterfall(dialogId);
         } else if (typeof dialogId === 'string') {
-            this.handlers[id] = actions.DialogAction.beginDialog(<string>dialogId, dialogArgs);
+            this.handlers[id] = DialogAction.beginDialog(<string>dialogId, dialogArgs);
         } else {
-            this.handlers[id] = actions.waterfall([<actions.IDialogWaterfallStep>dialogId]);
+            this.handlers[id] = createWaterfall([<IDialogWaterfallStep>dialogId]);
         }
         return this;
     }
 
-    public onDefault(dialogId: string|actions.IDialogWaterfallStep[]|actions.IDialogWaterfallStep, dialogArgs?: any): this {
+    public matchesAny(intents: string[]|RegExp[], dialogId: string|IDialogWaterfallStep[]|IDialogWaterfallStep, dialogArgs?: any): this {
+        for (var i = 0; i < intents.length; i++) {
+            this.matches(intents[i], dialogId, dialogArgs);
+        }
+        return this;
+    }
+
+    public onDefault(dialogId: string|IDialogWaterfallStep[]|IDialogWaterfallStep, dialogArgs?: any): this {
         // Register handler
         if (Array.isArray(dialogId)) {
-            this.handlers[consts.Intents.Default] = actions.waterfall(dialogId);
+            this.handlers[consts.Intents.Default] = createWaterfall(dialogId);
         } else if (typeof dialogId === 'string') {
-            this.handlers[consts.Intents.Default] = actions.DialogAction.beginDialog(<string>dialogId, dialogArgs);
+            this.handlers[consts.Intents.Default] = DialogAction.beginDialog(<string>dialogId, dialogArgs);
         } else {
-            this.handlers[consts.Intents.Default] = actions.waterfall([<actions.IDialogWaterfallStep>dialogId]);
+            this.handlers[consts.Intents.Default] = createWaterfall([<IDialogWaterfallStep>dialogId]);
         }
         return this;
     }
 
-    private recognizeInParallel(context: dlg.IRecognizeContext, done: (err: Error, result: IIntentRecognizerResult) => void): void {
-        var result: IIntentRecognizerResult = { score: 0.0, intent: null };
-        async.eachLimit(this.options.recognizers, this.options.processLimit, (recognizer, cb) => {
-            try {
-                recognizer.recognize(context, (err, r) => {
-                    if (!err && r && r.score > result.score && r.score >= this.options.intentThreshold) {
-                        result = r;
-                    }
-                    cb(err);
-                });
-            } catch (e) {
-                cb(e);
-            }
-        }, (err) => {
-            if (!err) {
-                done(null, result);
-            } else {
-                done(err instanceof Error ? err : new Error(err.toString()), null);
-            }
-        });
+    public recognizer(plugin: IIntentRecognizer): this {
+        // Append recognizer
+        this.recognizers.recognizer(plugin);
+        return this;
     }
 
-    private recognizeInSeries(context: dlg.IRecognizeContext, done: (err: Error, result: IIntentRecognizerResult) => void): void {
-        var i = 0;
-        var result: IIntentRecognizerResult = { score: 0.0, intent: null };
-        async.whilst(() => {
-            return (i < this.options.recognizers.length && result.score < 1.0);
-        }, (cb) => {
-            try {
-                var recognizer = this.options.recognizers[i++];
-                recognizer.recognize(context, (err, r) => {
-                    if (!err && r && r.score > result.score && r.score >= this.options.intentThreshold) {
-                        result = r;
-                    }
-                    cb(err);
-                });
-            } catch (e) {
-                cb(e);
-            }
-        }, (err) => {
-            if (!err) {
-                done(null, result);
-            } else {
-                done(err instanceof Error ? err : new Error(err.toString()), null);
-            }
-        });
-    }
-
-    private invokeIntent(session: ses.Session, recognizeResult: IIntentRecognizerResult): void {
+    private invokeIntent(session: Session, recognizeResult: IIntentRecognizerResult): void {
         var activeIntent: string;
         if (recognizeResult.intent && this.handlers.hasOwnProperty(recognizeResult.intent)) {
             logger.info(session, 'IntentDialog.matches(%s)', recognizeResult.intent);
@@ -289,8 +200,9 @@ export class IntentDialog extends dlg.Dialog {
         }
     }
 
-    private emitError(session: ses.Session, err: Error): void {
-        err = err instanceof Error ? err : new Error(err.toString());
+    private emitError(session: Session, err: Error): void {
+        var m = err.toString();
+        err = err instanceof Error ? err : new Error(m);
         session.error(err);
     }
 }

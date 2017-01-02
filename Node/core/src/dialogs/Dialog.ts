@@ -31,14 +31,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-export interface IDialog {
-    begin<T>(session: ISession, args?: T): void;
-    replyReceived(session: ISession, recognizeResult?: IRecognizeResult): void;
-    dialogResumed(session: ISession, result: any): void;
-    recognize(context: IRecognizeContext, cb: (err: Error, result: IRecognizeResult) => void): void
-}
+import { Session } from '../Session';
+import { IRecognizeContext, IRecognizeResult, IIntentRecognizerResult } from './IntentRecognizerSet';
+import { ActionSet } from './ActionSet';
 
-export enum ResumeReason { completed, notCompleted, canceled, back, forward }
+export enum ResumeReason { completed, notCompleted, canceled, back, forward, reprompt }
 
 export interface IDialogResult<T> {
     resumed: ResumeReason;
@@ -47,29 +44,26 @@ export interface IDialogResult<T> {
     response?: T;
 }
 
-export interface IRecognizeContext {
-    message: IMessage;
+export interface IRecognizeDialogContext extends IRecognizeContext {
     activeDialog: boolean;
+    dialogData: any;
+    intent?: IIntentRecognizerResult;
 }
 
-export interface IRecognizeResult {
-    score: number;
-}
-
-export abstract class Dialog implements IDialog {
-    public begin<T>(session: ISession, args?: T): void {
+export abstract class Dialog extends ActionSet {
+    public begin<T>(session: Session, args?: T): void {
         this.replyReceived(session);
     }
 
-    abstract replyReceived(session: ISession, recognizeResult?: IRecognizeResult): void;
+    abstract replyReceived(session: Session, recognizeResult?: IRecognizeResult): void;
 
-    public dialogResumed<T>(session: ISession, result: IDialogResult<T>): void {
+    public dialogResumed<T>(session: Session, result: IDialogResult<T>): void {
         if (result.error) {
             session.error(result.error);
         } 
     }
 
-    public recognize(context: IRecognizeContext, cb: (err: Error, result: IRecognizeResult) => void): void {
-        cb(null, { score: 0.0 });
+    public recognize(context: IRecognizeDialogContext, cb: (err: Error, result: IRecognizeResult) => void): void {
+        cb(null, { score: 0.1 });
     }
 }

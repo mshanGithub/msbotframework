@@ -31,32 +31,37 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import dl = require('./bots/Library');
-import dlg = require('./dialogs/Dialog');
-import consts = require('./consts');
-import sprintf = require('sprintf-js');
-import events = require('events');
-import utils = require('./utils');
-import msg = require('./Message');
-import logger = require('./logger');
+import { Library, IRouteResult } from './bots/Library';
+import { Dialog, IDialogResult, ResumeReason, IRecognizeDialogContext } from './dialogs/Dialog';
+import { IRecognizeResult, IRecognizeContext } from './dialogs/IntentRecognizerSet';
+import { ActionSet, IFindActionRouteContext, IActionRouteData } from './dialogs/ActionSet';
+import { Message } from './Message';
+import { DefaultLocalizer } from './DefaultLocalizer';
+import * as consts from './consts';
+import * as utils from './utils';
+import * as logger from './logger';
+import * as sprintf from 'sprintf-js';
+import * as events from 'events';
+import * as async from 'async';
 
 export interface ISessionOptions {
     onSave: (done: (err: Error) => void) => void;
     onSend: (messages: IMessage[], done: (err: Error) => void) => void;
-    library: dl.Library;
+    library: Library;
+    localizer: ILocalizer;
     middleware: ISessionMiddleware[];
     dialogId: string;
     dialogArgs?: any;
-    localizer?: ILocalizer;
     autoBatchDelay?: number;
     dialogErrorMessage?: string|string[]|IMessage|IIsMessage;
+    actions?: ActionSet;
 }
 
 export interface ISessionMiddleware {
     (session: Session, next: Function): void;
 }
 
-export class Session extends events.EventEmitter implements ISession {
+export class Session extends events.EventEmitter {
     private msgSent = false;
     private _isReset = false;
     private lastSendTime = new Date().getTime();
@@ -64,18 +69,37 @@ export class Session extends events.EventEmitter implements ISession {
     private batchTimer: NodeJS.Timer;
     private batchStarted = false;
     private sendingBatch = false;
+    private inMiddleware = false;
+    private _locale:string = null;
 
     constructor(protected options: ISessionOptions) {
         super();
         this.library = options.library;
+        this.localizer = options.localizer;
         if (typeof this.options.autoBatchDelay !== 'number') {
             this.options.autoBatchDelay = 250;  // 250ms delay
         }
     }
 
-    public dispatch(sessionState: ISessionState, message: IMessage): ISession {
+    public toRecognizeContext(): IRecognizeContext {
+        return {
+            message: this.message,
+            userData: this.userData,
+            conversationData: this.conversationData,
+            privateConversationData: this.privateConversationData,
+            localizer: this.localizer,
+            dialogStack: () => { return this.dialogStack(); },
+            preferredLocale: () => { return this.preferredLocale(); },
+            gettext: (...args: any[]) => { return Session.prototype.gettext.call(this, args); }, 
+            ngettext: (...args: any[]) => { return Session.prototype.ngettext.call(this, args); }, 
+            locale: this.preferredLocale()
+        };
+    }
+
+    public dispatch(sessionState: ISessionState, message: IMessage, done: Function): this {
         var index = 0;
         var session = this;
+        var now = new Date().getTime();
         var middleware = this.options.middleware || [];
         var next = () => {
             var handler = index < middleware.length ? middleware[index] : null;
@@ -83,51 +107,97 @@ export class Session extends events.EventEmitter implements ISession {
                 index++;
                 handler(session, next);
             } else {
-                this.routeMessage();
+                this.inMiddleware = false;
+                this.sessionState.lastAccess = now; // Set after middleware runs so you can expire old sessions.
+                done();
             }
         };
 
         // Make sure dialogData is properly initialized
-        this.sessionState = sessionState || { callstack: [], lastAccess: 0, version: 0.0 };
-        this.sessionState.lastAccess = new Date().getTime();
+        this.sessionState = sessionState || { callstack: [], lastAccess: now, version: 0.0 };
         var cur = this.curDialog();
         if (cur) {
             this.dialogData = cur.state;
         }
 
         // Dispatch message
+        this.inMiddleware = true;
         this.message = <IMessage>(message || { text: '' });
         if (!this.message.type) {
             this.message.type = consts.messageType;
         }
-        next();
+
+        // Ensure localized prompts are loaded
+        var locale = this.preferredLocale();
+        this.localizer.load(locale, (err:Error) => {
+            if (err) {
+                    this.error(err);
+            } else {
+                next();
+        }});
         return this;
     }
 
-    public library: dl.Library;
+    public library: Library;
     public sessionState: ISessionState;
     public message: IMessage;
     public userData: any;
     public conversationData: any;
     public privateConversationData: any;
     public dialogData: any;
+    public localizer:ILocalizer = null;
 
-    public error(err: Error): ISession {
-        err = err instanceof Error ? err : new Error(err.toString());
+    /** An error has occured. */
+    public error(err: Error): this {
         logger.info(this, 'session.error()');
-        this.endConversation(this.options.dialogErrorMessage || 'Oops. Something went wrong and we need to start over.');
+
+        // End conversation with a message
+        if (this.options.dialogErrorMessage) {
+            this.endConversation(this.options.dialogErrorMessage);
+        } else {
+            var locale = this.preferredLocale();
+            this.endConversation(this.localizer.gettext(locale, 'default_error', consts.Library.system));
+        }
+
+        // Log error
+        var m = err.toString();
+        err = err instanceof Error ? err : new Error(m);
         this.emit('error', err);
         return this;
     }
 
-    public gettext(messageid: string, ...args: any[]): string {
-        return this.vgettext(messageid, args);
+    /** Gets/sets the users preferred locale. */
+    public preferredLocale(locale?: string, callback?: ErrorCallback): string {
+        if (locale) {
+            this._locale = locale;
+            if (this.userData) {
+                this.userData[consts.Data.PreferredLocale] = locale;
+            }
+            if (this.localizer) {
+                this.localizer.load(locale, callback);
+            }
+        } else if (!this._locale) {
+            if (this.userData && this.userData[consts.Data.PreferredLocale]) {
+                this._locale = this.userData[consts.Data.PreferredLocale];
+            } else if (this.message && this.message.textLocale) {
+                this._locale = this.message.textLocale;
+            } else if (this.localizer) {
+                this._locale = this.localizer.defaultLocale();
+            }
+        }        
+        return this._locale;
     }
 
+    /** Gets and formats a localized text string. */
+    public gettext(messageid: string, ...args: any[]): string {
+        return this.vgettext(this.curLibraryName(), messageid, args);
+    }
+
+    /** Gets and formats the singular/plural form of a localized text string. */
     public ngettext(messageid: string, messageid_plural: string, count: number): string {
         var tmpl: string;
-        if (this.options.localizer && this.message) {
-            tmpl = this.options.localizer.ngettext(this.message.textLocale || '', messageid, messageid_plural, count);
+        if (this.localizer && this.message) {
+            tmpl = this.localizer.ngettext(this.preferredLocale(), messageid, messageid_plural, count, this.curLibraryName());
         } else if (count == 1) {
             tmpl = messageid;
         } else {
@@ -136,18 +206,26 @@ export class Session extends events.EventEmitter implements ISession {
         return sprintf.sprintf(tmpl, count);
     }
     
+    /** Used to manually save the current session state. */
     public save(): this {
         logger.info(this, 'session.save()');            
         this.startBatch();
         return this;
     }
 
+    /** Sends a message to the user. */
     public send(message: string|string[]|IMessage|IIsMessage, ...args: any[]): this {
+        args.unshift(this.curLibraryName(), message);
+        return Session.prototype.sendLocalized.apply(this, args);
+    }
+
+    /** Sends a message to a user using a specific localization namespace. */
+    public sendLocalized(localizationNamespace: string, message: string|string[]|IMessage|IIsMessage, ...args: any[]): this {
         this.msgSent = true;
         if (message) {
             var m: IMessage;
             if (typeof message == 'string' || Array.isArray(message)) {
-                m = this.createMessage(<any>message, args);
+                m = this.createMessage(localizationNamespace, <string|string[]>message, args);
             } else if ((<IIsMessage>message).toMessage) {
                 m = (<IIsMessage>message).toMessage();
             } else {
@@ -161,11 +239,24 @@ export class Session extends events.EventEmitter implements ISession {
         return this;
     }
 
+    /** Sends a typing indicator to the user. */
+    public sendTyping(): this {
+        this.msgSent = true;
+        var m = <IMessage>{ type: 'typing' };
+        this.prepareMessage(m);
+        this.batch.push(m);
+        logger.info(this, 'session.sendTyping()');            
+        this.sendBatch();
+        return this;        
+    }
+
+    /** Returns true if at least one message has been sent. */
     public messageSent(): boolean {
         return this.msgSent;
     }
 
-    public beginDialog<T>(id: string, args?: T): ISession {
+    /** Begins a new dialog. */
+    public beginDialog(id: string, args?: any): this {
         // Find dialog
         logger.info(this, 'session.beginDialog(%s)', id);            
         var id = this.resolveDialogId(id);
@@ -187,7 +278,8 @@ export class Session extends events.EventEmitter implements ISession {
         return this;
     }
 
-    public replaceDialog<T>(id: string, args?: T): ISession {
+    /** Replaces the existing dialog with a new one.  */
+    public replaceDialog(id: string, args?: any): this {
         // Find dialog
         logger.info(this, 'session.replaceDialog(%s)', id);            
         var id = this.resolveDialogId(id);
@@ -204,12 +296,13 @@ export class Session extends events.EventEmitter implements ISession {
         return this;
     }
 
-    public endConversation(message?: string|string[]|IMessage|IIsMessage, ...args: any[]): ISession {
+    /** Ends the conversation with the user. */
+    public endConversation(message?: string|string[]|IMessage|IIsMessage, ...args: any[]): this {
         // Unpack message
         var m: IMessage;
         if (message) {
             if (typeof message == 'string' || Array.isArray(message)) {
-                m = this.createMessage(<any>message, args);
+                m = this.createMessage(this.curLibraryName(), <any>message, args);
             } else if ((<IIsMessage>message).toMessage) {
                 m = (<IIsMessage>message).toMessage();
             } else {
@@ -231,7 +324,8 @@ export class Session extends events.EventEmitter implements ISession {
         return this;
     }
 
-    public endDialog(message?: string|string[]|IMessage|IIsMessage, ...args: any[]): ISession {
+    /** Ends the current dialog. */
+    public endDialog(message?: string|string[]|IMessage|IIsMessage, ...args: any[]): this {
         // Check for result being passed
         if (typeof message === 'object' && (message.hasOwnProperty('response') || message.hasOwnProperty('resumed') || message.hasOwnProperty('error'))) {
             console.warn('Returning results via Session.endDialog() is deprecated. Use Session.endDialogWithResult() instead.')            
@@ -239,80 +333,103 @@ export class Session extends events.EventEmitter implements ISession {
         }
 
         // Validate callstack
-        // - Protect against too many calls to endDialog()
         var cur = this.curDialog();
-        if (!cur) {
-            console.error('ERROR: Too many calls to session.endDialog().')
-            return this;
-        }
-        
-        // Unpack message
-        var m: IMessage;
-        if (message) {
-            if (typeof message == 'string' || Array.isArray(message)) {
-                m = this.createMessage(<any>message, args);
-            } else if ((<IIsMessage>message).toMessage) {
-                m = (<IIsMessage>message).toMessage();
-            } else {
-                m = <IMessage>message;
-            }
-            this.msgSent = true;
-            this.prepareMessage(m);
-            this.batch.push(m);
-        }
-                
-        // Pop dialog off the stack and then resume parent.
-        logger.info(this, 'session.endDialog()');            
-        var childId = cur.id;
-        cur = this.popDialog();
-        this.startBatch();
         if (cur) {
-            var dialog = this.findDialog(cur.id);
-            if (dialog) {
-                dialog.dialogResumed(this, { resumed: dlg.ResumeReason.completed, response: true, childId: childId });
-            } else {
-                // Bad dialog on the stack so just end it.
-                // - Because of the stack validation we should never actually get here.
-                this.error(new Error("ERROR: Can't resume missing parent dialog '" + cur.id + "'."));
+            // Unpack message
+            var m: IMessage;
+            if (message) {
+                if (typeof message == 'string' || Array.isArray(message)) {
+                    m = this.createMessage(this.curLibraryName(), <any>message, args);
+                } else if ((<IIsMessage>message).toMessage) {
+                    m = (<IIsMessage>message).toMessage();
+                } else {
+                    m = <IMessage>message;
+                }
+                this.msgSent = true;
+                this.prepareMessage(m);
+                this.batch.push(m);
+            }
+                    
+            // Pop dialog off the stack and then resume parent.
+            logger.info(this, 'session.endDialog()');            
+            var childId = cur.id;
+            cur = this.popDialog();
+            this.startBatch();
+            if (cur) {
+                var dialog = this.findDialog(cur.id);
+                if (dialog) {
+                    dialog.dialogResumed(this, { resumed: ResumeReason.completed, response: true, childId: childId });
+                } else {
+                    // Bad dialog on the stack so just end it.
+                    // - Because of the stack validation we should never actually get here.
+                    this.error(new Error("Can't resume missing parent dialog '" + cur.id + "'."));
+                }
             }
         }
         return this;
     }
 
-    public endDialogWithResult(result?: dlg.IDialogResult<any>): ISession {
+    /** Ends the current dialog and returns a value to the caller. */
+    public endDialogWithResult(result?: IDialogResult<any>): this {
         // Validate callstack
-        // - Protect against too many calls to endDialogWithResult()
         var cur = this.curDialog();
-        if (!cur) {
-            console.error('ERROR: Too many calls to session.endDialog().')
-            return this;
-        }
-        
-        // Validate result
-        result = result || <any>{};
-        if (!result.hasOwnProperty('resumed')) {
-            result.resumed = dlg.ResumeReason.completed;
-        }
-        result.childId = cur.id;
-                
-        // Pop dialog off the stack and resume parent dlg.
-        logger.info(this, 'session.endDialogWithResult()');            
-        cur = this.popDialog();
-        this.startBatch();
         if (cur) {
-            var dialog = this.findDialog(cur.id);
-            if (dialog) {
-                dialog.dialogResumed(this, result);
-            } else {
-                // Bad dialog on the stack so just end it.
-                // - Because of the stack validation we should never actually get here.
-                this.error(new Error("ERROR: Can't resume missing parent dialog '" + cur.id + "'."));
+            // Validate result
+            result = result || <any>{};
+            if (!result.hasOwnProperty('resumed')) {
+                result.resumed = ResumeReason.completed;
+            }
+            result.childId = cur.id;
+                    
+            // Pop dialog off the stack and resume parent dlg.
+            logger.info(this, 'session.endDialogWithResult()');            
+            cur = this.popDialog();
+            this.startBatch();
+            if (cur) {
+                var dialog = this.findDialog(cur.id);
+                if (dialog) {
+                    dialog.dialogResumed(this, result);
+                } else {
+                    // Bad dialog on the stack so just end it.
+                    // - Because of the stack validation we should never actually get here.
+                    this.error(new Error("Can't resume missing parent dialog '" + cur.id + "'."));
+                }
             }
         }
         return this;
     }
 
-    public reset(dialogId?: string, dialogArgs?: any): ISession {
+    /** Cancels a specific dialog on teh stack and optionally replaces it with a new one. */
+    public cancelDialog(dialogId: string|number, replaceWithId?: string, replaceWithArgs?: any): this {
+        // Delete dialog(s)
+        var childId = typeof dialogId === 'number' ? this.sessionState.callstack[<number>dialogId].id : <string>dialogId;
+        var cur = this.deleteDialogs(dialogId);
+        if (replaceWithId) {
+            logger.info(this, 'session.cancelDialog(%s)', replaceWithId);            
+            var id = this.resolveDialogId(replaceWithId);
+            var dialog = this.findDialog(id);
+            this.pushDialog({ id: id, state: {} });
+            this.startBatch();
+            dialog.begin(this, replaceWithArgs);
+        } else {
+            logger.info(this, 'session.cancelDialog()');            
+            this.startBatch();
+            if (cur) {
+                var dialog = this.findDialog(cur.id);
+                if (dialog) {
+                    dialog.dialogResumed(this, { resumed: ResumeReason.canceled, response: null, childId: childId });
+                } else {
+                    // Bad dialog on the stack so just end it.
+                    // - Because of the stack validation we should never actually get here.
+                    this.error(new Error("Can't resume missing parent dialog '" + cur.id + "'."));
+                }
+            }
+        }
+        return this;
+    }
+
+    /** Resets the dialog stack and starts a new dialog. */
+    public reset(dialogId?: string, dialogArgs?: any): this {
         logger.info(this, 'session.reset()');            
         this._isReset = true;
         this.sessionState.callstack = [];
@@ -324,11 +441,13 @@ export class Session extends events.EventEmitter implements ISession {
         return this;
     }
 
+    /** Returns true if the session has been reset. */
     public isReset(): boolean {
         return this._isReset;
     }
 
-    public sendBatch(): void {
+    /** Manually triggers sending of the current auto-batch. */
+    public sendBatch(callback?: (err: Error) => void): void {
         logger.info(this, 'session.sendBatch() sending %d messages', this.batch.length);            
         if (this.sendingBatch) {
             return;
@@ -347,20 +466,153 @@ export class Session extends events.EventEmitter implements ISession {
             cur.state = this.dialogData;
         }
         this.options.onSave((err) => {
-            if (!err && batch.length) {
-                this.options.onSend(batch, (err) => {
+            if (!err) {
+                if (batch.length) {
+                    this.options.onSend(batch, (err) => {
+                        this.sendingBatch = false;
+                        if (this.batchStarted) {
+                            this.startBatch();
+                        }
+                        if (callback) {
+                            callback(err);
+                        }
+                    });
+                } else {
                     this.sendingBatch = false;
                     if (this.batchStarted) {
                         this.startBatch();
                     }
-                });
+                    if (callback) {
+                        callback(err);
+                    }
+                }
             } else {
                 this.sendingBatch = false;
-                if (this.batchStarted) {
-                    this.startBatch();
+                switch ((<any>err).code || '') {
+                    case consts.Errors.EBADMSG:
+                    case consts.Errors.EMSGSIZE:
+                        // Something wrong with state so reset everything 
+                        this.userData = {};
+                        this.batch = [];
+                        this.endConversation(this.options.dialogErrorMessage || 'Oops. Something went wrong and we need to start over.');
+                        break;
+                } 
+                if (callback) {
+                    callback(err);
                 }
             }
         });
+    }
+
+    //-------------------------------------------------------------------------
+    // DialogStack Management
+    //-------------------------------------------------------------------------
+
+    /** Gets/sets the current dialog stack. A copy of the current stack will be returned to the caller. */
+    public dialogStack(newStack?: IDialogState[]): IDialogState[] {
+        var stack: IDialogState[];
+        if (newStack) {
+            // Update stack and dialog data.
+            stack = this.sessionState.callstack = newStack;
+            this.dialogData = stack.length > 0 ? stack[stack.length - 1].state : null;
+        } else {
+            // Copy over dialog data to stack.
+            stack = this.sessionState.callstack || [];
+            if (stack.length > 0) {
+                stack[stack.length - 1].state = this.dialogData || {};
+            }
+        }
+        return stack.slice(0);
+    }
+
+    /** Clears the current dialog stack. */
+    public clearDialogStack(): this {
+        this.sessionState.callstack = [];
+        this.dialogData = null;
+        return this;
+    }
+    
+    /** Enumerates all a stacks dialog entries in either a forward or reverse direction. */
+    static forEachDialogStackEntry(stack: IDialogState[], reverse: boolean, fn: (entry: IDialogState, index: number) => void): void {
+        var step = reverse ? -1 : 1;
+        var l = stack ? stack.length : 0;
+        for (var i = step > 0 ? 0 : l - 1; i >= 0 && i < l; i += step) {
+            fn(stack[i], i);
+        }
+    }
+
+    /** Searches a dialog stack for a specific dialog, in either a forward or reverse direction, returning its index. */
+    static findDialogStackEntry(stack: IDialogState[], dialogId: string, reverse = false): number {
+        var step = reverse ? -1 : 1;
+        var l = stack ? stack.length : 0;
+        for (var i = step > 0 ? 0 : l - 1; i >= 0 && i < l; i += step) {
+            if (stack[i].id === dialogId) {
+                return i;
+            }
+        }
+        return -1;
+    } 
+
+    /** Returns a stacks active dialog or null. */
+    static activeDialogStackEntry(stack: IDialogState[]): IDialogState {
+        return stack && stack.length > 0 ? stack[stack.length - 1] : null;
+    }
+
+    /** Pushes a new dialog onto a stack and returns it as the active dialog. */
+    static pushDialogStackEntry(stack: IDialogState[], entry: IDialogState): IDialogState {
+        if (!entry.state) {
+            entry.state = {};
+        }
+        stack = stack || []
+        stack.push(entry);
+        return entry;
+    }
+
+    /** Pops the active dialog off a stack and returns the new one if the stack isn't empty.  */
+    static popDialogStackEntry(stack: IDialogState[]): IDialogState {
+        if (stack && stack.length > 0) {
+            stack.pop();
+        }
+        return Session.activeDialogStackEntry(stack);
+    }
+
+    /** Deletes all dialog stack entries starting with the specified index and returns the new active dialog. */
+    static pruneDialogStack(stack: IDialogState[], start: number): IDialogState {
+        if (stack && stack.length > 0) {
+            stack.splice(start);
+        }
+        return Session.activeDialogStackEntry(stack);
+    }
+
+    /** Ensures that all of the entries on a dialog stack reference valid dialogs within a library hierarchy. */
+    static validateDialogStack(stack: IDialogState[], root: Library): boolean {
+        Session.forEachDialogStackEntry(stack, false, (entry) => {
+            var pair = entry.id.split(':');
+            if (!root.findDialog(pair[0], pair[1])) {
+                return false;
+            }
+        });
+        return true;
+    }
+
+    //-------------------------------------------------------------------------
+    // Message Routing
+    //-------------------------------------------------------------------------
+
+    /** Dispatches handling of the current message to the active dialog stack entry. */
+    public routeToActiveDialog(recognizeResult?: IRecognizeResult): void {
+        var dialogStack = this.dialogStack();
+        if (Session.validateDialogStack(dialogStack, this.library)) {
+            var active = Session.activeDialogStackEntry(dialogStack);
+            if (active) {
+                var dialog = this.findDialog(active.id);
+                dialog.replyReceived(this, recognizeResult);
+            } else {
+                this.beginDialog(this.options.dialogId, this.options.dialogArgs);
+            }
+        } else {
+            this.error(new Error('Invalid Dialog Stack.'));
+        }
     }
 
     //-----------------------------------------------------
@@ -379,10 +631,9 @@ export class Session extends events.EventEmitter implements ISession {
         }
     }
 
-    private createMessage(text: string|string[], args?: any[]): IMessage {
-        args.unshift(text);
-        var message = new msg.Message(this);
-        msg.Message.prototype.text.apply(message, args);
+    private createMessage(localizationNamespace: string, text: string|string[], args?: any[]): IMessage {
+        var message = new Message(this)
+            .text(this.vgettext(localizationNamespace, Message.randomPrompt(text), args));
         return message.toMessage();
     }
     
@@ -398,25 +649,11 @@ export class Session extends events.EventEmitter implements ISession {
         }
     }
 
-    private routeMessage(): void {
-        // Route message to dlg.
-        var cur = this.curDialog();
-        if (!cur) {
-            this.beginDialog(this.options.dialogId, this.options.dialogArgs);
-        } else if (this.validateCallstack()) {
-            var dialog = this.findDialog(cur.id);
-            this.dialogData = cur.state;
-            dialog.replyReceived(this);
-        } else {
-            console.warn('Callstack is invalid, resetting session.');
-            this.reset(this.options.dialogId, this.options.dialogArgs);
-        }
-    }
-
-    private vgettext(messageid: string, args?: any[]): string {
+ 
+    private vgettext(localizationNamespace: string, messageid: string, args?: any[]): string {
         var tmpl: string;
-        if (this.options.localizer && this.message) {
-            tmpl = this.options.localizer.gettext(this.message.textLocale || '', messageid);
+        if (this.localizer && this.message) {
+            tmpl = this.localizer.gettext(this.preferredLocale(), messageid, localizationNamespace);
         } else {
             tmpl = messageid;
         }
@@ -436,17 +673,17 @@ export class Session extends events.EventEmitter implements ISession {
     }
 
     private resolveDialogId(id: string) {
-        if (id.indexOf(':') >= 0) {
-            return id;
-        }
-        var cur = this.curDialog();
-        var libName = cur ? cur.id.split(':')[0] : consts.Library.default;
-        return libName + ':' + id;
+        return id.indexOf(':') >= 0 ? id : this.curLibraryName() + ':' + id;
     }
 
-    private findDialog(id: string): dlg.Dialog {
+    private curLibraryName(): string {
+        var cur = this.curDialog();
+        return cur && !this.inMiddleware ? cur.id.split(':')[0] : this.library.name;
+    }
+
+    private findDialog(id: string): Dialog {
         var parts = id.split(':');
-        return this.library.findDialog(parts[0] || consts.Library.default, parts[1]);
+        return this.library.findDialog(parts[0] || this.library.name, parts[1]);
     }
 
     private pushDialog(ds: IDialogState): IDialogState {
@@ -465,6 +702,28 @@ export class Session extends events.EventEmitter implements ISession {
         if (ss.callstack.length > 0) {
             ss.callstack.pop();
         }
+        var cur = this.curDialog();
+        this.dialogData = cur ? cur.state : null;
+        return cur;
+    }
+
+    private deleteDialogs(dialogId?: string|number): IDialogState {
+        var ss = this.sessionState;
+        var index = -1;
+        if (typeof dialogId === 'string') {
+            for (var i = ss.callstack.length - 1; i >= 0; i--) {
+                if (ss.callstack[i].id == dialogId) {
+                    index = i;
+                    break;
+                }
+            }
+        } else {
+            index = <number>dialogId;
+        }
+        if (index < 0 && index < ss.callstack.length) {
+            throw new Error('Unable to cancel dialog. Dialog[' + dialogId + '] not found.');
+        }
+        ss.callstack.splice(index);
         var cur = this.curDialog();
         this.dialogData = cur ? cur.state : null;
         return cur;

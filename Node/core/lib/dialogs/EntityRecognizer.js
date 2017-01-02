@@ -1,3 +1,4 @@
+"use strict";
 var utils = require('../utils');
 var chrono = require('chrono-node');
 var EntityRecognizer = (function () {
@@ -119,6 +120,10 @@ var EntityRecognizer = (function () {
             if (match) {
                 return Number(match[0]);
             }
+            var oWordMatch = this.findBestMatch(this.ordinalWords, entity.entity, 1.0);
+            if (oWordMatch) {
+                return oWordMatch.index + 1;
+            }
         }
         return Number.NaN;
     };
@@ -166,7 +171,7 @@ var EntityRecognizer = (function () {
                 });
                 score = matched.length / value.length;
             }
-            if (score > threshold) {
+            if (score >= threshold) {
                 matches.push({ index: index, entity: choice, score: score });
             }
         });
@@ -197,6 +202,7 @@ var EntityRecognizer = (function () {
     EntityRecognizer.yesExp = /^(1|y|yes|yep|sure|ok|true)/i;
     EntityRecognizer.noExp = /^(2|n|no|nope|not|false)/i;
     EntityRecognizer.numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
+    EntityRecognizer.ordinalWords = 'first|second|third|fourth|fifth|sixth|seventh|eigth|ninth|tenth';
     return EntityRecognizer;
-})();
+}());
 exports.EntityRecognizer = EntityRecognizer;

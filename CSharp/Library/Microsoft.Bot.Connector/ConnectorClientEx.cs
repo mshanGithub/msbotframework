@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 
 namespace Microsoft.Bot.Connector
@@ -35,7 +36,14 @@ namespace Microsoft.Bot.Connector
         {
             var handlers = new List<DelegatingHandler>(srcHandlers);
             handlers.Add(new JwtTokenRefresher(credentials));
-            return handlers.ToArray(); 
+            return handlers.ToArray();
+        }
+
+        // client defaults to sending the expect: continue header, which isn't very efficient, 
+        partial void CustomInitialize()
+        {
+            var servicePoint = ServicePointManager.FindServicePoint(this.BaseUri);
+            servicePoint.Expect100Continue = false;
         }
     }
 }

@@ -1,4 +1,5 @@
-var msg = require('../Message');
+"use strict";
+var Message_1 = require('../Message');
 var CardAction = (function () {
     function CardAction(session) {
         this.session = session;
@@ -16,7 +17,7 @@ var CardAction = (function () {
             args[_i - 1] = arguments[_i];
         }
         if (text) {
-            this.data.title = msg.fmtText(this.session, text, args);
+            this.data.title = Message_1.fmtText(this.session, text, args);
         }
         return this;
     };
@@ -59,6 +60,13 @@ var CardAction = (function () {
     CardAction.downloadFile = function (session, url, title) {
         return new CardAction(session).type('downloadFile').value(url).title(title || "Click to download file");
     };
+    CardAction.dialogAction = function (session, action, data, title) {
+        var value = 'action?' + action;
+        if (data) {
+            value += '=' + data;
+        }
+        return new CardAction(session).type('postBack').value(value).title(title || "Click to send response to bot");
+    };
     return CardAction;
-})();
+}());
 exports.CardAction = CardAction;

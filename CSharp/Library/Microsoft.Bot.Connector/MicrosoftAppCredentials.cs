@@ -1,30 +1,46 @@
-﻿using System;
+﻿using Microsoft.Rest;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Threading;
-using System.Web;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Microsoft.Bot.Connector
 {
-    public class MicrosoftAppCredentials : BearerTokenCredentials
+    public class MicrosoftAppCredentials : ServiceClientCredentials
     {
+        /// <summary>
+        /// The key for Microsoft app Id.
+        /// </summary>
+        public const string MicrosoftAppIdKey = "MicrosoftAppId";
+
+        /// <summary>
+        /// The key for Microsoft app Password.
+        /// </summary>
+        public const string MicrosoftAppPasswordKey = "MicrosoftAppPassword";
+
+        protected static ConcurrentDictionary<string, DateTime> TrustedHostNames = new ConcurrentDictionary<string, DateTime>(
+                                                                                        new Dictionary<string, DateTime>() {
+                                                                                            { "state.botframework.com", DateTime.MaxValue }
+                                                                                        });
+
         public MicrosoftAppCredentials(string appId = null, string password = null)
-            : base(null)
         {
-            MicrosoftAppId = appId ?? ConfigurationManager.AppSettings["MicrosoftAppId"];
-            MicrosoftAppPassword = password ?? ConfigurationManager.AppSettings["MicrosoftAppPassword"];
+            MicrosoftAppId = appId ?? ConfigurationManager.AppSettings[MicrosoftAppIdKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppIdKey, EnvironmentVariableTarget.Process);
+            MicrosoftAppPassword = password ?? ConfigurationManager.AppSettings[MicrosoftAppPasswordKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppPasswordKey, EnvironmentVariableTarget.Process);
             TokenCacheKey = $"{MicrosoftAppId}-cache";
         }
 
         public string MicrosoftAppId { get; set; }
-        public string MicrosoftAppIdSettingName { get; set; }
         public string MicrosoftAppPassword { get; set; }
-        public string MicrosoftAppPasswordSettingName { get; set; }
 
         public virtual string OAuthEndpoint { get { return "https://login.microsoftonline.com/common/oauth2/v2.0/token"; } }
         public virtual string OAuthScope { get { return "https://graph.microsoft.com/.default"; } }
@@ -32,18 +48,55 @@ namespace Microsoft.Bot.Connector
         protected readonly string TokenCacheKey;
 
         /// <summary>
+        /// Adds the host of service url to <see cref="MicrosoftAppCredentials"/> trusted hosts.
+        /// </summary>
+        /// <param name="serviceUrl">The service url</param>
+        /// <param name="expirationTime">The expiration time after which this service url is not trusted anymore</param>
+        /// <remarks>If expiration time is not provided, the expiration time will DateTime.UtcNow.AddDays(1).</remarks>
+        public static void TrustServiceUrl(string serviceUrl, DateTime expirationTime = default(DateTime))
+        {
+            try
+            {
+                if (expirationTime == default(DateTime))
+                {
+                    // by default the service url is valid for one day
+                    TrustedHostNames.AddOrUpdate(new Uri(serviceUrl).Host, DateTime.UtcNow.AddDays(1), (key, oldValue) => DateTime.UtcNow.AddDays(1));
+                }
+                else
+                {
+                    TrustedHostNames.AddOrUpdate(new Uri(serviceUrl).Host, expirationTime, (key, oldValue) => expirationTime);
+                }
+            }
+            catch (UriFormatException)
+            {
+                Trace.TraceWarning($"Service url {serviceUrl} is not a well formed Uri!");
+            }
+        }
+
+        /// <summary>
+        /// Checks if the service url is for a trusted host or not.
+        /// </summary>
+        /// <param name="serviceUrl">The service url</param>
+        /// <returns>True if the host of the service url is trusted; False otherwise.</returns>
+        public static bool IsTrustedServiceUrl(string serviceUrl)
+        {
+            Uri uri;
+            if (Uri.TryCreate(serviceUrl, UriKind.Absolute, out uri))
+            {
+                return TrustedUri(uri);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Apply the credentials to the HTTP request.
         /// </summary>
         /// <param name="request">The HTTP request.</param><param name="cancellationToken">Cancellation token.</param>
         public override async Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (ShouldSetToken())
+            if (ShouldSetToken(request))
             {
-                Token = await GetTokenAsync();
-            }
-            else
-            {
-                Token = null;
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
             }
             await base.ProcessHttpRequestAsync(request, cancellationToken);
         }
@@ -69,37 +122,33 @@ namespace Microsoft.Bot.Connector
             return token;
         }
 
-        private bool ShouldSetToken()
+        private bool ShouldSetToken(HttpRequestMessage request)
         {
-            // There is no current http context, proactive message
-            // assuming that developer is not calling drop context
-            if (HttpContext.Current == null)
+            if (TrustedUri(request.RequestUri))
             {
                 return true;
             }
-            else if (HttpContext.Current.User != null)
+
+            Trace.TraceWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
+            return false;
+        }
+
+        private static bool TrustedUri(Uri uri)
+        {
+            DateTime trustedServiceUrlExpiration;
+            if (TrustedHostNames.TryGetValue(uri.Host, out trustedServiceUrlExpiration))
             {
-                ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
-
-                if (identity?.Claims.FirstOrDefault(c => c.Type == "appid" && JwtConfig.GetToBotFromChannelTokenValidationParameters(MicrosoftAppId).ValidIssuers.Contains(c.Issuer)) != null)
+                // check if the trusted service url is still valid
+                if (trustedServiceUrlExpiration > DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(5)))
+                {
                     return true;
-
-                // Fallback for BF-issued tokens
-                if (identity?.Claims.FirstOrDefault(c => c.Issuer == "https://api.botframework.com" && c.Type == "aud") != null)
-                    return true;
-                
-                // For emulator, we fallback to MSA as valid issuer
-                if (identity?.Claims.FirstOrDefault(c => c.Type == "appid" && JwtConfig.ToBotFromMSATokenValidationParameters.ValidIssuers.Contains(c.Issuer)) != null)
-                    return true;
+                }
             }
             return false;
         }
 
         private async Task<OAuthResponse> RefreshTokenAsync()
         {
-            MicrosoftAppId = MicrosoftAppId ?? ConfigurationManager.AppSettings[MicrosoftAppIdSettingName ?? "MicrosoftAppId"];
-            MicrosoftAppPassword = MicrosoftAppPassword ?? ConfigurationManager.AppSettings[MicrosoftAppPasswordSettingName ?? "MicrosoftAppPassword"];
-
             OAuthResponse oauthResponse;
 
             using (HttpClient httpClient = new HttpClient())

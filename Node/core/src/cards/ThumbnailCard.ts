@@ -20,57 +20,43 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import ses = require('../Session');
-import msg = require('../Message');
+import { Session } from '../Session';
+import { fmtText } from '../Message';
+import { Keyboard } from './Keyboard';
 
-export class ThumbnailCard implements IIsAttachment {
-    protected data = {
-        contentType: 'application/vnd.microsoft.card.thumbnail',
-        content: <IThumbnailCard>{}
-    };
-    
-    constructor(protected session?: ses.Session) {
-        
+export class ThumbnailCard extends Keyboard {
+    constructor(session?: Session) {
+        super(session);
+        this.data.contentType = 'application/vnd.microsoft.card.thumbnail';
     }
     
     public title(text: string|string[], ...args: any[]): this {
         if (text) {
-            this.data.content.title = msg.fmtText(this.session, text, args);
+            (<IThumbnailCard>this.data.content).title = fmtText(this.session, text, args);
         }
         return this;
     }
 
     public subtitle(text: string|string[], ...args: any[]): this {
         if (text) {
-            this.data.content.subtitle = msg.fmtText(this.session, text, args);
+            (<IThumbnailCard>this.data.content).subtitle = fmtText(this.session, text, args);
         }
         return this;
     }
     
     public text(text: string|string[], ...args: any[]): this {
         if (text) {
-            this.data.content.text = msg.fmtText(this.session, text, args);
+            (<IThumbnailCard>this.data.content).text = fmtText(this.session, text, args);
         }
         return this;
     }
     
     public images(list: ICardImage[]|IIsCardImage[]): this {
-        this.data.content.images = [];
+        (<IThumbnailCard>this.data.content).images = [];
         if (list) {
             for (var i = 0; i < list.length; i++) {
                 var image = list[i];
-                this.data.content.images.push((<IIsCardImage>image).toImage ? (<IIsCardImage>image).toImage() : <ICardImage>image);    
-            }
-        }
-        return this;
-    }
-
-    public buttons(list: ICardAction[]|IIsCardAction[]): this {
-        this.data.content.buttons = [];
-        if (list) {
-            for (var i = 0; i < list.length; i++) {
-                var action = list[i];
-                this.data.content.buttons.push((<IIsCardAction>action).toAction ? (<IIsCardAction>action).toAction() : <ICardAction>action);    
+                (<IThumbnailCard>this.data.content).images.push((<IIsCardImage>image).toImage ? (<IIsCardImage>image).toImage() : <ICardImage>image);    
             }
         }
         return this;
@@ -78,12 +64,8 @@ export class ThumbnailCard implements IIsAttachment {
     
     public tap(action: ICardAction|IIsCardAction): this {
         if (action) {
-            this.data.content.tap = (<IIsCardAction>action).toAction ? (<IIsCardAction>action).toAction() : <ICardAction>action;
+            (<IThumbnailCard>this.data.content).tap = (<IIsCardAction>action).toAction ? (<IIsCardAction>action).toAction() : <ICardAction>action;
         }
         return this;
-    }
-
-    public toAttachment(): IAttachment {
-        return this.data;
     }
 }

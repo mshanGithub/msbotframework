@@ -266,7 +266,7 @@ namespace Microsoft.Bot.Builder.Calling
                 await action.Invoke(outcomeEventBase).ConfigureAwait(false);
                 return outcomeEventBase.ResultingWorkflow;
             }
-            throw new BotCallingServiceException($"No event handler set for {outcomeEventBase.ConversationResult.OperationOutcome.Type} outcome");            
+            throw new BotCallingServiceException($"No event handler set for {outcomeEventBase.ConversationResult.OperationOutcome.Type} outcome");
         }
 
         private Workflow CreateInitialWorkflow()

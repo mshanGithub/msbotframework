@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web.Http.Controllers;
 using Microsoft.IdentityModel.Protocols;
 
 namespace Microsoft.Bot.Connector
@@ -64,8 +62,12 @@ namespace Microsoft.Bot.Connector
 
         public async Task<ClaimsIdentity> GetIdentityAsync(string scheme, string parameter)
         {
-            // No header in correct scheme?
-            if (scheme != "Bearer")
+            // No header in correct scheme or no token
+            if (scheme != "Bearer" || string.IsNullOrEmpty(parameter))
+                return null;
+
+            // Issuer isn't allowed? No need to check signature
+            if (!HasAllowedIssuer(parameter))
                 return null;
 
             try
@@ -80,15 +82,19 @@ namespace Microsoft.Bot.Connector
             }
         }
 
-        public void GenerateUnauthorizedResponse(HttpActionContext actionContext)
+        private bool HasAllowedIssuer(string jwtToken)
         {
-            string host = actionContext.Request.RequestUri.DnsSafeHost;
-            actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
-            actionContext.Response.Headers.Add("WWW-Authenticate", string.Format("Bearer realm=\"{0}\"", host));
-            return;
+            JwtSecurityToken token = new JwtSecurityToken(jwtToken);
+            if (_tokenValidationParameters.ValidIssuer != null && _tokenValidationParameters.ValidIssuer == token.Issuer)
+                return true;
+
+            if ((_tokenValidationParameters.ValidIssuers ?? Enumerable.Empty<string>()).Contains(token.Issuer))
+                return true;
+
+            return false;
         }
 
-        public string GetBotIdFromClaimsIdentity(ClaimsIdentity identity)
+        public string GetAppIdFromClaimsIdentity(ClaimsIdentity identity)
         {
             if (identity == null)
                 return null;
@@ -127,9 +133,18 @@ namespace Microsoft.Bot.Connector
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
-            SecurityToken parsedToken;
-            ClaimsPrincipal principal = tokenHandler.ValidateToken(jwtToken, _tokenValidationParameters, out parsedToken);
-            return principal;
+            try
+            {
+                SecurityToken parsedToken;
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(jwtToken, _tokenValidationParameters, out parsedToken);
+                return principal;
+            }
+            catch (SecurityTokenSignatureKeyNotFoundException)
+            {
+                string keys = string.Join(", ", ((config?.SigningTokens) ?? Enumerable.Empty<SecurityToken>()).Select(t => t.Id));
+                Trace.TraceError("Error finding key for token. Available keys: " + keys);
+                throw;
+            }
         }
     }
 }

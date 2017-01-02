@@ -32,166 +32,178 @@
 //
 
 using System;
-using System.Globalization;
-using System.Linq.Expressions;
-using System.Reflection;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Luis;
-using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Tests;
-using Microsoft.Bot.Builder.Luis.Models;
 
 using Moq;
 using Autofac;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Bot.Sample.SimpleAlarmBot;
+using Microsoft.Bot.Sample.AlarmBot.Models;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Internals.Fibers;
+using Microsoft.Bot.Sample.AlarmBot.Dialogs;
+using Microsoft.Bot.Builder.Dialogs;
 
 namespace Microsoft.Bot.Sample.Tests
 {
     [TestClass]
-    public sealed class AlarmBotTests : LuisTestBase
+    public sealed class AlarmBotTests_Luis : AlarmBotTest_Shared
     {
-        [TestMethod]
-        public async Task AlarmDialogFlow()
+        public override void Customize(ContainerBuilder builder)
         {
-            var luis = new Mock<ILuisService>();
+            builder.RegisterType<AlarmLuisDialog>().As<IDialog<object>>().InstancePerDependency();
+        }
+    }
 
-            // arrange
-            var now = DateTime.UtcNow;
-            var entityTitle = EntityFor(SimpleAlarmDialog.Entity_Alarm_Title, "title");
-            var entityDate = EntityFor(SimpleAlarmDialog.Entity_Alarm_Start_Date, now.ToString("d", DateTimeFormatInfo.InvariantInfo));
-            var entityTime = EntityFor(SimpleAlarmDialog.Entity_Alarm_Start_Time, now.ToString("t", DateTimeFormatInfo.InvariantInfo));
+    [TestClass]
+    public sealed class AlarmBotTests_Dispatch : AlarmBotTest_Shared
+    {
+        public override void Customize(ContainerBuilder builder)
+        {
+            builder.RegisterType<AlarmDispatchDialog>().As<IDialog<object>>().InstancePerDependency();
+        }
+    }
 
-            Func<IDialog<object>> MakeRoot = () => new SimpleAlarmDialog(luis.Object);
-            var toBot = MakeTestMessage();
-
-            using (new FiberTestBase.ResolveMoqAssembly(luis.Object))
-            using (var container = Build(Options.ScopedQueue, luis.Object))
+    public abstract class AlarmBotTest_Shared : LuisTestBase
+    {
+        private sealed class TestAlarmScheduler : IAlarmScheduler
+        {
+            private readonly ObservableCollection<IAlarmable> alarms = new ObservableCollection<IAlarmable>();
+            ObservableCollection<IAlarmable> IAlarmScheduler.Alarms
             {
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
+                get
                 {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    SetupLuis<SimpleAlarmDialog>(luis, a => a.SetAlarm(null, null), 1.0, entityTitle, entityDate, entityTime);
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("created", scope);
-                }
-
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-                {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    SetupLuis<SimpleAlarmDialog>(luis, a => a.FindAlarm(null, null), 1.0, entityTitle);
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("found", scope);
-                }
-
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-                {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    SetupLuis<SimpleAlarmDialog>(luis, a => a.AlarmSnooze(null, null), 1.0, entityTitle);
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("snoozed", scope);
-                }
-
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-                {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    SetupLuis<SimpleAlarmDialog>(luis, a => a.TurnOffAlarm(null, null), 1.0, entityTitle);
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("sure", scope);
-                }
-
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-                {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    toBot.Text = "blah";
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("sure", scope);
-                }
-
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-                {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    toBot.Text = "yes";
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("disabled", scope);
-                }
-
-                using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-                {
-                    DialogModule_MakeRoot.Register(scope, MakeRoot);
-
-                    var task = scope.Resolve<IPostToBot>();
-
-                    // arrange
-                    SetupLuis<SimpleAlarmDialog>(luis, a => a.DeleteAlarm(null, null), 1.0, entityTitle);
-
-                    // act
-                    await task.PostAsync(toBot, CancellationToken.None);
-
-                    // assert
-                    luis.VerifyAll();
-                    AssertMentions("did not find", scope);
+                    return alarms;
                 }
             }
+        }
+
+        public abstract void Customize(ContainerBuilder builder);
+
+        [TestMethod]
+        public async Task AlarmDialog_Flow()
+        {
+            var luis = new Mock<ILuisService>(MockBehavior.Strict);
+            var clock = new Mock<IClock>(MockBehavior.Strict);
+
+            var now = new DateTime(2016, 08, 05, 15, 0, 0);
+            clock.SetupGet(c => c.Now).Returns(now);
+
+            var title = "title";
+            var when = new DateTime(2016, 08, 05, 16, 0, 0);
+
+            var entityTitle = EntityFor(AlarmBot.Dialogs.BuiltIn.Alarm.Title, title);
+            var entityState = EntityFor(AlarmBot.Dialogs.BuiltIn.Alarm.Alarm_State, "on");
+            var entityDate = EntityForDate(AlarmBot.Dialogs.BuiltIn.Alarm.Start_Date, when);
+            var entityTime = EntityForTime(AlarmBot.Dialogs.BuiltIn.Alarm.Start_Time, when);
+
+            SetupLuis<AlarmLuisDialog>(luis, "can you set an alarm for 4 PM", d => d.SetAlarm(null, null, null), 1.0, entityTitle, entityDate, entityTime);
+            SetupLuis<AlarmLuisDialog>(luis, "can you turn off my alarm", d => d.TurnOffAlarm(null, null), 1.0, entityTitle);
+            SetupLuis<AlarmLuisDialog>(luis, "can you turn on my alarm", d => d.SetAlarm(null, null, null), 1.0, entityTitle, entityState);
+            SetupLuis<AlarmLuisDialog>(luis, "can you snooze my alarm", d => d.AlarmSnooze(null, null), 1.0, entityTitle);
+            SetupLuis<AlarmLuisDialog>(luis, "can you delete my alarm", d => d.DeleteAlarm(null, null), 1.0, entityTitle);
+            SetupLuis<AlarmLuisDialog>(luis, "how much time is remaining", d => d.AlarmOther(null, null), 1.0);
+            SetupLuis<AlarmLuisDialog>(luis, "i would like a pony", d => d.None(null, null), 1.0);
+
+            using (new FiberTestBase.ResolveMoqAssembly(luis.Object, clock.Object))
+            using (var container = Build(Options.ResolveDialogFromContainer, luis.Object))
+            {
+                var builder = new ContainerBuilder();
+                builder.RegisterModule(new AlarmModule());
+                builder.RegisterType<TestAlarmScheduler>().Keyed<IAlarmScheduler>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().SingleInstance();
+                builder.Register(c => clock.Object).Keyed<IClock>(FiberModule.Key_DoNotSerialize).As<IClock>().SingleInstance();
+                builder.Register(c => luis.Object).Keyed<ILuisService>(FiberModule.Key_DoNotSerialize).As<ILuisService>().SingleInstance();
+                Customize(builder);
+                builder.Update(container);
+
+                var scheduler = container.Resolve<IAlarmScheduler>();
+                Assert.AreEqual(0, scheduler.Alarms.Count);
+
+                var toBot = MakeTestMessage();
+
+                var token = CancellationToken.None;
+
+                toBot.Text = "can you set an alarm for 4 PM";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(1, scheduler.Alarms.Count);
+                    var alarm = (Alarm)scheduler.Alarms.Single();
+                    Assert.AreEqual(when, alarm.When);
+                    Assert.AreEqual(true, alarm.State);
+                    Assert.AreEqual(title, alarm.Title);
+                }
+
+                toBot.Text = "can you turn off my alarm";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(1, scheduler.Alarms.Count);
+                    var alarm = (Alarm)scheduler.Alarms.Single();
+                    Assert.AreEqual(when, alarm.When);
+                    Assert.AreEqual(false, alarm.State);
+                    Assert.AreEqual(title, alarm.Title);
+                }
+
+                toBot.Text = "can you turn on my alarm";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(1, scheduler.Alarms.Count);
+                    var alarm = (Alarm)scheduler.Alarms.Single();
+                    Assert.AreEqual(when, alarm.When);
+                    Assert.AreEqual(true, alarm.State);
+                    Assert.AreEqual(title, alarm.Title);
+                }
+
+                toBot.Text = "how much time is remaining";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(1, scheduler.Alarms.Count);
+                    var alarm = (Alarm)scheduler.Alarms.Single();
+                    Assert.AreEqual(when, alarm.When);
+                    Assert.AreEqual(true, alarm.State);
+                    Assert.AreEqual(title, alarm.Title);
+                }
+
+                toBot.Text = "i would like a pony";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(1, scheduler.Alarms.Count);
+                    var alarm = (Alarm)scheduler.Alarms.Single();
+                    Assert.AreEqual(when, alarm.When);
+                    Assert.AreEqual(true, alarm.State);
+                    Assert.AreEqual(title, alarm.Title);
+                }
+                
+                toBot.Text = "can you snooze my alarm";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(1, scheduler.Alarms.Count);
+                    var alarm = (Alarm)scheduler.Alarms.Single();
+                    Assert.AreEqual(when.AddMinutes(1), alarm.When);
+                    Assert.AreEqual(true, alarm.State);
+                    Assert.AreEqual(title, alarm.Title);
+                }
+
+                toBot.Text = "can you delete my alarm";
+                await PostActivityAsync(container, toBot, token);
+
+                {
+                    Assert.AreEqual(0, scheduler.Alarms.Count);
+                }
+            }
+
+            // verify we're actually calling the LUIS mock and not the actual LUIS service
+            luis.VerifyAll();
         }
     }
 }
