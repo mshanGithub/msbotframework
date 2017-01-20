@@ -24,8 +24,8 @@ namespace Microsoft.Bot.Sample.AlarmBot.Dialogs
         {
             public const string Alarm_State = "builtin.alarm.alarm_state";
             public const string Duration = "builtin.alarm.duration";
-            public const string Start_Date = "builtin.alarm.start_date";
-            public const string Start_Time = "builtin.alarm.start_time";
+            public const string Start_Date = "builtin.datetime.date";
+            public const string Start_Time = "builtin.datetime.time";
             public const string Title = "builtin.alarm.title";
         }
     }
