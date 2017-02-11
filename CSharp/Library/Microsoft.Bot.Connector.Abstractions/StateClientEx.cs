@@ -12,6 +12,8 @@ namespace Microsoft.Bot.Connector
 {
     public partial class StateClient
     {
+        // TODO (iedeny): fix
+        /*
         /// <summary>
         /// Create a new instance of the StateClient class
         /// </summary>
@@ -23,6 +25,7 @@ namespace Microsoft.Bot.Connector
             : this(baseUri, new MicrosoftAppCredentials(microsoftAppId, microsoftAppPassword), handlers: handlers)
         {
         }
+        */
 
         /// <summary>
         /// Create a new instance of the StateClient class
@@ -31,7 +34,7 @@ namespace Microsoft.Bot.Connector
         /// <param name="credentials">Credentials for the Connector service</param>
         /// <param name="addJwtTokenRefresher">True, if JwtTokenRefresher should be included; False otherwise.</param>
         /// <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
-        public StateClient(Uri baseUri, MicrosoftAppCredentials credentials, bool addJwtTokenRefresher = true, params DelegatingHandler[] handlers)
+        public StateClient(Uri baseUri, MicrosoftAppCredentialsBase credentials, bool addJwtTokenRefresher = true, params DelegatingHandler[] handlers)
             : this(baseUri, addJwtTokenRefresher ? AddJwtTokenRefresher(handlers, credentials) : handlers)
         {
             this.Credentials = credentials;
@@ -78,13 +81,13 @@ namespace Microsoft.Bot.Connector
         /// <param name="credentials">Credentials for the Connector service</param>
         /// <param name="addJwtTokenRefresher">True, if JwtTokenRefresher should be included; False otherwise.</param>
         /// <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
-        public StateClient(MicrosoftAppCredentials credentials, bool addJwtTokenRefresher = true, params DelegatingHandler[] handlers)
+        public StateClient(MicrosoftAppCredentialsBase credentials, bool addJwtTokenRefresher = true, params DelegatingHandler[] handlers)
             : this(addJwtTokenRefresher ? AddJwtTokenRefresher(handlers, credentials) : handlers)
         {
             this.Credentials = credentials;
         }
 
-        private static DelegatingHandler[] AddJwtTokenRefresher(DelegatingHandler[] srcHandlers, MicrosoftAppCredentials credentials)
+        private static DelegatingHandler[] AddJwtTokenRefresher(DelegatingHandler[] srcHandlers, MicrosoftAppCredentialsBase credentials)
         {
             var handlers = new List<DelegatingHandler>(srcHandlers);
             handlers.Add(new JwtTokenRefresher(credentials));

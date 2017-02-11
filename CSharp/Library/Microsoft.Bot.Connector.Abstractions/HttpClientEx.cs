@@ -10,6 +10,8 @@ namespace Microsoft.Bot.Connector
 {
     public static class HttpClientEx
     {
+        // TODO (iedeny): fix
+        /*
         /// <summary>
         /// add Bearer authorization token for making API calls
         /// </summary>
@@ -22,5 +24,6 @@ namespace Microsoft.Bot.Connector
             var token = await new MicrosoftAppCredentials(appId, password).GetTokenAsync();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
+        */
     }
 }

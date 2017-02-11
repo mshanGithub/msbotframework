@@ -5,23 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-
-#if !NET45
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-#endif
 using Microsoft.Rest;
 using Newtonsoft.Json;
 
-#if NET45
-using System.Configuration;
-using System.Diagnostics;
-using System.Runtime.Serialization;
-#endif
 
 namespace Microsoft.Bot.Connector
 {
-    public class MicrosoftAppCredentials : ServiceClientCredentials
+    public abstract class MicrosoftAppCredentialsBase : ServiceClientCredentials
     {
         /// <summary>
         /// The key for Microsoft app Id.
@@ -40,53 +30,13 @@ namespace Microsoft.Bot.Connector
 
         protected static readonly ConcurrentDictionary<string, OAuthResponse> cache = new ConcurrentDictionary<string, OAuthResponse>();
 
-#if !NET45
-        protected ILogger logger;
-#endif
-
-#if NET45
-        public MicrosoftAppCredentials(string appId = null, string password = null)
-        {
-            MicrosoftAppId = appId;
-            MicrosoftAppPassword = password;
-
-            if(appId == null)
-            {
-                MicrosoftAppId = ConfigurationManager.AppSettings[MicrosoftAppIdKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppIdKey, EnvironmentVariableTarget.Process);
-            }
-
-            if(password == null)
-            {
-                MicrosoftAppPassword = ConfigurationManager.AppSettings[MicrosoftAppPasswordKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppPasswordKey, EnvironmentVariableTarget.Process);
-            }
-
-            TokenCacheKey = $"{MicrosoftAppId}-cache";
-        }
-#else
-        public MicrosoftAppCredentials(string appId = null, string password = null, ILogger logger = null)
-        {
-            MicrosoftAppId = appId;
-            MicrosoftAppPassword = password;
-
-            TokenCacheKey = $"{MicrosoftAppId}-cache";
-            this.logger = logger;
-        }
-
-        public MicrosoftAppCredentials(IConfiguration configuration, ILogger logger = null)
-            : this(configuration.GetSection(MicrosoftAppIdKey)?.Value, configuration.GetSection(MicrosoftAppPasswordKey)?.Value, logger)
-        {
-        }
-#endif
-
-
-
         public string MicrosoftAppId { get; set; }
         public string MicrosoftAppPassword { get; set; }
 
         public virtual string OAuthEndpoint { get { return JwtConfig.ToChannelFromBotLoginUrl; } }
         public virtual string OAuthScope { get { return JwtConfig.ToChannelFromBotOAuthScope; } }
 
-        protected readonly string TokenCacheKey;
+        protected string TokenCacheKey;
 
         /// <summary>
         /// Adds the host of service url to <see cref="MicrosoftAppCredentials"/> trusted hosts.
@@ -110,9 +60,7 @@ namespace Microsoft.Bot.Connector
             }
             catch (Exception)
             {
-#if NET45
-                Trace.TraceWarning($"Service url {serviceUrl} is not a well formed Uri!");
-#endif
+                // TraceWarning($"Service url {serviceUrl} is not a well formed Uri!");
             }
         }
 
@@ -163,18 +111,14 @@ namespace Microsoft.Bot.Connector
             return token;
         }
 
-        private bool ShouldSetToken(HttpRequestMessage request)
+        protected bool ShouldSetToken(HttpRequestMessage request)
         {
             if (TrustedUri(request.RequestUri))
             {
                 return true;
             }
 
-#if NET45
-            Trace.TraceWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
-#else
-            logger?.LogWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
-#endif
+            this.TraceWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
             return false;
         }
 
@@ -246,6 +190,8 @@ namespace Microsoft.Bot.Connector
         {
             return token.expiration_time > DateTime.UtcNow;
         }
+
+        protected abstract void TraceWarning(string message);
 
         protected class OAuthResponse
         {

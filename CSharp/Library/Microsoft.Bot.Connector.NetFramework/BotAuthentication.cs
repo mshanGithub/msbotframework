@@ -65,8 +65,7 @@ namespace Microsoft.Bot.Connector
             var provider = this.GetCredentialProvider();
             var botAuthenticator = new BotAuthenticator(provider, OpenIdConfigurationUrl, DisableEmulatorTokens);
 
-            // TODO (iedeny): FIX
-            /* var identityToken = await botAuthenticator.TryAuthenticateAsync(actionContext.Request, cancellationToken);
+            var identityToken = await botAuthenticator.TryAuthenticateAsync(actionContext.Request, cancellationToken);
 
             // the request is not authenticated, fail with 401.
             if (!identityToken.Authenticated)
@@ -75,7 +74,7 @@ namespace Microsoft.Bot.Connector
                 return;
             }
 
-            botAuthenticator.TrustServiceUrls(identityToken, GetActivities(actionContext));*/
+            botAuthenticator.TrustServiceUrls(identityToken, GetActivities(actionContext));
             await base.OnActionExecutingAsync(actionContext, cancellationToken);
         }
 
@@ -121,11 +120,9 @@ namespace Microsoft.Bot.Connector
             }
             else
             {
-                // TODO (iedeny): FIX
-                /*
-                    // if we have setting name, or there is no parameters at all default to default setting name
-                    credentialProvider = new SettingsCredentialProvider(MicrosoftAppIdSettingName, MicrosoftAppPasswordSettingName);
-                    */
+
+                // if we have setting name, or there is no parameters at all default to default setting name
+                credentialProvider = new SettingsCredentialProvider(MicrosoftAppIdSettingName, MicrosoftAppPasswordSettingName);
             }
             return credentialProvider;
         }

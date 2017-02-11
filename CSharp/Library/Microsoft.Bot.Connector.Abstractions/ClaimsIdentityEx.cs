@@ -41,6 +41,8 @@ namespace Microsoft.Bot.Connector
             return identity?.Claims.FirstOrDefault(c => c.Type == AppPasswordClaim)?.Value;
         }
 
+        // TODO (iedeny): fix
+        /*
         /// <summary>
         /// Get the MicrosoftAppCredentials using claims in the claims identity
         /// </summary>
@@ -51,6 +53,6 @@ namespace Microsoft.Bot.Connector
             var appId = claimsIdentity.GetAppIdFromClaims();
             var password = claimsIdentity.GetAppPasswordFromClaims();
             return new MicrosoftAppCredentials(appId, password);
-        }
+        }*/
     }
 }

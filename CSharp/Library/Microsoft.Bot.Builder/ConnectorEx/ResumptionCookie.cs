@@ -93,7 +93,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             this.UserName = userName;
             this.IsGroup = isGroup;
             this.Locale = locale;
-            this.IsTrustedServiceUrl = MicrosoftAppCredentials.IsTrustedServiceUrl(address.ServiceUrl);
+            this.IsTrustedServiceUrl = MicrosoftAppCredentialsBase.IsTrustedServiceUrl(address.ServiceUrl);
         }
 
         /// <summary>

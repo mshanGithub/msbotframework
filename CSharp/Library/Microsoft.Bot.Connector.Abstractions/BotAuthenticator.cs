@@ -89,7 +89,7 @@ namespace Microsoft.Bot.Connector
             return response;
         }
 
-        internal void TrustServiceUrls(IdentityToken identityToken, IEnumerable<IActivity> activities)
+        public void TrustServiceUrls(IdentityToken identityToken, IEnumerable<IActivity> activities)
         {
             // add the service url to the list of trusted urls only if the JwtToken 
             // is valid and identity is not null
@@ -99,7 +99,7 @@ namespace Microsoft.Bot.Connector
                 {
                     foreach (var activity in activities)
                     {
-                        MicrosoftAppCredentials.TrustServiceUrl(activity?.ServiceUrl);
+                        MicrosoftAppCredentialsBase.TrustServiceUrl(activity?.ServiceUrl);
                     }
                 }
                 else
@@ -111,7 +111,7 @@ namespace Microsoft.Bot.Connector
             }
         }
 
-        internal async Task<IdentityToken> TryAuthenticateAsync(HttpRequestMessage request,
+        public async Task<IdentityToken> TryAuthenticateAsync(HttpRequestMessage request,
             CancellationToken token)
         {
             var authorizationHeader = request.Headers.Authorization;

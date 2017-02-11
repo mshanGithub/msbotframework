@@ -64,8 +64,8 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
     {
         private readonly Uri serviceUri;
         private readonly IAddress address;
-        private readonly MicrosoftAppCredentials credentials;
-        public ConnectorClientFactory(IAddress address, MicrosoftAppCredentials credentials)
+        private readonly MicrosoftAppCredentialsBase credentials;
+        public ConnectorClientFactory(IAddress address, MicrosoftAppCredentialsBase credentials)
         {
             SetField.NotNull(out this.address, nameof(address), address);
             SetField.NotNull(out this.credentials, nameof(credentials), credentials);
