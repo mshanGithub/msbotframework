@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.Bot.Connector</RootNamespace>
     <AssemblyName>Microsoft.Bot.Connector</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -97,7 +97,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <Import Project="..\Microsoft.Bot.Connector.Shared\Microsoft.Bot.Connector.Shared.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Bot.Connector.Abstractions\Microsoft.Bot.Connector.Abstractions.csproj">
+      <Project>{645862ff-bf5e-4d5b-b1b5-1462ededbb12}</Project>
+      <Name>Microsoft.Bot.Connector.Abstractions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
