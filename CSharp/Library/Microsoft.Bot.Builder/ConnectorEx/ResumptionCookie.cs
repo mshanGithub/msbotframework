@@ -65,7 +65,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// True if the <see cref="IAddress.ServiceUrl"/> is trusted; False otherwise.
         /// </summary>
         /// <remarks> Conversation.ResumeAsync adds 
-        /// the host of the <see cref="IAddress.ServiceUrl"/> to <see cref="MicrosoftAppCredentials.TrustedHostNames"/> if this flag is True.
+        /// the host of the <see cref="IAddress.ServiceUrl"/> to <see cref="MicrosoftAppCredentialsBase.TrustedHostNames"/> if this flag is True.
         /// </remarks>
         public bool IsTrustedServiceUrl { private set; get; }
 
