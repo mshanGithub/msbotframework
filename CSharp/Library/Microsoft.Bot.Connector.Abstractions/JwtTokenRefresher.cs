@@ -8,9 +8,9 @@ namespace Microsoft.Bot.Connector
 {
     public class JwtTokenRefresher : DelegatingHandler
     {
-        private readonly MicrosoftAppCredentialsBase credentials;
+        private readonly MicrosoftAppCredentials credentials;
 
-        public JwtTokenRefresher(MicrosoftAppCredentialsBase credentials)
+        public JwtTokenRefresher(MicrosoftAppCredentials credentials)
             : base()
         {
             if (credentials == null)

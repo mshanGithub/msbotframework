@@ -103,7 +103,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)JwtTokenExtractor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JwtTokenRefresher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mention.cs" />
-    <Compile Include="MicrosoftAppCredentialsBase.cs" />
+    <Compile Include="MicrosoftAppCredentials.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SigninCardEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateAPI\BotState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateAPI\BotStateExtensions.cs" />
@@ -124,9 +124,6 @@
     <None Include="$(MSBuildThisFileDirectory)generateClient.cmd" />
     <None Include="project.json" />
   </ItemGroup>
-  <PropertyGroup>
-    <NuGetTargetMoniker>.NETStandard,Version=v1.6</NuGetTargetMoniker>
-  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

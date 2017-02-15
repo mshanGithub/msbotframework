@@ -99,7 +99,7 @@ namespace Microsoft.Bot.Connector
                 {
                     foreach (var activity in activities)
                     {
-                        MicrosoftAppCredentialsBase.TrustServiceUrl(activity?.ServiceUrl);
+                        MicrosoftAppCredentials.TrustServiceUrl(activity?.ServiceUrl);
                     }
                 }
                 else

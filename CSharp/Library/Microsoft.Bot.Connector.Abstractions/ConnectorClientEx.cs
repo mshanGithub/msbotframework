@@ -33,13 +33,13 @@ namespace Microsoft.Bot.Connector
         /// <param name="credentials">Credentials for the Connector service</param>
         /// <param name="addJwtTokenRefresher">True, if JwtTokenRefresher should be included; False otherwise.</param>
         /// <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
-        public ConnectorClient(Uri baseUri, MicrosoftAppCredentialsBase credentials, bool addJwtTokenRefresher = true, params DelegatingHandler[] handlers)
+        public ConnectorClient(Uri baseUri, MicrosoftAppCredentials credentials, bool addJwtTokenRefresher = true, params DelegatingHandler[] handlers)
             : this(baseUri, addJwtTokenRefresher ? AddJwtTokenRefresher(handlers, credentials) : handlers)
         {
             this.Credentials = credentials;
         }
 
-        private static DelegatingHandler[] AddJwtTokenRefresher(DelegatingHandler[] srcHandlers, MicrosoftAppCredentialsBase credentials)
+        private static DelegatingHandler[] AddJwtTokenRefresher(DelegatingHandler[] srcHandlers, MicrosoftAppCredentials credentials)
         {
             var handlers = new List<DelegatingHandler>(srcHandlers);
             handlers.Add(new JwtTokenRefresher(credentials));

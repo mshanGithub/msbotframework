@@ -69,8 +69,8 @@ namespace Microsoft.Bot.Connector
             string appIdSettingName = null,
             string appPasswordSettingName = null)
         {
-            var appIdKey = appIdSettingName ?? MicrosoftAppCredentialsBase.MicrosoftAppIdKey;
-            var passwordKey = appPasswordSettingName ?? MicrosoftAppCredentialsBase.MicrosoftAppPasswordKey;
+            var appIdKey = appIdSettingName ?? MicrosoftAppCredentials.MicrosoftAppIdKey;
+            var passwordKey = appPasswordSettingName ?? MicrosoftAppCredentials.MicrosoftAppPasswordKey;
             this.AppId = configuration.GetSection(appIdKey)?.Value;
             this.Password = configuration.GetSection(passwordKey)?.Value;
         }
