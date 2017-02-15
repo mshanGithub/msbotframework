@@ -29,12 +29,7 @@
       "imports": [
         "dotnet5.6",
         "portable-net45+win8"
-      ],
-      "dependencies": {
-        "Microsoft.Bot.Connector.AspNetCore": {
-          "target": "project"
-        }
-      }
+      ]
     }
   },
 

@@ -59,7 +59,12 @@ namespace Microsoft.Bot.Sample.AspNetCore.Pizza
         [HttpPost]
         public virtual async Task<OkResult> Post([FromBody]Activity activity)
         {
-            var appCredentials = new MicrosoftAppCredentials(this.configuration);
+            // TODO: FIX ME
+            string appId = this.configuration.GetSection("MicrosoftAppId")?.Value;
+            string password = this.configuration.GetSection("MicrosoftAppPassword")?.Value;
+            // var appCredentials = new MicrosoftAppCredentials(this.configuration);
+            var appCredentials = new MicrosoftAppCredentials(appId, password);
+
             var client = new ConnectorClient(new Uri(activity.ServiceUrl), appCredentials);
             var reply = activity.CreateReply();
 
