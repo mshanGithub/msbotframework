@@ -10,10 +10,8 @@ namespace Microsoft.Bot.Connector
     {
         public SettingsCredentialProvider(string appIdSettingName = null, string appPasswordSettingName = null)
         {
-            var appIdKey = appIdSettingName ?? MicrosoftAppCredentials.MicrosoftAppIdKey;
-            var passwordKey = appPasswordSettingName ?? MicrosoftAppCredentials.MicrosoftAppPasswordKey;
-            this.AppId = ConfigurationManager.AppSettings[appIdKey] ?? Environment.GetEnvironmentVariable(appIdKey, EnvironmentVariableTarget.Process);
-            this.Password = ConfigurationManager.AppSettings[passwordKey] ?? Environment.GetEnvironmentVariable(passwordKey, EnvironmentVariableTarget.Process);
+            this.AppId = BotServiceProvider.Instance.ConfigurationRoot.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
+            this.Password = BotServiceProvider.Instance.ConfigurationRoot.GetSection(MicrosoftAppCredentials.MicrosoftAppPasswordKey)?.Value;
         }
     }
 }

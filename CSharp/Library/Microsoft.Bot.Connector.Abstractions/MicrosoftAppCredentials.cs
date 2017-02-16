@@ -5,32 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-
-// TODO: FIX ME
-////#if !NET45
-////using Microsoft.Extensions.Configuration;
-////using Microsoft.Extensions.Logging;
-////#endif
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
-
-// TODO: FIX ME
-////#if NET45
-////using System.Configuration;
-////using System.Diagnostics;
-////#endif
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Bot.Connector
 {
-    // TODO: FIX ME (andrees move this to its own file)
-    public interface IBotConfiguration
-    {
-        string MicrosoftAppId { get; }
-
-        string MicrosoftAppPassword { get; }
-    }
-
     public class MicrosoftAppCredentials : ServiceClientCredentials
     {
         /// <summary>
@@ -50,42 +31,29 @@ namespace Microsoft.Bot.Connector
 
         protected static readonly ConcurrentDictionary<string, OAuthResponse> cache = new ConcurrentDictionary<string, OAuthResponse>();
 
-        // TODO: FIX ME
-        //#if !NET45
-        //        protected ILogger logger;
-        //#endif
+        protected readonly ILogger logger;
 
-        public MicrosoftAppCredentials(IBotConfiguration configuration)
-            : this(configuration.MicrosoftAppId, configuration.MicrosoftAppPassword)
+        public MicrosoftAppCredentials(IConfiguration configuration, ILogger logger = null)
+            : this(configuration.GetSection(MicrosoftAppIdKey)?.Value, configuration.GetSection(MicrosoftAppPasswordKey)?.Value, logger)
         {
         }
 
-        public MicrosoftAppCredentials(string appId, string password)
-        {
-            if (appId == null) throw new ArgumentNullException(nameof(appId));
-            if (password == null) throw new ArgumentNullException(nameof(password));
-
-            MicrosoftAppId = appId;
-            MicrosoftAppPassword = password;
-            TokenCacheKey = $"{MicrosoftAppId}-cache";
+        public MicrosoftAppCredentials(string appId = null, string password = null, ILogger logger = null)
+            : this(ServiceProvider.Instance, appId, password, logger)
+        {                      
         }
 
-        // TODO: FIX ME
-        ////public MicrosoftAppCredentials(string appId = null, string password = null, ILogger logger = null)
-        ////{
-        ////    MicrosoftAppId = appId;
-        ////    MicrosoftAppPassword = password;
+        public MicrosoftAppCredentials(ServiceProvider serviceProvider, string appId, string password, ILogger logger)
+        {
+            this.MicrosoftAppId = appId
+                ?? serviceProvider.ConfigurationRoot.GetSection(MicrosoftAppIdKey)?.Value;
 
-        ////    TokenCacheKey = $"{MicrosoftAppId}-cache";
+            this.MicrosoftAppPassword = password
+                ?? serviceProvider.ConfigurationRoot.GetSection(MicrosoftAppPasswordKey)?.Value;
 
-        ////    this.logger = logger;
-        ////}
-
-        // TODO: FIX ME
-        //public MicrosoftAppCredentials(IConfiguration configuration, ILogger logger = null)
-        //    : this(configuration.GetSection(MicrosoftAppIdKey)?.Value, configuration.GetSection(MicrosoftAppPasswordKey)?.Value, logger)
-        //{
-        //}
+            this.TokenCacheKey = $"{MicrosoftAppId}-cache";
+            this.logger = logger ?? serviceProvider.CreateLogger();
+        }
 
         public string MicrosoftAppId { get; set; }
         public string MicrosoftAppPassword { get; set; }
@@ -115,10 +83,10 @@ namespace Microsoft.Bot.Connector
                     TrustedHostNames.AddOrUpdate(new Uri(serviceUrl).Host, expirationTime, (key, oldValue) => expirationTime);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO: FIX ME
-                // Trace.TraceWarning($"Service url {serviceUrl} is not a well formed Uri!");
+                ServiceProvider.Instance.CreateLogger().LogWarning($"Service url {serviceUrl} is not a well formed Uri!");
+                ServiceProvider.Instance.CreateLogger().LogWarning(e.ToString());
             }
         }
 
@@ -176,12 +144,8 @@ namespace Microsoft.Bot.Connector
                 return true;
             }
 
-            // TODO: FIX ME
-            ////#if NET45
-            ////            Trace.TraceWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
-            ////#else
-            ////            logger?.LogWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
-            ////#endif
+            this.logger.LogWarning($"Service url {request.RequestUri.Authority} is not trusted and JwtToken cannot be sent to it.");
+
             return false;
         }
 
@@ -199,22 +163,12 @@ namespace Microsoft.Bot.Connector
             return false;
         }
 
-#if NET45
-        [Serializable]
-#endif
         public sealed class OAuthException : Exception
         {
             public OAuthException(string body, Exception inner)
                 : base(body, inner)
             {
             }
-
-#if NET45
-            private OAuthException(SerializationInfo info, StreamingContext context)
-                : base(info, context)
-            {
-            }
-#endif
         }
 
         private async Task<OAuthResponse> RefreshTokenAsync()

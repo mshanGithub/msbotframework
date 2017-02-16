@@ -59,15 +59,6 @@ namespace Microsoft.Bot.Sample.AspNetCore.Pizza
         [HttpPost]
         public virtual async Task<OkResult> Post([FromBody]Activity activity)
         {
-            // TODO: FIX ME
-            string appId = this.configuration.GetSection("MicrosoftAppId")?.Value;
-            string password = this.configuration.GetSection("MicrosoftAppPassword")?.Value;
-            // var appCredentials = new MicrosoftAppCredentials(this.configuration);
-            var appCredentials = new MicrosoftAppCredentials(appId, password);
-
-            var client = new ConnectorClient(new Uri(activity.ServiceUrl), appCredentials);
-            var reply = activity.CreateReply();
-
             if (activity != null)
             {
                 // one of these will have an interface and process it
@@ -87,7 +78,6 @@ namespace Microsoft.Bot.Sample.AspNetCore.Pizza
                 }
             }
 
-            await client.Conversations.ReplyToActivityAsync(reply);
             return Ok();
         }
     }

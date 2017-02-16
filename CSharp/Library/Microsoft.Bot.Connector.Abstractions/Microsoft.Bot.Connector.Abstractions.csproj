@@ -115,6 +115,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateAPI\StateClientExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateClientEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextFormatTypes.cs" />
+    <Compile Include="ServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Swagger\ConnectorAPI.json" />

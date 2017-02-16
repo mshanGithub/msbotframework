@@ -31,6 +31,8 @@ namespace Microsoft.Bot.Sample.AspNetCore.Echo
             {
                 options.Filters.Add(typeof(TrustServiceUrlAttribute));
             });
+
+            services.UseBotConnector();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -46,6 +46,9 @@ using Microsoft.Bot.Builder.Scorables;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Autofac.Base;
 using System.Configuration;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Bot.Builder.Dialogs.Internals
 {
@@ -67,31 +70,13 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return inner;
         }
 
-        // TODO andrees move this to its own file
-        private class BotConfiguration : IBotConfiguration
-        {
-            public string MicrosoftAppId
-            {
-                get
-                {
-                    return ConfigurationManager.AppSettings[MicrosoftAppCredentials.MicrosoftAppIdKey];
-                }
-            }
-
-            public string MicrosoftAppPassword
-            {
-                get
-                {
-                    return ConfigurationManager.AppSettings[MicrosoftAppCredentials.MicrosoftAppPasswordKey];
-                }
-            }
-        }
-
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
             builder.RegisterModule(new FiberModule<DialogTask>());
+
+            RegisterBotConnectorImplementation(builder);
 
             // singleton components
 
@@ -120,13 +105,9 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .AsSelf()
                 .InstancePerMatchingLifetimeScope(LifetimeScopeTag);
 
-            builder.Register(c => new BotConfiguration())
-                .AsImplementedInterfaces()
-                .SingleInstance();
-
             // components not marked as [Serializable]
             builder
-                .RegisterType<MicrosoftAppCredentials>()
+                .Register(c => new MicrosoftAppCredentials(c.Resolve<ServiceProvider>(), null, null, null))
                 .AsSelf()
                 .SingleInstance();
 
@@ -383,6 +364,43 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                     typeof(LogBotToUser)
                 )
                 .InstancePerLifetimeScope();
+        }
+
+        /// <summary>
+        /// Registers (platform specific) bot connector implementations.
+        /// </summary>
+        /// <param name="builder">The builder used to register dependencies.</param>
+        private void RegisterBotConnectorImplementation(ContainerBuilder builder)
+        {
+            if (ServiceProvider.IsRegistered)
+            {
+                builder.Register<ServiceProvider>(c => ServiceProvider.Instance)
+                    .AsSelf()
+                    .SingleInstance();
+            }
+            else
+            {
+                // Finds the bot connector being used in this application domain
+                // that is not the common connector assembly
+                System.Reflection.Assembly connectorAssembly = AppDomain.CurrentDomain.
+                    GetAssemblies()
+                    .Where(a => a.FullName.StartsWith("Microsoft.Bot.Connector"))
+                    .Where(a => a != typeof(BotData).Assembly)
+                    .FirstOrDefault();
+
+                if (connectorAssembly != null)
+                {
+                    // register the IServiceProvider instance provided in the connector with the Common connector
+                    builder.RegisterAssemblyTypes(connectorAssembly)
+                        .Where(t => t.IsAssignableTo<IServiceProvider>())
+                        .AsImplementedInterfaces()
+                        .SingleInstance();
+
+                    builder.Register<ServiceProvider>(c => { ServiceProvider.RegisterServiceProvider(c.Resolve<IServiceProvider>()); return ServiceProvider.Instance; })
+                        .AsSelf()
+                        .SingleInstance();
+                }
+            }
         }
     }
 

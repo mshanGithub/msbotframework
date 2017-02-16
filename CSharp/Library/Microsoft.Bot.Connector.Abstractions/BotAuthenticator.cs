@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,11 +7,6 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-#if NET45
-using System.Diagnostics;
-using System.Web;
-#endif
-
 
 namespace Microsoft.Bot.Connector
 {
@@ -80,11 +76,8 @@ namespace Microsoft.Bot.Connector
         public static HttpResponseMessage GenerateUnauthorizedResponse(HttpRequestMessage request)
         {
             string host = request.RequestUri.DnsSafeHost;
-#if NET45
-            var response = request.CreateResponse(HttpStatusCode.Unauthorized);
-#else
             var response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-#endif
+
             response.Headers.Add("WWW-Authenticate", string.Format("Bearer realm=\"{0}\"", host));
             return response;
         }
@@ -104,9 +97,7 @@ namespace Microsoft.Bot.Connector
                 }
                 else
                 {
-#if NET45
-                    Trace.TraceWarning("No ServiceUrls added to trusted list");
-#endif
+                    ServiceProvider.Instance.CreateLogger().LogWarning("No ServiceUrls added to trusted list");
                 }
             }
         }
@@ -174,14 +165,6 @@ namespace Microsoft.Bot.Connector
 
             if (identity != null)
             {
-#if NET45
-                Thread.CurrentPrincipal = new ClaimsPrincipal(identity);
-
-                // Inside of ASP.NET this is required
-                if (HttpContext.Current != null)
-                    HttpContext.Current.User = Thread.CurrentPrincipal;
-#endif
-
                 return new IdentityToken(true, identity);
             }
 
