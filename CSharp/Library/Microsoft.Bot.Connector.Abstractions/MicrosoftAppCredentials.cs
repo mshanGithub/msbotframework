@@ -6,15 +6,16 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-// TODO: fix me
+// TODO: FIX ME
 ////#if !NET45
 ////using Microsoft.Extensions.Configuration;
 ////using Microsoft.Extensions.Logging;
 ////#endif
 using Microsoft.Rest;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
-// TODO: fix me
+// TODO: FIX ME
 ////#if NET45
 ////using System.Configuration;
 ////using System.Diagnostics;
@@ -22,6 +23,14 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Bot.Connector
 {
+    // TODO: FIX ME (andrees move this to its own file)
+    public interface IBotConfiguration
+    {
+        string MicrosoftAppId { get; }
+
+        string MicrosoftAppPassword { get; }
+    }
+
     public class MicrosoftAppCredentials : ServiceClientCredentials
     {
         /// <summary>
@@ -46,25 +55,18 @@ namespace Microsoft.Bot.Connector
         //        protected ILogger logger;
         //#endif
 
-        public MicrosoftAppCredentials(string appId = null, string password = null)
+        public MicrosoftAppCredentials(IBotConfiguration configuration)
+            : this(configuration.MicrosoftAppId, configuration.MicrosoftAppPassword)
         {
+        }
+
+        public MicrosoftAppCredentials(string appId, string password)
+        {
+            if (appId == null) throw new ArgumentNullException(nameof(appId));
+            if (password == null) throw new ArgumentNullException(nameof(password));
+
             MicrosoftAppId = appId;
             MicrosoftAppPassword = password;
-
-            if (appId == null)
-            {
-                // TODO: FIX ME
-                MicrosoftAppId = string.Empty;
-                // MicrosoftAppId = ConfigurationManager.AppSettings[MicrosoftAppIdKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppIdKey, EnvironmentVariableTarget.Process);
-            }
-
-            if (password == null)
-            {
-                // TODO: FIX ME
-                MicrosoftAppPassword = string.Empty;
-                // MicrosoftAppPassword = ConfigurationManager.AppSettings[MicrosoftAppPasswordKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppPasswordKey, EnvironmentVariableTarget.Process);
-            }
-
             TokenCacheKey = $"{MicrosoftAppId}-cache";
         }
 

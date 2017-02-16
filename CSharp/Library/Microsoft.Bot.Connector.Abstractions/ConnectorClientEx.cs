@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -11,8 +10,6 @@ namespace Microsoft.Bot.Connector
 {
     public partial class ConnectorClient
     {
-        // TODO (iedeny): fix
-        /*
         /// <summary>
         /// Create a new instance of the ConnectorClient class
         /// </summary>
@@ -24,7 +21,6 @@ namespace Microsoft.Bot.Connector
             : this(baseUri, new MicrosoftAppCredentials(microsoftAppId, microsoftAppPassword), handlers: handlers)
         {
         }
-        */
 
         /// <summary>
         /// Create a new instance of the ConnectorClient class

@@ -74,6 +74,12 @@ namespace Microsoft.Bot.Connector
                 return;
             }
 
+            Thread.CurrentPrincipal = new ClaimsPrincipal(identityToken.Identity);
+
+            // Inside of ASP.NET this is required
+            if (HttpContext.Current != null)
+                HttpContext.Current.User = Thread.CurrentPrincipal;
+
             botAuthenticator.TrustServiceUrls(identityToken, GetActivities(actionContext));
             await base.OnActionExecutingAsync(actionContext, cancellationToken);
         }

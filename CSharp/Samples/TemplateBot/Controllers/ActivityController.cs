@@ -137,7 +137,8 @@ namespace Microsoft.Bot.Sample.TemplateBot
 
         protected override IReadOnlyList<object> MakeServices()
         {
-            var credentials = new MicrosoftAppCredentials();
+            // TODO: FIX ME
+            var credentials = new MicrosoftAppCredentials(string.Empty, string.Empty);
             var connector = new ConnectorClient(new Uri(activity.ServiceUrl), credentials);
             // TODO: different state storage for emulator
             var storage = new StateClient(credentials);

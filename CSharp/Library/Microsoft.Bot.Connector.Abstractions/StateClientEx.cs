@@ -12,8 +12,6 @@ namespace Microsoft.Bot.Connector
 {
     public partial class StateClient
     {
-        // TODO (iedeny): fix
-        /*
         /// <summary>
         /// Create a new instance of the StateClient class
         /// </summary>
@@ -25,7 +23,6 @@ namespace Microsoft.Bot.Connector
             : this(baseUri, new MicrosoftAppCredentials(microsoftAppId, microsoftAppPassword), handlers: handlers)
         {
         }
-        */
 
         /// <summary>
         /// Create a new instance of the StateClient class

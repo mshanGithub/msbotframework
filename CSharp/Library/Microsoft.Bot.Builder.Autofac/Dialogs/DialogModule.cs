@@ -45,6 +45,7 @@ using Microsoft.Bot.Builder.Scorables.Internals;
 using Microsoft.Bot.Builder.Scorables;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Autofac.Base;
+using System.Configuration;
 
 namespace Microsoft.Bot.Builder.Dialogs.Internals
 {
@@ -64,6 +65,26 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             var inner = scope.BeginLifetimeScope(LifetimeScopeTag);
             inner.Resolve<IMessageActivity>(TypedParameter.From(message));
             return inner;
+        }
+
+        // TODO andrees move this to its own file
+        private class BotConfiguration : IBotConfiguration
+        {
+            public string MicrosoftAppId
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings[MicrosoftAppCredentials.MicrosoftAppIdKey];
+                }
+            }
+
+            public string MicrosoftAppPassword
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings[MicrosoftAppCredentials.MicrosoftAppPasswordKey];
+                }
+            }
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -98,6 +119,10 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .RegisterType<ResumptionCookie>()
                 .AsSelf()
                 .InstancePerMatchingLifetimeScope(LifetimeScopeTag);
+
+            builder.Register(c => new BotConfiguration())
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
             // components not marked as [Serializable]
             builder
