@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -58,7 +58,8 @@ namespace Microsoft.Bot.Builder.Scorables.Internals
             { ActivityTypes.DeleteUserData, typeof(IActivity) },
             { ActivityTypes.Message, typeof(IMessageActivity) },
             { ActivityTypes.Ping, typeof(IActivity) },
-            { ActivityTypes.Trigger, typeof(ITriggerActivity) },
+            { ActivityTypes.Event, typeof(IEventActivity) },
+            { ActivityTypes.Invoke, typeof(IInvokeActivity) },
             { ActivityTypes.Typing, typeof(ITypingActivity) },
         };
 
@@ -102,31 +103,59 @@ namespace Microsoft.Bot.Builder.Scorables.Internals
         }
     }
 
-    public sealed class TriggerValueResolver : DelegatingResolver
+    public abstract class PropertyResolver<T> : DelegatingResolver
     {
-        public TriggerValueResolver(IResolver inner)
+        public PropertyResolver(IResolver inner)
             : base(inner)
         {
         }
 
+        protected abstract object PropertyFrom(T item);
+
         public override bool TryResolve(Type type, object tag, out object value)
         {
-            ITriggerActivity trigger;
-            if (this.inner.TryResolve(tag, out trigger))
+            T item;
+            if (this.inner.TryResolve(tag, out item))
             {
-                var triggerValue = trigger.Value;
-                if (triggerValue != null)
+                var property = PropertyFrom(item);
+                if (property != null)
                 {
-                    var triggerValueType = triggerValue.GetType();
-                    if (type.IsAssignableFrom(triggerValueType))
+                    var propertyType = property.GetType();
+                    if (type.IsAssignableFrom(propertyType))
                     {
-                        value = triggerValue;
+                        value = property;
                         return true;
                     }
                 }
             }
 
             return base.TryResolve(type, tag, out value);
+        }
+    }
+
+    public sealed class EventActivityValueResolver : PropertyResolver<IEventActivity>
+    {
+        public EventActivityValueResolver(IResolver inner)
+            : base(inner)
+        {
+        }
+
+        protected override object PropertyFrom(IEventActivity item)
+        {
+            return item.Value;
+        }
+    }
+
+    public sealed class InvokeActivityValueResolver : PropertyResolver<IInvokeActivity>
+    {
+        public InvokeActivityValueResolver(IResolver inner)
+            : base(inner)
+        {
+        }
+
+        protected override object PropertyFrom(IInvokeActivity item)
+        {
+            return item.Value;
         }
     }
 }

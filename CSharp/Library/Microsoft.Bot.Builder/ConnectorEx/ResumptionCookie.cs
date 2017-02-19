@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -31,23 +31,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Microsoft.Bot.Builder.Internals.Fibers;
-using Microsoft.Bot.Connector;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Bot.Connector;
+using Newtonsoft.Json;
 
 namespace Microsoft.Bot.Builder.Dialogs
 {
     /// <summary>
     /// The resumption cookie that can be used to resume a conversation with a user. 
     /// </summary>
+    [Obsolete("Use ConversationReference.")]
     [Serializable]
     public sealed class ResumptionCookie : IEquatable<ResumptionCookie>
     {
@@ -64,7 +60,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <summary>
         /// True if the <see cref="IAddress.ServiceUrl"/> is trusted; False otherwise.
         /// </summary>
-        /// <remarks> <see cref="Conversation.ResumeAsync{T}(ResumptionCookie, T, System.Threading.CancellationToken)"/> adds 
+        /// <remarks> Conversation.ResumeAsync adds 
         /// the host of the <see cref="IAddress.ServiceUrl"/> to <see cref="MicrosoftAppCredentials.TrustedHostNames"/> if this flag is True.
         /// </remarks>
         public bool IsTrustedServiceUrl { private set; get; }
@@ -184,6 +180,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// </summary>
         /// <param name="resumptionCookie"> The resumption cookie.</param>
         /// <returns> A Base64 encoded string.</returns>
+        [Obsolete("Use ConversationReference.")]
         public static string GZipSerialize(this ResumptionCookie resumptionCookie)
         {
             using (var cmpStream = new MemoryStream())

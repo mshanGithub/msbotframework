@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -44,6 +44,7 @@ using System.Resources;
 using System.Threading;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Microsoft.Bot.Builder.FormFlow
 {
@@ -66,46 +67,15 @@ namespace Microsoft.Bot.Builder.FormFlow
             }
             if (this._form._prompter == null)
             {
-                this._form._prompter = async (context, prompt) =>
+                this._form._prompter = async (context, prompt, state, field) =>
                 {
-                    var msg = context.MakeMessage();
-                    if (prompt.Buttons?.Count > 0)
+                    var preamble = context.MakeMessage();
+                    var promptMessage = context.MakeMessage();
+                    if (prompt.GenerateMessages(preamble, promptMessage))
                     {
-                        var style = prompt.Style;
-                        if (style == ChoiceStyleOptions.Auto)
-                        {
-                            foreach (var button in prompt.Buttons)
-                            {
-                                // Images require carousel
-                                if (button.Image != null)
-                                {
-                                    style = ChoiceStyleOptions.Carousel;
-                                    break;
-                                }
-                            }
-                        }
-                        if (style == ChoiceStyleOptions.Carousel)
-                        {
-                            msg.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                            msg.Attachments = prompt.GenerateHeroCards();
-                        }
-                        else
-                        {
-                            msg.AttachmentLayout = AttachmentLayoutTypes.List;
-                            msg.Attachments = prompt.GenerateHeroCard();
-                        }
+                        await context.PostAsync(preamble);
                     }
-                    else if (prompt.Description?.Image != null)
-                    {
-                        msg.AttachmentLayout = AttachmentLayoutTypes.List;
-                        var card = new HeroCard() { Title = prompt.Prompt, Images = new List<CardImage> { new CardImage(prompt.Description.Image) } };
-                        msg.Attachments = new List<Attachment> { card.ToAttachment() };
-                    }
-                    else
-                    {
-                        msg.Text = prompt.Prompt;
-                    }
-                    await context.PostAsync(msg);
+                    await context.PostAsync(promptMessage);
                     return prompt;
                 };
             }
@@ -201,7 +171,7 @@ namespace Microsoft.Bot.Builder.FormFlow
             return this;
         }
 
-        public virtual IFormBuilder<T> Prompter(PromptAsyncDelegate prompter)
+        public virtual IFormBuilder<T> Prompter(PromptAsyncDelegate<T> prompter)
         {
             _form._prompter = prompter;
             return this;
@@ -320,7 +290,7 @@ namespace Microsoft.Bot.Builder.FormFlow
             internal readonly Fields<T> _fields = new Fields<T>();
             internal readonly List<IStep<T>> _steps = new List<IStep<T>>();
             internal OnCompletionAsyncDelegate<T> _completion = null;
-            internal PromptAsyncDelegate _prompter = null;
+            internal PromptAsyncDelegate<T> _prompter = null;
             internal ILocalizer _resources = new Localizer() { Culture = CultureInfo.CurrentUICulture };
 
             public Form()
@@ -374,9 +344,9 @@ namespace Microsoft.Bot.Builder.FormFlow
                 }
             }
 
-            internal override async Task<FormPrompt> Prompt(IDialogContext context, FormPrompt prompt)
+            internal override async Task<FormPrompt> Prompt(IDialogContext context, FormPrompt prompt, T state, IField<T> field)
             {
-                return prompt == null ? prompt : await _prompter(context, prompt);
+                return prompt == null ? prompt : await _prompter(context, prompt, state, field);
             }
 
             internal override OnCompletionAsyncDelegate<T> Completion
@@ -411,7 +381,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <see cref="PromptAttribute"/>, 
     /// <see cref="TermsAttribute"/> and 
     /// <see cref="TemplateAttribute"/>.   
-    /// For all of the attributes, resonable defaults will be generated.
+    /// For all of the attributes, reasonable defaults will be generated.
     /// </remarks>
     #endregion
     public sealed class FormBuilder<T> : FormBuilderBase<T>

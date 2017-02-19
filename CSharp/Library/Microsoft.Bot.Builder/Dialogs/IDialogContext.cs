@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -31,7 +31,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,8 +69,8 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// The activity posted to bot.
         /// </summary>
         /// <remarks> This is the incoming activity in reactive cases.
-        /// for proactive case, i.e. <see cref="Conversation.ResumeAsync{T}"/> code path,
-        /// it will be the <see cref="IMessageActivity"/> returned by <see cref="ResumptionCookie.GetMessage"/>.
+        /// for proactive case, i.e. Conversation.ResumeAsync code path,
+        /// it will be the <see cref="IMessageActivity"/> returned by <see cref="ConversationReference.GetPostToBotMessage"/>.
         /// </remarks>
         IActivity Activity { get; }
     }
@@ -121,28 +120,20 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             stack.Wait<IMessageActivity>(resume);
         }
-    }
-}
-
-namespace Microsoft.Bot.Builder.Dialogs.Internals
-{
-    /// <summary>
-    /// Methods to send a message from the bot to the user. 
-    /// </summary>
-    public interface IBotToUser
-    {
-        /// <summary>
-        /// Post a message to be sent to the user.
-        /// </summary>
-        /// <param name="message">The message for the user.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A task that represents the post operation.</returns>
-        Task PostAsync(IMessageActivity message, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Make a message.
+        /// Call a child dialog, add it to the top of the stack and post the message to the child dialog.
         /// </summary>
-        /// <returns>The new message.</returns>
-        IMessageActivity MakeMessage();
+        /// <typeparam name="R">The type of result expected from the child dialog.</typeparam>
+        /// <param name="stack">The dialog stack.</param>
+        /// <param name="child">The child dialog.</param>
+        /// <param name="resume">The method to resume when the child dialog has completed.</param>
+        /// <param name="message">The message that will be posted to child dialog.</param>
+        /// <param name="token">A cancellation token.</param>
+        /// <returns>A task representing the Forward operation.</returns>
+        public static async Task Forward<R>(this IDialogStack stack, IDialog<R> child, ResumeAfter<R> resume, IMessageActivity message, CancellationToken token)
+        {
+            await stack.Forward<R, IMessageActivity>(child, resume, message, token);
+        }
     }
 }

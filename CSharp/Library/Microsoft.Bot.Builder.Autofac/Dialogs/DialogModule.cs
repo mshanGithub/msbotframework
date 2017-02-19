@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -32,20 +32,19 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
-
 using Autofac;
+using Microsoft.Bot.Builder.Autofac.Base;
+using Microsoft.Bot.Builder.Base;
+using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.History;
 using Microsoft.Bot.Builder.Internals.Fibers;
+using Microsoft.Bot.Builder.Scorables;
 using Microsoft.Bot.Builder.Scorables.Internals;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Scorables;
 
 namespace Microsoft.Bot.Builder.Dialogs.Internals
 {
@@ -95,8 +94,15 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .AsImplementedInterfaces()
                 .InstancePerMatchingLifetimeScope(LifetimeScopeTag);
 
+#pragma warning disable CS0618
             builder
                 .RegisterType<ResumptionCookie>()
+                .AsSelf()
+                .InstancePerMatchingLifetimeScope(LifetimeScopeTag);
+#pragma warning restore CS0618
+
+            builder
+                .Register(c => c.Resolve<IActivity>().ToConversationReference())
                 .AsSelf()
                 .InstancePerMatchingLifetimeScope(LifetimeScopeTag);
 
@@ -138,21 +144,26 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .As<IChannelCapability>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<ConnectorStore>()
-                .AsSelf()
+            builder
+                .RegisterKeyedType<ConnectorStore, IBotDataStore<BotData>>()
                 .InstancePerLifetimeScope();
 
-            // If bot wants to use InMemoryDataStore instead of 
-            // ConnectorStore, the below registration should be used 
-            // as the inner IBotDataStore for CachingBotDataStore
-            /*builder.RegisterType<InMemoryDataStore>()
-                .AsSelf()
-                .SingleInstance(); */
+            builder
+                .RegisterKeyedType<InMemoryDataStore, IBotDataStore<BotData>>()
+                .SingleInstance();
 
-            builder.Register(c => new CachingBotDataStore(c.Resolve<ConnectorStore>(),
-                                                          CachingBotDataStoreConsistencyPolicy.ETagBasedConsistency))
-                .As<IBotDataStore<BotData>>()
-                .AsSelf()
+            builder
+                .RegisterKeyedType<CachingBotDataStore, IBotDataStore<BotData>>()
+                .WithParameter((pi, c) => pi.ParameterType == typeof(CachingBotDataStoreConsistencyPolicy),
+                                (pi, c) => CachingBotDataStoreConsistencyPolicy.ETagBasedConsistency)
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterAdapterChain<IBotDataStore<BotData>>
+                (
+                    typeof(ConnectorStore),
+                    typeof(CachingBotDataStore)
+                )
                 .InstancePerLifetimeScope();
 
             builder
@@ -172,19 +183,24 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .InstancePerDependency();
 
             builder
-                .Register(c => new DialogTaskManager(DialogModule.BlobKey, 
-                                                     c.Resolve<JObjectBotData>(), 
+                .Register(c => new DialogTaskManager(DialogModule.BlobKey,
+                                                     c.Resolve<JObjectBotData>(),
                                                      c.Resolve<IStackStoreFactory<DialogTask>>(),
-                                                     c.Resolve<Func<IDialogStack, CancellationToken, IDialogContext>>()))
+                                                     c.Resolve<Func<IDialogStack, CancellationToken, IDialogContext>>(),
+                                                     c.Resolve<IEventProducer<IActivity>>()))
                 .AsSelf()
                 .As<IDialogTaskManager>()
+                .As<IDialogTasks>()
                 .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<DialogSystem>()
+                .As<IDialogSystem>();
 
             builder
                 .RegisterType<DialogContext>()
                 .As<IDialogContext>()
                 .InstancePerDependency();
-
 
             builder
                 .Register(c =>
@@ -208,7 +224,6 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .As<IDialogTask>()
                 .InstancePerLifetimeScope();
 
-
             // Scorable implementing "/deleteprofile"
             builder
                 .Register(c => new Regex("^(\\s)*/deleteprofile", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
@@ -231,11 +246,12 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                         resolver = new AutofacResolver(cc, resolver);
                         resolver = new ArrayResolver(resolver,
                             activity,
-                            cc.Resolve<IDialogStack>(),
                             cc.Resolve<IBotToUser>(),
                             cc.Resolve<IBotData>(),
-                            cc.Resolve<IDialogTaskManager>());
+                            cc.Resolve<IDialogSystem>());
                         resolver = new ActivityResolver(resolver);
+                        resolver = new EventActivityValueResolver(resolver);
+                        resolver = new InvokeActivityValueResolver(resolver);
                         return resolver;
                     };
                     return make;
@@ -249,26 +265,93 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .InstancePerLifetimeScope();
 
             builder
+                .RegisterType<EventQueue<IActivity>>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<ReactiveDialogTask>()
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
+            builder
+                .Register(c => new ScoringEventLoop<double>(c.Resolve<ReactiveDialogTask>(), c.Resolve<ReactiveDialogTask>(), c.Resolve<IEventConsumer<IActivity>>(), c.ResolveKeyed<IScorable<IActivity, double>>(Key_Dialog_Router)))
+                .As<IEventLoop>()
+                .InstancePerLifetimeScope();
+
+            // register IDataBag that is used for to load/save ResumptionData
+            builder
                 .Register(c =>
                 {
                     var cc = c.Resolve<IComponentContext>();
-                    Func<IPostToBot> makeInner = () =>
+                    Func<IBotDataBag> make = () =>
                     {
-                        IPostToBot post = new ReactiveDialogTask(cc.Resolve<IDialogTask>(), cc.Resolve<Func<IDialog<object>>>());
-                        post = new ScoringDialogTask<double>(post, cc.ResolveKeyed<IScorable<IActivity, double>>(Key_Dialog_Router));
-                        return post;
+                        return cc.Resolve<IBotData>().PrivateConversationData;
                     };
-
-                    IPostToBot outer = new PersistentDialogTask(makeInner, cc.Resolve<IBotData>());
-                    outer = new SerializingDialogTask(outer, cc.Resolve<IAddress>(), c.Resolve<IScope<IAddress>>());
-                    outer = new ExceptionTranslationDialogTask(outer);
-                    outer = new LocalizedDialogTask(outer);
-                    outer = new PostUnhandledExceptionToUserTask(outer, cc.Resolve<IBotToUser>(), cc.Resolve<ResourceManager>(), cc.Resolve<TraceListener>());
-                    outer = new LogPostToBot(outer, cc.Resolve<IActivityLogger>());
-                    return outer;
+                    return make;
                 })
-                .As<IPostToBot>()
+                .As<Func<IBotDataBag>>()
                 .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<ResumptionContext>()
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<LocaleFinder>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            // IPostToBot services
+
+            builder
+                .RegisterKeyedType<NullPostToBot, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<EventLoopDialogTask, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<PersistentDialogTask, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<ExceptionTranslationDialogTask, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<SerializeByConversation, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<SetAmbientThreadCulture, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<PostUnhandledExceptionToUser, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<LogPostToBot, IPostToBot>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterAdapterChain<IPostToBot>
+                (
+                    typeof(EventLoopDialogTask),
+                    typeof(SetAmbientThreadCulture),
+                    typeof(PersistentDialogTask),
+                    typeof(ExceptionTranslationDialogTask),
+                    typeof(SerializeByConversation),
+                    typeof(PostUnhandledExceptionToUser),
+                    typeof(LogPostToBot)
+                )
+                .InstancePerLifetimeScope();
+
+            // other
 
             builder
                 .RegisterType<NullActivityLogger>()
@@ -276,17 +359,42 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 .SingleInstance();
 
             builder
-                .RegisterType<AlwaysSendDirect_BotToUser>()
-                .AsSelf()
+                .RegisterType<KeyboardCardMapper>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            // IBotToUser services
+
+            builder
+                .RegisterKeyedType<NullBotToUser, IBotToUser>()
                 .InstancePerLifetimeScope();
 
             builder
-                .Register(c => new LogBotToUser(
-                                new MapToChannelData_BotToUser(c.Resolve<AlwaysSendDirect_BotToUser>(), new [] { new KeyboardCardMapper() }),
-                                c.Resolve<IActivityLogger>()))
-                .As<IBotToUser>()
+                .RegisterKeyedType<AlwaysSendDirect_BotToUser, IBotToUser>()
                 .InstancePerLifetimeScope();
-            
+
+            builder
+                .RegisterKeyedType<MapToChannelData_BotToUser, IBotToUser>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterKeyedType<LogBotToUser, IBotToUser>()
+                .InstancePerLifetimeScope();
+
+#pragma warning disable CS1587
+            /// <see cref="LogBotToUser"/> is composed around <see cref="MapToChannelData_BotToUser"/> is composed around
+            /// <see cref="AlwaysSendDirect_BotToUser"/>.  The complexity of registering each component is pushed to a separate
+            /// registration method, and each of these components are replaceable without re-registering
+            /// the entire adapter chain by registering a new component with the same component key.
+#pragma warning restore CS1587
+            builder
+                .RegisterAdapterChain<IBotToUser>
+                (
+                    typeof(AlwaysSendDirect_BotToUser),
+                    typeof(MapToChannelData_BotToUser),
+                    typeof(LogBotToUser)
+                )
+                .InstancePerLifetimeScope();
         }
     }
 

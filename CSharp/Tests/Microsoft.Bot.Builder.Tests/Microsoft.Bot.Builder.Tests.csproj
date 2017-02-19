@@ -93,6 +93,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BotDataTests.cs" />
+    <Compile Include="BotTests.cs" />
     <Compile Include="ChainTests.cs" />
     <Compile Include="DialogTaskManagerTests.cs" />
     <Compile Include="DialogTaskTests.cs" />
@@ -108,8 +109,10 @@
     <Compile Include="PromptTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConversationTest.cs" />
+    <Compile Include="ActionsTests.cs" />
     <Compile Include="ScorableTests.cs" />
     <Compile Include="DataStoreTests.cs" />
+    <Compile Include="TestFiles.cs" />
     <Compile Include="UrlTokenTests.cs" />
     <Compile Include="RangeTests.cs" />
     <Compile Include="ScopeTests.cs" />
@@ -126,7 +129,7 @@
       <Project>{cdfec7d6-847e-4c13-956b-0a960ae3eb60}</Project>
       <Name>Microsoft.Bot.Builder</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector\Microsoft.Bot.Connector.csproj">
+    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.NetFramework\Microsoft.Bot.Connector.csproj">
       <Project>{df397efc-91db-4911-9971-c509926fc288}</Project>
       <Name>Microsoft.Bot.Connector</Name>
     </ProjectReference>
@@ -150,18 +153,57 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Scripts\ChoiceDescriptions.script" />
-    <None Include="Scripts\ChoiceDescriptionsRetry.script" />
-    <None Include="Scripts\JSON.script" />
-    <None Include="Scripts\Optional.script" />
-    <None Include="Scripts\PizzaForm-entities.script" />
-    <None Include="Scripts\PizzaForm-fr.script" />
-    <None Include="Scripts\PizzaForm.script" />
-    <None Include="Scripts\PizzaFormButton.script" />
-    <None Include="Scripts\SimpleForm-dependency.script" />
-    <None Include="Scripts\SimpleForm-next.script" />
-    <None Include="Scripts\SimpleForm-NotUnderstood.script" />
-    <None Include="Scripts\SimpleForm.script" />
+    <None Include="Scripts\BotDispatcher.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\ChoiceDescriptions.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\ChoiceDescriptionsRetry.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Form_Term_Matching.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\JSON.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Optional.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\PizzaForm-entities.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\PizzaForm-fr.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\PizzaForm.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\PizzaFormButton.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-dependency.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-Limits.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-next.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-NotUnderstood.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-Preamble.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-Prompter.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

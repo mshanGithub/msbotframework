@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -103,14 +103,10 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             SetField.NotNull(out this.logger, nameof(logger), logger);
         }
 
-        async Task IPostToBot.PostAsync<T>(T item, CancellationToken token)
+        async Task IPostToBot.PostAsync(IActivity activity, CancellationToken token)
         {
-            var activity = item as IActivity;
-            if (activity != null)
-            {
-                await this.logger.LogAsync(activity);
-            }
-            await inner.PostAsync<T>(item, token);
+            await this.logger.LogAsync(activity);
+            await inner.PostAsync(activity, token);
         }
     }
 

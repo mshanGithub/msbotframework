@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -149,7 +149,7 @@ namespace Microsoft.Bot.Builder.FormFlow
 
         #region Documentation
         /// <summary>   Constructor for creating a FormFlow dialog. </summary>
-        /// <param name="state">        The intial state. </param>
+        /// <param name="state">        The initial state. </param>
         /// <param name="buildForm">    A delegate for building the form. </param>
         /// <param name="options">      Options for controlling the form. </param>
         /// <param name="entities">     Optional entities to process into the form. </param>
@@ -224,7 +224,7 @@ namespace Microsoft.Bot.Builder.FormFlow
             if (this._entities.Any())
             {
                 var inputs = new List<Tuple<int, string>>();
-                var entityGroups = (from entity in this._entities group entity by entity.Type);
+                var entityGroups = (from entity in this._entities group entity by entity.Role ?? entity.Type);
                 foreach (var entityGroup in entityGroups)
                 {
                     var step = _form.Step(entityGroup.Key);
@@ -292,9 +292,9 @@ namespace Microsoft.Bot.Builder.FormFlow
                 var next = (_formState.Next == null ? new NextStep() : ActiveSteps(_formState.Next, _state));
                 bool waitForMessage = false;
                 FormPrompt lastPrompt = _formState.LastPrompt;
-                Func<FormPrompt, Task<FormPrompt>> PostAsync = async (prompt) =>
+                Func<FormPrompt, IStep<T>, Task<FormPrompt>> PostAsync = async (prompt, step) =>
                 {
-                    return await _form.Prompt(context, prompt);
+                    return await _form.Prompt(context, prompt, _state, step.Field);
                 };
                 Func<IStep<T>, IEnumerable<TermMatch>, Task<bool>> DoStepAsync = async (step, matches) =>
                 {
@@ -303,24 +303,29 @@ namespace Microsoft.Bot.Builder.FormFlow
                     next = result.Next;
                     if (result.Feedback?.Prompt != null)
                     {
-                        await PostAsync(result.Feedback);
+                        await PostAsync(result.Feedback, step);
                         if (_formState.Phase() != StepPhase.Completed)
                         {
                             if (!_formState.ProcessInputs)
                             {
-                                await PostAsync(lastPrompt);
+                                await PostAsync(lastPrompt, step);
+                                waitForMessage = true;
+                            }
+                            else if (result.Prompt?.Buttons != null)
+                            {
+                                // We showed buttons so allow them to be pressed
                                 waitForMessage = true;
                             }
                             else
                             {
-                                // After feedback, reset to ready
+                                // After simple feedback, reset to ready
                                 _formState.SetPhase(StepPhase.Ready);
                             }
                         }
                     }
                     if (result.Prompt != null)
                     {
-                        lastPrompt = await PostAsync(result.Prompt);
+                        lastPrompt = await PostAsync(result.Prompt, step);
                         waitForMessage = true;
                     }
                     return true;
@@ -329,7 +334,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                 {
                     IStep<T> step = null;
                     IEnumerable<TermMatch> matches = null;
-                    if (next.Direction == StepDirection.Named && next.Names.Count() > 1)
+                    if (next.Direction == StepDirection.Named && next.Names.Length > 1)
                     {
                         // We need to choose between multiple next steps
                         bool start = (_formState.Next == null);
@@ -337,7 +342,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                         step = new NavigationStep<T>(_form.Steps[_formState.Step].Name, _form, _state, _formState);
                         if (start)
                         {
-                            lastPrompt = await PostAsync(step.Start(context, _state, _formState));
+                            lastPrompt = await PostAsync(step.Start(context, _state, _formState), step);
                             waitForMessage = true;
                         }
                         else
@@ -356,7 +361,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                             {
                                 if (step.Type == StepType.Message)
                                 {
-                                    await PostAsync(step.Start(context, _state, _formState));
+                                    await PostAsync(step.Start(context, _state, _formState), step);
                                     next = new NextStep();
                                 }
                                 else if (_formState.ProcessInputs)
@@ -366,7 +371,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                                 }
                                 else
                                 {
-                                    lastPrompt = await PostAsync(step.Start(context, _state, _formState));
+                                    lastPrompt = await PostAsync(step.Start(context, _state, _formState), step);
                                     waitForMessage = true;
                                 }
                             }
@@ -405,8 +410,8 @@ namespace Microsoft.Bot.Builder.FormFlow
                                 next = DoCommand(context, _state, _formState, step, commands, out feedback);
                                 if (feedback != null)
                                 {
-                                    await PostAsync(feedback);
-                                    await PostAsync(lastPrompt);
+                                    await PostAsync(feedback, step);
+                                    await PostAsync(lastPrompt, step);
                                     waitForMessage = true;
                                 }
                             }
@@ -414,7 +419,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                             {
                                 if (matches.Count() == 0 && commands.Count() == 0)
                                 {
-                                    await PostAsync(step.NotUnderstood(context, _state, _formState, stepInput));
+                                    await PostAsync(step.NotUnderstood(context, _state, _formState, stepInput), step);
                                     if (_formState.ProcessInputs && !step.InClarify(_formState))
                                     {
                                         _formState.SetPhase(StepPhase.Ready);
@@ -438,8 +443,8 @@ namespace Microsoft.Bot.Builder.FormFlow
                                         next = DoCommand(context, _state, _formState, step, commands, out feedback);
                                         if (feedback != null)
                                         {
-                                            await PostAsync(feedback);
-                                            await PostAsync(lastPrompt);
+                                            await PostAsync(feedback, step);
+                                            await PostAsync(lastPrompt, step);
                                             waitForMessage = true;
                                         }
                                     }
@@ -554,7 +559,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                 {
                     result = new NextStep();
                 }
-                else if (count != result.Names.Count())
+                else if (count != result.Names.Length)
                 {
                     result = new NextStep(names);
                 }
@@ -576,11 +581,11 @@ namespace Microsoft.Bot.Builder.FormFlow
                     break;
                 case StepDirection.Named:
                     _formState.StepState = null;
-                    if (next.Names.Count() == 0)
+                    if (next.Names.Length == 0)
                     {
                         goto case StepDirection.Next;
                     }
-                    else if (next.Names.Count() == 1)
+                    else if (next.Names.Length == 1)
                     {
                         var name = next.Names.First();
                         var nextStep = -1;
@@ -696,6 +701,12 @@ namespace Microsoft.Bot.Builder.FormFlow
                                             _formState.ProcessInputs = false;
                                             _formState.FieldInputs = null;
                                             _formState.Step = 0;
+                                        }
+                                        // Skip initial messages since we showed them already
+                                        while (_formState.Step < _form.Steps.Count() && _form.Steps[_formState.Step].Type == StepType.Message)
+                                        {
+                                            _formState.SetPhase(StepPhase.Completed);
+                                            ++_formState.Step;
                                         }
                                     }
                                     return foundInput;

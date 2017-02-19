@@ -56,6 +56,7 @@ export interface IUniversalBotSettings {
 
 export interface IConnector {
     onEvent(handler: (events: IEvent[], cb?: (err: Error) => void) => void): void;
+    onInvoke?(handler: (event: IEvent, cb?: (err: Error, body: any, status?: number) => void) => void): void;
     send(messages: IMessage[], cb: (err: Error) => void): void;
     startConversation(address: IAddress, cb: (err: Error, address?: IAddress) => void): void;
 }
@@ -334,6 +335,37 @@ export class UniversalBot extends Library {
     }
 
     //-------------------------------------------------------------------------
+    // Session
+    //-------------------------------------------------------------------------
+    
+    /** Loads a session object for an arbitrary address. */
+    public loadSession(address: IAddress, done: (err: Error, session: Session) => void): void {
+        this.lookupUser(address, (user) => {
+            var msg = <IMessage>{
+                type: consts.messageType,
+                agent: consts.agent,
+                source: address.channelId,
+                sourceEvent: {},
+                address: utils.clone(address),
+                text: '',
+                user: user
+            };
+            this.ensureConversation(msg.address, (adr) => {
+                msg.address = adr;
+                var conversationId = msg.address.conversation ? msg.address.conversation.id : null;
+                var storageCtx: IBotStorageContext = { 
+                    userId: msg.user.id, 
+                    conversationId: conversationId,
+                    address: msg.address,
+                    persistUserData: this.settings.persistUserData,
+                    persistConversationData: this.settings.persistConversationData 
+                };
+                this.createSession(storageCtx, msg, this.settings.defaultDialogId || '/', this.settings.defaultDialogArgs, done);
+            }, this.errorLogger(<any>done));
+        }, this.errorLogger(<any>done));
+    }
+
+    //-------------------------------------------------------------------------
     // Helpers
     //-------------------------------------------------------------------------
     
@@ -369,6 +401,18 @@ export class UniversalBot extends Library {
         //   saving the userData & conversationData to storage.
         // * After the first call to onSend() for the conversation everything 
         //   follows the same flow as for reactive messages.
+        this.createSession(storageCtx, message, dialogId, dialogArgs, (err, session) => {
+            // Dispatch message
+            if (!err) {
+                this.emit('routing', session);
+                this.routeMessage(session, done);
+            } else {
+                done(err);
+            }
+        }, newStack);
+    }
+
+    private createSession(storageCtx: IBotStorageContext, message: IMessage, dialogId: string, dialogArgs: any, done: (err: Error, session: Session) => void, newStack = false): void {
         var loadedData: IBotStorageData;
         this.getStorageData(storageCtx, (data) => {
             // Create localizer on first access
@@ -412,21 +456,20 @@ export class UniversalBot extends Library {
             loadedData = data;  // We'll clone it when saving data later
             
             // Dispatch message
-            this.emit('routing', session);
-            session.dispatch(sessionState, message, () => this.routeMessage(session, done));
-        }, done);
+            session.dispatch(sessionState, message, () => done(null, session));
+        }, <any>done);
     }
 
     private routeMessage(session: Session, done: (err: Error) => void): void {
         // Run the root libraries recognizers
         var context = session.toRecognizeContext();
         this.recognize(context, (err, topIntent) => {
-            if (topIntent && topIntent.score > 0) {
-                // This intent will be automatically inherited by child libraries
-                // that don't implement their own recognizers.
-                context.intent = topIntent;
-                context.libraryName = this.name;
-            }
+            // This intent will be automatically inherited by child libraries
+            // that don't implement their own recognizers.
+            // - We're passing along the library name to avoid running our own
+            //   recognizer twice.
+            context.intent = topIntent;
+            context.libraryName = this.name;
 
             // Federate across all libraries to find the best route to trigger. 
             var results = Library.addRouteResult({ score: 0.0, libraryName: this.name });
@@ -467,14 +510,14 @@ export class UniversalBot extends Library {
 
     private eventMiddleware(event: IEvent, middleware: IEventMiddleware[], done: Function, error?: (err: Error) => void): void {
         var i = -1;
-        var _this = this;
+        var _that = this;
         function next() {
             if (++i < middleware.length) {
-                _this.tryCatch(() => {
+                _that.tryCatch(() => {
                     middleware[i](event, next);
                 }, () => next());
             } else {
-                _this.tryCatch(() => done(), error);
+                _that.tryCatch(() => done(), error);
             }
         }
         next();
