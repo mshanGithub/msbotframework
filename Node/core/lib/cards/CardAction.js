@@ -46,7 +46,7 @@ var CardAction = (function () {
         return new CardAction(session).type('imBack').value(msg, true).title(title || "Click to send response to bot");
     };
     CardAction.postBack = function (session, msg, title) {
-        return new CardAction(session).type('postBack').value(msg, true).title(title || "Click to send response to bot");
+        return new CardAction(session).type('postBack').value(msg).title(title || "Click to send response to bot");
     };
     CardAction.playAudio = function (session, url, title) {
         return new CardAction(session).type('playAudio').value(url).title(title || "Click to play audio file");
