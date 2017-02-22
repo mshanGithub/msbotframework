@@ -24,6 +24,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Microsoft.Bot.Connector.Abstractions.XML</DocumentationFile>
   </PropertyGroup>
   <!-- A reference to the entire .NET Framework is automatically included -->
   <ItemGroup>
@@ -103,6 +106,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)JwtTokenExtractor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JwtTokenRefresher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mention.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="MicrosoftAppCredentials.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SigninCardEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateAPI\BotState.cs" />
@@ -123,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)generateClient.cmd" />
+    <None Include="Microsoft.Bot.Connector.Common.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
