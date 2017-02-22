@@ -76,6 +76,12 @@
       <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Net.Http.4.3.1\lib\net46\System.Net.Http.dll</HintPath>
@@ -91,6 +97,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Claims, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Claims.4.3.0\lib\net46\System.Security.Claims.dll</HintPath>
+    </Reference>
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -164,9 +173,9 @@
       <Project>{cdfec7d6-847e-4c13-956b-0a960ae3eb60}</Project>
       <Name>Microsoft.Bot.Builder</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.Abstractions\Microsoft.Bot.Connector.Abstractions.csproj">
+    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.Shared\Microsoft.Bot.Connector.Common.csproj">
       <Project>{645862ff-bf5e-4d5b-b1b5-1462ededbb12}</Project>
-      <Name>Microsoft.Bot.Connector.Abstractions</Name>
+      <Name>Microsoft.Bot.Connector.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.NetFramework\Microsoft.Bot.Connector.csproj">
       <Project>{df397efc-91db-4911-9971-c509926fc288}</Project>

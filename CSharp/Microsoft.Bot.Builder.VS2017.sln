@@ -114,7 +114,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Builder.Autof
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.TemplateBot", "Samples\TemplateBot\Microsoft.Bot.Sample.TemplateBot.csproj", "{BFAB8046-9ABD-44C2-8992-9F3A5D28E5C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Connector.Abstractions", "Library\Microsoft.Bot.Connector.Abstractions\Microsoft.Bot.Connector.Abstractions.csproj", "{645862FF-BF5E-4D5B-B1B5-1462EDEDBB12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Connector.Common", "Library\Microsoft.Bot.Connector.Shared\Microsoft.Bot.Connector.Common.csproj", "{645862FF-BF5E-4D5B-B1B5-1462EDEDBB12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Connector.AspNetCore", "Library\Microsoft.Bot.Connector.AspNetCore\Microsoft.Bot.Connector.AspNetCore.csproj", "{6EFA2312-9E6F-462D-B4BE-2DF44C84DB00}"
 EndProject

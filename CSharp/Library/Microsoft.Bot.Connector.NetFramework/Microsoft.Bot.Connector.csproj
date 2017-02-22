@@ -218,9 +218,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Bot.Connector.Abstractions\Microsoft.Bot.Connector.Abstractions.csproj">
+    <ProjectReference Include="..\Microsoft.Bot.Connector.Shared\Microsoft.Bot.Connector.Common.csproj">
       <Project>{645862ff-bf5e-4d5b-b1b5-1462ededbb12}</Project>
-      <Name>Microsoft.Bot.Connector.Abstractions</Name>
+      <Name>Microsoft.Bot.Connector.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

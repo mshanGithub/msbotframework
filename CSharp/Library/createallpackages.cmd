@@ -1,7 +1,7 @@
 pushd Microsoft.Bot.Connector.NetFramework
 call createpackage.cmd
 popd
-pushd Microsoft.Bot.Connector.Abstractions
+pushd Microsoft.Bot.Connector.Shared
 call createpackage.cmd
 popd
 pushd Microsoft.Bot.Connector.AspNetCore

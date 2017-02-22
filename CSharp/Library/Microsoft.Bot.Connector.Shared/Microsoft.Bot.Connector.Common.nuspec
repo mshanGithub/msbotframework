@@ -23,12 +23,12 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\release\Microsoft.Bot.Connector.Abstractions.dll" target="lib\net461"/>
-    <file src="bin\release\Microsoft.Bot.Connector.Abstractions.xml" target="lib\net461" />
-    <file src="bin\release\Microsoft.Bot.Connector.Abstractions.pdb" target="lib\net461" />
-    <file src="bin\release\Microsoft.Bot.Connector.Abstractions.dll" target="lib\netstandard1.4"/>
-    <file src="bin\release\Microsoft.Bot.Connector.Abstractions.xml" target="lib\netstandard1.4" />
-    <file src="bin\release\Microsoft.Bot.Connector.Abstractions.pdb" target="lib\netstandard1.4" />
+    <file src="bin\release\Microsoft.Bot.Connector.Common.dll" target="lib\net461"/>
+    <file src="bin\release\Microsoft.Bot.Connector.Common.xml" target="lib\net461" />
+    <file src="bin\release\Microsoft.Bot.Connector.Common.pdb" target="lib\net461" />
+    <file src="bin\release\Microsoft.Bot.Connector.Common.dll" target="lib\netstandard1.4"/>
+    <file src="bin\release\Microsoft.Bot.Connector.Common.xml" target="lib\netstandard1.4" />
+    <file src="bin\release\Microsoft.Bot.Connector.Common.pdb" target="lib\netstandard1.4" />
     <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
   </files>
 </package>
