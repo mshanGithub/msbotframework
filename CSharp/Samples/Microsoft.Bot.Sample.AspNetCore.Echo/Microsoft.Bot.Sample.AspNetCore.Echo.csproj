@@ -42,6 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.AspNetCore.Mvc\Microsoft.Bot.Connector.AspNetCore.Mvc.csproj" />
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.Shared\Microsoft.Bot.Connector.Common.csproj" />
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.AspNetCore\Microsoft.Bot.Connector.AspNetCore.csproj" />
   </ItemGroup>

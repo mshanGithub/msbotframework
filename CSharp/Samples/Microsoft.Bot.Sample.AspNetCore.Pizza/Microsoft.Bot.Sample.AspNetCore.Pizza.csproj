@@ -45,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Builder.Autofac\Microsoft.Bot.Builder.Autofac.csproj" />
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Builder\Microsoft.Bot.Builder.csproj" />
+    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.AspNetCore.Mvc.NetFramework\Microsoft.Bot.Connector.AspNetCore.Mvc.NetFramework.csproj" />
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.Shared\Microsoft.Bot.Connector.Common.csproj" />
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.AspNetCore\Microsoft.Bot.Connector.AspNetCore.csproj" />
   </ItemGroup>
