@@ -396,7 +396,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                         .AsImplementedInterfaces()
                         .SingleInstance();
 
-                    builder.Register<ServiceProvider>(c => { ServiceProvider.RegisterServiceProvider(c.Resolve<IServiceProvider>()); return ServiceProvider.Instance; })
+                    builder.Register<ServiceProvider>(c => { if (!ServiceProvider.IsRegistered) { ServiceProvider.RegisterServiceProvider(c.Resolve<IServiceProvider>()); } return ServiceProvider.Instance; })
                         .AsSelf()
                         .SingleInstance();
                 }

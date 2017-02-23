@@ -13,10 +13,14 @@ namespace Microsoft.Bot.Connector
         {
             var activities = GetActivities(context);
 
-            foreach (var activity in activities)
+            if (context.HttpContext.User != null && context.HttpContext.User.Identity != null && context.HttpContext.User.Identity.IsAuthenticated)
             {
-                MicrosoftAppCredentials.TrustServiceUrl(activity.ServiceUrl);
+                foreach (var activity in activities)
+                {
+                    MicrosoftAppCredentials.TrustServiceUrl(activity.ServiceUrl);
+                }
             }
+
             await next();
         }
 
