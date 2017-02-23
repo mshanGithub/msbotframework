@@ -41,6 +41,19 @@
             Type which implements ICredentialProvider interface to allow multiple bot AppIds to be registered for the same endpoint
             </summary>
         </member>
+        <member name="T:Microsoft.Bot.Connector.BotServiceProvider">
+            <summary>
+            Implements the <see cref="T:System.IServiceProvider"/> used by the common bot connector for platform specific service discovery.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.BotServiceProvider.GetService(System.Type)">
+            <summary>
+            Gets the service object of the specified type.
+            </summary>
+            <param name="serviceType">An object that specifies the type of service object to get.</param>
+            <returns>A service object of type serviceType.-or- null if there is no service object
+            of type serviceType.</returns>
+        </member>
         <member name="T:Microsoft.Bot.Connector.SettingsCredentialProvider">
             <summary>
             Credential provider which uses config settings to lookup appId and password
