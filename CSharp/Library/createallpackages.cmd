@@ -7,6 +7,9 @@ popd
 pushd Microsoft.Bot.Connector.AspNetCore
 call createpackage.cmd
 popd
+pushd Microsoft.Bot.Connector.AspNetCore.Mvc
+call createpackage.cmd
+popd
 pushd Microsoft.Bot.Builder
 call createpackage.cmd
 popd

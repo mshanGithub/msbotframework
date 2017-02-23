@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>Microsoft.Bot.Builder</id>
@@ -22,39 +22,8 @@
     <summary>Microsoft.Bot.Builder is a framework for easily building stateless bots that span from regular expressions to AI based natural language.</summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="Autofac" version="3.5.2"/>
-      <dependency id="Chronic.Signed" version="0.3.2" />
-      <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.5" />
-      <dependency id="Newtonsoft.Json" version="9.0.1" />
-      <dependency id="System.Net.Http" version="4.3.1" />
+      <dependency id="Microsoft.Bot.Builder.Framework" version="$version$" />
       <dependency id="Microsoft.Bot.Connector" version="$version$" />
     </dependencies>
   </metadata>
-  <files>
-    <!-- assembly Microsoft.Bot.Builder -->
-    <file src="..\Microsoft.Bot.Builder\bin\release\Microsoft.Bot.Builder.dll" target="lib\net461"/>
-    <file src="..\Microsoft.Bot.Builder\bin\release\Microsoft.Bot.Builder.xml" target="lib\net461" />
-    <file src="..\Microsoft.Bot.Builder\bin\release\Microsoft.Bot.Builder.pdb" target="lib\net461" />
-    <!-- assembly Microsoft.Bot.Builder.Autofac -->
-    <file src="..\Microsoft.Bot.Builder.Autofac\bin\release\Microsoft.Bot.Builder.Autofac.dll"  target="lib\net461" />
-    <file src="..\Microsoft.Bot.Builder.Autofac\bin\release\Microsoft.Bot.Builder.Autofac.xml"  target="lib\net461" />
-    <file src="..\Microsoft.Bot.Builder.Autofac\bin\release\Microsoft.Bot.Builder.Autofac.pdb"  target="lib\net461" />
-    <!-- source -->
-    <file src="..\**\*.cs"
-          exclude="**\obj\**\*.cs;..\Microsoft.Bot.Builder.Azure\**;..\Microsoft.Bot.Builder.Calling\**;..\Microsoft.Bot.Builder.FormFlow.Json\**;..\Microsoft.Bot.Builder.History\**"
-          target="src" />
-    <!-- tools -->
-    <file src="..\..\tools\rview\bin\release\RView.exe" target="tools"/>
-    <!-- resources -->
-    <file src="bin\release\ar\*.dll" target="lib\net461\ar"/>
-    <file src="bin\release\en\*.dll" target="lib\net461\en"/>
-    <file src="bin\release\es\*.dll" target="lib\net461\es"/>
-    <file src="bin\release\fa\*.dll" target="lib\net461\fa"/>
-    <file src="bin\release\fr\*.dll" target="lib\net461\fr"/>
-    <file src="bin\release\ja\*.dll" target="lib\net461\ja"/>
-    <file src="bin\release\ru\*.dll" target="lib\net461\ru"/>
-    <file src="bin\release\zh-hans\*.dll" target="lib\net461\zh-hans"/>
-    <file src="bin\release\de-dE\*.dll" target="lib\net461\de-dE"/>
-    <file src="bin\release\cs\*.dll" target="lib\net461\cs"/>
-  </files>
 </package>
