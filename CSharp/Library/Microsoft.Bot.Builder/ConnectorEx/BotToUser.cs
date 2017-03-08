@@ -31,6 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using Microsoft.Bot.Builder.ConnectorEx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +39,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Connector;
 
@@ -78,7 +78,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return toBotActivity.CreateReply();
         }
 
-        Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
+        Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
         {
             return Task.CompletedTask;
         }
@@ -100,7 +100,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return toBotActivity.CreateReply();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
         {
             await this.client.Conversations.ReplyToActivityAsync((Activity)message, cancellationToken);
         }
@@ -286,7 +286,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return toBotActivity.CreateReply();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
         {
             this.queue.Enqueue(message);
         }
@@ -307,7 +307,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return this.inner.MakeMessage();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
         {
             await this.inner.PostAsync(message, cancellationToken);
             await this.writer.WriteLineAsync($"{message.Text}{ButtonsToText(message.Attachments)}");

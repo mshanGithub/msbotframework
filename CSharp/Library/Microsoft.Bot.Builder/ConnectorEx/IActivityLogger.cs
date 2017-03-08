@@ -125,7 +125,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return this.inner.MakeMessage();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
         {
             await this.logger.LogAsync(message);
             await this.inner.PostAsync(message, cancellationToken);

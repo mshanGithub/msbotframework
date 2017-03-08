@@ -1,14 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
@@ -60,7 +55,7 @@ namespace Microsoft.Bot.Connector
 
 
 
-        public override async Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
+        public override async Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             var provider = this.GetCredentialProvider();
             var botAuthenticator = new BotAuthenticator(provider, OpenIdConfigurationUrl, DisableEmulatorTokens);
@@ -115,7 +110,7 @@ namespace Microsoft.Bot.Connector
             {
                 // if we have raw values
                 credentialProvider = new StaticCredentialProvider(MicrosoftAppId, MicrosoftAppPassword);
-             
+
             }
             else
             {
