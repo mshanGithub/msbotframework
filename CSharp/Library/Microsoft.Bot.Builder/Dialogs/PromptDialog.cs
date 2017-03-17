@@ -413,7 +413,23 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="titles">Titles to display for choices.</param>
         public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, string prompt, IEnumerable<T> values, IEnumerable<string> titles = null, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto)
         {
-            Choice(context, resume, new PromptOptions<T>(prompt, retry: retry, attempts: attempts, values: optionValues, promptStyler: new PromptStyler(promptStyle), titles: optionDescriptions));
+            Choice(context, resume, values.Select((o, i) => new KeyValuePair<string, T>(titles?.ElementAt(i) ?? o.ToString(), o)), prompt, retry, attempts, promptStyle);
+        }
+
+        /// <summary>   Prompt for one of a set of choices. </summary>
+        /// <param name="context">  The context. </param>
+        /// <param name="resume">   Resume handler. </param>
+        /// <param name="options">  The set of options (all of which must be convertible to a string) and their description.</param>
+        /// <param name="prompt">   The prompt to show to the user. </param>
+        /// <param name="retry">    What to show on retry. </param>
+        /// <param name="attempts"> The number of times to retry. </param>
+        /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
+        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IEnumerable<KeyValuePair<string, T>> options, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto)
+        {
+            var optionValues = options.Select(i => i.Value).ToList();
+            var optionTitles = options.Select(i => i.Key.ToString()).ToList();
+
+            Choice(context, resume, new PromptOptions<T>(prompt, retry: retry, attempts: attempts, values: optionValues, promptStyler: new PromptStyler(promptStyle), titles: optionTitles));
         }
 
         /// <summary>   Prompt for one of a set of choices. </summary>
