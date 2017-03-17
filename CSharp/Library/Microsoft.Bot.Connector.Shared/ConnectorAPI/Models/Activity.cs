@@ -133,13 +133,13 @@ namespace Microsoft.Bot.Connector
         /// Array of address added
         /// </summary>
         [JsonProperty(PropertyName = "membersAdded")]
-        public IList<ChannelAccount> MembersAdded { get; set; }
+        public IList<ChannelAccount> MembersAdded { get; set; } = new ChannelAccount[0];
 
         /// <summary>
         /// Array of addresses removed
         /// </summary>
         [JsonProperty(PropertyName = "membersRemoved")]
-        public IList<ChannelAccount> MembersRemoved { get; set; }
+        public IList<ChannelAccount> MembersRemoved { get; set; } = new ChannelAccount[0];
 
         /// <summary>
         /// Conversations new topic name
@@ -195,14 +195,14 @@ namespace Microsoft.Bot.Connector
         /// Attachments
         /// </summary>
         [JsonProperty(PropertyName = "attachments")]
-        public IList<Attachment> Attachments { get; set; }
+        public IList<Attachment> Attachments { get; set; } = new Attachment[0];
 
         /// <summary>
         /// Collection of Entity objects, each of which contains metadata
         /// about this activity. Each Entity object is typed.
         /// </summary>
         [JsonProperty(PropertyName = "entities")]
-        public IList<Entity> Entities { get; set; }
+        public IList<Entity> Entities { get; set; } = new Entity[0];
 
         /// <summary>
         /// Channel-specific payload
