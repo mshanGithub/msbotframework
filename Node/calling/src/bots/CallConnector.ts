@@ -180,6 +180,7 @@ export class CallConnector implements ucb.ICallConnector, bs.IBotStorage {
     }
 
     private verifyBotFramework(req: IWebRequest, res: IWebResponse): void {
+        const CLOCK_TOLERANCE = 300;
         var token: string;
         if (req.headers && req.headers.hasOwnProperty('authorization')) {
             var auth = req.headers['authorization'].trim().split(' ');;
@@ -198,7 +199,7 @@ export class CallConnector implements ucb.ICallConnector, bs.IBotStorage {
 
                     // verify appId, issuer, token expirs and token notBefore
                     if (decoded.payload.aud != this.settings.appId || decoded.payload.iss != issuer || 
-                        now > decoded.payload.exp || now < decoded.payload.nbf) {
+                        (now - CLOCK_TOLERANCE) > decoded.payload.exp || (now + CLOCK_TOLERANCE) < decoded.payload.nbf) {
                         res.status(403);
                         res.end();   
                     } else {
@@ -211,7 +212,7 @@ export class CallConnector implements ucb.ICallConnector, bs.IBotStorage {
                                 audience: this.settings.appId,
                                 ignoreExpiration: false,
                                 ignoreNotBefore: false,
-                                clockTolerance: 300
+                                clockTolerance: CLOCK_TOLERANCE
                             };
 
                             decoded = jwt.verify(token, secret, jwtVerifyOptions);
