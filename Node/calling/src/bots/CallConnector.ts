@@ -196,9 +196,9 @@ export class CallConnector implements ucb.ICallConnector, bs.IBotStorage {
                     var decoded = jwt.decode(token, { complete: true });
                     var now = new Date().getTime() / 1000;
 
-                    // verify appId, issuer, token expirs and token notBefore
+                    // verify appId, issuer, token expires and token notBefore
                     if (decoded.payload.aud != this.settings.appId || decoded.payload.iss != issuer || 
-                        now > decoded.payload.exp || now < decoded.payload.nbf) {
+                        (now - 300) > decoded.payload.exp || (now + 300) < decoded.payload.nbf) {
                         res.status(403);
                         res.end();   
                     } else {
