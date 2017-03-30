@@ -26,4 +26,5 @@
       <dependency id="Microsoft.Bot.Connector" version="$version$" />
     </dependencies>
   </metadata>
+  <files />
 </package>
