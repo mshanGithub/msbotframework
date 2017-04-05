@@ -23,7 +23,7 @@
     <language>en-US</language>
     <dependencies>
       <dependency id="Microsoft.Bot.Builder.Common" version="$version$" />
-      <dependency id="Microsoft.Bot.Connector" version="$version$" />
+      <dependency id="Microsoft.Bot.Connector" version="$connector$" />
     </dependencies>
   </metadata>
   <files />

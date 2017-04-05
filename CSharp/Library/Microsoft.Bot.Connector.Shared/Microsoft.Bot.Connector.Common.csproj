@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)generateClient.cmd" />
+    <None Include="createpackage.cmd" />
     <None Include="Microsoft.Bot.Connector.Common.nuspec">
       <SubType>Designer</SubType>
     </None>
