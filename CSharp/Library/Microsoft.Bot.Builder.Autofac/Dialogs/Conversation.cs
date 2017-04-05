@@ -48,10 +48,14 @@ namespace Microsoft.Bot.Builder.Dialogs
     {
         public static readonly IContainer Container;
 
+        public static class ConversationBootstrap {
+            public static Func<Module> GetModule = () => new DialogModule_MakeRoot();
+        }
+
         static Conversation()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new DialogModule_MakeRoot());
+            builder.RegisterModule(ConversationBootstrap.GetModule());
             Container = builder.Build();
         }
 
