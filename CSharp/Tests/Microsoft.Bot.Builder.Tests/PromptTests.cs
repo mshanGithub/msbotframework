@@ -40,6 +40,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,7 +73,23 @@ namespace Microsoft.Bot.Builder.Tests
         }
     }
 
-
+    [TestClass]
+    public sealed class PromptTests
+    {
+        [TestMethod]
+        public async Task PromptConfirm_Localization()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            var options = PromptDialog.PromptConfirm.Options;
+            var patterns = PromptDialog.PromptConfirm.Patterns;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-ES");
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("es-ES");
+            Assert.AreNotEqual(options, PromptDialog.PromptConfirm.Options);
+            Assert.AreNotEqual(patterns, PromptDialog.PromptConfirm.Patterns);
+        }
+    }
+    
     [TestClass]
     public sealed class PromptTests_Success : PromptTests_Base
     {

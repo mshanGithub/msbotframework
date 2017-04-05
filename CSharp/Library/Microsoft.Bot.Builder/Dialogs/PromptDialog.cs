@@ -434,16 +434,28 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// Index of no descriptions.
             /// </summary>
             public const int No = 1;
-
+            
             /// <summary>
             /// The yes, no options for confirmation prompt
             /// </summary>
-            public static string[] Options { set; get; } = { Resources.MatchYes.SplitList().First(), Resources.MatchNo.SplitList().First() };
+            public static string[] Options
+            {
+                get
+                {
+                    return new string[] { Resources.MatchYes.SplitList().First(), Resources.MatchNo.SplitList().First() };
+                }
+            }
 
             /// <summary>
             /// The patterns for matching yes/no responses in the confirmation prompt.
             /// </summary>
-            public static string[][] Patterns { get; set; } = { Resources.MatchYes.SplitList(), Resources.MatchNo.SplitList() };
+            public static string[][] Patterns
+            {
+                get
+                {
+                    return new string[][] { Resources.MatchYes.SplitList(), Resources.MatchNo.SplitList() };
+                }
+            }
 
             /// <summary>   Constructor for a prompt confirmation dialog. </summary>
             /// <param name="prompt">   The prompt. </param>
