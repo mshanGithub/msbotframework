@@ -425,6 +425,9 @@ namespace Microsoft.Bot.Builder.Dialogs
         [Serializable]
         public sealed class PromptConfirm : Prompt<bool, string>
         {
+            private static string[] options;
+            private static string[][] patterns;
+
             /// <summary>
             /// Index of yes descriptions.
             /// </summary>
@@ -442,7 +445,15 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 get
                 {
-                    return new string[] { Resources.MatchYes.SplitList().First(), Resources.MatchNo.SplitList().First() };
+                    if (options == null)
+                    {
+                        return new string[] { Resources.MatchYes.SplitList().First(), Resources.MatchNo.SplitList().First() };
+                    }
+                    return options;
+                }
+                set
+                {
+                    options = value;
                 }
             }
 
@@ -453,7 +464,15 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 get
                 {
-                    return new string[][] { Resources.MatchYes.SplitList(), Resources.MatchNo.SplitList() };
+                    if (patterns == null)
+                    {
+                        return new string[][] { Resources.MatchYes.SplitList(), Resources.MatchNo.SplitList() };
+                    }
+                    return patterns;
+                }
+                set
+                {
+                    patterns = value;
                 }
             }
 
