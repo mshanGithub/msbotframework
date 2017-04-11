@@ -148,6 +148,7 @@ namespace Microsoft.Bot.Connector
         /// </summary>
         public IInvokeActivity AsInvokeActivity() { return IsActivity(ActivityTypes.Invoke) ? this : null; }
 
+        /// <summary>
         public static string GetActivityType(string type)
         {
             if (String.Equals(type, ActivityTypes.Message, StringComparison.OrdinalIgnoreCase))
@@ -175,12 +176,6 @@ namespace Microsoft.Bot.Connector
         {
             // hit the extension method
             return ((IMessageActivity)this).HasContent();
-        }
-
-        public TypeT GetChannelData<TypeT>()
-        {
-            // hit the extension method
-            return ((IActivity)this).GetChannelData<TypeT>();
         }
 
         public Mention[] GetMentions()
@@ -246,6 +241,38 @@ namespace Microsoft.Bot.Connector
                 return default(TypeT);
             return ((JObject)activity.ChannelData).ToObject<TypeT>();
         }
+
+
+        /// <summary>
+        /// Get channeldata as typed structure
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <typeparam name="TypeT">type to use</typeparam>
+        /// <param name="instance">The resulting instance, if possible</param>
+        /// <returns>
+        /// <c>true</c> if value of <seealso cref="IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
+        /// </returns>
+        public static bool TryGetChannelData<TypeT>(this IActivity activity,
+            out TypeT instance)
+        {
+            instance = default(TypeT);
+
+            try
+            {
+                if (activity.ChannelData == null)
+                {
+                    return false;
+                }
+
+                instance = GetChannelData<TypeT>(activity);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Check if the message has content
