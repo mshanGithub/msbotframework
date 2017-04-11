@@ -32,12 +32,6 @@ namespace Microsoft.Bot.Connector
                 .AddTraceSource("Microsoft.Bot.Connector"));
 
             Services = new ReadOnlyDictionary<Type, object>(services);
-
-            // Auto register with base implementation
-            if (!ServiceProvider.IsRegistered)
-            {
-                ServiceProvider.RegisterServiceProvider(new BotServiceProvider());
-            }
         }
 
         public static ServiceProvider Instance { get { return ServiceProvider.Instance; } }

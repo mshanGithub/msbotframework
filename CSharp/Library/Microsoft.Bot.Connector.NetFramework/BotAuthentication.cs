@@ -17,13 +17,6 @@ namespace Microsoft.Bot.Connector
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class BotAuthentication : ActionFilterAttribute
     {
-        static BotAuthentication()
-        {
-            // This is a hack to trigger service provider auto-registration with the common bot connector assembly
-            // This is only to support a non-breaking change for consumers of ASPNET BotConnector that do not use BotBuilder
-            BotServiceProvider.Instance.GetHashCode();
-        }
-
         /// <summary>
         /// Microsoft AppId for the bot 
         /// </summary>

@@ -410,35 +410,12 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// <param name="builder">The builder used to register dependencies.</param>
         private void RegisterBotConnectorImplementation(ContainerBuilder builder)
         {
-            if (ServiceProvider.IsRegistered)
-            {
-                builder.Register<ServiceProvider>(c => ServiceProvider.Instance)
-                    .AsSelf()
-                    .SingleInstance();
-            }
-            else
-            {
-                // Finds the bot connector being used in this application domain
-                // that is not the common connector assembly
-                System.Reflection.Assembly connectorAssembly = AppDomain.CurrentDomain.
-                    GetAssemblies()
-                    .Where(a => a.FullName.StartsWith("Microsoft.Bot.Connector"))
-                    .Where(a => a != typeof(BotData).Assembly)
-                    .FirstOrDefault();
-
-                if (connectorAssembly != null)
-                {
-                    // register the IServiceProvider instance provided in the connector with the Common connector
-                    builder.RegisterAssemblyTypes(connectorAssembly)
-                        .Where(t => t.IsAssignableTo<IServiceProvider>())
-                        .AsImplementedInterfaces()
-                        .SingleInstance();
-
-                    builder.Register<ServiceProvider>(c => { if (!ServiceProvider.IsRegistered) { ServiceProvider.RegisterServiceProvider(c.Resolve<IServiceProvider>()); } return ServiceProvider.Instance; })
-                        .AsSelf()
-                        .SingleInstance();
-                }
-            }
+            // service provider is assumed to be availble at this point
+            // For ASPNET platform, it will be auto-registered
+            // For all other platforms, consumer is expected to set up provider during startup
+            builder.Register<ServiceProvider>(c => ServiceProvider.Instance)
+                .AsSelf()
+                .SingleInstance();
         }
     }
 

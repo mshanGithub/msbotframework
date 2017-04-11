@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
+using System.Linq;
 
 namespace Microsoft.Bot.Connector
 {
     public sealed class ServiceProvider
     {
+        private static readonly object autoRegistrationSyncLock = new object();
         private static ServiceProvider instance;
         private readonly IServiceProvider provider;
 
@@ -21,6 +24,11 @@ namespace Microsoft.Bot.Connector
         {
             get
             {
+                if (!IsRegistered)
+                {
+                    TryAutoRegisterForBackwardCompatibility();
+                }
+
                 ThrowOnNullInstance();
                 return ServiceProvider.instance;
             }
@@ -98,6 +106,50 @@ namespace Microsoft.Bot.Connector
             }
 
             return service;
+        }
+
+        /// <summary>
+        /// Tries to auto register the ASP.NET implementation of Connector for backward compatibility.
+        /// </summary>
+        private static void TryAutoRegisterForBackwardCompatibility()
+        {
+            const string AspNetBotConnectorAssemblyName = "Microsoft.Bot.Connector";
+            const string AspNetBotConnectorServiceProviderFullQualifiedName = "Microsoft.Bot.Connector.BotServiceProvider";
+
+            Assembly connectorAssembly = null;
+
+            try
+            {
+                var connectorAssemblyName = new AssemblyName(AspNetBotConnectorAssemblyName);
+                connectorAssembly = Assembly.Load(connectorAssemblyName);
+            }
+            catch (Exception)
+            {
+                // assembly not available
+                // cannot log, because we don't have service provider to get logger from
+            }
+
+            if (connectorAssembly != null)
+            {
+                Type botServiceProviderType = connectorAssembly.DefinedTypes
+                        .FirstOrDefault(t => t.FullName.Equals(AspNetBotConnectorServiceProviderFullQualifiedName))
+                        ?.AsType();
+
+                if (botServiceProviderType == null)
+                {
+                    throw new InvalidOperationException($"Auto registration of service provider failed because {AspNetBotConnectorServiceProviderFullQualifiedName} is not a type in assembly {AspNetBotConnectorAssemblyName}.");
+                }
+
+                // prevent concurrent auto registration during initialization
+                lock (autoRegistrationSyncLock)
+                {
+                    if (!IsRegistered)
+                    {
+                        IServiceProvider provider = (IServiceProvider)Activator.CreateInstance(botServiceProviderType);
+                        ServiceProvider.RegisterServiceProvider(provider);
+                    }
+                }
+            }
         }
     }
 }
