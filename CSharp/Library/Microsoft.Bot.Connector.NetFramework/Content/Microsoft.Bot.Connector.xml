@@ -81,6 +81,11 @@
             Signin button
             </summary>
         </member>
+        <member name="F:Microsoft.Bot.Connector.ActionTypes.Invoke">
+            <summary>
+            Invoke a command back to the bot
+            </summary>
+        </member>
         <member name="T:Microsoft.Bot.Connector.Activity">
             <summary>
             An Activity is the basic communication type for the Bot Framework 3.0 protocol
@@ -198,6 +203,7 @@
             Return an IInvokeActivity mask if this is an invoke activity
             </summary>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Microsoft.Bot.Connector.Activity.GetActivityType(System.String)" -->
         <member name="M:Microsoft.Bot.Connector.Activity.#ctor">
             <summary>
             Initializes a new instance of the Activity class.
@@ -400,6 +406,17 @@
             <param name="activity"></param>
             <typeparam name="TypeT">type to use</typeparam>
             <returns>typed object or default(TypeT)</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.TryGetChannelData``1(Microsoft.Bot.Connector.IActivity,``0@)">
+            <summary>
+            Get channeldata as typed structure
+            </summary>
+            <param name="activity"></param>
+            <typeparam name="TypeT">type to use</typeparam>
+            <param name="instance">The resulting instance, if possible</param>
+            <returns>
+            <c>true</c> if value of <seealso cref="P:Microsoft.Bot.Connector.IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
+            </returns>
         </member>
         <member name="M:Microsoft.Bot.Connector.ActivityExtensions.HasContent(Microsoft.Bot.Connector.IMessageActivity)">
             <summary>
@@ -2654,7 +2671,7 @@
         </member>
         <member name="P:Microsoft.Bot.Connector.CardAction.Type">
             <summary>
-            Defines the type of action implemented by this button.
+            Defines the type of action implemented by this button. Defaults to <see cref="F:Microsoft.Bot.Connector.ActionTypes.ImBack"/>
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.CardAction.Title">
@@ -3613,13 +3630,6 @@
             <summary>
             True if this activity has text, attachments, or channelData
             </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.IMessageActivity.GetChannelData``1">
-            <summary>
-            Get channeldata as typed structure
-            </summary>
-            <typeparam name="TypeT">type to use</typeparam>
-            <returns>typed object or default(TypeT)</returns>
         </member>
         <member name="M:Microsoft.Bot.Connector.IMessageActivity.GetMentions">
             <summary>
