@@ -31,8 +31,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow.Advanced;
 using Microsoft.Bot.Builder.Resource;
+using Microsoft.Bot.Connector;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -87,7 +90,7 @@ namespace Microsoft.Bot.Builder.FormFlow
         /// The default assembly is the one that contains <typeparamref name="T"/>
         /// and the default resourceName if the name of that type.
         /// </remarks>
-        IForm<T> Build(Assembly resourceAssembly = null, string resourceName = null);
+        IForm<T> Build(Assembly resourceAssembly = null, string resourceName = null, Func<IDialogContext, IMessageActivity, IField<T>, Task> beforeSendMessageHandler = null);
 
         /// <summary>
         /// The form configuration supplies default templates and settings.

@@ -55,7 +55,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     public abstract class FormBuilderBase<T> : IFormBuilder<T>
         where T : class
     {
-        public virtual IForm<T> Build(Assembly resourceAssembly = null, string resourceName = null)
+        public virtual IForm<T> Build(Assembly resourceAssembly = null, string resourceName = null, Func<IDialogContext, IMessageActivity, IField<T>, Task> beforeSendMessageHandler = null)
         {
             if (resourceAssembly == null)
             {
@@ -75,6 +75,8 @@ namespace Microsoft.Bot.Builder.FormFlow
                     {
                         await context.PostAsync(preamble);
                     }
+                    if (beforeSendMessageHandler != null)
+                        await beforeSendMessageHandler(context, promptMessage, field);
                     await context.PostAsync(promptMessage);
                     return prompt;
                 };
@@ -399,7 +401,7 @@ namespace Microsoft.Bot.Builder.FormFlow
             _ignoreAnnotations = ignoreAnnotations;
         }
 
-        public override IForm<T> Build(Assembly resourceAssembly = null, string resourceName = null)
+        public override IForm<T> Build(Assembly resourceAssembly = null, string resourceName = null, Func<IDialogContext, IMessageActivity, IField<T>, Task> beforeSendMessageHandler = null)
         {
             if (!_form._steps.Any((step) => step.Type == StepType.Field))
             {
@@ -411,7 +413,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                 }
                 Confirm(new PromptAttribute(_form.Configuration.Template(TemplateUsage.Confirmation)));
             }
-            return base.Build(resourceAssembly, resourceName);
+            return base.Build(resourceAssembly, resourceName, beforeSendMessageHandler);
         }
 
         public override IFormBuilder<T> Field(string name, ActiveDelegate<T> active = null, ValidateAsyncDelegate<T> validate = null)
