@@ -91,7 +91,7 @@ namespace Microsoft.Bot.Connector
         {
             if (ServiceProvider.instance == null)
             {
-                throw new InvalidOperationException("The service provider instance was not register. Please call RegisterServiceProvider before using ServiceProvider.Instance.");
+                throw new InvalidOperationException("The service provider instance was not registered. Please call RegisterServiceProvider before using ServiceProvider.Instance.");
             }
         }
 

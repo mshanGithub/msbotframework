@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using SimpleEchoBot.Controllers;
 
 namespace SimpleEchoBot
 {
@@ -31,6 +32,12 @@ namespace SimpleEchoBot
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "ConnectorOnlytApi",
+                routeTemplate: "connectorOnly/messages/{id}",
+                defaults: new { id = RouteParameter.Optional, controller = "connectorOnly" }
             );
         }
     }
