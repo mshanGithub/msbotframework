@@ -161,7 +161,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="botToUser">Communication channel to use.</param>
         /// <param name="text">The message text.</param>
         /// <param name="speak">The SSML markup for text to speech.</param>
-        /// <param name="options">The optioms for the message.</param>
+        /// <param name="options">The options for the message.</param>
         /// <param name="locale">The locale of the text.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task that represents the post operation.</returns>
