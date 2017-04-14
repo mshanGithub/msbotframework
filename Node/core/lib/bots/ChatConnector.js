@@ -394,11 +394,8 @@ var ChatConnector = (function () {
     };
     ChatConnector.prototype.postMessage = function (msg, cb) {
         logger.info(address, 'ChatConnector: sending message.');
-        this.prepOutgoingMessage(msg);
         var address = msg.address;
-        msg['from'] = address.bot;
-        msg['recipient'] = address.user;
-        delete msg.address;
+        this.prepOutgoingMessage(msg);
         var path = '/v3/conversations/' + encodeURIComponent(address.conversation.id) + '/activities';
         if (address.id && address.channelId !== 'skype') {
             path += '/' + encodeURIComponent(address.id);
@@ -599,6 +596,15 @@ var ChatConnector = (function () {
             'textLocale': 'locale',
             'sourceEvent': 'channelData'
         });
+        var address = msg.address;
+        msg['timestamp'] = new Date().toISOString();
+        msg['from'] = address.bot;
+        msg['recipient'] = address.user;
+        msg['replyToId'] = address.id;
+        msg['serviceUrl'] = address.serviceUrl;
+        msg['channelId'] = address.channelId;
+        msg['conversation'] = address.conversation;
+        delete msg.address;
         delete msg.agent;
         delete msg.source;
     };
