@@ -142,6 +142,8 @@
     <Compile Include="DialogTaskManagerTests.cs" />
     <Compile Include="DialogTaskTests.cs" />
     <Compile Include="DialogTestBase.cs" />
+    <Compile Include="PromptRecognizers\PromptRecognizerTests.cs" />
+    <Compile Include="PromptRecognizers\Resource\TestResources.Designer.cs" />
     <Compile Include="ResolverTests.cs" />
     <Compile Include="DispatchDialogTests .cs" />
     <Compile Include="ExceptionTests.cs" />
@@ -259,6 +261,10 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PromptRecognizers\Resource\TestResources.es.resx" />
+    <EmbeddedResource Include="PromptRecognizers\Resource\TestResources.resx" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

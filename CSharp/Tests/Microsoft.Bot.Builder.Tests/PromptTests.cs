@@ -212,6 +212,12 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        public async Task PromptSuccess_Number_Long_Text()
+        {
+            await PromptSuccessAsync((context, resume) => PromptDialog.Number(context, resume, PromptText), "ten", 10L);
+        }
+
+        [TestMethod]
         public async Task PromptSuccess_Number_Double()
         {
             await PromptSuccessAsync((context, resume) => PromptDialog.Number(context, resume, PromptText), "42", 42d);
@@ -222,6 +228,20 @@ namespace Microsoft.Bot.Builder.Tests
         {
             var choices = new[] { "one", "two", "three" };
             await PromptSuccessAsync((context, resume) => PromptDialog.Choice(context, resume, choices, PromptText, promptStyle: PromptStyle.None), "two", "two");
+        }
+        
+        [TestMethod]
+        public async Task PromptSuccess_Choice_Ordinal()
+        {
+            var choices = new[] { "one", "two", "three" };
+            await PromptSuccessAsync((context, resume) => PromptDialog.Choice(context, resume, choices, PromptText, promptStyle: PromptStyle.None), "second", "two");
+        }
+
+        [TestMethod]
+        public async Task PromptSuccess_Choice_Cardinal()
+        {
+            var choices = new[] { "one", "two", "three" };
+            await PromptSuccessAsync((context, resume) => PromptDialog.Choice(context, resume, choices, PromptText, promptStyle: PromptStyle.None), "2", "two");
         }
 
         [TestMethod]
