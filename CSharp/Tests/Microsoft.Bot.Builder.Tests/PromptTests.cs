@@ -76,6 +76,14 @@ namespace Microsoft.Bot.Builder.Tests
     [TestClass]
     public sealed class PromptTests_Localization
     {
+        [TestInitialize]
+        [TestCleanup]
+        public void CleanPromptConfirmProps()
+        {
+            PromptDialog.PromptConfirm.Options = null;
+            PromptDialog.PromptConfirm.Patterns = null;
+        }
+        
         [TestMethod]
         public async Task PromptLocalization_ChangeCulture()
         {
