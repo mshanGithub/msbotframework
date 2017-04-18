@@ -230,6 +230,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             SetField.CheckNull(nameof(prompt), prompt);
             message.Text = prompt;
             message.Speak = speak;
+            message.InputHint = InputHints.ExpectingInput;
         }
 
         /// <summary>
@@ -249,6 +250,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             SetField.CheckNull(nameof(prompt), prompt);
             SetField.CheckNull(nameof(options), options);
             message.Speak = speak;
+            message.InputHint = InputHints.ExpectingInput;
             if (descriptions == null)
             {
                 descriptions = (from option in options select option.ToString()).ToList();
