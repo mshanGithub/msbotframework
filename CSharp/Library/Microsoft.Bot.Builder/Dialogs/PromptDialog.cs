@@ -54,13 +54,9 @@ namespace Microsoft.Bot.Builder.Dialogs
         Auto,
 
         /// <summary>
-        /// Generate keyboard card for choices that will be mapped to a 
-        /// <see cref="HeroCard"/> or a keyboard, e.g. Facebook quick replies
+        /// Map choices to a list of suggested actions that depending on the channel will be a keyboard, quick replies or a 
+        /// <see cref="HeroCard"/>.
         /// </summary>
-        /// <remarks>
-        /// Make sure to use <see cref="MapToChannelData_BotToUser"/> with <see cref="KeyboardCardMapper"/>
-        /// when you use this option
-        /// </remarks>
         Keyboard,
 
         /// <summary>
@@ -265,7 +261,8 @@ namespace Microsoft.Bot.Builder.Dialogs
                     {
                         if (PromptStyle == PromptStyle.Keyboard)
                         {
-                            message.AddKeyboardCard(prompt, options, descriptions);
+                            message.SuggestedActions = new SuggestedActions(actions: options.GenerateButtons(descriptions));
+                            message.Text = prompt;
                         }
                         else
                         {
@@ -318,9 +315,11 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="retry">    What to show on retry. </param>
         /// <param name="attempts"> The number of times to retry. </param>
         /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
-        public static void Confirm(IDialogContext context, ResumeAfter<bool> resume, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto)
+        /// <param name="options">Button labels for yes/no choices.</param>
+        /// <param name="patterns">Yes and no alternatives for matching input where first dimension is either <see cref="PromptConfirm.Yes"/> or <see cref="PromptConfirm.No"/> and the arrays are alternative strings to match.</param>
+        public static void Confirm(IDialogContext context, ResumeAfter<bool> resume, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, string[] options = null, string[][] patterns = null)
         {
-            Confirm(context, resume, new PromptOptions<string>(prompt, retry, attempts: attempts, options: PromptConfirm.Options.ToList(), promptStyler: new PromptStyler(promptStyle: promptStyle)));
+            Confirm(context, resume, new PromptOptions<string>(prompt, retry, attempts: attempts, options: options ?? PromptConfirm.Options, promptStyler: new PromptStyler(promptStyle: promptStyle)), patterns);
         }
 
         /// <summary>
@@ -329,9 +328,10 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="context"> The dialog context.</param>
         /// <param name="resume"> Resume handler.</param>
         /// <param name="promptOptions"> The options for the prompt, <see cref="PromptOptions{T}"/>.</param>
-        public static void Confirm(IDialogContext context, ResumeAfter<bool> resume, PromptOptions<string> promptOptions)
+        /// <param name="patterns">Yes and no alternatives for matching input where first dimension is either <see cref="PromptConfirm.Yes"/> or <see cref="PromptConfirm.No"/> and the arrays are alternative strings to match.</param>
+        public static void Confirm(IDialogContext context, ResumeAfter<bool> resume, PromptOptions<string> promptOptions, string[][] patterns = null)
         {
-            var child = new PromptConfirm(promptOptions);
+            var child = new PromptConfirm(promptOptions, patterns);
             context.Call<bool>(child, resume);
         }
 
@@ -461,12 +461,12 @@ namespace Microsoft.Bot.Builder.Dialogs
         }
 
         /// <summary>   Prompt for a confirmation. </summary>
-        /// <remarks>   Normally used through <see cref="PromptDialog.Confirm(IDialogContext, ResumeAfter{bool}, string, string, int, PromptStyle)"/>.</remarks>
+        /// <remarks>   Normally used through <see cref="PromptDialog.Confirm(IDialogContext, ResumeAfter{bool}, string, string, int, PromptStyle, string[], string[][])"/>.</remarks>
         [Serializable]
         public sealed class PromptConfirm : Prompt<bool, string>
         {
-            private static string[] options;
-            private static string[][] patterns;
+            private string[] options;
+            private string[][] patterns;
 
             /// <summary>
             /// Index of yes descriptions.
@@ -479,21 +479,13 @@ namespace Microsoft.Bot.Builder.Dialogs
             public const int No = 1;
 
             /// <summary>
-            /// The yes, no options for confirmation prompt
+            /// The yes, no choice labels for confirmation prompt
             /// </summary>
             public static string[] Options
             {
                 get
                 {
-                    if (options == null)
-                    {
-                        return new string[] { Resources.MatchYes.SplitList().First(), Resources.MatchNo.SplitList().First() };
-                    }
-                    return options;
-                }
-                set
-                {
-                    options = value;
+                    return new string[] { Resources.MatchYes.SplitList().First(), Resources.MatchNo.SplitList().First() };
                 }
             }
 
@@ -504,15 +496,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 get
                 {
-                    if (patterns == null)
-                    {
-                        return new string[][] { Resources.MatchYes.SplitList(), Resources.MatchNo.SplitList() };
-                    }
-                    return patterns;
-                }
-                set
-                {
-                    patterns = value;
+                    return new string[][] { Resources.MatchYes.SplitList(), Resources.MatchNo.SplitList() };
                 }
             }
 
@@ -521,8 +505,10 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
             /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
-            public PromptConfirm(string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto)
-                : this(new PromptOptions<string>(prompt, retry, attempts: attempts, options: Options.ToList(), promptStyler: new PromptStyler(promptStyle)))
+            /// <param name="options">Names for yes and no  options.</param>
+            /// <param name="patterns">Yes and no alternatives for matching input where first dimension is either <see cref="PromptConfirm.Yes"/> or <see cref="PromptConfirm.No"/> and the arrays are alternative strings to match.</param>
+            public PromptConfirm(string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, string[] options = null, string[][] patterns = null)
+                : this(new PromptOptions<string>(prompt, retry, attempts: attempts, options: options ?? Options, promptStyler: new PromptStyler(promptStyle)), patterns)
             {
             }
 
@@ -530,19 +516,21 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// Constructor for a prompt confirmation dialog.
             /// </summary>
             /// <param name="promptOptions"> THe prompt options.</param>
-            public PromptConfirm(PromptOptions<string> promptOptions)
+            /// <param name="patterns"></param>
+            public PromptConfirm(PromptOptions<string> promptOptions, string[][] patterns = null)
                 : base(promptOptions)
             {
+                this.patterns = patterns ?? Patterns;
                 this.promptOptions.DefaultRetry = this.DefaultRetry;
             }
-            
+
             protected override bool TryParse(IMessageActivity message, out bool result)
             {
                 if (!string.IsNullOrEmpty(message.Text))
                 {
                     var choices = new Dictionary<string, IEnumerable<string>>();
-                    choices.Add(Yes.ToString(), Patterns[Yes].Select(x => x.ToLowerInvariant()));
-                    choices.Add(No.ToString(), Patterns[No].Select(x => x.ToLowerInvariant()));
+                    choices.Add(Yes.ToString(), this.patterns[Yes].Select(x => x.ToLowerInvariant()));
+                    choices.Add(No.ToString(), this.patterns[No].Select(x => x.ToLowerInvariant()));
                     var matches = PromptRecognizers.RecognizeChoices(message.Text.Trim().ToLowerInvariant(), choices);
                     var topMatch = matches.MaxBy(x => x.Score);
                     if (topMatch != null && topMatch.Score > 0)
@@ -791,7 +779,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             var attachments = new List<Attachment>
             {
-                new HeroCard(text: text, buttons: GenerateButtons(options, descriptions)).ToAttachment()
+                new HeroCard(text: text, buttons: options.GenerateButtons(descriptions)).ToAttachment()
             };
 
             return attachments;
@@ -801,13 +789,13 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             var attachments = new List<Attachment>
             {
-                new KeyboardCard(text: text, buttons: GenerateButtons(options, descriptions)).ToAttachment()
+                new KeyboardCard(text: text, buttons: options.GenerateButtons(descriptions)).ToAttachment()
             };
 
             return attachments;
         }
 
-        internal static IList<CardAction> GenerateButtons<T>(IEnumerable<T> options,
+        internal static IList<CardAction> GenerateButtons<T>(this IEnumerable<T> options,
             IEnumerable<string> descriptions = null)
         {
             var actions = new List<CardAction>();
