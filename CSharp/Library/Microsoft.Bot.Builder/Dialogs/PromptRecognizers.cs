@@ -121,17 +121,13 @@ namespace Microsoft.Bot.Builder.Dialogs
         public static IEnumerable<RecognizeEntity<string>> RecognizeLocalizedRegExp(IMessageActivity context, string expressionKey, ResourceManager resourceManager)
         {
             var entities = new List<RecognizeEntity<string>>();
-            var locale = context.Locale;
+            var locale = context.Locale ?? string.Empty;
             var utterance = context.Text ?? string.Empty;
             var cache = expCache[expressionKey];
             if (cache == null)
             {
                 cache = new LocalizedCache<Regex>(expressionKey);
                 expCache.Add(cache);
-            }
-            if (string.IsNullOrEmpty(locale))
-            {
-                locale = string.Empty;
             }
 
             if (!cache.Locales.ContainsKey(locale))
@@ -159,16 +155,13 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             var utterance = context?.Text ?? string.Empty;
             var cache = choicesCache[choicesKey];
-            var locale = context.Locale;
+            var locale = context.Locale ?? string.Empty;
             if (cache == null)
             {
                 cache = new LocalizedCache<IDictionary<string, IEnumerable<string>>>(choicesKey);
                 choicesCache.Add(cache);
             }
-            if (string.IsNullOrEmpty(locale))
-            {
-                locale = string.Empty;
-            }
+
             if (!cache.Locales.ContainsKey(locale))
             {
                 var choicesArray = GetLocalizedResource(choicesKey, locale, resourceManager).Split('|');
