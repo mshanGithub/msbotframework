@@ -384,9 +384,12 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="attempts"> The number of times to retry. </param>
         /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
         /// <param name="descriptions">Descriptions to display for choices.</param>
-        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IDictionary<T, IEnumerable<T>> choices, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null)
+        /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
+        /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
+        /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
+        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IDictionary<T, IEnumerable<T>> choices, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
         {
-            Choice(context, resume, new PromptOptions<T>(prompt, retry, attempts: attempts, options: choices.Keys.ToList(), promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), choices);
+            Choice(context, resume, new PromptOptions<T>(prompt, retry, attempts: attempts, options: choices.Keys.ToList(), promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), choices, recognizeChoices, recognizeNumbers, recognizeOrdinals);
         }
 
         /// <summary>
@@ -398,9 +401,13 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="resume"> Resume handler.</param>
         /// <param name="promptOptions"> The prompt options.</param>
         /// <param name="choices"> The possible options with synonyms, all of which must be convertible to a string.</param>
-        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> choices = null)
+        /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
+        /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
+        /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
+        /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
+        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> choices = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
         {
-            var child = new PromptChoice<T>(promptOptions, choices);
+            var child = new PromptChoice<T>(promptOptions, choices, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore);
             context.Call<T>(child, resume);
         }
 
@@ -624,6 +631,10 @@ namespace Microsoft.Bot.Builder.Dialogs
         public class PromptChoice<T> : Prompt<T, T>
         {
             private IDictionary<T, IEnumerable<T>> choices;
+            private bool recognizeChoices;
+            private bool recognizeNumbers;
+            private bool recognizeOrdinals;
+            private double minScore;
 
             /// <summary>   Constructor for a prompt choice dialog. </summary>
             /// <param name="options">Enumerable of the options to choose from.</param>
@@ -632,8 +643,12 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="attempts"> Maximum number of attempts. </param>
             /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
             /// <param name="descriptions">Descriptions to show for each option.</param>
-            public PromptChoice(IEnumerable<T> options, string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null)
-                : this(new PromptOptions<T>(prompt, retry, options: options.ToList(), attempts: attempts, promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()))
+            /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
+            /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
+            /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
+            /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
+            public PromptChoice(IEnumerable<T> options, string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
+                : this(new PromptOptions<T>(prompt, retry, options: options.ToList(), attempts: attempts, promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), null, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore)
             {
             }
 
@@ -644,8 +659,12 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="attempts"> Maximum number of attempts. </param>
             /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
             /// <param name="descriptions">Descriptions to show for each option.</param>
-            public PromptChoice(IDictionary<T, IEnumerable<T>> choices, string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null)
-                : this(new PromptOptions<T>(prompt, retry, options: choices.Keys.ToList(), attempts: attempts, promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), choices)
+            /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
+            /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
+            /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
+            /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
+            public PromptChoice(IDictionary<T, IEnumerable<T>> choices, string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
+                : this(new PromptOptions<T>(prompt, retry, options: choices.Keys.ToList(), attempts: attempts, promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), choices, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore)
             {
             }
             
@@ -654,10 +673,18 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// </summary>
             /// <param name="promptOptions"> The prompt options</param>
             /// <param name="choices">Dictionary of the options to choose from with the synonyms.</param>
-            public PromptChoice(PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> choices = null)
+            /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
+            /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
+            /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
+            /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
+            public PromptChoice(PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> choices = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
                 : base(promptOptions)
             {
                 SetField.CheckNull(nameof(promptOptions.Options), promptOptions.Options);
+                this.recognizeChoices = recognizeChoices;
+                this.recognizeNumbers = recognizeNumbers;
+                this.recognizeOrdinals = recognizeOrdinals;
+                this.minScore = minScore;
                 if (choices == null)
                 {
                     this.choices = new Dictionary<T, IEnumerable<T>>();
@@ -673,23 +700,47 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 if (!string.IsNullOrWhiteSpace(message.Text))
                 {
-                    var entityMatches = PromptRecognizers.RecognizeChoices(message.Text, choices);
-                    var cardinalMatches = PromptRecognizers.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 0, MaxValue = choices.Count - 1 });
-                    var ordinalMatches = PromptRecognizers.RecognizeOrdinals(message);
-
-                    var entityWinner = entityMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<T>();
-                    var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<double>();
-                    var ordinalWinner = ordinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
-
-                    if (entityWinner.Entity != null && entityWinner.Score >= Math.Max(cardinalWinner.Score, ordinalWinner.Score))
+                    var topScore = 0.0;
+                    T topEntity = default(T);
+                    if (recognizeChoices)
                     {
-                        result = entityWinner.Entity;
-                        return true;
+                        var entityMatches = PromptRecognizers.RecognizeChoices(message.Text, choices);
+                        var entityWinner = entityMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<T>();
+                        topScore = entityWinner.Score;
+                        topEntity = entityWinner.Entity;
                     }
-                    else if (Math.Max(cardinalWinner.Score, ordinalWinner.Score) > 0)
+
+                    if (recognizeNumbers)
                     {
-                        var index = (int)(cardinalWinner.Score > ordinalWinner.Score ? cardinalWinner.Entity : ordinalWinner.Entity);
-                        result = this.promptOptions.Options[index - 1];
+                        var options = new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 0, MaxValue = choices.Count - 1 };
+                        var cardinalMatches = PromptRecognizers.RecognizeNumbers(message, options);
+                        var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<double>();
+                        if (topScore < cardinalWinner.Score)
+                        {
+                            var index = (int)cardinalWinner.Entity - 1;
+                            topScore = cardinalWinner.Score;
+                            topEntity = this.promptOptions.Options[index];
+                        }
+                    }
+
+                    if (recognizeOrdinals)
+                    {
+                        var ordinalMatches = PromptRecognizers.RecognizeOrdinals(message);
+                        var ordinalWinner = ordinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
+                        if (topScore < ordinalWinner.Score)
+                        {
+                            var index = ordinalWinner.Entity > 0 ? (int)ordinalWinner.Entity - 1 : choices.Count - (int)ordinalWinner.Entity;
+                            if (index >= 0 && index < choices.Count)
+                            {
+                                topScore = ordinalWinner.Score;
+                                topEntity = this.promptOptions.Options[index];
+                            }
+                        }
+                    }
+
+                    if (topScore >= this.minScore && topScore > 0)
+                    {
+                        result = topEntity;
                         return true;
                     }
                 }
