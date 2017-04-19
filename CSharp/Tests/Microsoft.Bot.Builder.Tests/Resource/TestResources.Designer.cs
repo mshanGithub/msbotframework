@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.Bot.Builder.Tests.PromptRecognizers.Resource {
+namespace Microsoft.Bot.Builder.Tests.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Microsoft.Bot.Builder.Tests.PromptRecognizers.Resource {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Bot.Builder.Tests.PromptRecognizers.Resource.TestResources", typeof(TestResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Bot.Builder.Tests.Resource.TestResources", typeof(TestResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
