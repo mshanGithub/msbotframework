@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using Microsoft.Bot.Connector;
 using System.Resources;
 using System.Globalization;
+using Microsoft.Bot.Builder.Dialogs.Internals;
+using System.Collections.Concurrent;
 
 namespace Microsoft.Bot.Builder.Dialogs
 {
@@ -78,7 +80,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
         public LocalizedCache()
         {
-            this.Locales = new Dictionary<string, T>();
+            this.Locales = new ConcurrentDictionary<string, T>();
         }
         public LocalizedCache(string key)
             : this()
@@ -113,7 +115,25 @@ namespace Microsoft.Bot.Builder.Dialogs
         public DateTime? End { get; set; }
     }
 
-    public class PromptRecognizers
+    public interface IPromptRecognizers
+    {
+        IEnumerable<RecognizeEntity<string>> RecognizeLocalizedRegExp(IMessageActivity context, string expressionKey, ResourceManager resourceManager);
+
+        IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(string utterance, IDictionary<T, IEnumerable<T>> choices, IPromptRecognizeChoicesOptions options = null);
+
+        IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity context, string choicesKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null);
+
+        IEnumerable<RecognizeEntity<double>> RecognizeNumbers(IMessageActivity context, IPromptRecognizeNumbersOptions options = null);
+
+        IEnumerable<RecognizeEntity<long>> RecognizeOrdinals(IMessageActivity context);
+
+        IEnumerable<RecognizeEntity<string>> RecognizeTimes(IMessageActivity context);
+        
+        IEnumerable<RecognizeEntity<bool>> RecognizeBooleans(IMessageActivity context);
+    }
+
+    [Serializable]
+    public class DefaultRecognizers : IPromptRecognizers
     {
         private const string resource_key_cardinals = "NumberTerms";
         private const string resource_key_ordinals = "NumberOrdinals";
@@ -121,28 +141,34 @@ namespace Microsoft.Bot.Builder.Dialogs
         private const string resource_key_number_regex = "NumberExpression";
         private const string resource_key_booleans = "BooleanChoices";
 
-        private static LocalizedCacheList<Regex> expCache = new LocalizedCacheList<Regex>();
-        private static LocalizedCacheList<IDictionary<string, IEnumerable<string>>> choicesCache = new LocalizedCacheList<IDictionary<string, IEnumerable<string>>>();
+        private static Regex simpleTokenizer = new Regex(@"\w+", RegexOptions.IgnoreCase);
+        private static IDictionary<string, IDictionary<string, Regex>> expCache = new ConcurrentDictionary<string, IDictionary<string, Regex>>();
+        private static IDictionary<string, IDictionary<string, IDictionary<string, IEnumerable<string>>>> choicesCache = new ConcurrentDictionary<string, IDictionary<string, IDictionary<string, IEnumerable<string>>>>();
 
-        public static IEnumerable<RecognizeEntity<string>> RecognizeLocalizedRegExp(IMessageActivity context, string expressionKey, ResourceManager resourceManager)
+        public DefaultRecognizers()
+        {
+        }
+
+        public IEnumerable<RecognizeEntity<string>> RecognizeLocalizedRegExp(IMessageActivity context, string expressionKey, ResourceManager resourceManager)
         {
             var entities = new List<RecognizeEntity<string>>();
             var locale = context.Locale ?? string.Empty;
             var utterance = context.Text ?? string.Empty;
-            var cache = expCache[expressionKey];
-            if (cache == null)
+            IDictionary<string, Regex> cache;
+            if (!expCache.TryGetValue(expressionKey, out cache))
             {
-                cache = new LocalizedCache<Regex>(expressionKey);
-                expCache.Add(cache);
+                cache = new ConcurrentDictionary<string, Regex>();
+                expCache.Add(expressionKey, cache);
             }
-
-            if (!cache.Locales.ContainsKey(locale))
+            Regex regex;
+            if (!cache.TryGetValue(locale, out regex))
             {
                 var expression = GetLocalizedResource(expressionKey, locale, resourceManager);
-                cache.Locales[locale] = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                regex = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                cache.Add(locale, regex);
             }
             
-            foreach (Match match in cache.Locales[locale].Matches(utterance))
+            foreach (Match match in cache[locale].Matches(utterance))
             {
                 if (match.Success)
                 {
@@ -157,46 +183,27 @@ namespace Microsoft.Bot.Builder.Dialogs
             return entities;
         }
         
-        public static IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity context, string choicesKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null)
+        public IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity context, string choicesKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null)
         {
             var utterance = context?.Text ?? string.Empty;
-            var cache = choicesCache[choicesKey];
             var locale = context.Locale ?? string.Empty;
-            if (cache == null)
+            IDictionary<string, IDictionary<string, IEnumerable<string>>> cache;
+            if (!choicesCache.TryGetValue(choicesKey, out cache))
             {
-                cache = new LocalizedCache<IDictionary<string, IEnumerable<string>>>(choicesKey);
-                choicesCache.Add(cache);
+                cache = new ConcurrentDictionary<string, IDictionary<string, IEnumerable<string>>>();
+                choicesCache.Add(choicesKey, cache);
             }
-
-            if (!cache.Locales.ContainsKey(locale))
+            IDictionary<string, IEnumerable<string>> choices;
+            if (!cache.TryGetValue(locale, out choices))
             {
                 var choicesArray = GetLocalizedResource(choicesKey, locale, resourceManager).Split('|');
-                cache.Locales[locale] = ConvertToChoices(choicesArray);
+                choices = ConvertToChoices(choicesArray);
+                cache.Add(locale, choices);
             }
-            var choices = cache.Locales[locale];
             return RecognizeChoices(utterance, choices, options);
         }
-
-        private static IDictionary<string, IEnumerable<string>> ConvertToChoices(IEnumerable<string> values)
-        {
-            var result = new Dictionary<string, IEnumerable<string>>();
-            foreach (var term in values)
-            {
-                var subTerm = term.Split('=');
-                if (subTerm.Count() == 2)
-                {
-                    var synonyms = subTerm[1].Split(',');
-                    result.Add(subTerm[0], synonyms);
-                }
-                else
-                {
-                    result.Add(subTerm[0], Enumerable.Empty<string>());
-                }
-            }
-            return result;
-        }
-
-        public static IEnumerable<RecognizeEntity<double>> RecognizeNumbers(IMessageActivity context, IPromptRecognizeNumbersOptions options = null)
+        
+        public IEnumerable<RecognizeEntity<double>> RecognizeNumbers(IMessageActivity context, IPromptRecognizeNumbersOptions options = null)
         {
             var entities = new List<RecognizeEntity<double>>();
 
@@ -231,7 +238,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             return entities;
         }
 
-        public static IEnumerable<RecognizeEntity<long>> RecognizeOrdinals(IMessageActivity context)
+        public IEnumerable<RecognizeEntity<long>> RecognizeOrdinals(IMessageActivity context)
         {
             var entities = new List<RecognizeEntity<long>>();
 
@@ -255,7 +262,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             return entities;
         }
 
-        public static IEnumerable<RecognizeEntity<string>> RecognizeTimes(IMessageActivity context)
+        public IEnumerable<RecognizeEntity<string>> RecognizeTimes(IMessageActivity context)
         {
             var entities = new List<RecognizeEntity<string>>();
 
@@ -267,6 +274,87 @@ namespace Microsoft.Bot.Builder.Dialogs
                 Score = CalculateScore(utterance, entity.Entity)
             });
 
+            return entities;
+        }
+        
+        public IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(string utterance, IDictionary<T, IEnumerable<T>> choices, IPromptRecognizeChoicesOptions options = null)
+        {
+            var text = utterance ?? string.Empty;
+            var entities = new List<RecognizeEntity<T>>();
+            var index = 0;
+            foreach (var choice in choices)
+            {
+                var values = choice.Value?.ToList() ?? new List<T>();
+                var excludeValue = options?.ExcludeValue ?? false;
+                if (!excludeValue)
+                {
+                    values.Add(choice.Key);
+                }
+                var match = RecognizeValues(text, values, options).MaxBy(x => x.Score);
+                if (match != null)
+                {
+                    entities.Add(new RecognizeEntity<T> {
+                        Entity = choice.Key,
+                        Score = match.Score
+                    });
+                }
+                index++;
+            }
+            return entities;
+        }
+
+        public IEnumerable<RecognizeEntity<bool>> RecognizeBooleans(IMessageActivity context)
+        {
+            var entities = new List<RecognizeEntity<bool>>();
+
+            var results = RecognizeLocalizedChoices(context, resource_key_booleans, Resource.Resources.ResourceManager, new PromptRecognizeChoicesOptions());
+            if (results != null)
+            {
+                entities.AddRange(
+                    results.Select(x => new RecognizeEntity<bool> { Entity = bool.Parse(x.Entity), Score = x.Score })
+                );
+            }
+            
+            return entities;
+        }
+        
+        private static IEnumerable<RecognizeEntity<T>> RecognizeValues<T>(string utterance, IEnumerable<T> values, IPromptRecognizeChoicesOptions options = null)
+        {
+            var entities = new List<RecognizeEntity<T>>();
+            IList<string> tokens = new List<string>();
+            foreach(Match match in simpleTokenizer.Matches(utterance.Trim().ToLowerInvariant()))
+            {
+                tokens.Add(match.Value);
+            }
+            var maxDistance = options?.MaxTokenDistance ?? 2;
+            var index = 0;
+            foreach(var value in values)
+            {
+                var text = value.ToString();
+                var topScore = 0.0;
+                IList<string> vTokens = new List<string>();
+                foreach (Match match in simpleTokenizer.Matches(text))
+                {
+                    vTokens.Add(match.Value);
+                }
+                for (int i = 0; i < tokens.Count; i++)
+                {
+                    var score = MatchValue(tokens.ToArray(), vTokens.ToArray(), i, maxDistance, options?.AllowPartialMatches ?? false);
+                    if (topScore < score)
+                    {
+                        topScore = score;
+                    }
+                }
+                if (topScore > 0.0)
+                {
+                    entities.Add(new RecognizeEntity<T>
+                    {
+                        Entity = value,
+                        Score = topScore
+                    });
+                }
+                index++;
+            }
             return entities;
         }
 
@@ -299,89 +387,26 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             return response;
         }
-        
-        public static IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(string utterance, IDictionary<T, IEnumerable<T>> choices, IPromptRecognizeChoicesOptions options = null)
+
+        private static IDictionary<string, IEnumerable<string>> ConvertToChoices(IEnumerable<string> values)
         {
-            var text = utterance ?? string.Empty;
-            var entities = new List<RecognizeEntity<T>>();
-            var index = 0;
-            foreach (var choice in choices)
+            var result = new Dictionary<string, IEnumerable<string>>();
+            foreach (var term in values)
             {
-                var values = choice.Value?.ToList() ?? new List<T>();
-                var excludeValue = options?.ExcludeValue ?? false;
-                if (!excludeValue)
+                var subTerm = term.Split('=');
+                if (subTerm.Count() == 2)
                 {
-                    values.Add(choice.Key);
+                    var synonyms = subTerm[1].Split(',');
+                    result.Add(subTerm[0], synonyms);
                 }
-                var match = FindTopEntity(RecognizeValues(text, values, options));
-                if (match != null)
+                else
                 {
-                    entities.Add(new RecognizeEntity<T> {
-                        Entity = choice.Key,
-                        Score = match.Score
-                    });
+                    result.Add(subTerm[0], Enumerable.Empty<string>());
                 }
-                index++;
             }
-            return entities;
+            return result;
         }
 
-        public static IEnumerable<RecognizeEntity<bool>> RecognizeBooleans(IMessageActivity context)
-        {
-            var entities = new List<RecognizeEntity<bool>>();
-
-            var results = RecognizeLocalizedChoices(context, resource_key_booleans, Resource.Resources.ResourceManager, new PromptRecognizeChoicesOptions());
-            if (results != null)
-            {
-                entities.AddRange(
-                    results.Select(x => new RecognizeEntity<bool> { Entity = bool.Parse(x.Entity), Score = x.Score })
-                );
-            }
-            
-            return entities;
-        }
-
-        private static Regex simpleTokinizer = new Regex(@"\w+", RegexOptions.IgnoreCase);
-
-        public static IEnumerable<RecognizeEntity<T>> RecognizeValues<T>(string utterance, IEnumerable<T> values, IPromptRecognizeChoicesOptions options = null)
-        {
-            var entities = new List<RecognizeEntity<T>>();
-            IList<string> tokens = new List<string>();
-            foreach(Match match in simpleTokinizer.Matches(utterance.Trim().ToLowerInvariant()))
-            {
-                tokens.Add(match.Value);
-            }
-            var maxDistance = options?.MaxTokenDistance ?? 2;
-            var index = 0;
-            foreach(var value in values)
-            {
-                var text = value.ToString();
-                var topScore = 0.0;
-                IList<string> vTokens = new List<string>();
-                foreach (Match match in simpleTokinizer.Matches(text))
-                {
-                    vTokens.Add(match.Value);
-                }
-                for (int i = 0; i < tokens.Count; i++)
-                {
-                    var score = MatchValue(tokens.ToArray(), vTokens.ToArray(), i, maxDistance, options?.AllowPartialMatches ?? false);
-                    if (topScore < score)
-                    {
-                        topScore = score;
-                    }
-                }
-                if (topScore > 0.0)
-                {
-                    entities.Add(new RecognizeEntity<T>
-                    {
-                        Entity = value,
-                        Score = topScore
-                    });
-                }
-                index++;
-            }
-            return entities;
-        }
 
         private static double MatchValue(string[] tokens, string[] vTokens, int index, int maxDistance, bool allowPartialMatches)
         {
@@ -419,22 +444,6 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             if (tokens.Count <= startPos) return -1;
             return tokens.FindIndex(startPos, x => x == token);
-        }
-
-        public static RecognizeEntity<T> FindTopEntity<T>(IEnumerable<RecognizeEntity<T>> entities)
-        {
-            RecognizeEntity<T> top = null;
-            if (entities != null)
-            {
-                foreach(var entity in entities)
-                {
-                    if (top == null || top.Score < entity.Score)
-                    {
-                        top = entity;
-                    }
-                }
-            }
-            return top;
         }
 
         private static double CalculateScore(string utterance, string entity, double max = 1.0, double min = 0.5)
