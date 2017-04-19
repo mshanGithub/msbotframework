@@ -729,7 +729,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                         var ordinalWinner = ordinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
                         if (topScore < ordinalWinner.Score)
                         {
-                            var index = ordinalWinner.Entity > 0 ? (int)ordinalWinner.Entity - 1 : choices.Count - (int)ordinalWinner.Entity;
+                            var index = ordinalWinner.Entity > 0 ? (int)ordinalWinner.Entity - 1 : choices.Count + (int)ordinalWinner.Entity;
                             if (index >= 0 && index < choices.Count)
                             {
                                 topScore = ordinalWinner.Score;

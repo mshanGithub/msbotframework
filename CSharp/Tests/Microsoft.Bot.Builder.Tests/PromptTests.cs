@@ -223,6 +223,13 @@ namespace Microsoft.Bot.Builder.Tests
             var choices = new[] { "one", "two", "three" };
             await PromptSuccessAsync((context, resume) => PromptDialog.Choice(context, resume, choices, PromptText, promptStyle: PromptStyle.None), "second", "two");
         }
+        
+        [TestMethod]
+        public async Task PromptSuccess_Choice_Reverse_Ordinal()
+        {
+            var choices = new[] { "one", "two", "three" };
+            await PromptSuccessAsync((context, resume) => PromptDialog.Choice(context, resume, choices, PromptText, promptStyle: PromptStyle.None), "the third from last", "one");
+        }
 
         [TestMethod]
         public async Task PromptSuccess_Choice_Cardinal()
