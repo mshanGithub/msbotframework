@@ -115,6 +115,12 @@ namespace Microsoft.Bot.Builder.Dialogs
 
     public class PromptRecognizers
     {
+        private const string resource_key_cardinals = "NumberTerms";
+        private const string resource_key_ordinals = "NumberOrdinals";
+        private const string resource_key_reverser_ordinals = "NumberReverseOrdinals";
+        private const string resource_key_number_regex = "NumberExpression";
+        private const string resource_key_booleans = "BooleanChoices";
+
         private static LocalizedCacheList<Regex> expCache = new LocalizedCacheList<Regex>();
         private static LocalizedCacheList<IDictionary<string, IEnumerable<string>>> choicesCache = new LocalizedCacheList<IDictionary<string, IEnumerable<string>>>();
 
@@ -199,7 +205,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             Func<RecognizeEntity<double>, bool> integerOnlyWhere = (x => ((options != null && options.IntegerOnly.HasValue) ? !options.IntegerOnly.Value : true) || Math.Floor(x.Entity) == x.Entity);
             Func<RecognizeEntity<string>, RecognizeEntity<double>> selector = (x => new RecognizeEntity<double> { Entity = double.Parse(x.Entity), Score = x.Score });
             
-            var matches = RecognizeLocalizedRegExp(context, "NumberExpression", Resource.Resources.ResourceManager);
+            var matches = RecognizeLocalizedRegExp(context, resource_key_number_regex, Resource.Resources.ResourceManager);
             if (matches != null && matches.Any())
             {
                 entities.AddRange(matches.Select(selector)
@@ -208,7 +214,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     .Where(integerOnlyWhere));
             }
 
-            var resource = GetLocalizedResource("NumberTerms", context.Locale, Resource.Resources.ResourceManager);
+            var resource = GetLocalizedResource(resource_key_cardinals, context.Locale, Resource.Resources.ResourceManager);
 
             var choices = ConvertToChoices(resource.Split('|'));
 
@@ -229,8 +235,8 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             var entities = new List<RecognizeEntity<long>>();
 
-            var resourceOrdinales = GetLocalizedResource("NumberOrdinals", context.Locale, Resource.Resources.ResourceManager);
-            var resourceReverseOrdinals = GetLocalizedResource("NumberReverseOrdinals", context.Locale, Resource.Resources.ResourceManager);
+            var resourceOrdinales = GetLocalizedResource(resource_key_ordinals, context.Locale, Resource.Resources.ResourceManager);
+            var resourceReverseOrdinals = GetLocalizedResource(resource_key_reverser_ordinals, context.Locale, Resource.Resources.ResourceManager);
 
             var ordinals = resourceOrdinales.Split('|');
             var reverseOrdinals = resourceReverseOrdinals.Split('|');
@@ -324,7 +330,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             var entities = new List<RecognizeEntity<bool>>();
 
-            var results = RecognizeLocalizedChoices(context, "BooleanChoices", Resource.Resources.ResourceManager, new PromptRecognizeChoicesOptions());
+            var results = RecognizeLocalizedChoices(context, resource_key_booleans, Resource.Resources.ResourceManager, new PromptRecognizeChoicesOptions());
             if (results != null)
             {
                 entities.AddRange(
