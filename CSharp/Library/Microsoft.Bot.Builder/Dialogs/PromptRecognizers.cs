@@ -17,7 +17,7 @@ namespace Microsoft.Bot.Builder.Dialogs
     {
         int? MinValue { get; set; }
         int? MaxValue { get; set; }
-        bool? IntergerOnly { get; set; }
+        bool? IntegerOnly { get; set; }
     }
 
     public class PromptRecognizeNumbersOptions : IPromptRecognizeNumbersOptions
@@ -33,7 +33,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <summary>
         /// (Optional) If true, then only integers will be recognized.
         /// </summary>
-        public bool? IntergerOnly { get; set; }
+        public bool? IntegerOnly { get; set; }
     }
 
     public interface IPromptRecognizeValuesOptions
@@ -196,7 +196,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             Func<RecognizeEntity<double>, bool> minValueWhere = (x => ((options == null || !options.MinValue.HasValue) || x.Entity >= options.MinValue));
             Func<RecognizeEntity<double>, bool> maxValueWhere = (x => ((options == null || !options.MaxValue.HasValue) || x.Entity <= options.MaxValue));
-            Func<RecognizeEntity<double>, bool> integerOnlyWhere = (x => ((options != null && options.IntergerOnly.HasValue) ? !options.IntergerOnly.Value : true) || Math.Floor(x.Entity) == x.Entity);
+            Func<RecognizeEntity<double>, bool> integerOnlyWhere = (x => ((options != null && options.IntegerOnly.HasValue) ? !options.IntegerOnly.Value : true) || Math.Floor(x.Entity) == x.Entity);
             Func<RecognizeEntity<string>, RecognizeEntity<double>> selector = (x => new RecognizeEntity<double> { Entity = double.Parse(x.Entity), Score = x.Score });
             
             var matches = RecognizeLocalizedRegExp(context, "NumberExpression", Resource.Resources.ResourceManager);

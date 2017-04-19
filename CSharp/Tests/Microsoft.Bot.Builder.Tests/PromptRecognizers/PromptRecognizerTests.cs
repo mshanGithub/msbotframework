@@ -74,7 +74,7 @@ namespace Microsoft.Bot.Builder.Tests.PromptRecognizer
             {
                 Text = "the value is 12"
             };
-            var result = Dialogs.PromptRecognizers.RecognizeNumbers(activity, new PromptRecognizeNumbersOptions { IntergerOnly = true, MinValue = 50, MaxValue = 100 });
+            var result = Dialogs.PromptRecognizers.RecognizeNumbers(activity, new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 50, MaxValue = 100 });
             Assert.AreEqual(0, result.Count());
         }
 
@@ -347,7 +347,7 @@ namespace Microsoft.Bot.Builder.Tests.PromptRecognizer
         public void TestRecognizeMultipleIntegerOnly()
         {
             var activity = new Activity { Text = "1, 2.3, and seven" };
-            var result = Dialogs.PromptRecognizers.RecognizeNumbers(activity, new Dialogs.PromptRecognizeNumbersOptions { IntergerOnly = true });
+            var result = Dialogs.PromptRecognizers.RecognizeNumbers(activity, new Dialogs.PromptRecognizeNumbersOptions { IntegerOnly = true });
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count());

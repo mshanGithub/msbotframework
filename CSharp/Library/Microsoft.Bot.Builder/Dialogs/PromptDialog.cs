@@ -573,7 +573,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             protected override bool TryParse(IMessageActivity message, out Int64 result)
             {
-                var options = new PromptRecognizeNumbersOptions { IntergerOnly = true };
+                var options = new PromptRecognizeNumbersOptions { IntegerOnly = true };
                 var matches = PromptRecognizers.RecognizeNumbers(message, options);
                 var topMatch = matches?.MaxBy(x => x.Score);
                 if (topMatch != null && topMatch.Score > 0)
@@ -605,7 +605,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             protected override bool TryParse(IMessageActivity message, out double result)
             {
-                var options = new PromptRecognizeNumbersOptions { IntergerOnly = false };
+                var options = new PromptRecognizeNumbersOptions { IntegerOnly = false };
                 var matches = PromptRecognizers.RecognizeNumbers(message, options);
                 var topMatch = matches?.MaxBy(x => x.Score);
                 if (topMatch != null && topMatch.Score > 0)
@@ -674,7 +674,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                 if (!string.IsNullOrWhiteSpace(message.Text))
                 {
                     var entityMatches = PromptRecognizers.RecognizeChoices(message.Text, choices);
-                    var cardinalMatches = PromptRecognizers.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntergerOnly = true, MinValue = 0, MaxValue = choices.Count - 1 });
+                    var cardinalMatches = PromptRecognizers.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 0, MaxValue = choices.Count - 1 });
                     var ordinalMatches = PromptRecognizers.RecognizeOrdinals(message);
 
                     var entityWinner = entityMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<T>();
