@@ -91,7 +91,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         public DateTime? End { get; set; }
     }
 
-    public interface IPromptRecognizers
+    public interface IPromptRecognizer
     {
         /// <summary>Recognizer using a RegEx to match expressions.</summary>
         /// <param name="message">Message context.</param>
@@ -137,7 +137,7 @@ namespace Microsoft.Bot.Builder.Dialogs
     internal class ResourcesCache<T> : ConcurrentDictionary<string, LocalizedDictionary<T>> { }
 
     [Serializable]
-    public class PromptRecognizers : IPromptRecognizers
+    public class PromptRecognizer : IPromptRecognizer
     {
         private const string ResourceKeyCardinals = "NumberTerms";
         private const string ResourceKeyOrdinals = "NumberOrdinals";
@@ -149,7 +149,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         private static ResourcesCache<Regex> expCache = new ResourcesCache<Regex>();
         private static ResourcesCache<SynonymsDictionary> synonymsCache = new ResourcesCache<SynonymsDictionary>();
 
-        public PromptRecognizers()
+        public PromptRecognizer()
         {
         }
 
@@ -479,28 +479,28 @@ namespace Microsoft.Bot.Builder.Dialogs
     public static partial class Extensions
     {
         /// <summary>Recognizer for a Int64 number.</summary>
-        /// <param name="recognizer"><see cref="IPromptRecognizers"/></param>
+        /// <param name="recognizer"><see cref="IPromptRecognizer"/></param>
         /// <param name="message">Message context.</param>
-        public static IEnumerable<RecognizeEntity<Int64>> RecognizeInteger(this IPromptRecognizers recognizer, IMessageActivity message)
+        public static IEnumerable<RecognizeEntity<Int64>> RecognizeInteger(this IPromptRecognizer recognizer, IMessageActivity message)
         {
             var entities = recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true });
             return entities.Select(x => new RecognizeEntity<Int64> { Entity = Convert.ToInt64(x.Entity), Score = x.Score });
         }
 
         /// <summary>Recognizer for a double number.</summary>
-        /// <param name="recognizer"><see cref="IPromptRecognizers"/></param>
+        /// <param name="recognizer"><see cref="IPromptRecognizer"/></param>
         /// <param name="message">Message context.</param>
-        public static IEnumerable<RecognizeEntity<double>> RecognizeDouble(this IPromptRecognizers recognizer, IMessageActivity message)
+        public static IEnumerable<RecognizeEntity<double>> RecognizeDouble(this IPromptRecognizer recognizer, IMessageActivity message)
         {
             return recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = false });
         }
 
         /// <summary>Recognizer for a Int64 number within a range</summary>
-        /// <param name="recognizer"><see cref="IPromptRecognizers"/></param>
+        /// <param name="recognizer"><see cref="IPromptRecognizer"/></param>
         /// <param name="message">Message context.</param>
         /// <param name="max">Maximum value.</param>
         /// <param name="min">Minimun value.</param>
-        public static IEnumerable<RecognizeEntity<Int64>> RecognizeIntegerInRange(this IPromptRecognizers recognizer, IMessageActivity message, int max, int min)
+        public static IEnumerable<RecognizeEntity<Int64>> RecognizeIntegerInRange(this IPromptRecognizer recognizer, IMessageActivity message, int max, int min)
         {
             var entities = recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true, MaxValue = max, MinValue = min });
             return entities.Select(x => new RecognizeEntity<Int64> { Entity = Convert.ToInt64(x.Entity), Score = x.Score });

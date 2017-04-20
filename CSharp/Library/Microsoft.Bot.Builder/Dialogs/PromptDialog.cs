@@ -156,9 +156,9 @@ namespace Microsoft.Bot.Builder.Dialogs
         }
 
         /// <summary>
-        /// Entity Recognizers to parse the message content
+        /// Entity Recognizer to parse the message content
         /// </summary>
-        public IPromptRecognizers Recognizers { get; }
+        public IPromptRecognizer Recognizer { get; }
 
         /// <summary>
         /// Constructs the prompt options.
@@ -172,8 +172,8 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="descriptions">Descriptions for each prompt.</param>
         /// <param name="speak"> The Speak tag (SSML markup for text to speech).</param>
         /// <param name="retrySpeak"> What to display on retry Speak (SSML markup for text to speech).</param>
-        /// <param name="recognizers"> Entity Recognizers to parse the message content.</param>
-        public PromptOptions(string prompt, string retry = null, string tooManyAttempts = null, IReadOnlyList<T> options = null, int attempts = 3, PromptStyler promptStyler = null, IReadOnlyList<string> descriptions = null, string speak = null, string retrySpeak = null, IPromptRecognizers recognizers = null)
+        /// <param name="recognizer"> Entity Recognizer to parse the message content.</param>
+        public PromptOptions(string prompt, string retry = null, string tooManyAttempts = null, IReadOnlyList<T> options = null, int attempts = 3, PromptStyler promptStyler = null, IReadOnlyList<string> descriptions = null, string speak = null, string retrySpeak = null, IPromptRecognizer recognizer = null)
         {
             SetField.NotNull(out this.Prompt, nameof(this.Prompt), prompt);
             this.Retry = retry;
@@ -189,7 +189,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 promptStyler = new PromptStyler();
             }
-            this.Recognizers = recognizers ?? new PromptRecognizers();
+            this.Recognizer = recognizer ?? new PromptRecognizer();
             this.PromptStyler = promptStyler;
         }
     }
@@ -547,7 +547,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     var choices = new Dictionary<string, IEnumerable<string>>();
                     choices.Add(Yes.ToString(), this.patterns[Yes].Select(x => x.ToLowerInvariant()));
                     choices.Add(No.ToString(), this.patterns[No].Select(x => x.ToLowerInvariant()));
-                    var matches = this.promptOptions.Recognizers.RecognizeChoices(message, choices);
+                    var matches = this.promptOptions.Recognizer.RecognizeChoices(message, choices);
                     var topMatch = matches.MaxBy(x => x.Score);
                     if (topMatch != null && topMatch.Score > 0)
                     {
@@ -587,7 +587,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             protected override bool TryParse(IMessageActivity message, out Int64 result)
             {
-                var matches = this.promptOptions.Recognizers.RecognizeInteger(message);
+                var matches = this.promptOptions.Recognizer.RecognizeInteger(message);
                 var topMatch = matches?.MaxBy(x => x.Score);
                 if (topMatch != null && topMatch.Score > 0)
                 {
@@ -618,7 +618,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             protected override bool TryParse(IMessageActivity message, out double result)
             {
-                var matches = this.promptOptions.Recognizers.RecognizeDouble(message);
+                var matches = this.promptOptions.Recognizer.RecognizeDouble(message);
                 var topMatch = matches?.MaxBy(x => x.Score);
                 if (topMatch != null && topMatch.Score > 0)
                 {
@@ -709,7 +709,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     T topEntity = default(T);
                     if (recognizeChoices)
                     {
-                        var entityMatches = this.promptOptions.Recognizers.RecognizeChoices(message, synonyms);
+                        var entityMatches = this.promptOptions.Recognizer.RecognizeChoices(message, synonyms);
                         var entityWinner = entityMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<T>();
                         topScore = entityWinner.Score;
                         topEntity = entityWinner.Entity;
@@ -717,7 +717,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
                     if (recognizeNumbers)
                     {
-                        var cardinalMatches = this.promptOptions.Recognizers.RecognizeIntegerInRange(message, synonyms.Count - 1, 0);
+                        var cardinalMatches = this.promptOptions.Recognizer.RecognizeIntegerInRange(message, synonyms.Count - 1, 0);
                         var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
                         if (topScore < cardinalWinner.Score)
                         {
@@ -729,7 +729,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
                     if (recognizeOrdinals)
                     {
-                        var ordinalMatches = this.promptOptions.Recognizers.RecognizeOrdinals(message);
+                        var ordinalMatches = this.promptOptions.Recognizer.RecognizeOrdinals(message);
                         var ordinalWinner = ordinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
                         if (topScore < ordinalWinner.Score)
                         {
