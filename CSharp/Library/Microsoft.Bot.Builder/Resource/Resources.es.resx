@@ -366,4 +366,10 @@
   <data name="NumberReverseOrdinals" xml:space="preserve">
     <value>-1=último,última,ultimo,ultima|-2=penúltimo,penúltima,penultimo,penultima|-3=antepenúltimo,antepenúltima,antepenultimo,antepenultima</value>
   </data>
+  <data name="NumberExpression" xml:space="preserve">
+    <value>[+-]?(?:\d+\,?\d*|\d*\,?\d+)</value>
+  </data>
+  <data name="BooleanChoices" xml:space="preserve">
+    <value>true=s,si,sip,claro,ok,\u1f44d,\u1f44c|false=n,no,nop,\u1f44e,\\u270b,\\u1f590</value>
+  </data>
 </root>
