@@ -366,4 +366,7 @@
   <data name="NumberReverseOrdinals" xml:space="preserve">
     <value>-1=último,última,ultimo,ultima|-2=penúltimo,penúltima,penultimo,penultima|-3=antepenúltimo,antepenúltima,antepenultimo,antepenultima</value>
   </data>
+  <data name="NumberExpression" xml:space="preserve">
+    <value>[+-]?(?:\d+\,?\d*|\d*\,?\d+)</value>
+  </data>
 </root>
