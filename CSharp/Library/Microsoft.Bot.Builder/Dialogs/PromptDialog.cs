@@ -189,7 +189,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 promptStyler = new PromptStyler();
             }
-            this.Recognizers = recognizers ?? new DefaultRecognizers();
+            this.Recognizers = recognizers ?? new PromptRecognizers();
             this.PromptStyler = promptStyler;
         }
     }
