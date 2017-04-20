@@ -72,30 +72,6 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// </summary>
         public int? MaxTokenDistance { get; set; }
     }
-    
-    public class LocalizedCache<T>
-    {
-        public string Id { get; set; }
-        public IDictionary<string, T> Locales { get; set; }
-
-        public LocalizedCache()
-        {
-            this.Locales = new ConcurrentDictionary<string, T>();
-        }
-        public LocalizedCache(string key)
-            : this()
-        {
-            this.Id = key;
-        }
-    }
-
-    public class LocalizedCacheList<T> : List<LocalizedCache<T>>
-    {
-        public LocalizedCache<T> this[string key]
-        {
-            get { return this.SingleOrDefault(x => x.Id == key); }
-        }
-    }
 
     public class ChronoDuration
     {
@@ -154,6 +130,12 @@ namespace Microsoft.Bot.Builder.Dialogs
         IEnumerable<RecognizeEntity<bool>> RecognizeBooleans(IMessageActivity message);
     }
 
+    internal class ChoicesDictionary : Dictionary<string, IEnumerable<string>> { }
+
+    internal class LocalizedDictionary<T> : ConcurrentDictionary<string, T> { }
+
+    internal class ResourcesCache<T> : ConcurrentDictionary<string, LocalizedDictionary<T>> { }
+
     [Serializable]
     public class PromptRecognizers : IPromptRecognizers
     {
@@ -164,8 +146,8 @@ namespace Microsoft.Bot.Builder.Dialogs
         private const string ResourceKeyBooleans = "BooleanChoices";
 
         private static Regex simpleTokenizer = new Regex(@"\w+", RegexOptions.IgnoreCase);
-        private static IDictionary<string, IDictionary<string, Regex>> expCache = new ConcurrentDictionary<string, IDictionary<string, Regex>>();
-        private static IDictionary<string, IDictionary<string, IDictionary<string, IEnumerable<string>>>> choicesCache = new ConcurrentDictionary<string, IDictionary<string, IDictionary<string, IEnumerable<string>>>>();
+        private static ResourcesCache<Regex> expCache = new ResourcesCache<Regex>();
+        private static ResourcesCache<ChoicesDictionary> choicesCache = new ResourcesCache<ChoicesDictionary>();
 
         public PromptRecognizers()
         {
@@ -176,21 +158,23 @@ namespace Microsoft.Bot.Builder.Dialogs
             var entities = new List<RecognizeEntity<string>>();
             var locale = message?.Locale ?? string.Empty;
             var utterance = message?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            IDictionary<string, Regex> cache;
-            if (!expCache.TryGetValue(expressionKey, out cache))
+
+            LocalizedDictionary<Regex> cachedLocalizedRegex;
+            if (!expCache.TryGetValue(expressionKey, out cachedLocalizedRegex))
             {
-                cache = new ConcurrentDictionary<string, Regex>();
-                expCache.Add(expressionKey, cache);
+                var localizedRegex = new LocalizedDictionary<Regex>();
+                cachedLocalizedRegex = expCache.GetOrAdd(expressionKey, localizedRegex);
             }
-            Regex regex;
-            if (!cache.TryGetValue(locale, out regex))
+
+            Regex cachedRegex;
+            if (!cachedLocalizedRegex.TryGetValue(locale, out cachedRegex))
             {
                 var expression = GetLocalizedResource(expressionKey, locale, resourceManager);
-                regex = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                cache.Add(locale, regex);
+                var regex = new Regex(expression, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                cachedRegex = cachedLocalizedRegex.GetOrAdd(locale, regex);
             }
             
-            foreach (Match match in cache[locale].Matches(utterance))
+            foreach (Match match in cachedRegex.Matches(utterance))
             {
                 if (match.Success)
                 {
@@ -208,20 +192,23 @@ namespace Microsoft.Bot.Builder.Dialogs
         public IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity message, string choicesKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null)
         {
             var locale = message?.Locale ?? string.Empty;
-            IDictionary<string, IDictionary<string, IEnumerable<string>>> cache;
-            if (!choicesCache.TryGetValue(choicesKey, out cache))
+
+            LocalizedDictionary<ChoicesDictionary> cachedLocalizedChoices;
+            if (!choicesCache.TryGetValue(choicesKey, out cachedLocalizedChoices))
             {
-                cache = new ConcurrentDictionary<string, IDictionary<string, IEnumerable<string>>>();
-                choicesCache.Add(choicesKey, cache);
+                var localizedChoices = new LocalizedDictionary<ChoicesDictionary>();
+                cachedLocalizedChoices = choicesCache.GetOrAdd(choicesKey, localizedChoices);
             }
-            IDictionary<string, IEnumerable<string>> choices;
-            if (!cache.TryGetValue(locale, out choices))
+
+            ChoicesDictionary cachedChoices;
+            if (!cachedLocalizedChoices.TryGetValue(locale, out cachedChoices))
             {
                 var choicesArray = GetLocalizedResource(choicesKey, locale, resourceManager).Split('|');
-                choices = ConvertToChoices(choicesArray);
-                cache.Add(locale, choices);
+                var choices = ConvertToChoices(choicesArray);
+                cachedChoices = cachedLocalizedChoices.GetOrAdd(locale, choices);
             }
-            return RecognizeChoices(message, choices, options);
+            
+            return RecognizeChoices(message, cachedChoices, options);
         }
         
         public IEnumerable<RecognizeEntity<double>> RecognizeNumbers(IMessageActivity message, IPromptRecognizeNumbersOptions options = null)
@@ -409,9 +396,9 @@ namespace Microsoft.Bot.Builder.Dialogs
             return response;
         }
 
-        private static IDictionary<string, IEnumerable<string>> ConvertToChoices(IEnumerable<string> values)
+        private static ChoicesDictionary ConvertToChoices(IEnumerable<string> values)
         {
-            var result = new Dictionary<string, IEnumerable<string>>();
+            var result = new ChoicesDictionary();
             foreach (var term in values)
             {
                 var subTerm = term.Split('=');
