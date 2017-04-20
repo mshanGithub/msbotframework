@@ -717,7 +717,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
                     if (recognizeNumbers)
                     {
-                        var cardinalMatches = this.promptOptions.Recognizer.RecognizeIntegerInRange(message, synonyms.Count - 1, 0);
+                        var cardinalMatches = this.promptOptions.Recognizer.RecognizeIntegerInRange(message, 0, synonyms.Count - 1);
                         var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
                         if (topScore < cardinalWinner.Score)
                         {

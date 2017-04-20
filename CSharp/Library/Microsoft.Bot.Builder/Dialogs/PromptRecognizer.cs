@@ -500,9 +500,9 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="message">Message context.</param>
         /// <param name="max">Maximum value.</param>
         /// <param name="min">Minimun value.</param>
-        public static IEnumerable<RecognizeEntity<Int64>> RecognizeIntegerInRange(this IPromptRecognizer recognizer, IMessageActivity message, int max, int min)
+        public static IEnumerable<RecognizeEntity<Int64>> RecognizeIntegerInRange(this IPromptRecognizer recognizer, IMessageActivity message, int min, int max)
         {
-            var entities = recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true, MaxValue = max, MinValue = min });
+            var entities = recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = min, MaxValue = max });
             return entities.Select(x => new RecognizeEntity<Int64> { Entity = Convert.ToInt64(x.Entity), Score = x.Score });
         }
     }
