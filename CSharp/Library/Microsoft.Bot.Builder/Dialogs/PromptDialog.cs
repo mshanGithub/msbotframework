@@ -385,7 +385,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <summary>   Prompt for one of a set of choices. </summary>
         /// <param name="context">  The context. </param>
         /// <param name="resume">   Resume handler. </param>
-        /// <param name="choices">  The possible options with synonyms, all of which must be convertible to a string.</param>
+        /// <param name="synonyms">  The possible options with synonyms, all of which must be convertible to a string.</param>
         /// <param name="prompt">   The prompt to show to the user. </param>
         /// <param name="retry">    What to show on retry. </param>
         /// <param name="attempts"> The number of times to retry. </param>
@@ -394,9 +394,9 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
         /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
         /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
-        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IDictionary<T, IEnumerable<T>> choices, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
+        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IDictionary<T, IEnumerable<T>> synonyms, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
         {
-            Choice(context, resume, new PromptOptions<T>(prompt, retry, attempts: attempts, options: choices.Keys.ToList(), promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), choices, recognizeChoices, recognizeNumbers, recognizeOrdinals);
+            Choice(context, resume, new PromptOptions<T>(prompt, retry, attempts: attempts, options: synonyms.Keys.ToList(), promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), synonyms, recognizeChoices, recognizeNumbers, recognizeOrdinals);
         }
 
         /// <summary>
@@ -407,14 +407,14 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="context"> The dialog context.</param>
         /// <param name="resume"> Resume handler.</param>
         /// <param name="promptOptions"> The prompt options.</param>
-        /// <param name="choices"> The possible options with synonyms, all of which must be convertible to a string.</param>
+        /// <param name="synonyms">The possible options with synonyms, all of which must be convertible to a string.</param>
         /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
         /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
         /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
         /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
-        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> choices = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
+        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> synonyms = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
         {
-            var child = new PromptChoice<T>(promptOptions, choices, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore);
+            var child = new PromptChoice<T>(promptOptions, synonyms, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore);
             context.Call<T>(child, resume);
         }
 
@@ -637,7 +637,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         [Serializable]
         public class PromptChoice<T> : Prompt<T, T>
         {
-            private IDictionary<T, IEnumerable<T>> choices;
+            private IDictionary<T, IEnumerable<T>> synonyms;
             private bool recognizeChoices;
             private bool recognizeNumbers;
             private bool recognizeOrdinals;
@@ -660,7 +660,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             }
 
             /// <summary>   Constructor for a prompt choice dialog. </summary>
-            /// <param name="choices">Dictionary of the options to choose from with the synonyms.</param>
+            /// <param name="synonyms">Dictionary with the options to choose from as a key and their synonyms as a value.</param>
             /// <param name="prompt">   The prompt. </param>
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
@@ -670,21 +670,21 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
             /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
             /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
-            public PromptChoice(IDictionary<T, IEnumerable<T>> choices, string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
-                : this(new PromptOptions<T>(prompt, retry, options: choices.Keys.ToList(), attempts: attempts, promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), choices, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore)
+            public PromptChoice(IDictionary<T, IEnumerable<T>> synonyms, string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
+                : this(new PromptOptions<T>(prompt, retry, options: synonyms.Keys.ToList(), attempts: attempts, promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()), synonyms, recognizeChoices, recognizeNumbers, recognizeOrdinals, minScore)
             {
             }
-            
+
             /// <summary>
             /// Constructs a choice dialog.
             /// </summary>
             /// <param name="promptOptions"> The prompt options</param>
-            /// <param name="choices">Dictionary of the options to choose from with the synonyms.</param>
+            /// <param name="synonyms">Dictionary with the options to choose from as a key and their synonyms as a value.</param>
             /// <param name="recognizeChoices">(Optional) if true, the prompt will attempt to recognize numbers in the users utterance as the index of the choice to return. The default value is "true".</param>
             /// <param name="recognizeNumbers">(Optional) if true, the prompt will attempt to recognize ordinals like "the first one" or "the second one" as the index of the choice to return. The default value is "true".</param>
             /// <param name="recognizeOrdinals">(Optional) if true, the prompt will attempt to recognize the selected value using the choices themselves. The default value is "true".</param>
             /// <param name="minScore">(Optional) minimum score from 0.0 - 1.0 needed for a recognized choice to be considered a match. The default value is "0.4".</param>
-            public PromptChoice(PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> choices = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
+            public PromptChoice(PromptOptions<T> promptOptions, IDictionary<T, IEnumerable<T>> synonyms = null, bool recognizeChoices = true, bool recognizeNumbers = true, bool recognizeOrdinals = true, double minScore = 0.4)
                 : base(promptOptions)
             {
                 SetField.CheckNull(nameof(promptOptions.Options), promptOptions.Options);
@@ -692,14 +692,14 @@ namespace Microsoft.Bot.Builder.Dialogs
                 this.recognizeNumbers = recognizeNumbers;
                 this.recognizeOrdinals = recognizeOrdinals;
                 this.minScore = minScore;
-                if (choices == null)
+                if (synonyms == null)
                 {
-                    this.choices = new Dictionary<T, IEnumerable<T>>();
-                    promptOptions.Options.ToList().ForEach(x => this.choices.Add(x, null));
+                    this.synonyms = new Dictionary<T, IEnumerable<T>>();
+                    promptOptions.Options.ToList().ForEach(x => this.synonyms.Add(x, null));
                 }
                 else
                 {
-                    this.choices = choices;
+                    this.synonyms = synonyms;
                 }
             }
 
@@ -711,7 +711,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     T topEntity = default(T);
                     if (recognizeChoices)
                     {
-                        var entityMatches = this.promptOptions.Recognizers.RecognizeChoices(message, choices);
+                        var entityMatches = this.promptOptions.Recognizers.RecognizeChoices(message, synonyms);
                         var entityWinner = entityMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<T>();
                         topScore = entityWinner.Score;
                         topEntity = entityWinner.Entity;
@@ -719,7 +719,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
                     if (recognizeNumbers)
                     {
-                        var options = new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 0, MaxValue = choices.Count - 1 };
+                        var options = new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 0, MaxValue = synonyms.Count - 1 };
                         var cardinalMatches = this.promptOptions.Recognizers.RecognizeNumbers(message, options);
                         var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<double>();
                         if (topScore < cardinalWinner.Score)
@@ -736,8 +736,8 @@ namespace Microsoft.Bot.Builder.Dialogs
                         var ordinalWinner = ordinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
                         if (topScore < ordinalWinner.Score)
                         {
-                            var index = ordinalWinner.Entity > 0 ? (int)ordinalWinner.Entity - 1 : choices.Count + (int)ordinalWinner.Entity;
-                            if (index >= 0 && index < choices.Count)
+                            var index = ordinalWinner.Entity > 0 ? (int)ordinalWinner.Entity - 1 : synonyms.Count + (int)ordinalWinner.Entity;
+                            if (index >= 0 && index < synonyms.Count)
                             {
                                 topScore = ordinalWinner.Score;
                                 topEntity = this.promptOptions.Options[index];
