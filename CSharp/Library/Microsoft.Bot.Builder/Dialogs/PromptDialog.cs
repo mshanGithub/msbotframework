@@ -144,6 +144,8 @@ namespace Microsoft.Bot.Builder.Dialogs
             get { return Resources.TooManyAttempts; }
         }
 
+        public bool SuppressRessourceTexts { get; set; }
+
         /// <summary>
         /// Constructs the prompt options.
         /// </summary>
@@ -154,7 +156,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="attempts"> Maximum number of attempts.</param>
         /// <param name="promptStyler"> The prompt styler.</param>
         /// <param name="descriptions">Descriptions for each prompt.</param>
-        public PromptOptions(string prompt, string retry = null, string tooManyAttempts = null, IReadOnlyList<T> options = null, int attempts = 3, PromptStyler promptStyler = null, IReadOnlyList<string> descriptions = null)
+        public PromptOptions(string prompt, string retry = null, string tooManyAttempts = null, IReadOnlyList<T> options = null, int attempts = 3, PromptStyler promptStyler = null, IReadOnlyList<string> descriptions = null, bool suppressRessourceTexts = false)
         {
             SetField.NotNull(out this.Prompt, nameof(this.Prompt), prompt);
             this.Retry = retry;
@@ -168,6 +170,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                 promptStyler = new PromptStyler();
             }
             this.PromptStyler = promptStyler;
+            this.SuppressRessourceTexts = suppressRessourceTexts;
         }
     }
 
@@ -280,9 +283,10 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="prompt">   The prompt to show to the user. </param>
         /// <param name="retry">    What to show on retry. </param>
         /// <param name="attempts"> The number of times to retry. </param>
-        public static void Text(IDialogContext context, ResumeAfter<string> resume, string prompt, string retry = null, int attempts = 3)
+        /// <param name="suppressRessourceTexts"> Suppress ressource texts. </param>
+        public static void Text(IDialogContext context, ResumeAfter<string> resume, string prompt, string retry = null, int attempts = 3, bool suppressRessourceTexts = false)
         {
-            var child = new PromptString(prompt, retry, attempts);
+            var child = new PromptString(prompt, retry, attempts, suppressRessourceTexts: suppressRessourceTexts);
             context.Call<string>(child, resume);
         }
 
@@ -293,9 +297,10 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="retry">    What to show on retry. </param>
         /// <param name="attempts"> The number of times to retry. </param>
         /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
-        public static void Confirm(IDialogContext context, ResumeAfter<bool> resume, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto)
+        /// <param name="suppressRessourceTexts"> Suppress ressource texts. </param>
+        public static void Confirm(IDialogContext context, ResumeAfter<bool> resume, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, bool suppressRessourceTexts = false)
         {
-            Confirm(context, resume, new PromptOptions<string>(prompt, retry, attempts: attempts, options: PromptConfirm.Options.ToList(), promptStyler: new PromptStyler(promptStyle: promptStyle)));
+            Confirm(context, resume, new PromptOptions<string>(prompt, retry, attempts: attempts, options: PromptConfirm.Options.ToList(), promptStyler: new PromptStyler(promptStyle: promptStyle), suppressRessourceTexts: suppressRessourceTexts));
         }
 
         /// <summary>
@@ -343,9 +348,10 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="attempts"> The number of times to retry. </param>
         /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
         /// <param name="descriptions">Descriptions to display for choices.</param>
-        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IEnumerable<T> options, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null)
+        /// <param name="suppressRessourceTexts"> Suppress ressource texts. </param>
+        public static void Choice<T>(IDialogContext context, ResumeAfter<T> resume, IEnumerable<T> options, string prompt, string retry = null, int attempts = 3, PromptStyle promptStyle = PromptStyle.Auto, IEnumerable<string> descriptions = null, bool suppressRessourceTexts = false)
         {
-            Choice(context, resume, new PromptOptions<T>(prompt, retry, attempts: attempts, options: options.ToList(), promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList()));
+            Choice(context, resume, new PromptOptions<T>(prompt, retry, attempts: attempts, options: options.ToList(), promptStyler: new PromptStyler(promptStyle), descriptions: descriptions?.ToList(), suppressRessourceTexts: suppressRessourceTexts));
         }
 
         /// <summary>
@@ -386,8 +392,10 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="prompt">   The prompt. </param>
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
-            public PromptString(string prompt, string retry, int attempts)
-                : this(new PromptOptions<string>(prompt, retry, attempts: attempts)) { }
+            /// <param name="suppressRessourceTexts"> Suppress ressource texts. </param>
+            public PromptString(string prompt, string retry, int attempts, bool suppressRessourceTexts = false)
+                : this(new PromptOptions<string>(prompt, retry, attempts: attempts, suppressRessourceTexts: suppressRessourceTexts))
+            { }
 
             /// <summary>   Constructor for a prompt string dialog. </summary>
             /// <param name="promptOptions"> THe prompt options.</param>
@@ -415,7 +423,14 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 get
                 {
-                    return Resources.PromptRetry + Environment.NewLine + this.promptOptions.Prompt;
+                    if (this.promptOptions.SuppressRessourceTexts)
+                    {
+                        return this.promptOptions.DefaultRetry;
+                    }
+                    else
+                    {
+                        return Resources.PromptRetry + Environment.NewLine + this.promptOptions.Prompt;
+                    }
                 }
             }
         }
@@ -450,8 +465,9 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
             /// <param name="promptStyle"> Style of the prompt <see cref="PromptStyle" /> </param>
-            public PromptConfirm(string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto)
-                : this(new PromptOptions<string>(prompt, retry, attempts: attempts, options: Options.ToList(), promptStyler: new PromptStyler(promptStyle)))
+            /// <param name="suppressRessourceTexts"> Suppress ressource texts. </param>
+            public PromptConfirm(string prompt, string retry, int attempts, PromptStyle promptStyle = PromptStyle.Auto, bool suppressRessourceTexts = false)
+                : this(new PromptOptions<string>(prompt, retry, attempts: attempts, options: Options.ToList(), promptStyler: new PromptStyler(promptStyle), suppressRessourceTexts: suppressRessourceTexts))
             {
             }
 
@@ -491,7 +507,14 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 get
                 {
-                    return Resources.PromptRetry + Environment.NewLine + this.promptOptions.Prompt;
+                    if (this.promptOptions.SuppressRessourceTexts)
+                    {
+                        return this.promptOptions.DefaultRetry;
+                    }
+                    else
+                    {
+                        return Resources.PromptRetry + Environment.NewLine + this.promptOptions.Prompt;
+                    }
                 }
             }
         }
@@ -506,12 +529,14 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
             public PromptInt64(string prompt, string retry, int attempts)
-                : this(new PromptOptions<long>(prompt, retry, attempts: attempts)) { }
+                : this(new PromptOptions<long>(prompt, retry, attempts: attempts))
+            { }
 
             /// <summary>   Constructor for a prompt int64 dialog. </summary>
             /// <param name="promptOptions"> THe prompt options.</param>
             public PromptInt64(PromptOptions<long> promptOptions)
-                : base(promptOptions) { }
+                : base(promptOptions)
+            { }
 
             protected override bool TryParse(IMessageActivity message, out Int64 result)
             {
@@ -529,12 +554,14 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
             public PromptDouble(string prompt, string retry, int attempts)
-                : this(new PromptOptions<double>(prompt, retry, attempts: attempts)) { }
+                : this(new PromptOptions<double>(prompt, retry, attempts: attempts))
+            { }
 
             /// <summary>   Constructor for a prompt double dialog. </summary>
             /// <param name="promptOptions"> THe prompt options.</param>
             public PromptDouble(PromptOptions<double> promptOptions)
-                : base(promptOptions) { }
+                : base(promptOptions)
+            { }
 
             protected override bool TryParse(IMessageActivity message, out double result)
             {
