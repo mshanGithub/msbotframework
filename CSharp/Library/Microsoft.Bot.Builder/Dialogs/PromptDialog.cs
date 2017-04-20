@@ -547,7 +547,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     var choices = new Dictionary<string, IEnumerable<string>>();
                     choices.Add(Yes.ToString(), this.patterns[Yes].Select(x => x.ToLowerInvariant()));
                     choices.Add(No.ToString(), this.patterns[No].Select(x => x.ToLowerInvariant()));
-                    var matches = this.promptOptions.Recognizers.RecognizeChoices(message.Text.Trim().ToLowerInvariant(), choices);
+                    var matches = this.promptOptions.Recognizers.RecognizeChoices(message, choices);
                     var topMatch = matches.MaxBy(x => x.Score);
                     if (topMatch != null && topMatch.Score > 0)
                     {
@@ -711,7 +711,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     T topEntity = default(T);
                     if (recognizeChoices)
                     {
-                        var entityMatches = this.promptOptions.Recognizers.RecognizeChoices(message.Text, choices);
+                        var entityMatches = this.promptOptions.Recognizers.RecognizeChoices(message, choices);
                         var entityWinner = entityMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<T>();
                         topScore = entityWinner.Score;
                         topEntity = entityWinner.Entity;
