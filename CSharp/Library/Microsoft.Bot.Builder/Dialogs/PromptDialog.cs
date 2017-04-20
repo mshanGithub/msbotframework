@@ -587,12 +587,11 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             protected override bool TryParse(IMessageActivity message, out Int64 result)
             {
-                var options = new PromptRecognizeNumbersOptions { IntegerOnly = true };
-                var matches = this.promptOptions.Recognizers.RecognizeNumbers(message, options);
+                var matches = this.promptOptions.Recognizers.RecognizeInteger(message);
                 var topMatch = matches?.MaxBy(x => x.Score);
                 if (topMatch != null && topMatch.Score > 0)
                 {
-                    result = Convert.ToInt64(topMatch.Entity);
+                    result = topMatch.Entity;
                     return true;
                 }
                 result = 0;
@@ -619,8 +618,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             protected override bool TryParse(IMessageActivity message, out double result)
             {
-                var options = new PromptRecognizeNumbersOptions { IntegerOnly = false };
-                var matches = this.promptOptions.Recognizers.RecognizeNumbers(message, options);
+                var matches = this.promptOptions.Recognizers.RecognizeDouble(message);
                 var topMatch = matches?.MaxBy(x => x.Score);
                 if (topMatch != null && topMatch.Score > 0)
                 {
@@ -719,9 +717,8 @@ namespace Microsoft.Bot.Builder.Dialogs
 
                     if (recognizeNumbers)
                     {
-                        var options = new PromptRecognizeNumbersOptions { IntegerOnly = true, MinValue = 0, MaxValue = synonyms.Count - 1 };
-                        var cardinalMatches = this.promptOptions.Recognizers.RecognizeNumbers(message, options);
-                        var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<double>();
+                        var cardinalMatches = this.promptOptions.Recognizers.RecognizeIntegerInRange(message, synonyms.Count - 1, 0);
+                        var cardinalWinner = cardinalMatches.MaxBy(x => x.Score) ?? new RecognizeEntity<long>();
                         if (topScore < cardinalWinner.Score)
                         {
                             var index = (int)cardinalWinner.Entity - 1;

@@ -276,8 +276,9 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             var utterance = message?.Text?.Trim();
             var entity = RecognizeTime(utterance);
-            
-            entities.Add(new RecognizeEntity<string>() {
+
+            entities.Add(new RecognizeEntity<string>()
+            {
                 Entity = entity.Entity,
                 Score = CalculateScore(utterance, entity.Entity)
             });
@@ -300,7 +301,8 @@ namespace Microsoft.Bot.Builder.Dialogs
                 var match = RecognizeValues(message, values, options).MaxBy(x => x.Score);
                 if (match != null)
                 {
-                    entities.Add(new RecognizeEntity<T> {
+                    entities.Add(new RecognizeEntity<T>
+                    {
                         Entity = synonyms.Key,
                         Score = match.Score
                     });
@@ -321,22 +323,22 @@ namespace Microsoft.Bot.Builder.Dialogs
                     results.Select(x => new RecognizeEntity<bool> { Entity = bool.Parse(x.Entity), Score = x.Score })
                 );
             }
-            
+
             return entities;
         }
-        
+
         private static IEnumerable<RecognizeEntity<T>> RecognizeValues<T>(IMessageActivity message, IEnumerable<T> values, IPromptRecognizeChoicesOptions options = null)
         {
             var utterance = message?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
             var entities = new List<RecognizeEntity<T>>();
             IList<string> tokens = new List<string>();
-            foreach(Match match in simpleTokenizer.Matches(utterance))
+            foreach (Match match in simpleTokenizer.Matches(utterance))
             {
                 tokens.Add(match.Value);
             }
             var maxDistance = options?.MaxTokenDistance ?? 2;
             var index = 0;
-            foreach(var value in values)
+            foreach (var value in values)
             {
                 var text = value.ToString();
                 var topScore = 0.0;
@@ -421,7 +423,7 @@ namespace Microsoft.Bot.Builder.Dialogs
             var startPosition = index;
             double matched = 0;
             var totalDeviation = 0;
-            foreach(var token in vTokens)
+            foreach (var token in vTokens)
             {
                 var pos = IndexOfToken(tokens.ToList(), token, startPosition);
                 if (pos >= 0)
@@ -458,7 +460,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             return Math.Min(min + (entity.Length / (double)utterance.Length), max);
         }
-        
+
         private static string GetLocalizedResource(string resourceKey, string locale, ResourceManager resourceManager)
         {
             CultureInfo culture;
@@ -471,6 +473,37 @@ namespace Microsoft.Bot.Builder.Dialogs
                 culture = new CultureInfo("en-US");
             }
             return resourceManager.GetString(resourceKey, culture);
+        }
+    }
+
+    public static partial class Extensions
+    {
+        /// <summary>Recognizer for a Int64 number.</summary>
+        /// <param name="recognizer"><see cref="IPromptRecognizers"/></param>
+        /// <param name="message">Message context.</param>
+        public static IEnumerable<RecognizeEntity<Int64>> RecognizeInteger(this IPromptRecognizers recognizer, IMessageActivity message)
+        {
+            var entities = recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true });
+            return entities.Select(x => new RecognizeEntity<Int64> { Entity = Convert.ToInt64(x.Entity), Score = x.Score });
+        }
+
+        /// <summary>Recognizer for a double number.</summary>
+        /// <param name="recognizer"><see cref="IPromptRecognizers"/></param>
+        /// <param name="message">Message context.</param>
+        public static IEnumerable<RecognizeEntity<double>> RecognizeDouble(this IPromptRecognizers recognizer, IMessageActivity message)
+        {
+            return recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = false });
+        }
+
+        /// <summary>Recognizer for a Int64 number within a range</summary>
+        /// <param name="recognizer"><see cref="IPromptRecognizers"/></param>
+        /// <param name="message">Message context.</param>
+        /// <param name="max">Maximum value.</param>
+        /// <param name="min">Minimun value.</param>
+        public static IEnumerable<RecognizeEntity<Int64>> RecognizeIntegerInRange(this IPromptRecognizers recognizer, IMessageActivity message, int max, int min)
+        {
+            var entities = recognizer.RecognizeNumbers(message, new PromptRecognizeNumbersOptions { IntegerOnly = true, MaxValue = max, MinValue = min });
+            return entities.Select(x => new RecognizeEntity<Int64> { Entity = Convert.ToInt64(x.Entity), Score = x.Score });
         }
     }
 }
