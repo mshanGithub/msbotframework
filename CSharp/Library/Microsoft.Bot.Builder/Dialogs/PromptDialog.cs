@@ -617,10 +617,11 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="prompt">   The prompt. </param>
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
-            /// <param name="max">Maximum value.</param>
-            /// <param name="min">Minimun value.</param>
-            public PromptInt64(string prompt, string retry, int attempts, long? min = null, long? max = null)
-                : this(new PromptOptions<long>(prompt, retry, attempts: attempts, choices: null), min, max) { }
+            /// <param name="speak">    Speak tag (SSML markup for text to speech)</param>
+            /// <param name="max">      Maximum value.</param>
+            /// <param name="min">      Minimun value.</param>
+            public PromptInt64(string prompt, string retry, int attempts, string speak = null, long? min = null, long? max = null)
+                : this(new PromptOptions<long>(prompt, retry, attempts: attempts, choices: null, speak: speak), min, max) { }
 
             /// <summary>   Constructor for a prompt int64 dialog. </summary>
             /// <param name="promptOptions"> THe prompt options.</param>
@@ -659,10 +660,11 @@ namespace Microsoft.Bot.Builder.Dialogs
             /// <param name="prompt">   The prompt. </param>
             /// <param name="retry">    What to display on retry. </param>
             /// <param name="attempts"> Maximum number of attempts. </param>
-            /// <param name="max">Maximum value.</param>
-            /// <param name="min">Minimun value.</param>
-            public PromptDouble(string prompt, string retry, int attempts, double? min = null, double? max = null)
-                : this(new PromptOptions<double>(prompt, retry, attempts: attempts, choices: null), min, max) { }
+            /// <param name="speak">    Speak tag (SSML markup for text to speech)</param>
+            /// <param name="max">      Maximum value.</param>
+            /// <param name="min">      Minimun value.</param>
+            public PromptDouble(string prompt, string retry, int attempts, string speak = null, double? min = null, double? max = null)
+                : this(new PromptOptions<double>(prompt, retry, attempts: attempts, choices: null, speak: speak), min, max) { }
 
             /// <summary>   Constructor for a prompt double dialog. </summary>
             /// <param name="promptOptions"> THe prompt options.</param>
