@@ -101,16 +101,16 @@ namespace Microsoft.Bot.Builder.Dialogs
 
         /// <summary>Recognizer for a number.</summary>
         /// <param name="message">Message context.</param>
-        /// <param name="synonymsDictionary">Dictionary with the options to choose from as a key and their synonyms as a value.</param>
+        /// <param name="choicesDictionary">Dictionary with the options to choose from as a key and their synonyms as a value.</param>
         /// <param name="options">Options of the Recognizer. <see cref="IPromptRecognizeChoicesOptions" /></param>
-        IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(IMessageActivity message, IDictionary<T, IEnumerable<T>> synonymsDictionary, IPromptRecognizeChoicesOptions options = null);
+        IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(IMessageActivity message, IReadOnlyDictionary<T, IReadOnlyList<T>> choicesDictionary, IPromptRecognizeChoicesOptions options = null);
 
         /// <summary>Recognizer for a number.</summary>
         /// <param name="message">Message context.</param>
-        /// <param name="synonymsKey">Name of the resource with the synonyms.</param>
-        /// <param name="resourceManager">Resources with the localized synonyms.</param>
+        /// <param name="choicesKey">Name of the resource with the choices.</param>
+        /// <param name="resourceManager">Resources with the localized choices.</param>
         /// <param name="options">Options of the Recognizer. <see cref="IPromptRecognizeChoicesOptions" /></param>
-        IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity message, string synonymsKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null);
+        IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity message, string choicesKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null);
 
         /// <summary>Recognizer for a number.</summary>
         /// <param name="message">Message context.</param>
@@ -130,7 +130,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         IEnumerable<RecognizeEntity<bool>> RecognizeBooleans(IMessageActivity message);
     }
 
-    internal class SynonymsDictionary : Dictionary<string, IEnumerable<string>> { }
+    internal class ChoicesDictionary : Dictionary<string, IReadOnlyList<string>> { }
 
     internal class LocalizedDictionary<T> : ConcurrentDictionary<string, T> { }
 
@@ -147,7 +147,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
         private static Regex simpleTokenizer = new Regex(@"\w+", RegexOptions.IgnoreCase);
         private static ResourcesCache<Regex> expCache = new ResourcesCache<Regex>();
-        private static ResourcesCache<SynonymsDictionary> synonymsCache = new ResourcesCache<SynonymsDictionary>();
+        private static ResourcesCache<ChoicesDictionary> choicesCache = new ResourcesCache<ChoicesDictionary>();
 
         public PromptRecognizer()
         {
@@ -189,26 +189,26 @@ namespace Microsoft.Bot.Builder.Dialogs
             return entities;
         }
         
-        public IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity message, string synonymsKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null)
+        public IEnumerable<RecognizeEntity<string>> RecognizeLocalizedChoices(IMessageActivity message, string choicesKey, ResourceManager resourceManager, IPromptRecognizeChoicesOptions options = null)
         {
             var locale = message?.Locale ?? string.Empty;
 
-            LocalizedDictionary<SynonymsDictionary> cachedLocalizedSynonyms;
-            if (!synonymsCache.TryGetValue(synonymsKey, out cachedLocalizedSynonyms))
+            LocalizedDictionary<ChoicesDictionary> cachedLocalizedChoices;
+            if (!choicesCache.TryGetValue(choicesKey, out cachedLocalizedChoices))
             {
-                var localizedSynonyms = new LocalizedDictionary<SynonymsDictionary>();
-                cachedLocalizedSynonyms = synonymsCache.GetOrAdd(synonymsKey, localizedSynonyms);
+                var localizedChoices = new LocalizedDictionary<ChoicesDictionary>();
+                cachedLocalizedChoices = choicesCache.GetOrAdd(choicesKey, localizedChoices);
             }
 
-            SynonymsDictionary cachedSynonyms;
-            if (!cachedLocalizedSynonyms.TryGetValue(locale, out cachedSynonyms))
+            ChoicesDictionary cachedChoices;
+            if (!cachedLocalizedChoices.TryGetValue(locale, out cachedChoices))
             {
-                var synonymArray = GetLocalizedResource(synonymsKey, locale, resourceManager).Split('|');
-                var synonyms = ConvertToSynonyms(synonymArray);
-                cachedSynonyms = cachedLocalizedSynonyms.GetOrAdd(locale, synonyms);
+                var choicesArray = GetLocalizedResource(choicesKey, locale, resourceManager).Split('|');
+                var choices = ConvertToChoices(choicesArray);
+                cachedChoices = cachedLocalizedChoices.GetOrAdd(locale, choices);
             }
             
-            return RecognizeChoices(message, cachedSynonyms, options);
+            return RecognizeChoices(message, cachedChoices, options);
         }
         
         public IEnumerable<RecognizeEntity<double>> RecognizeNumbers(IMessageActivity message, IPromptRecognizeNumbersOptions options = null)
@@ -231,10 +231,10 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             var resource = GetLocalizedResource(ResourceKeyCardinals, message?.Locale, Resource.Resources.ResourceManager);
 
-            var synonyms = ConvertToSynonyms(resource.Split('|'));
+            var choices = ConvertToChoices(resource.Split('|'));
 
             // Recognize any term based numbers
-            var results = RecognizeChoices(message, synonyms, new PromptRecognizeChoicesOptions { ExcludeValue = true });
+            var results = RecognizeChoices(message, choices, new PromptRecognizeChoicesOptions { ExcludeValue = true });
             if (results != null && results.Any())
             {
                 entities.AddRange(results.Select(selector)
@@ -258,10 +258,10 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             var values = ordinals.Concat(reverseOrdinals);
             
-            var synonyms = ConvertToSynonyms(values);
+            var choices = ConvertToChoices(values);
             
             // Recognize any term based numbers
-            var results = RecognizeChoices(message, synonyms, new PromptRecognizeChoicesOptions { ExcludeValue = true });
+            var results = RecognizeChoices(message, choices, new PromptRecognizeChoicesOptions { ExcludeValue = true });
             if (results != null && results.Any())
             {
                 entities.AddRange(results.Select(x => new RecognizeEntity<long> { Entity = long.Parse(x.Entity), Score = x.Score }));
@@ -286,24 +286,24 @@ namespace Microsoft.Bot.Builder.Dialogs
             return entities;
         }
         
-        public IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(IMessageActivity message, IDictionary<T, IEnumerable<T>> synonymsDictionary, IPromptRecognizeChoicesOptions options = null)
+        public IEnumerable<RecognizeEntity<T>> RecognizeChoices<T>(IMessageActivity message, IReadOnlyDictionary<T, IReadOnlyList<T>> choicesDictionary, IPromptRecognizeChoicesOptions options = null)
         {
             var entities = new List<RecognizeEntity<T>>();
             var index = 0;
-            foreach (var synonyms in synonymsDictionary)
+            foreach (var choices in choicesDictionary)
             {
-                var values = synonyms.Value?.ToList() ?? new List<T>();
+                var values = choices.Value?.ToList() ?? new List<T>();
                 var excludeValue = options?.ExcludeValue ?? false;
                 if (!excludeValue)
                 {
-                    values.Add(synonyms.Key);
+                    values.Add(choices.Key);
                 }
                 var match = RecognizeValues(message, values, options).MaxBy(x => x.Score);
                 if (match != null)
                 {
                     entities.Add(new RecognizeEntity<T>
                     {
-                        Entity = synonyms.Key,
+                        Entity = choices.Key,
                         Score = match.Score
                     });
                 }
@@ -398,20 +398,20 @@ namespace Microsoft.Bot.Builder.Dialogs
             return response;
         }
 
-        private static SynonymsDictionary ConvertToSynonyms(IEnumerable<string> values)
+        private static ChoicesDictionary ConvertToChoices(IEnumerable<string> values)
         {
-            var result = new SynonymsDictionary();
+            var result = new ChoicesDictionary();
             foreach (var term in values)
             {
                 var subTerm = term.Split('=');
                 if (subTerm.Count() == 2)
                 {
-                    var synonyms = subTerm[1].Split(',');
-                    result.Add(subTerm[0], synonyms);
+                    var choices = subTerm[1].Split(',');
+                    result.Add(subTerm[0], choices);
                 }
                 else
                 {
-                    result.Add(subTerm[0], Enumerable.Empty<string>());
+                    result.Add(subTerm[0], Enumerable.Empty<string>().ToList());
                 }
             }
             return result;
