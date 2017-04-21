@@ -410,7 +410,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// <param name="builder">The builder used to register dependencies.</param>
         private void RegisterBotConnectorImplementation(ContainerBuilder builder)
         {
-            // service provider is assumed to be availble at this point
+            // service provider is assumed to be available at this point
             // For ASPNET platform, it will be auto-registered
             // For all other platforms, consumer is expected to set up provider during startup
             builder.Register<ServiceProvider>(c => ServiceProvider.Instance)

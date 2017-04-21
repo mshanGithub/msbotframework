@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Microsoft.Bot.Connector
 {
@@ -123,10 +124,11 @@ namespace Microsoft.Bot.Connector
                 var connectorAssemblyName = new AssemblyName(AspNetBotConnectorAssemblyName);
                 connectorAssembly = Assembly.Load(connectorAssemblyName);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 // assembly not available
                 // cannot log, because we don't have service provider to get logger from
+                Debug.WriteLine($"Couldn't load {AspNetBotConnectorAssemblyName}. This is not a problem, unless you are using ASP.NET. Error details: ${exception}");
             }
 
             if (connectorAssembly != null)

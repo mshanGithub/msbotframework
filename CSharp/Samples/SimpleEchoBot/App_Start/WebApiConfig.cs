@@ -35,7 +35,7 @@ namespace SimpleEchoBot
             );
 
             config.Routes.MapHttpRoute(
-                name: "ConnectorOnlytApi",
+                name: "ConnectorOnlyApi",
                 routeTemplate: "connectorOnly/messages/{id}",
                 defaults: new { id = RouteParameter.Optional, controller = "connectorOnly" }
             );
