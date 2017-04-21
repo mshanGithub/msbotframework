@@ -384,11 +384,12 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="prompt">   The prompt to show to the user. </param>
         /// <param name="retry">    What to show on retry. </param>
         /// <param name="attempts"> The number of times to retry. </param>
+        /// <param name="speak">    Speak tag (SSML markup for text to speech)</param>
         /// <param name="max">      Maximum value.</param>
         /// <param name="min">      Minimun value.</param>
-        public static void Number(IDialogContext context, ResumeAfter<long> resume, string prompt, string retry = null, int attempts = 3, long? min = null, long? max = null)
+        public static void Number(IDialogContext context, ResumeAfter<long> resume, string prompt, string retry = null, int attempts = 3, string speak = null, long ? min = null, long? max = null)
         {
-            var child = new PromptInt64(prompt, retry, attempts, min, max);
+            var child = new PromptInt64(prompt, retry, attempts, speak, min, max);
             context.Call<long>(child, resume);
         }
 
@@ -398,11 +399,12 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="prompt">   The prompt to show to the user. </param>
         /// <param name="retry">    What to show on retry. </param>
         /// <param name="attempts"> The number of times to retry. </param>
+        /// <param name="speak">    Speak tag (SSML markup for text to speech)</param>
         /// <param name="max">      Maximum value.</param>
         /// <param name="min">      Minimun value.</param>
-        public static void Number(IDialogContext context, ResumeAfter<double> resume, string prompt, string retry = null, int attempts = 3, double? min = null, double? max = null)
+        public static void Number(IDialogContext context, ResumeAfter<double> resume, string prompt, string retry = null, int attempts = 3, string speak = null, double? min = null, double? max = null)
         {
-            var child = new PromptDouble(prompt, retry, attempts, min, max);
+            var child = new PromptDouble(prompt, retry, attempts, speak, min, max);
             context.Call<double>(child, resume);
         }
 
