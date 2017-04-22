@@ -17,8 +17,19 @@ namespace Microsoft.Bot.Builder.Dialogs
     }
     public interface IPromptRecognizeNumbersOptions
     {
+        /// <summary>
+        /// (Optional) Minimum value allowed.
+        /// </summary>
         double? MinValue { get; set; }
+
+        /// <summary>
+        /// (Optional) Maximum value allowed.
+        /// </summary>
         double? MaxValue { get; set; }
+
+        /// <summary>
+        /// (Optional) If true, then only integers will be recognized.
+        /// </summary>
         bool? IntegerOnly { get; set; }
     }
 

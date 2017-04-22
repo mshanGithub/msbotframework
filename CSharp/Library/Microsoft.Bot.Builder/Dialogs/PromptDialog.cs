@@ -387,7 +387,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <param name="speak">    Speak tag (SSML markup for text to speech)</param>
         /// <param name="max">      Maximum value.</param>
         /// <param name="min">      Minimun value.</param>
-        public static void Number(IDialogContext context, ResumeAfter<long> resume, string prompt, string retry = null, int attempts = 3, string speak = null, long ? min = null, long? max = null)
+        public static void Number(IDialogContext context, ResumeAfter<long> resume, string prompt, string retry = null, int attempts = 3, string speak = null, long? min = null, long? max = null)
         {
             var child = new PromptInt64(prompt, retry, attempts, speak, min, max);
             context.Call<long>(child, resume);
@@ -607,13 +607,20 @@ namespace Microsoft.Bot.Builder.Dialogs
             }
         }
 
-        /// <summary>   Prompt for a confirmation. </summary>
-        /// <remarks>   Normally used through <see cref="PromptDialog.Number(IDialogContext, ResumeAfter{long}, string, string, int, long?, long?)"/>.</remarks>
+        /// <summary>   Prompt for a Int64 </summary>
+        /// <remarks>   Normally used through <see cref="PromptDialog.Number(IDialogContext, ResumeAfter{long}, string, string, int, string, long?, long?)"/>.</remarks>
         [Serializable]
         public sealed class PromptInt64 : Prompt<long, long>
         {
-            public readonly long? Min;
-            public readonly long? Max;
+            /// <summary>
+            /// (Optional) Minimum value allowed.
+            /// </summary>
+            public long? Min { get; }
+
+            /// <summary>
+            /// (Optional) Maximum value allowed.
+            /// </summary>
+            public long? Max { get; }
 
             /// <summary>   Constructor for a prompt int64 dialog. </summary>
             /// <param name="prompt">   The prompt. </param>
@@ -651,12 +658,19 @@ namespace Microsoft.Bot.Builder.Dialogs
         }
 
         /// <summary>   Prompt for a double. </summary>
-        /// <remarks>   Normally used through <see cref="PromptDialog.Number(IDialogContext, ResumeAfter{double}, string, string, int, double?, double?)"/>.</remarks>
+        /// <remarks>   Normally used through <see cref="PromptDialog.Number(IDialogContext, ResumeAfter{double}, string, string, int, string, double?, double?)"/>.</remarks>
         [Serializable]
         public sealed class PromptDouble : Prompt<double, double>
         {
-            public readonly double? Min;
-            public readonly double? Max;
+            /// <summary>
+            /// (Optional) Minimum value allowed.
+            /// </summary>
+            public double? Min { get; }
+
+            /// <summary>
+            /// (Optional) Maximum value allowed.
+            /// </summary>
+            public double? Max { get; }
 
             /// <summary>   Constructor for a prompt double dialog. </summary>
             /// <param name="prompt">   The prompt. </param>
