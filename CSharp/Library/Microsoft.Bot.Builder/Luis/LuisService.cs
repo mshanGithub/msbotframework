@@ -170,7 +170,7 @@ namespace Microsoft.Bot.Builder.Luis
             }
             if (model.EndpointSlot == LuisEndpointSlot.Staging)
             {
-                queryParameters.Add($"staging=true");
+                queryParameters.Add("staging=true");
             }
 
             builder.Query = string.Join("&", queryParameters);
