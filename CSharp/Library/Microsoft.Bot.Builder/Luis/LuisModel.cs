@@ -48,6 +48,15 @@ namespace Microsoft.Bot.Builder.Luis
     }
 
     /// <summary>
+    /// Luis endpoing slots.
+    /// </summary>
+    public enum LuisEndpointSlot
+    {
+        Production,
+        Staging
+    }
+
+    /// <summary>
     /// A mockable interface for the LUIS model.
     /// </summary>
     public interface ILuisModel
@@ -71,6 +80,11 @@ namespace Microsoft.Bot.Builder.Luis
         /// Luis Api Version.
         /// </summary>
         LuisApiVersion ApiVersion { get; }
+
+        /// <summary>
+        /// Luis Endpoint Slot.
+        /// </summary>
+        LuisEndpointSlot EndpointSlot { get; }
     }
 
     /// <summary>
@@ -92,6 +106,9 @@ namespace Microsoft.Bot.Builder.Luis
         private readonly LuisApiVersion apiVersion;
         public LuisApiVersion ApiVersion => apiVersion;
 
+        private readonly LuisEndpointSlot endpointSlot;
+        public LuisEndpointSlot EndpointSlot => endpointSlot;
+
         public static readonly IReadOnlyDictionary<LuisApiVersion, Uri> LuisEndpoints = new Dictionary<LuisApiVersion, Uri>()
         {
             #pragma warning disable CS0612
@@ -106,12 +123,14 @@ namespace Microsoft.Bot.Builder.Luis
         /// <param name="modelID">The LUIS model ID.</param>
         /// <param name="subscriptionKey">The LUIS subscription key.</param>
         /// <param name="apiVersion">The LUIS API version.</param>
-        public LuisModelAttribute(string modelID, string subscriptionKey, LuisApiVersion apiVersion = LuisApiVersion.V2)
+        /// <param name="endpointSlot">The LUIS endpoint slot.</param>
+        public LuisModelAttribute(string modelID, string subscriptionKey, LuisApiVersion apiVersion = LuisApiVersion.V2, LuisEndpointSlot endpointSlot = LuisEndpointSlot.Production)
         {
             SetField.NotNull(out this.modelID, nameof(modelID), modelID);
             SetField.NotNull(out this.subscriptionKey, nameof(subscriptionKey), subscriptionKey);
             this.apiVersion = apiVersion;
             this.uriBase = LuisEndpoints[this.apiVersion];
+            this.endpointSlot = endpointSlot;
         }
 
         public bool Equals(ILuisModel other)
@@ -121,6 +140,7 @@ namespace Microsoft.Bot.Builder.Luis
                 && object.Equals(this.SubscriptionKey, other.SubscriptionKey)
                 && object.Equals(this.ApiVersion, other.ApiVersion)
                 && object.Equals(this.UriBase, other.UriBase)
+                && object.Equals(this.EndpointSlot, other.EndpointSlot)
                 ;
         }
 
@@ -134,7 +154,8 @@ namespace Microsoft.Bot.Builder.Luis
             return ModelID.GetHashCode()
                 ^ SubscriptionKey.GetHashCode()
                 ^ UriBase.GetHashCode()
-                ^ ApiVersion.GetHashCode();
+                ^ ApiVersion.GetHashCode()
+                ^ EndpointSlot.GetHashCode();
         }
     }
 }
