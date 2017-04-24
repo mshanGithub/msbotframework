@@ -168,6 +168,10 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 queryParameters.Add($"spellCheck={Uri.EscapeDataString(Convert.ToString(SpellCheck))}");
             }
+            if (model.EndpointSlot == LuisEndpointSlot.Staging)
+            {
+                queryParameters.Add($"staging=true");
+            }
 
             builder.Query = string.Join("&", queryParameters);
             return builder.Uri;
