@@ -70,7 +70,7 @@ namespace Microsoft.Bot.Builder.Luis
                 foreach (var entity in entities)
                 {
                     Resolution resolution;
-                    if (parser.TryParse(entity.Resolution, out resolution))
+                    if (parser.TryParse(entity, out resolution))
                     {
                         yield return resolution;
                     }

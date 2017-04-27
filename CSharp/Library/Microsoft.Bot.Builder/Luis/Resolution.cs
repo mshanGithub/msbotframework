@@ -31,6 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using Microsoft.Bot.Builder.Luis.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -308,48 +309,47 @@ namespace Microsoft.Bot.Builder.Luis
 
     public interface IResolutionParser
     {
-        bool TryParse(IDictionary<string, string> properties, out Resolution resolution);
+        bool TryParse(EntityRecommendation entityRecommendation, out Resolution resolution);
     }
 
     public sealed class ResolutionParser : IResolutionParser
     {
-        bool IResolutionParser.TryParse(IDictionary<string, string> properties, out Resolution resolution)
+        bool IResolutionParser.TryParse(EntityRecommendation entityRecommendation, out Resolution resolution)
         {
-            string resolution_type;
-            if (properties != null)
+
+            if (entityRecommendation != null)
             {
-                if (properties.TryGetValue("resolution_type", out resolution_type))
+                IDictionary<string, string> properties = entityRecommendation.Resolution;
+
+                switch (entityRecommendation.Type)
                 {
-                    switch (resolution_type)
-                    {
-                        case "builtin.datetime.date":
-                            string date;
-                            if (properties.TryGetValue("date", out date))
+                    case "builtin.datetime.date":
+                        string date;
+                        if (properties.TryGetValue("date", out date))
+                        {
+                            BuiltIn.DateTime.DateTimeResolution dateTime;
+                            if (BuiltIn.DateTime.DateTimeResolution.TryParse(date, out dateTime))
                             {
-                                BuiltIn.DateTime.DateTimeResolution dateTime;
-                                if (BuiltIn.DateTime.DateTimeResolution.TryParse(date, out dateTime))
-                                {
-                                    resolution = dateTime;
-                                    return true;
-                                }
+                                resolution = dateTime;
+                                return true;
                             }
+                        }
 
-                            break;
-                        case "builtin.datetime.time":
-                        case "builtin.datetime.set":
-                            string time;
-                            if (properties.TryGetValue("time", out time))
+                        break;
+                    case "builtin.datetime.time":
+                    case "builtin.datetime.set":
+                        string time;
+                        if (properties.TryGetValue("time", out time))
+                        {
+                            BuiltIn.DateTime.DateTimeResolution dateTime;
+                            if (BuiltIn.DateTime.DateTimeResolution.TryParse(time, out dateTime))
                             {
-                                BuiltIn.DateTime.DateTimeResolution dateTime;
-                                if (BuiltIn.DateTime.DateTimeResolution.TryParse(time, out dateTime))
-                                {
-                                    resolution = dateTime;
-                                    return true;
-                                }
+                                resolution = dateTime;
+                                return true;
                             }
+                        }
 
-                            break;
-                    }
+                        break;
                 }
             }
 
