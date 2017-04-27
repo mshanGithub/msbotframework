@@ -70,6 +70,7 @@ export interface IIntentRecognizerResult extends IRecognizeResult {
     matched?: string[]; 
     intents?: IIntent[];
     entities?: IEntity<any>[];
+    compositeEntities?: IEntity<any>[];
 }
 
 export interface IIntentRecognizerSetOptions {
