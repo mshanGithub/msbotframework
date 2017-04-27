@@ -141,7 +141,8 @@ namespace Microsoft.Bot.Builder.Dialogs
         public static async Task PostAsync(this IBotToUser botToUser, string text, string locale = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var message = botToUser.MakeMessage();
-            message.Text = text;
+            //message.Text = text;
+            message.Text = Luis.Extensions.TranslateResponse(text);
 
             if (!string.IsNullOrEmpty(locale))
             {

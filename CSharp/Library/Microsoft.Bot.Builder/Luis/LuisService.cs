@@ -40,6 +40,9 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Rest;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Xml;
+using System.Web;
 
 namespace Microsoft.Bot.Builder.Luis
 {
@@ -201,7 +204,7 @@ namespace Microsoft.Bot.Builder.Luis
     [Serializable]
     public sealed class LuisService : ILuisService
     {
-        private readonly ILuisModel model;
+        public readonly ILuisModel model;
 
         /// <summary>
         /// Construct the LUIS service using the model information.
@@ -252,6 +255,11 @@ namespace Microsoft.Bot.Builder.Luis
     /// </summary>
     public static partial class Extensions
     {
+        private static string UserLanguage = string.Empty;
+        private static string token = string.Empty;
+        private static readonly string TranslationBaseUrl = "http://api.microsofttranslator.com/v2/Http.svc/";
+        private static readonly string TokenBaseUrl = "https://api.cognitive.microsoft.com/sts/v1.0/";
+
         /// <summary>
         /// Query the LUIS service using this text.
         /// </summary>
@@ -261,7 +269,8 @@ namespace Microsoft.Bot.Builder.Luis
         /// <returns>The LUIS result.</returns>
         public static async Task<LuisResult> QueryAsync(this ILuisService service, string text, CancellationToken token)
         {
-            var uri = service.BuildUri(new LuisRequest(query: text));
+            var translated = Translate((service as LuisService).model, text);
+            var uri = service.BuildUri(new LuisRequest(query: translated));
             return await service.QueryAsync(uri, token);
         }
 
@@ -274,6 +283,82 @@ namespace Microsoft.Bot.Builder.Luis
         public static Uri BuildUri(this ILuisService service, string text)
         {
             return service.BuildUri(new LuisRequest(query: text));
+        }
+
+        public static string Translate(ILuisModel model, string userInput)
+        {
+            if (string.IsNullOrEmpty(userInput))
+                return string.Empty;
+
+            token = getToken(model.TranslatorKey);
+            if (string.IsNullOrEmpty(token))
+                return userInput;
+
+            var urlParams = "text=" + HttpUtility.UrlEncode(userInput) + "&to=en&appId=Bearer+" + token;
+
+            //Detect Language
+            var url = TranslationBaseUrl + "Detect?" + urlParams;
+            var userLanguageCode = getAndParse(url);
+            UserLanguage = userLanguageCode;
+            if (string.IsNullOrEmpty(userLanguageCode) || userLanguageCode.Equals(model.DefaultLanguage))
+            {
+                return userInput;
+            }
+
+            //Translate
+            url = TranslationBaseUrl + "Translate?" + urlParams;
+            var translation = getAndParse(url);
+            if (!string.IsNullOrEmpty(translation))
+            {
+                return translation;
+            }
+            return userInput;
+        }
+
+        public static string TranslateResponse(string userInput)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(UserLanguage))
+                return userInput;
+            //Translate
+            var urlParams = "text=" + HttpUtility.UrlEncode(userInput) + "&to=" + UserLanguage + "&appId=Bearer+" + token;
+            var url = TranslationBaseUrl + "Translate?" + urlParams;
+            var translation = getAndParse(url);
+            if (!string.IsNullOrEmpty(translation))
+            {
+                return translation;
+            }
+            return userInput;
+        }
+
+        private static string getToken(string key)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(TokenBaseUrl);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
+
+            var response = client.PostAsync("issueToken", new StringContent("{body}")).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content.ReadAsStringAsync().Result;
+            }
+            return string.Empty;
+        }
+
+        private static string getAndParse(string url)
+        {
+            var client = new HttpClient();
+
+            var response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var returnXml = response.Content.ReadAsStringAsync().Result;
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(returnXml);
+                return doc.InnerText;
+            }
+
+            return string.Empty;
         }
     }
 }

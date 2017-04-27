@@ -71,6 +71,16 @@ namespace Microsoft.Bot.Builder.Luis
         /// Luis Api Version.
         /// </summary>
         LuisApiVersion ApiVersion { get; }
+
+        /// <summary>
+        /// Translator Key to use Azure Translation.
+        /// </summary>
+        string TranslatorKey { get; }
+
+        /// <summary>
+        /// Default Language for LUIS Intents
+        /// </summary>
+        string DefaultLanguage { get; }
     }
 
     /// <summary>
@@ -92,6 +102,23 @@ namespace Microsoft.Bot.Builder.Luis
         private readonly LuisApiVersion apiVersion;
         public LuisApiVersion ApiVersion => apiVersion;
 
+        private readonly string translatorKey;
+        public string TranslatorKey
+        {
+            get
+            {
+                return translatorKey;
+            }
+        }
+        private readonly string defaultLanguage;
+        public string DefaultLanguage
+        {
+            get
+            {
+                return defaultLanguage;
+            }
+        }
+
         public static readonly IReadOnlyDictionary<LuisApiVersion, Uri> LuisEndpoints = new Dictionary<LuisApiVersion, Uri>()
         {
             #pragma warning disable CS0612
@@ -106,11 +133,15 @@ namespace Microsoft.Bot.Builder.Luis
         /// <param name="modelID">The LUIS model ID.</param>
         /// <param name="subscriptionKey">The LUIS subscription key.</param>
         /// <param name="apiVersion">The LUIS API version.</param>
-        public LuisModelAttribute(string modelID, string subscriptionKey, LuisApiVersion apiVersion = LuisApiVersion.V2)
+        /// <param name="tKey">Azure Translator key if you want to support multiple language</param>
+        /// <param name="dLang">Default language for your Intents for translation</param>
+        public LuisModelAttribute(string modelID, string subscriptionKey, LuisApiVersion apiVersion = LuisApiVersion.V2, string tKey = "", string dLang = "en")
         {
             SetField.NotNull(out this.modelID, nameof(modelID), modelID);
             SetField.NotNull(out this.subscriptionKey, nameof(subscriptionKey), subscriptionKey);
             this.apiVersion = apiVersion;
+            this.translatorKey = tKey;
+            this.defaultLanguage = dLang;
             this.uriBase = LuisEndpoints[this.apiVersion];
         }
 
