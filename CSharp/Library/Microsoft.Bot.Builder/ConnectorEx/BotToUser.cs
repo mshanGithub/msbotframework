@@ -78,7 +78,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return toBotActivity.CreateReply();
         }
 
-        Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
+        Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
@@ -100,7 +100,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return toBotActivity.CreateReply();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
         {
             await this.client.Conversations.ReplyToActivityAsync((Activity)message, cancellationToken);
         }
@@ -286,7 +286,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return toBotActivity.CreateReply();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
         {
             this.queue.Enqueue(message);
         }
@@ -307,7 +307,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return this.inner.MakeMessage();
         }
 
-        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken )
+        async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
         {
             await this.inner.PostAsync(message, cancellationToken);
             await this.writer.WriteLineAsync($"{message.Text}{ButtonsToText(message.Attachments)}");
