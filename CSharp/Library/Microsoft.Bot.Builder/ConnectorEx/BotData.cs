@@ -38,10 +38,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,7 +63,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// <param name="botStoreType"> The bot store type.</param>
         /// <param name="cancellationToken"> The cancellation token.</param>
         /// <returns>Bot record that is stored for this key, or "empty" bot record ready to be stored</returns>
-        Task<T> LoadAsync(IAddress key, BotStoreType botStoreType, CancellationToken cancellationToken);
+        Task<T> LoadAsync(IAddress key, BotStoreType botStoreType, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Save a BotData using the ETag.
@@ -80,8 +78,8 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// <param name="data"> The data that should be saved.</param>
         /// <param name="cancellationToken"> The cancellation token.</param>
         /// <returns>throw HttpException(HttpStatusCode.PreconditionFailed) if update fails</returns>
-        Task SaveAsync(IAddress key, BotStoreType botStoreType, T data, CancellationToken cancellationToken);
-        Task<bool> FlushAsync(IAddress key, CancellationToken cancellationToken);
+        Task SaveAsync(IAddress key, BotStoreType botStoreType, T data, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> FlushAsync(IAddress key, CancellationToken cancellationToken = default(CancellationToken));
     }
 
     /// <summary>
@@ -144,7 +142,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             }
         }
 
-        Task<bool> IBotDataStore<BotData>.FlushAsync(IAddress key, CancellationToken cancellationToken)
+        Task<bool> IBotDataStore<BotData>.FlushAsync(IAddress key, CancellationToken cancellationToken )
         {
             // Everything is saved. Flush is no-op
             return Task.FromResult(true);
@@ -222,7 +220,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return botData;
         }
 
-        async Task IBotDataStore<BotData>.SaveAsync(IAddress key, BotStoreType botStoreType, BotData botData, CancellationToken cancellationToken)
+        async Task IBotDataStore<BotData>.SaveAsync(IAddress key, BotStoreType botStoreType, BotData botData, CancellationToken cancellationToken )
         {
             switch (botStoreType)
             {
@@ -240,7 +238,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             }
         }
 
-        Task<bool> IBotDataStore<BotData>.FlushAsync(IAddress key, CancellationToken cancellationToken)
+        Task<bool> IBotDataStore<BotData>.FlushAsync(IAddress key, CancellationToken cancellationToken )
         {
             // Everything is saved. Flush is no-op
             return Task.FromResult(true);
@@ -287,7 +285,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             public BotData BotUserData { set; get; }
         }
 
-        async Task<bool> IBotDataStore<BotData>.FlushAsync(IAddress key, CancellationToken cancellationToken)
+        async Task<bool> IBotDataStore<BotData>.FlushAsync(IAddress key, CancellationToken cancellationToken )
         {
             CacheEntry entry;
             if (cache.TryGetValue(key, out entry))
@@ -306,7 +304,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             }
         }
 
-        async Task<BotData> IBotDataStore<BotData>.LoadAsync(IAddress key, BotStoreType botStoreType, CancellationToken cancellationToken)
+        async Task<BotData> IBotDataStore<BotData>.LoadAsync(IAddress key, BotStoreType botStoreType, CancellationToken cancellationToken )
         {
             CacheEntry cacheEntry;
             BotData value = null;
@@ -351,7 +349,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return value;
         }
 
-        async Task IBotDataStore<BotData>.SaveAsync(IAddress key, BotStoreType botStoreType, BotData value, CancellationToken cancellationToken)
+        async Task IBotDataStore<BotData>.SaveAsync(IAddress key, BotStoreType botStoreType, BotData value, CancellationToken cancellationToken )
         {
             CacheEntry entry;
             if (!cache.TryGetValue(key, out entry))
@@ -363,7 +361,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             SetCachedValue(entry, botStoreType, value);
         }
 
-        private async Task<BotData> LoadFromInnerAndCache(CacheEntry cacheEntry, BotStoreType botStoreType, IAddress key, CancellationToken token)
+        private async Task<BotData> LoadFromInnerAndCache(CacheEntry cacheEntry, BotStoreType botStoreType, IAddress key, CancellationToken token = default(CancellationToken))
         {
             var value = await inner.LoadAsync(key, botStoreType, token);
 
@@ -398,7 +396,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             }
         }
 
-        private async Task Save(IAddress key, CacheEntry entry, CancellationToken cancellationToken)
+        private async Task Save(IAddress key, CacheEntry entry, CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (this.dataConsistencyPolicy)
             {
@@ -449,7 +447,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
     {
         private readonly IBotData inner;
         private readonly IDialogTaskManager dialogTaskManager;
-        
+
         public DialogTaskManagerBotDataLoader(IBotData inner, IDialogTaskManager dialogTaskManager)
         {
             SetField.NotNull(out this.inner, nameof(inner), inner);
@@ -459,19 +457,19 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         public IBotDataBag UserData { get { return inner.UserData; } }
         public IBotDataBag ConversationData { get { return inner.ConversationData; } }
         public IBotDataBag PrivateConversationData { get { return inner.PrivateConversationData; } }
-        public async Task LoadAsync(CancellationToken token)
+        public async Task LoadAsync(CancellationToken token = default(CancellationToken))
         {
             await this.inner.LoadAsync(token);
             await this.dialogTaskManager.LoadDialogTasks(token);
         }
 
-        public async Task FlushAsync(CancellationToken token)
+        public async Task FlushAsync(CancellationToken token = default(CancellationToken))
         {
             await this.dialogTaskManager.FlushDialogTasks(token);
             await this.inner.FlushAsync(token);
         }
     }
-    
+
     public abstract class BotDataBase<T> : IBotData
     {
         protected readonly IBotDataStore<BotData> botDataStore;
@@ -489,7 +487,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         protected abstract T MakeData();
         protected abstract IBotDataBag WrapData(T data);
 
-        public async Task LoadAsync(CancellationToken cancellationToken)
+        public async Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var conversationTask = LoadData(BotStoreType.BotConversationData, cancellationToken);
             var privateConversationTask = LoadData(BotStoreType.BotPrivateConversationData, cancellationToken);
@@ -500,7 +498,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             this.userData = await userTask;
         }
 
-        public async Task FlushAsync(CancellationToken cancellationToken)
+        public async Task FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             await this.botDataStore.FlushAsync(botDataKey, cancellationToken);
         }
@@ -532,7 +530,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             }
         }
 
-        private async Task<IBotDataBag> LoadData(BotStoreType botStoreType, CancellationToken cancellationToken)
+        private async Task<IBotDataBag> LoadData(BotStoreType botStoreType, CancellationToken cancellationToken = default(CancellationToken))
         {
             var botData = await this.botDataStore.LoadAsync(botDataKey, botStoreType, cancellationToken);
             if (botData?.Data == null)

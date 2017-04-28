@@ -128,7 +128,7 @@ namespace Microsoft.Bot.Connector
         }
         
         public async Task<IdentityToken> TryAuthenticateAsync(string scheme, string token,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             // then auth is disabled
             if (await this.credentialProvider.IsAuthenticationDisabledAsync())

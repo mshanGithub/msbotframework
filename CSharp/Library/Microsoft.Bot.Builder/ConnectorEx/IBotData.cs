@@ -60,12 +60,12 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// Loads the bot data from <see cref="IBotDataStore{T}"/>
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        Task LoadAsync(CancellationToken cancellationToken);
+        Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Flushes the bot data to <see cref="IBotDataStore{T}"/>
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        Task FlushAsync(CancellationToken cancellationToken);
+        Task FlushAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
