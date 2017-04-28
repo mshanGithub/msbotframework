@@ -251,6 +251,17 @@ interface IEntity<T> {
     score?: number;
 }
 
+interface ICompositeEntity<T> {
+    parentType: string;
+    value: string;
+    children: ICompositeEntityChild<T>[]
+}
+
+interface ICompositeEntityChild<T> {
+    type: string;
+    value: string;
+}
+
 type TextType = string|string[];
 type MessageType = IMessage|IIsMessage;
 type TextOrMessageType = TextType|MessageType;
