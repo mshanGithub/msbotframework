@@ -30,7 +30,7 @@ namespace Microsoft.Bot.Connector
             {
                 response.Dispose();
                 // this call might throw if the Microsoft login service returns an oauth failure
-                var token = await credentials.GetTokenAsync(true).ConfigureAwait(false);
+                await credentials.GetTokenAsync(true).ConfigureAwait(false);
                 // adds token to outgoing request
                 await credentials.ProcessHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
                 // retry request with refreshed token

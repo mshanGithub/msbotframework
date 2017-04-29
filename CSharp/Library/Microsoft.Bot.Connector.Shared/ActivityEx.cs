@@ -155,7 +155,7 @@ namespace Microsoft.Bot.Connector
         /// <param name="serviceUrl">alternate serviceurl to use for state service</param>
         /// <param name="handlers"></param>
         /// <returns></returns>
-        public StateClient GetStateClient(MicrosoftAppCredentials credentials, string serviceUrl = null, params DelegatingHandler[] handlers)
+        public virtual IStateClient GetStateClient(MicrosoftAppCredentials credentials, string serviceUrl = null, params DelegatingHandler[] handlers)
         {
             bool useServiceUrl = (this.ChannelId == "emulator");
             if (useServiceUrl)
@@ -175,7 +175,7 @@ namespace Microsoft.Bot.Connector
         /// <param name="serviceUrl">alternate serviceurl to use for state service</param>
         /// <param name="handlers"></param>
         /// <returns></returns>
-        public StateClient GetStateClient(string microsoftAppId = null, string microsoftAppPassword = null, string serviceUrl = null, params DelegatingHandler[] handlers)
+        public virtual IStateClient GetStateClient(string microsoftAppId = null, string microsoftAppPassword = null, string serviceUrl = null, params DelegatingHandler[] handlers)
         {
             return GetStateClient(new MicrosoftAppCredentials(microsoftAppId, microsoftAppPassword), serviceUrl, handlers);
         }
