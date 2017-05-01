@@ -150,6 +150,21 @@ namespace Microsoft.Bot.Builder.Dialogs
             await botToUser.PostAsync(message, cancellationToken);
         }
 
+        /// <summary>
+        /// Ends the conversation.
+        /// </summary>
+        /// <param name="botToUser">Communication channel to use.</param>
+        /// <param name="code">The conversation end code.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public static async Task EndConversation(this IBotToUser botToUser, string code = EndOfConversationCodes.CompletedSuccessfully, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var message = botToUser.MakeMessage();
+            message.Type = ActivityTypes.EndOfConversation;
+            message.AsEndOfConversationActivity().Code = code;
+
+            await botToUser.PostAsync(message, cancellationToken);
+        }
 
         /// <summary>
         /// Post a message and optional SSML to be sent to the user, using previous messages to establish a conversation context.
