@@ -153,17 +153,32 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// <summary>
         /// Ends the conversation.
         /// </summary>
-        /// <param name="botToUser">Communication channel to use.</param>
+        /// <param name="context">Communication channel to use.</param>
         /// <param name="code">The conversation end code.</param>
+        /// <param name="message">Optional message to send to the user before ending the conversation</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task EndConversation(this IBotToUser botToUser, string code = EndOfConversationCodes.CompletedSuccessfully, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task EndConversation(this IDialogContext context, string message = null, string code = EndOfConversationCodes.CompletedSuccessfully, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var message = botToUser.MakeMessage();
-            message.Type = ActivityTypes.EndOfConversation;
-            message.AsEndOfConversationActivity().Code = code;
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                // Send the desired message out to the user first
+                await context.PostAsync(message);
+            }
 
-            await botToUser.PostAsync(message, cancellationToken);
+            // Clear conversation data
+            context.ConversationData.Clear();
+            context.PrivateConversationData.Clear();
+
+            // Send EndOfConversation message
+            var eocMessage = context.MakeMessage();
+            eocMessage.Type = ActivityTypes.EndOfConversation;
+            eocMessage.AsEndOfConversationActivity().Code = code;
+
+            await context.PostAsync(eocMessage, cancellationToken);
+
+            // Clear the stack
+            context.Reset();
         }
 
         /// <summary>
