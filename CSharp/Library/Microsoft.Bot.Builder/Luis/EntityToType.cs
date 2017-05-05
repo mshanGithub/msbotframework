@@ -140,6 +140,15 @@ namespace Microsoft.Bot.Builder.Luis
 
             var start = now;
 
+            // used to bypass modification to start only for the first iteration
+            bool monthOne = resolution.Month.HasValue && resolution.Month == 1;
+            bool? weekOne = null;
+            bool dayOne = resolution.Day.HasValue && resolution.Day == 1;
+            if (resolution.Week.HasValue && resolution.Week == 1)
+            {
+                weekOne = true;
+            }
+
             // TODO: maybe clamp to prevent divergence
             while (start < DateTime.MaxValue)
             {
@@ -153,7 +162,7 @@ namespace Microsoft.Bot.Builder.Luis
                     //      round down to the component's granularity
                     //      calculate the "after" based on the size of that component
 
-                    if (resolution.Year >= 0 && start.Year != resolution.Year)
+                    if (resolution.Year >= 0 && (!(weekOne.HasValue && !weekOne.Value && start.Year < resolution.Year) && start.Year != resolution.Year))
                     {
                         if (start.Year < resolution.Year)
                         {
@@ -168,17 +177,30 @@ namespace Microsoft.Bot.Builder.Luis
                         }
                     }
 
-                    if (resolution.Month >= 0 && start.Month != resolution.Month)
+                    if (resolution.Month >= 0 && (start.Month != resolution.Month || monthOne))
                     {
+                        if (monthOne)
+                        {
+                            start = start.AddMonths(-1);
+                            monthOne = false;
+                        }
+
                         start = start.AddMonths(1);
                         start = new DateTime(start.Year, start.Month, 1, 0, 0, 0, 0, start.Kind);
                         after = start.AddMonths(1);
                         continue;
                     }
 
-                    var week = calendar.GetWeekOfYear(start, rule, firstDayOfWeek);
-                    if (resolution.Week >= 0 && week != resolution.Week)
+                    var weekOfYear = calendar.GetWeekOfYear(start, rule, firstDayOfWeek);
+                    var week = weekOfYear == 53 ? 1 : weekOfYear;
+                    if (resolution.Week >= 0 && (week != resolution.Week || (weekOne.HasValue && weekOne.Value)))
                     {
+                        if (weekOne.HasValue && weekOne.Value)
+                        {
+                            start = start.AddDays(-7);
+                            weekOne = false;
+                        }
+
                         start = start.AddDays(7);
                         start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0, 0, start.Kind);
 
@@ -199,8 +221,14 @@ namespace Microsoft.Bot.Builder.Luis
                         continue;
                     }
 
-                    if (resolution.Day >= 0 && start.Day != resolution.Day)
+                    if (resolution.Day >= 0 && (start.Day != resolution.Day || dayOne))
                     {
+                        if (dayOne)
+                        {
+                            start = start.AddDays(-1);
+                            dayOne = false;
+                        }
+
                         start = start.AddDays(1);
                         start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0, 0, start.Kind);
                         after = start.AddDays(1);
