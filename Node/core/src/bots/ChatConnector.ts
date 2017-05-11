@@ -245,10 +245,9 @@ export class ChatConnector implements IConnector, IBotStorage {
         let addresses: IAddress[] = [];
         async.forEachOfSeries(messages, (msg, idx, cb) => {
             try {
-                if(msg.type == 'delay') {
-                    setTimeout(cb, (<any> msg).value);
-                }
-                else if (msg.address && (<IChatConnectorAddress>msg.address).serviceUrl) {
+                if (msg.type == 'delay') {
+                    setTimeout(cb, (<any>msg).value);
+                } else if (msg.address && (<IChatConnectorAddress>msg.address).serviceUrl) {
                     this.postMessage(msg, (idx == messages.length - 1), (err, address) => {
                         addresses.push(address);
                         cb(err);
@@ -598,6 +597,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         if (refresh) {
             this.accessToken = null;
         }
+        this.addUserAgent(options);
         this.addAccessToken(options, (err) => {
             if (!err) {
                 request(options, (err, response, body) => {
@@ -679,7 +679,6 @@ export class ChatConnector implements IConnector, IBotStorage {
                     options.headers = {
                         'Authorization': 'Bearer ' + token
                     };
-                    this.addUserAgent(options);
                     cb(null);
                 } else {
                     cb(err);
@@ -781,6 +780,11 @@ export class ChatConnector implements IConnector, IBotStorage {
         });
         delete msg.agent;
         delete msg.source;
+
+        // Ensure local timestamp
+        if (!msg.localTimestamp) {
+            msg.localTimestamp = new Date().toISOString();
+        }
     }
 }
 
@@ -825,3 +829,4 @@ interface IWebResponse {
 interface IWebMiddleware {
     (req: IWebRequest, res: IWebResponse, next?: Function): void;
 }
+

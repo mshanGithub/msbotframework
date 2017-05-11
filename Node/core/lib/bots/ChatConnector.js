@@ -104,19 +104,25 @@ var ChatConnector = (function () {
             openIdMetadata.getKey(decoded_1.header.kid, function (key) {
                 if (key) {
                     try {
-                        jwt.verify(token, key, verifyOptions);
+                        jwt.verify(token, key.key, verifyOptions);
+                        if (typeof req.body.channelId !== 'undefined' &&
+                            typeof key.endorsements !== 'undefined' &&
+                            key.endorsements.lastIndexOf(req.body.channelId) === -1) {
+                            var errorDescription = "channelId in req.body: " + req.body.channelId + " didn't match the endorsements: " + key.endorsements.join(',') + ".";
+                            logger.error("ChatConnector: receive - endorsements validation failure. " + errorDescription);
+                            throw new Error(errorDescription);
+                        }
                         if (typeof decoded_1.payload.serviceurl !== 'undefined' &&
-                            typeof req.body.serviceUrl !== 'undefined') {
-                            if (decoded_1.payload.serviceurl !== req.body.serviceUrl) {
-                                var errorDescription = "ServiceUrl in payload of token: " + decoded_1.payload.serviceurl + " didn't match the request's serviceurl: " + req.body.serviceUrl + ".";
-                                logger.error("ChatConnector: receive - serviceurl mismatch. " + errorDescription);
-                                throw new Error(errorDescription);
-                            }
+                            typeof req.body.serviceUrl !== 'undefined' &&
+                            decoded_1.payload.serviceurl !== req.body.serviceUrl) {
+                            var errorDescription = "ServiceUrl in payload of token: " + decoded_1.payload.serviceurl + " didn't match the request's serviceurl: " + req.body.serviceUrl + ".";
+                            logger.error("ChatConnector: receive - serviceurl mismatch. " + errorDescription);
+                            throw new Error(errorDescription);
                         }
                     }
                     catch (err) {
                         logger.error('ChatConnector: receive - invalid token. Check bot\'s app ID & Password.');
-                        res.status(403);
+                        res.send(403, err);
                         res.end();
                         return;
                     }
@@ -151,7 +157,10 @@ var ChatConnector = (function () {
         var addresses = [];
         async.forEachOfSeries(messages, function (msg, idx, cb) {
             try {
-                if (msg.address && msg.address.serviceUrl) {
+                if (msg.type == 'delay') {
+                    setTimeout(cb, msg.value);
+                }
+                else if (msg.address && msg.address.serviceUrl) {
                     _this.postMessage(msg, (idx == messages.length - 1), function (err, address) {
                         addresses.push(address);
                         cb(err);
@@ -478,6 +487,7 @@ var ChatConnector = (function () {
         if (refresh) {
             this.accessToken = null;
         }
+        this.addUserAgent(options);
         this.addAccessToken(options, function (err) {
             if (!err) {
                 request(options, function (err, response, body) {
@@ -555,14 +565,12 @@ var ChatConnector = (function () {
         options.headers['User-Agent'] = USER_AGENT;
     };
     ChatConnector.prototype.addAccessToken = function (options, cb) {
-        var _this = this;
         if (this.settings.appId && this.settings.appPassword) {
             this.getAccessToken(function (err, token) {
                 if (!err && token) {
                     options.headers = {
                         'Authorization': 'Bearer ' + token
                     };
-                    _this.addUserAgent(options);
                     cb(null);
                 }
                 else {
@@ -650,6 +658,9 @@ var ChatConnector = (function () {
         });
         delete msg.agent;
         delete msg.source;
+        if (!msg.localTimestamp) {
+            msg.localTimestamp = new Date().toISOString();
+        }
     };
     return ChatConnector;
 }());
