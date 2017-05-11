@@ -58,7 +58,7 @@ export class PromptNumber extends Prompt<IPromptFeatures> {
 
         // Default recognizer logic
         this.onRecognize((context, cb) => {
-            if (context.message.text && !this.features.disableRecognizer) {
+            if (!isNaN(context.message.text) && !this.features.disableRecognizer) {
                 let options: IPromptNumberOptions = context.dialogData.options;
                 let entities = PromptRecognizers.recognizeNumbers(context, options);
                 let top = PromptRecognizers.findTopEntity(entities);
