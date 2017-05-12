@@ -382,13 +382,13 @@
             <c>true</c> if value of <seealso cref="P:Microsoft.Bot.Connector.IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
             </returns>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.HasContent(Microsoft.Bot.Connector.IMessageActivity)">
+        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.HasContentExtension(Microsoft.Bot.Connector.IMessageActivity)">
             <summary>
             Check if the message has content
             </summary>
             <returns>Returns true if this message has any content to send</returns>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetMentions(Microsoft.Bot.Connector.IMessageActivity)">
+        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetMentionsExtension(Microsoft.Bot.Connector.IMessageActivity)">
             <summary>
             Get mentions 
             </summary>

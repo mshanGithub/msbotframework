@@ -176,13 +176,13 @@ namespace Microsoft.Bot.Connector
         public bool HasContent()
         {
             // hit the extension method
-            return ((IMessageActivity)this).HasContent();
+            return ((IMessageActivity)this).HasContentExtension();
         }
 
         public Mention[] GetMentions()
         {
             // hit the extension method
-            return ((IMessageActivity)this).GetMentions();
+            return ((IMessageActivity)this).GetMentionsExtension();
         }
     }
 
@@ -278,7 +278,7 @@ namespace Microsoft.Bot.Connector
         /// Check if the message has content
         /// </summary>
         /// <returns>Returns true if this message has any content to send</returns>
-        public static bool HasContent(this IMessageActivity activity)
+        public static bool HasContentExtension(this IMessageActivity activity)
         {
             if (!String.IsNullOrWhiteSpace(activity.Text))
                 return true;
@@ -300,7 +300,7 @@ namespace Microsoft.Bot.Connector
         /// </summary>
         /// <param name="activity"></param>
         /// <returns></returns>
-        public static Mention[] GetMentions(this IMessageActivity activity)
+        public static Mention[] GetMentionsExtension(this IMessageActivity activity)
         {
             return activity.Entities?.Where(entity => String.Compare(entity.Type, "mention", ignoreCase: true) == 0).Select(e => e.Properties.ToObject<Mention>()).ToArray() ?? new Mention[0];
         }
