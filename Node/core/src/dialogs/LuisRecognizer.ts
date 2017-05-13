@@ -144,6 +144,7 @@ export class LuisRecognizer extends IntentRecognizer {
                     }
                 } catch (e) {
                     console.error(e.toString());
+                    callback(e);
                 }
             });
         } catch (err) {
