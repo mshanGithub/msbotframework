@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Microsoft.Bot.Connector.NetCore</name>
+        <name>Microsoft.Bot.Connector</name>
     </assembly>
     <members>
         <member name="F:Microsoft.Bot.Connector.ActionTypes.OpenUrl">
@@ -485,6 +485,51 @@
             Bot added or removed from channel
             </summary>
         </member>
+        <member name="T:Microsoft.Bot.Connector.Attachment">
+            <summary>
+            An attachment within an activity
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Attachment.Properties">
+            <summary>
+            Extension data for overflow of properties
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Attachment.#ctor">
+            <summary>
+            Initializes a new instance of the Attachment class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Attachment.#ctor(System.String,System.String,System.Object,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the Attachment class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Attachment.ContentType">
+            <summary>
+            mimetype/Contenttype for the file
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Attachment.ContentUrl">
+            <summary>
+            Content Url
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Attachment.Content">
+            <summary>
+            Embedded content
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Attachment.Name">
+            <summary>
+            (OPTIONAL) The name of the attachment
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Attachment.ThumbnailUrl">
+            <summary>
+            (OPTIONAL) Thumbnail associated with attachment
+            </summary>
+        </member>
         <member name="T:Microsoft.Bot.Connector.Attachments">
             <summary>
             Attachments operations.
@@ -557,6 +602,43 @@
             <return>
             A response object containing the response body and response headers.
             </return>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.BotAuthentication.MicrosoftAppId">
+            <summary>
+            Microsoft AppId for the bot 
+            </summary>
+            <remarks>
+            Needs to be used with MicrosoftAppPassword.  Ignored if CredentialProviderType is specified.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.BotAuthentication.MicrosoftAppPassword">
+            <summary>
+            Microsoft AppPassword for the bot (needs to be used with MicrosoftAppId)
+            </summary>
+            <remarks>
+            Needs to be used with MicrosoftAppId. Ignored if CredentialProviderType is specified.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.BotAuthentication.MicrosoftAppIdSettingName">
+            <summary>
+            Name of Setting in web.config which has the Microsoft AppId for the bot 
+            </summary>
+            <remarks>
+            Needs to be used with MicrosoftAppPasswordSettingName. Ignored if CredentialProviderType is specified.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.BotAuthentication.MicrosoftAppPasswordSettingName">
+            <summary>
+            Name of Setting in web.config which has the Microsoft App Password for the bot 
+            </summary>
+            <remarks>
+            Needs to be used with MicrosoftAppIdSettingName. Ignored if CredentialProviderType is specified.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.BotAuthentication.CredentialProviderType">
+            <summary>
+            Type which implements ICredentialProvider interface to allow multiple bot AppIds to be registered for the same endpoint
+            </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.BotAuthenticator.EndorsementsValidator">
             <summary>
@@ -2522,51 +2604,6 @@
             card (default:true)
             </summary>
         </member>
-        <member name="T:Microsoft.Bot.Connector.Attachment">
-            <summary>
-            An attachment within an activity
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Attachment.#ctor">
-            <summary>
-            Initializes a new instance of the Attachment class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Attachment.#ctor(System.String,System.String,System.Object,System.String,System.String)">
-            <summary>
-            Initializes a new instance of the Attachment class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Attachment.ContentType">
-            <summary>
-            mimetype/Contenttype for the file
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Attachment.ContentUrl">
-            <summary>
-            Content Url
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Attachment.Content">
-            <summary>
-            Embedded content
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Attachment.Name">
-            <summary>
-            (OPTIONAL) The name of the attachment
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Attachment.ThumbnailUrl">
-            <summary>
-            (OPTIONAL) Thumbnail associated with attachment
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Attachment.Properties">
-            <summary>
-            Extension data for overflow of properties
-            </summary>
-        </member>
         <member name="T:Microsoft.Bot.Connector.AttachmentData">
             <summary>
             Attachment data
@@ -3279,9 +3316,9 @@
             Static credential provider which has the appid and password static
             </summary>
         </member>
-        <member name="T:Microsoft.Bot.Connector.ConfigurationCredentialProvider">
+        <member name="T:Microsoft.Bot.Connector.SettingsCredentialProvider">
             <summary>
-            Credential provider which uses <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> to lookup appId and password
+            Credential provider which uses config settings to lookup appId and password
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.EndOfConversationCodes">
@@ -5319,6 +5356,23 @@
             <param name="baseUri">Base URI for the State service</param>
             <param name="credentials">Credentials for the Connector service</param>
             <param name="addJwtTokenRefresher">True, if JwtTokenRefresher should be included; False otherwise.</param>
+            <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.StateClient.#ctor(System.Uri,Microsoft.Bot.Connector.ICredentialProvider,System.Security.Claims.ClaimsIdentity,System.Net.Http.DelegatingHandler[])">
+            <summary>
+            Create a new instance of the StateClient class using Credential source
+            </summary>
+            <param name="baseUri">Base URI for the State service</param>
+            <param name="credentialProvider">Credential source to use</param>
+            <param name="claimsIdentity">ClaimsIDentity to create the client for</param>
+            <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.StateClient.#ctor(Microsoft.Bot.Connector.ICredentialProvider,System.Security.Claims.ClaimsIdentity,System.Net.Http.DelegatingHandler[])">
+            <summary>
+            Create a new instance of the StateClient class using Credential source
+            </summary>
+            <param name="credentialProvider">Credential source to use</param>
+            <param name="claimsIdentity">ClaimsIDentity to create the client for</param>
             <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
         </member>
         <member name="M:Microsoft.Bot.Connector.StateClient.#ctor(Microsoft.Bot.Connector.MicrosoftAppCredentials,System.Boolean,System.Net.Http.DelegatingHandler[])">
