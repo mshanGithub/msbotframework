@@ -360,7 +360,7 @@ export class UniversalCallBot extends events.EventEmitter {
     private errorLogger(done?: (err: Error) => void): (err: Error) => void {
         return (err: Error) => {
             if (err) {
-                this.emitError;
+                this.emitError(err);
             }
             if (done) {
                 done(err);

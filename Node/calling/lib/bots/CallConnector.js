@@ -1,9 +1,9 @@
 "use strict";
-var request = require('request');
-var async = require('async');
-var url = require('url');
-var utils = require('../utils');
-var consts = require('../consts');
+var request = require("request");
+var async = require("async");
+var url = require("url");
+var utils = require("../utils");
+var consts = require("../consts");
 var Busboy = require('busboy');
 var jwt = require('jsonwebtoken');
 var getPem = require('rsa-pem-from-mod-exp');
@@ -114,6 +114,7 @@ var CallConnector = (function () {
     };
     CallConnector.prototype.verifyBotFramework = function (req, res) {
         var _this = this;
+        var CLOCK_TOLERANCE = 300;
         var token;
         if (req.headers && req.headers.hasOwnProperty('authorization')) {
             var auth = req.headers['authorization'].trim().split(' ');
@@ -129,7 +130,7 @@ var CallConnector = (function () {
                     var decoded = jwt.decode(token, { complete: true });
                     var now = new Date().getTime() / 1000;
                     if (decoded.payload.aud != _this.settings.appId || decoded.payload.iss != issuer ||
-                        now > decoded.payload.exp || now < decoded.payload.nbf) {
+                        (now - CLOCK_TOLERANCE) > decoded.payload.exp || (now + CLOCK_TOLERANCE) < decoded.payload.nbf) {
                         res.status(403);
                         res.end();
                     }
@@ -137,7 +138,13 @@ var CallConnector = (function () {
                         var keyId = decoded.header.kid;
                         var secret = _this.getSecretForKey(keyId);
                         try {
-                            decoded = jwt.verify(token, secret);
+                            var jwtVerifyOptions = {
+                                audience: _this.settings.appId,
+                                ignoreExpiration: false,
+                                ignoreNotBefore: false,
+                                clockTolerance: CLOCK_TOLERANCE
+                            };
+                            decoded = jwt.verify(token, secret, jwtVerifyOptions);
                             _this.dispatch(req.body, callback);
                         }
                         catch (err) {

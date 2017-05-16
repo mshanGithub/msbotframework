@@ -1,43 +1,49 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var dl = require('./Library');
-var ses = require('../CallSession');
-var bs = require('../storage/BotStorage');
-var consts = require('../consts');
-var utils = require('../utils');
-var events = require('events');
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var dl = require("./Library");
+var ses = require("../CallSession");
+var bs = require("../storage/BotStorage");
+var consts = require("../consts");
+var utils = require("../utils");
+var events = require("events");
 var UniversalCallBot = (function (_super) {
     __extends(UniversalCallBot, _super);
     function UniversalCallBot(connector, settings) {
-        var _this = this;
-        _super.call(this);
-        this.connector = connector;
-        this.settings = {
+        var _this = _super.call(this) || this;
+        _this.connector = connector;
+        _this.settings = {
             processLimit: 4,
             persistUserData: true,
             persistConversationData: false
         };
-        this.lib = new dl.Library(consts.Library.default);
-        this.mwReceive = [];
-        this.mwSend = [];
-        this.mwSession = [];
+        _this.lib = new dl.Library(consts.Library.default);
+        _this.mwReceive = [];
+        _this.mwSend = [];
+        _this.mwSession = [];
         if (settings) {
             for (var name in settings) {
-                this.set(name, settings[name]);
+                _this.set(name, settings[name]);
             }
         }
         var asStorage = connector;
-        if (!this.settings.storage &&
+        if (!_this.settings.storage &&
             typeof asStorage.getData === 'function' &&
             typeof asStorage.saveData === 'function') {
-            this.settings.storage = asStorage;
+            _this.settings.storage = asStorage;
         }
-        this.lib.library(dl.systemLib);
-        this.connector.onEvent(function (event, cb) { return _this.receive(event, cb); });
+        _this.lib.library(dl.systemLib);
+        _this.connector.onEvent(function (event, cb) { return _this.receive(event, cb); });
+        return _this;
     }
     UniversalCallBot.prototype.set = function (name, value) {
         this.settings[name] = value;
@@ -56,7 +62,7 @@ var UniversalCallBot = (function (_super) {
         var _this = this;
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         args.forEach(function (mw) {
             var added = 0;
@@ -243,7 +249,7 @@ var UniversalCallBot = (function (_super) {
         var _this = this;
         return function (err) {
             if (err) {
-                _this.emitError;
+                _this.emitError(err);
             }
             if (done) {
                 done(err);
