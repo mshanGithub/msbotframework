@@ -837,6 +837,9 @@ interface ICallConnectorSettings {
 
     /** The bots App Password assigned in the Bot Framework Portal. */
     appPassword?: string;
+
+    /** number of seconds to tolerate when checking the nbf and exp claims, to deal with small clock differences between servers */
+    clockTolerance?: number;
 }
 
 /** Options used to initialize a UniversalCallBot instance. */

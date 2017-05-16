@@ -10,7 +10,6 @@ var getPem = require('rsa-pem-from-mod-exp');
 var base64url = require('base64url');
 var keysLastFetched = 0;
 var cachedKeys;
-var issuer;
 var CallConnector = (function () {
     function CallConnector(settings) {
         this.settings = settings;
@@ -24,6 +23,16 @@ var CallConnector = (function () {
                 stateEndpoint: this.settings.stateUrl || 'https://state.botframework.com'
             };
         }
+        if (!this.settings.hasOwnProperty('clockTolerance')) {
+            this.settings.clockTolerance = 0; // seconds
+        }
+        this.jwtVerifyOptions = {
+            audience: this.settings.appId,
+            issuer: null, // set this later on
+            ignoreExpiration: false,
+            ignoreNotBefore: false,
+            clockTolerance: this.settings.clockTolerance,
+        };
     }
     CallConnector.prototype.listen = function () {
         var _this = this;
@@ -62,6 +71,7 @@ var CallConnector = (function () {
         };
     };
     CallConnector.prototype.ensureCachedKeys = function (cb) {
+        var _this = this;
         var now = new Date().getTime();
         if (keysLastFetched < (now - 1000 * 60 * 60 * 24)) {
             var options = {
@@ -78,7 +88,7 @@ var CallConnector = (function () {
                 }
                 else {
                     var openIdConfig = body;
-                    issuer = openIdConfig.issuer;
+                    _this.jwtVerifyOptions.issuer = openIdConfig.issuer;
                     var options = {
                         method: 'GET',
                         url: openIdConfig.jwks_uri,
@@ -121,30 +131,23 @@ var CallConnector = (function () {
             if (auth.length == 2 && auth[0].toLowerCase() == 'bearer') {
                 token = auth[1];
             }
+            console.log(token);
         }
         var callback = this.responseCallback(req, res);
         if (token) {
             this.ensureCachedKeys(function (err, keys) {
                 if (!err) {
                     var decoded = jwt.decode(token, { complete: true });
-                    var now = new Date().getTime() / 1000;
-                    if (decoded.payload.aud != _this.settings.appId || decoded.payload.iss != issuer ||
-                        now > decoded.payload.exp || now < decoded.payload.nbf) {
-                        res.status(403);
-                        res.end();
+                    var keyId = decoded.header.kid;
+                    var secret = _this.getSecretForKey(keyId);
+
+                    try {
+                        jwt.verify(token, secret, _this.jwtVerifyOptions);
+                    } catch (err) {
+                        res.status(403).end();
                     }
-                    else {
-                        var keyId = decoded.header.kid;
-                        var secret = _this.getSecretForKey(keyId);
-                        try {
-                            decoded = jwt.verify(token, secret);
-                            _this.dispatch(req.body, callback);
-                        }
-                        catch (err) {
-                            res.status(403);
-                            res.end();
-                        }
-                    }
+
+                    _this.dispatch(req.body, callback);
                 }
                 else {
                     res.status(500);
