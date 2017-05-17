@@ -204,6 +204,7 @@ export class CallConnector implements ucb.ICallConnector, bs.IBotStorage {
                         const decoded = jwt.decode(token, { complete: true });
                         const secret = this.getSecretForKey(decoded.header.kid);
                         const verified = jwt.verify(token, secret, jwtVerifyOptions);
+                        this.dispatch(req.body, callback);
                     } catch (err) {
                         console.error(err.message);
                         res.status(403);
