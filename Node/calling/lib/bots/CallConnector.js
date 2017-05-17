@@ -137,7 +137,6 @@ var CallConnector = (function () {
                         var decoded = jwt.decode(token, { complete: true });
                         var secret = _this.getSecretForKey(decoded.header.kid);
                         var verified = jwt.verify(token, secret, jwtVerifyOptions);
-                        this.dispatch(req.body, callback);
                     }
                     catch (err) {
                         console.error(err.message);
