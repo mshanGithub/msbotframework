@@ -259,5 +259,9 @@ interface IEntity<T> {
     startIndex?: number;
     endIndex?: number;
     score?: number;
+    resolution?: {
+        value?: string;
+        values?: string[];
+    }
 }
 

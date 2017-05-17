@@ -14,11 +14,36 @@ var EntityRecognizer = (function () {
         }
         return null;
     };
+    EntityRecognizer.findListEntity = function (entities, value) {
+        for (var i = 0; entities && i < entities.length; i++) {
+            if (entities[i].resolution && entities[i].resolution.values) {
+                for (var j = 0; j < entities[i].resolution.values.length; j++) {
+                    if (entities[i].resolution.values[j] == value) {
+                        return entities[i];
+                    }
+                }
+            }
+        }
+        return null;
+    };
     EntityRecognizer.findAllEntities = function (entities, type) {
         var found = [];
         for (var i = 0; entities && i < entities.length; i++) {
             if (entities[i].type == type) {
                 found.push(entities[i]);
+            }
+        }
+        return found;
+    };
+    EntityRecognizer.findAllListEntities = function (entities, value) {
+        var found = [];
+        for (var i = 0; entities && i < entities.length; i++) {
+            if (entities[i].resolution && entities[i].resolution.values) {
+                for (var j = 0; j < entities[i].resolution.values.length; j++) {
+                    if (entities[i].resolution.values[j] == value) {
+                        found.push(entities[i]);
+                    }
+                }
             }
         }
         return found;

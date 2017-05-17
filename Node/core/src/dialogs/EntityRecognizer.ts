@@ -77,11 +77,38 @@ export class EntityRecognizer {
         return null;
     }
 
+   static findListEntity(entities: IEntity<string>[], value: string): IEntity<string> {
+        for (var i = 0; entities && i < entities.length; i++) {
+            if (entities[i].resolution && entities[i].resolution.values) {
+                for (var j = 0; j < entities[i].resolution.values.length; j++) {
+                    if (entities[i].resolution.values[j] == value) {
+                        return entities[i];
+                    }
+                }
+            } 
+        }
+        return null;
+    }
+
     static findAllEntities(entities: IEntity<string>[], type: string): IEntity<string>[] {
         var found: IEntity<string>[] = [];
         for (var i = 0; entities && i < entities.length; i++) {
             if (entities[i].type == type) {
                 found.push(entities[i]);
+            }
+        }
+        return found;
+    }
+
+    static findAllListEntities(entities: IEntity<string>[], value: string): IEntity<string>[] {
+        var found: IEntity<string>[] = [];
+        for (var i = 0; entities && i < entities.length; i++) {
+            if (entities[i].resolution && entities[i].resolution.values) {
+                for (var j = 0; j < entities[i].resolution.values.length; j++) {
+                    if (entities[i].resolution.values[j] == value) {
+                        found.push(entities[i]);
+                    }
+                }
             }
         }
         return found;
