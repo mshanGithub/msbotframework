@@ -12,12 +12,6 @@ var base64url = require('base64url');
 var keysLastFetched = 0;
 var cachedKeys;
 var issuer;
-var jwtVerifyOptions = {
-    audience: this.settings.appId,
-    ignoreExpiration: false,
-    ignoreNotBefore: false,
-    clockTolerance: 300
-};
 var CallConnector = (function () {
     function CallConnector(settings) {
         this.settings = settings;
@@ -129,6 +123,12 @@ var CallConnector = (function () {
                 token = auth[1];
             }
         }
+        var jwtVerifyOptions = {
+            audience: this.settings.appId,
+            ignoreExpiration: false,
+            ignoreNotBefore: false,
+            clockTolerance: 300
+        };
         var callback = this.responseCallback(req, res);
         if (token) {
             this.ensureCachedKeys(function (err, keys) {

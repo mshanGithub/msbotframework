@@ -49,12 +49,6 @@ var base64url = require('base64url');
 var keysLastFetched = 0;
 var cachedKeys: IKey[];
 var issuer: string;
-const jwtVerifyOptions = {
-    audience: this.settings.appId,
-    ignoreExpiration: false,
-    ignoreNotBefore: false,
-    clockTolerance: 300
-};
 
 export interface ICallConnectorSettings {
     callbackUrl: string;
@@ -193,6 +187,13 @@ export class CallConnector implements ucb.ICallConnector, bs.IBotStorage {
                 token = auth[1];
             }
         }
+
+        const jwtVerifyOptions = {
+            audience: this.settings.appId,
+            ignoreExpiration: false,
+            ignoreNotBefore: false,
+            clockTolerance: 300
+        };
 
         // Verify token
         var callback = this.responseCallback(req, res);
