@@ -43,6 +43,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow.Advanced;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow
 {
@@ -269,8 +270,16 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             try
             {
-                var message = toBot == null ? null : await toBot;
-
+                var toBotText = (toBot != null ? (await toBot).Text : null);
+                var stepInput = toBotText == null ? "" : toBotText.Trim();
+                if (stepInput.StartsWith("\""))
+                {
+                    stepInput = stepInput.Substring(1);
+                }
+                if (stepInput.EndsWith("\""))
+                {
+                    stepInput = stepInput.Substring(0, stepInput.Length - 1);
+                }
                 // Ensure we have initial definition for field steps
                 foreach (var step in _form.Steps)
                 {

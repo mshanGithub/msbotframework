@@ -35,6 +35,7 @@ using System;
 using System.Collections.Generic;
 
 using Microsoft.Bot.Builder.FormFlow.Advanced;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow
 {
