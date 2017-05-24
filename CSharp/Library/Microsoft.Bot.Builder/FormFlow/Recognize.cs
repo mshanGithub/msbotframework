@@ -32,6 +32,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -799,20 +800,34 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         {
             var result = new List<TermMatch>();
 
-            var attachments = new List<AwaitableAttachment>();
+            var awaitableAttachmentType = this.GetAttachmentTypeFromField();
+
+            var attachments = Activator.CreateInstance(typeof(List<>).MakeGenericType(awaitableAttachmentType)) as IList;
             foreach (var attachment in input.Attachments)
             {
-                attachments.Add(new AwaitableAttachment(attachment));
+                var awaitableAttachment = Activator.CreateInstance(awaitableAttachmentType, attachment) as AwaitableAttachment;
+                if (awaitableAttachment.IsValidAsync(_field).Result)
+                {
+                    attachments.Add(awaitableAttachment);
+                }
 
                 if (string.IsNullOrWhiteSpace(input.Text))
                 {
                     input.Text = string.Empty;
                 }
 
-                result.Add(new TermMatch(0, input.Text.Length, 1.0, attachments));
+                if (attachments.Count > 0)
+                {
+                    result.Add(new TermMatch(0, input.Text.Length, 1.0, attachments));
+                }
             }
 
             return result;
+        }
+
+        private Type GetAttachmentTypeFromField()
+        {
+            return this._field.Type.IsAttachmentCollection() ? this._field.Type.GetGenericArguments()[0] : this._field.Type;
         }
     }
 }
