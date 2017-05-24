@@ -31,17 +31,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Resource;
-using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Resource;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
 {
@@ -660,10 +659,17 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                         var value = pathDesc.GetValue(state);
                         if (value.GetType() != typeof(string) && value.GetType().IsIEnumerable())
                         {
-                            var values = (value as System.Collections.IEnumerable);
-                            substitute = Language.BuildList(from elt in values.Cast<object>()
-                                                            select Language.Normalize(ValueDescription(pathDesc, elt, "0"), _annotation.ValueCase),
-                                _annotation.Separator, _annotation.LastSeparator);
+                            if (value.GetType().IsAttachmentCollection())
+                            {
+                                substitute = string.Format(Resources.TemplateAttachmentCollectionDescription, (value as IEnumerable<AwaitableAttachment>).Count());
+                            }
+                            else
+                            {
+                                var values = (value as System.Collections.IEnumerable);
+                                substitute = Language.BuildList(from elt in values.Cast<object>()
+                                                                select Language.Normalize(ValueDescription(pathDesc, elt, "0"), _annotation.ValueCase),
+                                    _annotation.Separator, _annotation.LastSeparator);
+                            }
                         }
                         else
                         {

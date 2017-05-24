@@ -675,6 +675,10 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 {
                     usage = TemplateUsage.DateTime;
                 }
+                else if (_type.IsAttachmentCollection())
+                {
+                    usage = TemplateUsage.AttachmentCollection;
+                }
                 else
                 {
                     throw new ArgumentException($"{_name} is not a type FormFlow understands.");
@@ -715,6 +719,10 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 else if (_type == typeof(DateTime))
                 {
                     _recognizer = new RecognizeDateTime<T>(this);
+                }
+                else if (_type.IsAttachmentCollection())
+                {
+                    _recognizer = new RecognizeAttachment<T>(this);
                 }
                 else if (_type.IsIEnumerable())
                 {
