@@ -37,8 +37,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Chronic;
 using System.Threading;
+
+using Chronic;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
@@ -768,5 +770,58 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         }
 
         private Parser _parser;
+    }
+
+    /// <summary>
+    /// Recognize an attachment within the activity instance.
+    /// </summary>
+    /// <typeparam name="T">Form state.</typeparam>
+    public sealed class RecognizeAttachment<T> : RecognizePrimitive<T>
+        where T : class
+    {
+        public RecognizeAttachment(IField<T> field)
+            : base(field)
+        { }
+
+        public override string Help(T state, object defaultValue)
+        {
+            var prompt = new Prompter<T>(_field.Template(TemplateUsage.AttachmentCollectionHelp), _field.Form, null);
+            return prompt.Prompt(state, _field, new object[] { }).Prompt;
+        }
+
+        public override TermMatch Parse(string input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DescribeAttribute ValueDescription(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> ValidInputs(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<TermMatch> Matches(IMessageActivity input, object defaultValue = null)
+        {
+            var result = new List<TermMatch>();
+
+            var attachments = new List<AwaitableAttachment>();
+            foreach (var attachment in input.Attachments)
+            {
+                attachments.Add(new AwaitableAttachment(attachment));
+
+                if (string.IsNullOrWhiteSpace(input.Text))
+                {
+                    input.Text = string.Empty;
+                }
+
+                result.Add(new TermMatch(0, input.Text.Length, 1.0, attachments));
+            }
+
+            return result;
+        }
     }
 }
