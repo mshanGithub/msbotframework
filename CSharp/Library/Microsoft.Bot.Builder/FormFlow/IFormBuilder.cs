@@ -31,12 +31,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Microsoft.Bot.Builder.FormFlow.Advanced;
-using Microsoft.Bot.Builder.Resource;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
+
+using Microsoft.Bot.Builder.FormFlow.Advanced;
+using Microsoft.Bot.Builder.Resource;
 
 namespace Microsoft.Bot.Builder.FormFlow
 {
@@ -320,6 +321,9 @@ namespace Microsoft.Bot.Builder.FormFlow
         /// </summary>
         public List<TemplateAttribute> Templates = new List<TemplateAttribute>
         {
+            new TemplateAttribute(TemplateUsage.AttachmentCollection, Resources.TemplateAttachmentCollecion),
+            new TemplateAttribute(TemplateUsage.AttachmentCollectionHelp, Resources.TemplateAttachmentCollecionHelp),
+
             new TemplateAttribute(TemplateUsage.Bool, Resources.TemplateBool),
             // {0} is current choice, {1} is no preference
             new TemplateAttribute(TemplateUsage.BoolHelp, Resources.TemplateBoolHelp),

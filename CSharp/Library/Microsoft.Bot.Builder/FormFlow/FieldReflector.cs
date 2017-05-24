@@ -30,7 +30,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Bot.Builder.FormFlow.Advanced;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -237,6 +236,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             {
                 ProcessTemplates(type);
                 var step = path[ipath];
+
                 object field = type.GetField(step, BindingFlags.Public | BindingFlags.Instance);
                 Type ftype;
                 if (field == null)
@@ -255,6 +255,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                     ftype = (field as FieldInfo).FieldType;
                     _path.Add(field);
                 }
+
                 if (ftype.IsNullable())
                 {
                     _isNullable = true;
@@ -265,6 +266,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 {
                     _isNullable = true;
                 }
+
                 if (ftype.IsClass)
                 {
                     if (ftype == typeof(string))
@@ -287,6 +289,11 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                     {
                         AddField(ftype, path, ipath + 1);
                     }
+                }
+                else if (ftype.IsAttachmentCollection())
+                {
+                    _type = ftype;
+                    ProcessFieldAttributes(field);
                 }
                 else
                 {
