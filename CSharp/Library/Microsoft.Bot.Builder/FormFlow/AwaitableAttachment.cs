@@ -40,6 +40,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Connector;
+using Newtonsoft.Json;
 
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
 {
@@ -50,45 +51,40 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
     // use data annotation validators as parameter to ctor and validate source?
     public class AwaitableAttachment : IAwaitable<Stream>, IAwaiter<Stream>, ISerializable
     {
-        [NonSerialized]
         private readonly IAwaiter<Stream> awaiter;
 
-        private readonly Attachment source;
+        private readonly Attachment attachment;
 
-        public AwaitableAttachment(Attachment source)
+        public AwaitableAttachment(Attachment attachment)
         {
-            this.source = source;
+            this.attachment = attachment;
 
-            this.awaiter = Awaitable.FromSource(source, this.ResolveFromSource) as IAwaiter<Stream>;
+            this.awaiter = Awaitable.FromSource(attachment, this.ResolveFromSourceAsync) as IAwaiter<Stream>;
         }
 
-        private AwaitableAttachment(SerializationInfo info, StreamingContext context)
+        public Attachment Attachment
+        {
+            get
+            {
+                return this.attachment;
+            }
+        }
+
+        protected AwaitableAttachment(SerializationInfo info, StreamingContext context)
         {
             // constructor arguments
-            var contentType = default(string);
-            var contentUrl = default(string);
-            var name = default(string);
+            var jsonAttachment = default(string);
 
-            SetField.NotNullFrom(out contentType, nameof(Attachment.ContentType), info);
-            SetField.NotNullFrom(out contentUrl, nameof(Attachment.ContentUrl), info);
-            SetField.NotNullFrom(out name, nameof(Attachment.Name), info);
+            SetField.NotNullFrom(out jsonAttachment, nameof(this.attachment), info);
+            this.attachment = JsonConvert.DeserializeObject<Attachment>(jsonAttachment);
 
-            this.source = new Attachment
-            {
-                ContentType = contentType,
-                ContentUrl = contentUrl,
-                Name = name
-            };
-
-            this.awaiter = Awaitable.FromSource(this.source, this.ResolveFromSource) as IAwaiter<Stream>;
+            this.awaiter = Awaitable.FromSource(this.attachment, this.ResolveFromSourceAsync) as IAwaiter<Stream>;
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             // constructor arguments
-            info.AddValue(nameof(Attachment.ContentType), this.source.ContentType);
-            info.AddValue(nameof(Attachment.ContentUrl), this.source.ContentUrl);
-            info.AddValue(nameof(Attachment.Name), this.source.Name);
+            info.AddValue(nameof(this.attachment), JsonConvert.SerializeObject(this.attachment));
         }
 
         public bool IsCompleted
@@ -114,7 +110,12 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             throw new NotImplementedException();
         }
 
-        protected virtual async Task<Stream> ResolveFromSource(Attachment source)
+        public virtual async Task<bool> IsValidAsync<T>(IField<T> field) where T: class
+        {
+            return true;
+        }
+
+        protected virtual async Task<Stream> ResolveFromSourceAsync(Attachment source)
         {
             var stream = new MemoryStream();
 
