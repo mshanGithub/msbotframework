@@ -117,12 +117,20 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         protected virtual async Task<Stream> ResolveFromSourceAsync(Attachment source)
         {
-            // TODO-MK: handle specific channel stuff - ie. authorization, etc
-            using (HttpClient httpClient = new HttpClient())
+            if (source.Content == null)
             {
-                // TODO-MK: add some validation when resolved and not directly return the stream of payload?
-                // or return another type (ex MemoryStream or byte[]) not to worry about disposing it..
-                return await httpClient.GetStreamAsync(source.ContentUrl);
+                // TODO-MK: handle specific channel stuff - ie. authorization, etc
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    // TODO-MK: add some validation when resolved and not directly return the stream of payload?
+                    // or return another type (ex MemoryStream or byte[]) not to worry about disposing it..
+                    return await httpClient.GetStreamAsync(source.ContentUrl);
+                }
+            }
+            else
+            {
+                // TODO-MK: what to do if the content object is not null?
+                return null;
             }
         }
     }
