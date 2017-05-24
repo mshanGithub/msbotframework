@@ -112,6 +112,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public virtual async Task<bool> IsValidAsync<T>(IField<T> field) where T: class
         {
+            // TODO-MK: here we can use data annotations validators decorating the model field and use them to check
             return true;
         }
 
