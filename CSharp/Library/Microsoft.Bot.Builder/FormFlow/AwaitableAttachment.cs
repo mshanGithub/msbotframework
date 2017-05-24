@@ -117,22 +117,13 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         protected virtual async Task<Stream> ResolveFromSourceAsync(Attachment source)
         {
-            var stream = new MemoryStream();
-
             // TODO-MK: handle specific channel stuff - ie. authorization, etc
-            // here another client/stream type could be used as well to handle big payloads
             using (HttpClient httpClient = new HttpClient())
             {
-                var bytes = await httpClient.GetByteArrayAsync(source.ContentUrl);
-                await stream.WriteAsync(bytes, 0, bytes.Length);
-
-                // reset to start
-                stream.Position = 0;
+                // TODO-MK: add some validation when resolved and not directly return the stream of payload?
+                // or return another type (ex MemoryStream or byte[]) not to worry about disposing it..
+                return await httpClient.GetStreamAsync(source.ContentUrl);
             }
-
-            // TODO-MK: add some validation when type resolved?
-
-            return stream;
         }
     }
 }
