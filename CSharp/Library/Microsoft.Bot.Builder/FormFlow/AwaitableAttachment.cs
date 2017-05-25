@@ -32,8 +32,12 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
@@ -112,7 +116,22 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public virtual async Task<bool> IsValidAsync<T>(IField<T> field) where T: class
         {
-            // TODO-MK: here we can use data annotations validators decorating the model field and use them to check
+            var typeField = field.Form.GetType().GetGenericArguments()[0].GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
+            var validators = typeField.GetCustomAttributes<AttachmentValidatorAttribute>(true);
+
+            var errorMessage = default(string);
+            foreach (var validator in validators)
+            {
+                var isValid = await validator.IsValidAsync(this.attachment, out errorMessage);
+                if (!isValid)
+                {
+                    // TODO-MK: collect error message/s and display them later if no item matchs
+                    // for example when operation behavior changed - like defining 'partial' vs. 'total' 
+                    // attachment matches for multiple submission?
+                    return false;
+                }
+            }
+
             return true;
         }
 
