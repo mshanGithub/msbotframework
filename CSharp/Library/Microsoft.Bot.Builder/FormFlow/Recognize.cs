@@ -822,6 +822,12 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 }
             }
 
+            // if optional and no result at all then assign null
+            if (_field.Optional && !result.Any())
+            {
+                result.Add(new TermMatch(0, input.Text.Length, 1.0, defaultValue));
+            }
+
             return result;
         }
 

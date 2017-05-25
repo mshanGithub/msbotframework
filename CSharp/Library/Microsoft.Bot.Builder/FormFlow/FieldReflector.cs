@@ -292,6 +292,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 }
                 else if (ftype.IsAttachmentCollection())
                 {
+                    _isNullable = true;
                     _type = ftype;
                     ProcessFieldAttributes(field);
                 }
