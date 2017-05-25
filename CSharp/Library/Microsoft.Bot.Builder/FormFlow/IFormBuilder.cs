@@ -321,8 +321,11 @@ namespace Microsoft.Bot.Builder.FormFlow
         /// </summary>
         public List<TemplateAttribute> Templates = new List<TemplateAttribute>
         {
-            new TemplateAttribute(TemplateUsage.AttachmentCollection, Resources.TemplateAttachmentCollecion),
-            new TemplateAttribute(TemplateUsage.AttachmentCollectionHelp, Resources.TemplateAttachmentCollecionHelp),
+            new TemplateAttribute(TemplateUsage.AttachmentCollection, Resources.TemplateAttachmentCollection),
+            new TemplateAttribute(TemplateUsage.AttachmentCollectionHelp, Resources.TemplateAttachmentCollectionHelp),
+
+            new TemplateAttribute(TemplateUsage.AttachmentField, Resources.TemplateAttachment),
+            new TemplateAttribute(TemplateUsage.AttachmentFieldHelp, Resources.TemplateAttachmentHelp),
 
             new TemplateAttribute(TemplateUsage.Bool, Resources.TemplateBool),
             // {0} is current choice, {1} is no preference

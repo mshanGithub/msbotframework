@@ -206,7 +206,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         /// Type is enumerable of awaitable attachments.
         /// </summary>
         /// <param name="type">Type to check.</param>
-        /// <returns>True is enumerable of awaitable attachments.</returns>
+        /// <returns>True if enumerable of awaitable attachments.</returns>
         public static bool IsAttachmentCollection(this Type type)
         {
             var interfaces = type.GetInterfaces();
@@ -218,6 +218,16 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Type is AwaitableAttachment or descendant.
+        /// </summary>
+        /// <param name="type">Type to check.</param>
+        /// <returns>True if awaitable attachment or descendant.</returns>
+        public static bool IsAttachmentType(this Type type)
+        {
+            return typeof(AwaitableAttachment).IsAssignableFrom(type);
         }
 
         /// <summary>

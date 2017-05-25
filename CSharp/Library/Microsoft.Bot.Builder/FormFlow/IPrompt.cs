@@ -671,6 +671,11 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                                     _annotation.Separator, _annotation.LastSeparator);
                             }
                         }
+                        else if (value.GetType().IsAttachmentType())
+                        {
+                            var attachment = (value as AwaitableAttachment).Attachment;
+                            substitute = string.Format(Resources.TemplateAttachmentDescription, attachment.Name, attachment.ContentType);
+                        }
                         else
                         {
                             var format = (formatArgs.Length > 1 ? "0:" + formatArgs[1] : "0");

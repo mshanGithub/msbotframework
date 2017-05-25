@@ -269,7 +269,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
                 if (ftype.IsClass)
                 {
-                    if (ftype == typeof(string))
+                    if (ftype == typeof(string) || ftype.IsAttachmentType())
                     {
                         _type = ftype;
                         ProcessFieldAttributes(field);
