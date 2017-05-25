@@ -334,6 +334,16 @@ namespace Microsoft.Bot.Builder.FormFlow
         AttachmentCollectionHelp,
 
         /// <summary>
+        /// How to ask for an attachment collection. 
+        /// </summary>
+        AttachmentField,
+
+        /// <summary>
+        /// What you can enter when entering an attachment collection.
+        /// </summary>
+        AttachmentFieldHelp,
+
+        /// <summary>
         /// How to ask for a boolean.
         /// </summary>
         Bool,

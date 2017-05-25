@@ -675,6 +675,10 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 {
                     usage = TemplateUsage.DateTime;
                 }
+                else if (_type.IsAttachmentType())
+                {
+                    usage = TemplateUsage.AttachmentField;
+                }
                 else if (_type.IsAttachmentCollection())
                 {
                     usage = TemplateUsage.AttachmentCollection;
@@ -720,9 +724,13 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 {
                     _recognizer = new RecognizeDateTime<T>(this);
                 }
-                else if (_type.IsAttachmentCollection())
+                else if (_type.IsAttachmentType())
                 {
                     _recognizer = new RecognizeAttachment<T>(this);
+                }
+                else if (_type.IsAttachmentCollection())
+                {
+                    _recognizer = new RecognizeAttachment<T>(this, true);
                 }
                 else if (_type.IsIEnumerable())
                 {

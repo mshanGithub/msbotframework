@@ -185,6 +185,8 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             { TemplateUsage.AttachmentCollection, 0 },
             { TemplateUsage.AttachmentCollectionHelp, 1 },
+            { TemplateUsage.AttachmentField, 0 },
+            { TemplateUsage.AttachmentFieldHelp, 1 },
             { TemplateUsage.Bool, 0 },
             { TemplateUsage.BoolHelp, 1},
             { TemplateUsage.Clarify, 1},
@@ -473,7 +475,7 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             if (type.IsClass)
             {
-                if (type == typeof(string))
+                if (type == typeof(string) || type.IsAttachmentType())
                 {
                     paths.Add(path);
                 }
