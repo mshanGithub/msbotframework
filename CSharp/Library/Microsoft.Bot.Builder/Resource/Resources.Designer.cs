@@ -376,20 +376,20 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please submit a collection of attachments for {&amp;}.
+        ///   Looks up a localized string similar to Please submit an attachment for {&amp;}.
         /// </summary>
-        public static string TemplateAttachmentCollecion {
+        public static string TemplateAttachment {
             get {
-                return ResourceManager.GetString("TemplateAttachmentCollecion", resourceCulture);
+                return ResourceManager.GetString("TemplateAttachment", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can submit one or more attachments..
+        ///   Looks up a localized string similar to Please submit a collection of attachments for {&amp;}.
         /// </summary>
-        public static string TemplateAttachmentCollecionHelp {
+        public static string TemplateAttachmentCollection {
             get {
-                return ResourceManager.GetString("TemplateAttachmentCollecionHelp", resourceCulture);
+                return ResourceManager.GetString("TemplateAttachmentCollection", resourceCulture);
             }
         }
         
@@ -399,6 +399,33 @@ namespace Microsoft.Bot.Builder.Resource {
         public static string TemplateAttachmentCollectionDescription {
             get {
                 return ResourceManager.GetString("TemplateAttachmentCollectionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can submit one or more attachments..
+        /// </summary>
+        public static string TemplateAttachmentCollectionHelp {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentCollectionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attachment named &apos;{0}&apos; with content-type &apos;{1}&apos;.
+        /// </summary>
+        public static string TemplateAttachmentDescription {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can submit one attachment..
+        /// </summary>
+        public static string TemplateAttachmentHelp {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentHelp", resourceCulture);
             }
         }
         
