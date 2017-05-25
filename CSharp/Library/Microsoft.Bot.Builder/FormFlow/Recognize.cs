@@ -780,13 +780,23 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
     public sealed class RecognizeAttachment<T> : RecognizePrimitive<T>
         where T : class
     {
-        public RecognizeAttachment(IField<T> field)
+        private readonly bool multipleAttachments;
+
+        public RecognizeAttachment(IField<T> field, bool multipleAttachments = false)
             : base(field)
-        { }
+        {
+            this.multipleAttachments = multipleAttachments;
+        }
 
         public override string Help(T state, object defaultValue)
         {
-            var prompt = new Prompter<T>(_field.Template(TemplateUsage.AttachmentCollectionHelp), _field.Form, null);
+            // TODO-MK: add ProvideHelp() method to AttachmentValidatorAttribute and get them here!!
+
+            var prompt = new Prompter<T>(
+                _field.Template(this.multipleAttachments ? TemplateUsage.AttachmentCollectionHelp : TemplateUsage.AttachmentFieldHelp),
+                _field.Form,
+                null);
+
             return prompt.Prompt(state, _field, new object[] { }).Prompt;
         }
 
@@ -827,7 +837,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
                 if (attachments.Count > 0)
                 {
-                    result.Add(new TermMatch(0, input.Text.Length, 1.0, attachments));
+                    result.Add(new TermMatch(0, input.Text.Length, 1.0, this.multipleAttachments ? attachments : attachments[0]));
                 }
             }
 
