@@ -36,6 +36,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -790,14 +791,14 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public override string Help(T state, object defaultValue)
         {
-            // TODO-MK: add ProvideHelp() method to AttachmentValidatorAttribute and get them here!!
-
             var prompt = new Prompter<T>(
                 _field.Template(this.multipleAttachments ? TemplateUsage.AttachmentCollectionHelp : TemplateUsage.AttachmentFieldHelp),
                 _field.Form,
                 null);
 
-            return prompt.Prompt(state, _field, new object[] { }).Prompt;
+            // create instance just to call virtual method
+            var awaitableAttachment = Activator.CreateInstance(this.GetAttachmentTypeFromField(), default(Attachment)) as AwaitableAttachment;
+            return prompt.Prompt(state, _field, awaitableAttachment.ProvideHelp(_field)).Prompt;
         }
 
         public override TermMatch Parse(string input)
@@ -841,6 +842,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             }
             else if (_field.Optional)
             {
+                // TODO-MK: fix bug when input text is command - do not add term!!
+
                 // if optional and no result at all then assign defaultValue
                 result.Add(new TermMatch(0, input.Text.Length, 1.0, defaultValue));
             }
