@@ -403,7 +403,7 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can submit one or more attachments..
+        ///   Looks up a localized string similar to You can submit one or more attachments.{0}.
         /// </summary>
         public static string TemplateAttachmentCollectionHelp {
             get {
@@ -421,7 +421,7 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can submit one attachment..
+        ///   Looks up a localized string similar to You can submit one attachment.{0}.
         /// </summary>
         public static string TemplateAttachmentHelp {
             get {
