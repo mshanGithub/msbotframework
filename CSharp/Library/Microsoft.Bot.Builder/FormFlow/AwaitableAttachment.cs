@@ -138,7 +138,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
                     // TODO-MK: collect error message/s and display them better to user?
                     result.Feedback = result.Feedback ?? string.Empty;
-                    result.Feedback += $"{Environment.NewLine}- {errorMessage}";
+                    result.Feedback += $"{Environment.NewLine}{errorMessage}";
                 }
             }
 

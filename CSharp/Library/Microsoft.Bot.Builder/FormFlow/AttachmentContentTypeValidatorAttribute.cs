@@ -51,8 +51,13 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
             if (!result)
             {
-                var contentType = string.IsNullOrWhiteSpace(this.ContentType) ? "<empty>" : this.ContentType.ToLowerInvariant();
-                errorMessage = !string.IsNullOrWhiteSpace(this.ErrorMessage) ? this.ErrorMessage : $"Attachment 'Content-Type' should contain '{contentType}'";
+                var contentType = string.IsNullOrWhiteSpace(this.ContentType) 
+                    ? "<empty>" 
+                    : this.ContentType.ToLowerInvariant();
+
+                errorMessage = !string.IsNullOrWhiteSpace(this.ErrorMessage) 
+                    ? this.ErrorMessage 
+                    : $"Attachment '{attachment.Name}' - 'Content-Type' should contain '{contentType}'";
             }
 
             return Task.FromResult(result);

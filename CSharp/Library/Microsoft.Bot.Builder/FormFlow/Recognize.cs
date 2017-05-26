@@ -833,10 +833,16 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             }
             else if (_field.Optional)
             {
-                // TODO-MK: fix bug when input text is command - do not add term!!
+                var commandRecognizer = _field.Form.BuildCommandRecognizer();
+                var commands = (input.Text == null || input.Text.Trim().StartsWith("\""))                    
+                    ? new TermMatch[0]
+                    : MatchAnalyzer.Coalesce(commandRecognizer.Prompt.Recognizer.Matches(input), input.Text);
 
                 // if optional and no result at all then assign defaultValue
-                result.Add(new TermMatch(0, input.Text.Length, 1.0, defaultValue));
+                if (!commands.Any())
+                {
+                    result.Add(new TermMatch(0, input.Text.Length, 1.0, defaultValue));
+                }
             }
 
             return result;
