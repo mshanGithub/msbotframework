@@ -380,12 +380,15 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 }
                 else
                 {
-                    foreach(var awaitableAttachment in (value as IEnumerable<AwaitableAttachment>))
+                    foreach (var awaitableAttachment in (value as IEnumerable<AwaitableAttachment>))
                     {
                         validateResult = await awaitableAttachment.ValidateAsync(this, state);
                         // TODO-MK: add behavior configuration to iterate all items or break on first one (current behavior)
                         if (!validateResult.IsValid) { break; }
                     }
+
+                    // keeping original value (ie. IEnumerable<AwaitableAttachment>)
+                    validateResult.Value = value;
                 }
             }
 
