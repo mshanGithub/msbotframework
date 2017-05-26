@@ -810,31 +810,29 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         {
             var result = new List<TermMatch>();
 
+            // get awaitable attachment default or custom type
             var awaitableAttachmentType = this.GetAttachmentTypeFromField();
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                input.Text = string.Empty;
+            }
 
+            // create attachment list
             var attachments = Activator.CreateInstance(typeof(List<>).MakeGenericType(awaitableAttachmentType)) as IList;
             foreach (var attachment in input.Attachments)
             {
                 var awaitableAttachment = Activator.CreateInstance(awaitableAttachmentType, attachment) as AwaitableAttachment;
-                if (awaitableAttachment.IsValidAsync(_field).Result)
-                {
-                    attachments.Add(awaitableAttachment);
-                }
-
-                if (string.IsNullOrWhiteSpace(input.Text))
-                {
-                    input.Text = string.Empty;
-                }
-
-                if (attachments.Count > 0)
-                {
-                    result.Add(new TermMatch(0, input.Text.Length, 1.0, this.multipleAttachments ? attachments : attachments[0]));
-                }
+                attachments.Add(awaitableAttachment);
             }
 
-            // if optional and no result at all then assign defaultValue
-            if (_field.Optional && !result.Any())
+            // build result
+            if (attachments.Count > 0)
             {
+                result.Add(new TermMatch(0, input.Text.Length, 1.0, this.multipleAttachments ? attachments : attachments[0]));
+            }
+            else if (_field.Optional)
+            {
+                // if optional and no result at all then assign defaultValue
                 result.Add(new TermMatch(0, input.Text.Length, 1.0, defaultValue));
             }
 
