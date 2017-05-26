@@ -32,6 +32,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -112,15 +113,23 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             throw new NotImplementedException();
         }
 
+        public virtual string ProvideHelp<T>(IField<T> field) where T: class
+        {
+            var help = string.Empty;
+            foreach (var validator in this.GetValidators(field))
+            {
+                help += $"{Environment.NewLine}- {validator.ProvideHelp()}";
+            }
+
+            return help;
+        }
+
         public virtual async Task<ValidateResult> ValidateAsync<T>(IField<T> field, T state) where T: class
         {
             var result = new ValidateResult { IsValid = true, Value = this };
 
-            var typeField = field.Form.GetType().GetGenericArguments()[0].GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
-            var validators = typeField.GetCustomAttributes<AttachmentValidatorAttribute>(true);
-
             var errorMessage = default(string);
-            foreach (var validator in validators)
+            foreach (var validator in this.GetValidators(field))
             {
                 var isValid = await validator.IsValidAsync(this.attachment, out errorMessage);
                 if (!isValid)
@@ -153,6 +162,12 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 // TODO-MK: what to do if the content object is not null?
                 return null;
             }
+        }
+
+        private IEnumerable<AttachmentValidatorAttribute> GetValidators<T>(IField<T> field) where T : class
+        {
+            var typeField = field.Form.GetType().GetGenericArguments()[0].GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
+            return typeField.GetCustomAttributes<AttachmentValidatorAttribute>(true);
         }
     }
 }
