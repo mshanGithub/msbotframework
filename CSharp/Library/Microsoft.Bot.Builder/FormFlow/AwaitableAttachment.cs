@@ -112,8 +112,10 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             throw new NotImplementedException();
         }
 
-        public virtual async Task<bool> IsValidAsync<T>(IField<T> field) where T: class
+        public virtual async Task<ValidateResult> ValidateAsync<T>(IField<T> field, T state) where T: class
         {
+            var result = new ValidateResult { IsValid = true, Value = this };
+
             var typeField = field.Form.GetType().GetGenericArguments()[0].GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
             var validators = typeField.GetCustomAttributes<AttachmentValidatorAttribute>(true);
 
@@ -123,14 +125,15 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 var isValid = await validator.IsValidAsync(this.attachment, out errorMessage);
                 if (!isValid)
                 {
-                    // TODO-MK: collect error message/s and display them later if no item matchs
-                    // for example when operation behavior changed - like defining 'partial' vs. 'total' 
-                    // attachment matches for multiple submission?
-                    return false;
+                    result.IsValid = false;
+
+                    // TODO-MK: collect error message/s and display them better to user?
+                    result.Feedback = result.Feedback ?? string.Empty;
+                    result.Feedback += $"{Environment.NewLine}- {errorMessage}";
                 }
             }
 
-            return true;
+            return result;
         }
 
         protected virtual async Task<Stream> ResolveFromSourceAsync(Attachment source)
