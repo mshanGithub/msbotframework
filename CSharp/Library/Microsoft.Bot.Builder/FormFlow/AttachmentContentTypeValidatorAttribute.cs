@@ -31,6 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Threading.Tasks;
 
 using Microsoft.Bot.Connector;
@@ -55,6 +56,12 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             }
 
             return Task.FromResult(result);
+        }
+
+        public override string ProvideHelp()
+        {
+            var contentType = string.IsNullOrWhiteSpace(this.ContentType) ? "<empty>" : this.ContentType.ToLowerInvariant();
+            return $"You should provide an attachment which 'Content-Type' has '{contentType}'.";
         }
     }
 }
