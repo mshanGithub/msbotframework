@@ -368,7 +368,28 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public async virtual Task<ValidateResult> ValidateAsync(T state, object value)
         {
-            return await _validate(state, value);
+            var validateResult = await _validate(state, value);
+
+            if (validateResult.IsValid 
+                && value != null 
+                && (_type.IsAttachmentType() || _type.IsAttachmentCollection()))
+            {
+                if (_type.IsAttachmentType())
+                {
+                    validateResult = await (value as AwaitableAttachment).ValidateAsync(this, state);
+                }
+                else
+                {
+                    foreach(var awaitableAttachment in (value as IEnumerable<AwaitableAttachment>))
+                    {
+                        validateResult = await awaitableAttachment.ValidateAsync(this, state);
+                        // TODO-MK: add behavior configuration to iterate all items or break on first one (current behavior)
+                        if (!validateResult.IsValid) { break; }
+                    }
+                }
+            }
+
+            return validateResult;
         }
 
         public virtual IPrompt<T> Help
