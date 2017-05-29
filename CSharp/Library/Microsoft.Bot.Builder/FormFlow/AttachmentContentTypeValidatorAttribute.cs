@@ -31,9 +31,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using System.Threading.Tasks;
 
+using Microsoft.Bot.Builder.Resource;
 using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
@@ -51,13 +51,12 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
             if (!result)
             {
-                var contentType = string.IsNullOrWhiteSpace(this.ContentType) 
-                    ? "<empty>" 
-                    : this.ContentType.ToLowerInvariant();
-
-                errorMessage = !string.IsNullOrWhiteSpace(this.ErrorMessage) 
-                    ? this.ErrorMessage 
-                    : $"Attachment '{attachment.Name}' - 'Content-Type' should contain '{contentType}'";
+                errorMessage = !string.IsNullOrWhiteSpace(this.ErrorMessage)
+                    ? this.ErrorMessage
+                    : string.Format(
+                        Resources.AttachmentContentTypeValidatorError,
+                        attachment.Name,
+                        string.IsNullOrWhiteSpace(this.ContentType) ? string.Empty : this.ContentType.ToLowerInvariant());
             }
 
             return Task.FromResult(result);
@@ -65,8 +64,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public override string ProvideHelp()
         {
-            var contentType = string.IsNullOrWhiteSpace(this.ContentType) ? "<empty>" : this.ContentType.ToLowerInvariant();
-            return $"You should provide an attachment which 'Content-Type' has '{contentType}'.";
+            var contentType = string.IsNullOrWhiteSpace(this.ContentType) ? string.Empty : this.ContentType.ToLowerInvariant();
+            return string.Format(Resources.AttachmentContentTypeValidatorHelp, contentType);
         }
     }
 }
