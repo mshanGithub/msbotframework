@@ -184,8 +184,12 @@ namespace Microsoft.Bot.Builder.FormFlow
         private Dictionary<TemplateUsage, int> _templateArgs = new Dictionary<TemplateUsage, int>
         {
             { TemplateUsage.AttachmentCollection, 0 },
+            { TemplateUsage.AttachmentCollectionDescription, 1 },
             { TemplateUsage.AttachmentCollectionHelp, 1 },
+            { TemplateUsage.AttachmentContentTypeValidatorError, 2 },
+            { TemplateUsage.AttachmentContentTypeValidatorHelp, 1 },
             { TemplateUsage.AttachmentField, 0 },
+            { TemplateUsage.AttachmentFieldDescription, 2 },
             { TemplateUsage.AttachmentFieldHelp, 1 },
             { TemplateUsage.Bool, 0 },
             { TemplateUsage.BoolHelp, 1},

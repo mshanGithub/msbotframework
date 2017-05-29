@@ -31,6 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Bot.Builder.Resource;
@@ -51,10 +52,12 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
             if (!result)
             {
+                var template = this.Configuration.Template(TemplateUsage.AttachmentContentTypeValidatorError);
+
                 errorMessage = !string.IsNullOrWhiteSpace(this.ErrorMessage)
                     ? this.ErrorMessage
                     : string.Format(
-                        Resources.AttachmentContentTypeValidatorError,
+                        template.Pattern(),
                         attachment.Name,
                         string.IsNullOrWhiteSpace(this.ContentType) ? string.Empty : this.ContentType.ToLowerInvariant());
             }
@@ -64,8 +67,11 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public override string ProvideHelp()
         {
+            var template = this.Configuration.Template(TemplateUsage.AttachmentContentTypeValidatorHelp);
+
             var contentType = string.IsNullOrWhiteSpace(this.ContentType) ? string.Empty : this.ContentType.ToLowerInvariant();
-            return string.Format(Resources.AttachmentContentTypeValidatorHelp, contentType);
+
+            return string.Format(template.Pattern(), contentType);
         }
     }
 }

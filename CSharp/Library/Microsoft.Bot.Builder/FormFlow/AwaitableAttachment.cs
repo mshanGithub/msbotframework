@@ -121,6 +121,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 help += $"{Environment.NewLine}- {validator.ProvideHelp()}";
             }
 
+            // TODO-MK: if field.Optional then display that it can be skipped with 'none' for ex
+
             return help;
         }
 
@@ -167,7 +169,14 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         private IEnumerable<AttachmentValidatorAttribute> GetValidators<T>(IField<T> field) where T : class
         {
             var typeField = field.Form.GetType().GetGenericArguments()[0].GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
-            return typeField.GetCustomAttributes<AttachmentValidatorAttribute>(true);
+
+            var validators = typeField.GetCustomAttributes<AttachmentValidatorAttribute>(true);
+            foreach (var validator in validators)
+            {
+                validator.Configuration = field.Form.Configuration;
+            }
+
+            return validators;
         }
     }
 }

@@ -43,6 +43,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
     {
         public string ErrorMessage { get; set; }
 
+        public FormConfiguration Configuration { get; internal set; }
+
         public abstract Task<bool> IsValidAsync(Attachment attachment, out string errorMessage);
 
         public abstract string ProvideHelp();
