@@ -329,14 +329,34 @@ namespace Microsoft.Bot.Builder.FormFlow
         AttachmentCollection,
 
         /// <summary>
+        /// How to display attachment collection status.
+        /// </summary>
+        AttachmentCollectionDescription,
+
+        /// <summary>
         /// What you can enter when entering an attachment collection.
         /// </summary>
         AttachmentCollectionHelp,
 
         /// <summary>
+        /// How to display attachment content-type validator errors.
+        /// </summary>
+        AttachmentContentTypeValidatorError,
+
+        /// <summary>
+        /// How to display attachment content-type validator help.
+        /// </summary>
+        AttachmentContentTypeValidatorHelp,
+
+        /// <summary>
         /// How to ask for an attachment collection. 
         /// </summary>
         AttachmentField,
+
+        /// <summary>
+        /// How to display an attachment status.
+        /// </summary>
+        AttachmentFieldDescription,
 
         /// <summary>
         /// What you can enter when entering an attachment collection.

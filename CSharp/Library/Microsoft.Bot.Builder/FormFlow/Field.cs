@@ -748,13 +748,9 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 {
                     _recognizer = new RecognizeDateTime<T>(this);
                 }
-                else if (_type.IsAttachmentType())
+                else if (_type.IsAttachmentType() || _type.IsAttachmentCollection())
                 {
-                    _recognizer = new RecognizeAttachment<T>(this);
-                }
-                else if (_type.IsAttachmentCollection())
-                {
-                    _recognizer = new RecognizeAttachment<T>(this, true);
+                    _recognizer = new RecognizeAttachment<T>(this, _type.IsAttachmentCollection());
                 }
                 else if (_type.IsIEnumerable())
                 {
@@ -766,6 +762,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 }
                 _buildPrompts = true;
             }
+
             if (_buildPrompts)
             {
                 var template = Template(TemplateUsage.Help);

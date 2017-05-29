@@ -661,7 +661,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                         {
                             if (value.GetType().IsAttachmentCollection())
                             {
-                                substitute = string.Format(Resources.TemplateAttachmentCollectionDescription, (value as IEnumerable<AwaitableAttachment>).Count());
+                                var locTemplate = this._form.Configuration.Template(TemplateUsage.AttachmentCollectionDescription);
+                                substitute = string.Format(locTemplate.Pattern(), (value as IEnumerable<AwaitableAttachment>).Count());
                             }
                             else
                             {
@@ -674,7 +675,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                         else if (value.GetType().IsAttachmentType())
                         {
                             var attachment = (value as AwaitableAttachment).Attachment;
-                            substitute = string.Format(Resources.TemplateAttachmentDescription, attachment.Name, attachment.ContentType);
+                            var locTemplate = this._form.Configuration.Template(TemplateUsage.AttachmentFieldDescription);
+                            substitute = string.Format(locTemplate.Pattern(), attachment.Name, attachment.ContentType);
                         }
                         else
                         {

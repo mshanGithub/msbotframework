@@ -322,9 +322,14 @@ namespace Microsoft.Bot.Builder.FormFlow
         public List<TemplateAttribute> Templates = new List<TemplateAttribute>
         {
             new TemplateAttribute(TemplateUsage.AttachmentCollection, Resources.TemplateAttachmentCollection),
+            new TemplateAttribute(TemplateUsage.AttachmentCollectionDescription, Resources.TemplateAttachmentCollectionDescription),
             new TemplateAttribute(TemplateUsage.AttachmentCollectionHelp, Resources.TemplateAttachmentCollectionHelp),
 
+            new TemplateAttribute(TemplateUsage.AttachmentContentTypeValidatorError, Resources.AttachmentContentTypeValidatorError),
+            new TemplateAttribute(TemplateUsage.AttachmentContentTypeValidatorHelp, Resources.AttachmentContentTypeValidatorHelp),
+
             new TemplateAttribute(TemplateUsage.AttachmentField, Resources.TemplateAttachment),
+            new TemplateAttribute(TemplateUsage.AttachmentFieldDescription, Resources.TemplateAttachmentDescription),
             new TemplateAttribute(TemplateUsage.AttachmentFieldHelp, Resources.TemplateAttachmentHelp),
 
             new TemplateAttribute(TemplateUsage.Bool, Resources.TemplateBool),
