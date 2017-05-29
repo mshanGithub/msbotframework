@@ -61,7 +61,7 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attachment &apos;{0}&apos; is invalid! The &apos;content-type&apos; should contain &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Attachment &apos;{0}&apos; is invalid! The content-type should contain &apos;{1}&apos;..
         /// </summary>
         public static string AttachmentContentTypeValidatorError {
             get {
@@ -70,7 +70,7 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You should provide an attachment which &apos;content-type&apos; has &apos;{0}&apos;..
+        ///   Looks up a localized string similar to You should provide an attachment where content-type has &apos;{0}&apos;..
         /// </summary>
         public static string AttachmentContentTypeValidatorHelp {
             get {
@@ -430,7 +430,7 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attachment named &apos;{0}&apos; with content-type &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Attachment named &apos;{0}&apos; with content-type &apos;{1}&apos;..
         /// </summary>
         public static string TemplateAttachmentDescription {
             get {
