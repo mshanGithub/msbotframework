@@ -61,6 +61,24 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attachment &apos;{0}&apos; is invalid! The &apos;content-type&apos; should contain &apos;{1}&apos;..
+        /// </summary>
+        public static string AttachmentContentTypeValidatorError {
+            get {
+                return ResourceManager.GetString("AttachmentContentTypeValidatorError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You should provide an attachment which &apos;content-type&apos; has &apos;{0}&apos;..
+        /// </summary>
+        public static string AttachmentContentTypeValidatorHelp {
+            get {
+                return ResourceManager.GetString("AttachmentContentTypeValidatorHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to true=y,yes,yep,sure,ok,\u1f44d,\u1f44c|false=n,no,nope,\u1f44e,\\u270b,\\u1f590.
         /// </summary>
         public static string BooleanChoices {
