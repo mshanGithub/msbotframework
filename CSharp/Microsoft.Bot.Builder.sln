@@ -122,7 +122,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Connector.Asp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Connector.AspNetCore.Mvc.NetFramework", "Library\Microsoft.Bot.Connector.AspNetCore.Mvc.NetFramework\Microsoft.Bot.Connector.AspNetCore.Mvc.NetFramework.csproj", "{DFFBFD32-1160-4F21-B914-A51BEEF4A8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.FormFlowAttachmentsBot", "Microsoft.Bot.Sample.FormFlowAttachmentsBot\Microsoft.Bot.Sample.FormFlowAttachmentsBot.csproj", "{48E4B834-49A5-48EB-BBA7-20A7CD9690D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.FormFlowAttachmentsBot", "Samples\Microsoft.Bot.Sample.FormFlowAttachmentsBot\Microsoft.Bot.Sample.FormFlowAttachmentsBot.csproj", "{48E4B834-49A5-48EB-BBA7-20A7CD9690D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
