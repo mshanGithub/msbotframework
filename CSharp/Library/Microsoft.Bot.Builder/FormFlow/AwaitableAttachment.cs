@@ -121,7 +121,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 help += $"{Environment.NewLine}- {validator.ProvideHelp()}";
             }
 
-            // TODO-MK: if field.Optional then display that it can be skipped with 'none' for ex
+            // TODO-MK: if field.Optional then display hint/tip that it can be skipped with 'none' for ex
 
             return help;
         }
@@ -151,11 +151,20 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         {
             if (source.Content == null)
             {
-                // TODO-MK: handle specific channel stuff - ie. authorization, etc
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    // TODO-MK: add some validation when resolved and not directly return the stream of payload?
-                    // or return another type (ex MemoryStream or byte[]) not to worry about disposing it..
+                    // TODO-MK: handle specific channel stuff - ie. authorization, etc?
+
+                    // Review usage of MicrosoftAppCredentials from common as it requires 
+                    // referencing all Microsoft.Extensions.Logging.Abstractions dependencies
+
+                    // Skype & MS Teams attachment URLs are secured by a JwtToken, so we need to pass the token from our bot.
+                    //if (new Uri(attachment.ContentUrl).Host.EndsWith("skype.com"))
+                    //{
+                    //    var token = await new MicrosoftAppCredentials().GetTokenAsync();
+                    //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    //}
+
                     return await httpClient.GetStreamAsync(source.ContentUrl);
                 }
             }
