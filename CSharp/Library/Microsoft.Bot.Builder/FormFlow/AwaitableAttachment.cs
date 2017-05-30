@@ -48,10 +48,6 @@ using Newtonsoft.Json;
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
 {
     [Serializable]
-    // TODO-MK: now we are resolving to a Stream - we could probably return stream + additional data (original name, type, etc)
-    // discuss what about to return an Attachment with the Stream or byte[] in the 'object content' property
-    // download attachment data for validation and store in another place?
-    // use data annotation validators as parameter to ctor and validate source?
     public class AwaitableAttachment : IAwaitable<Stream>, IAwaiter<Stream>, ISerializable
     {
         private readonly IAwaiter<Stream> awaiter;
@@ -138,7 +134,6 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 {
                     result.IsValid = false;
 
-                    // TODO-MK: collect error message/s and display them better to user?
                     result.Feedback = result.Feedback ?? string.Empty;
                     result.Feedback += $"{Environment.NewLine}{errorMessage}";
                 }
