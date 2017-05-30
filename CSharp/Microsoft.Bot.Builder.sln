@@ -58,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Bot.Connector.Sta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Connector.Falcon", "Library\Microsoft.Bot.Connector.Falcon\Microsoft.Bot.Connector.Falcon.csproj", "{09C14EF5-F94A-480F-82CA-4D934A977C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.FormFlowAttachmentsBot", "Microsoft.Bot.Sample.FormFlowAttachmentsBot\Microsoft.Bot.Sample.FormFlowAttachmentsBot.csproj", "{48E4B834-49A5-48EB-BBA7-20A7CD9690D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Sample.FormFlowAttachmentsBot", "Samples\Microsoft.Bot.Sample.FormFlowAttachmentsBot\Microsoft.Bot.Sample.FormFlowAttachmentsBot.csproj", "{48E4B834-49A5-48EB-BBA7-20A7CD9690D2}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
