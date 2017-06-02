@@ -151,13 +151,13 @@ namespace Microsoft.Bot.Builder.Luis
             {
 #pragma warning disable CS0612
                 case LuisApiVersion.V1:
-                    builder = new UriBuilder(model.UriBase);
+                    builder = new UriBuilder(GetUriBase(model));
                     queryParameters.Add($"id={id}");
                     break;
 #pragma warning restore CS0612
                 case LuisApiVersion.V2:
                     //v2.0 have the model as path parameter
-                    builder = new UriBuilder(new Uri(model.UriBase, id));
+                    builder = new UriBuilder(new Uri(GetUriBase(model), id));
                     break;
                 default:
                     throw new ArgumentException($"{model.ApiVersion} is not a valid Luis api version.");
@@ -199,6 +199,17 @@ namespace Microsoft.Bot.Builder.Luis
             }
             builder.Query = string.Join("&", queryParameters);
             return builder.Uri;
+        }
+
+        private Uri GetUriBase(ILuisModel model)
+        {
+            var apiVersion = model.ApiVersion;
+            var domain = model.Domain;
+            if (domain == null)
+            {
+                domain = apiVersion == LuisApiVersion.V2 ? "westus.api.cognitive.microsoft.com" : "api.projectoxford.ai/luis/v1/application";
+            }
+            return new Uri(apiVersion == LuisApiVersion.V2 ? $"https://{domain}/luis/v2.0/apps/" : $"https://api.projectoxford.ai/luis/v1/application");
         }
     }
 
@@ -249,7 +260,20 @@ namespace Microsoft.Bot.Builder.Luis
 
         public LuisRequest ModifyRequest(LuisRequest request)
         {
-            return model.ModifyRequest(request);
+            request.Log = model.Log;
+            if (model.SpellCheck)
+            {
+                request.SpellCheck = true;
+            }
+            if (model.Staging)
+            {
+                request.Staging = true;
+            }
+            if (model.Verbose)
+            {
+                request.Verbose = true;
+            }
+            return request;
         }
 
         Uri ILuisService.BuildUri(LuisRequest luisRequest)

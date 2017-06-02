@@ -53,9 +53,30 @@ namespace Microsoft.Bot.Builder.Luis
     public interface ILuisModel
     {
         /// <summary>
+        /// Domain where LUIS application is located.
+        /// </summary>
+        /// <remarks>Null means default which is api.projectoxford.ai for V1 API and westus.api.cognitive.microsoft.com for V2 api.</remarks>
+        string Domain { get; }
+
+        /// <summary>
+        /// Indicates if this query can be logged by LUIS.
+        /// </summary>
+        bool Log { get; }
+
+        /// <summary>
         /// The LUIS model ID.
         /// </summary>
         string ModelID { get; }
+
+        /// <summary>
+        /// Control spell checking.
+        /// </summary>
+        bool SpellCheck { get; }
+
+        /// <summary>
+        /// Whether to use staging or production endpoint.
+        /// </summary>
+        bool Staging { get; }
 
         /// <summary>
         /// The LUIS subscription key.
@@ -63,21 +84,14 @@ namespace Microsoft.Bot.Builder.Luis
         string SubscriptionKey { get; }
 
         /// <summary>
-        /// The base Uri for accessing LUIS.
+        /// Return verbose results from a query.
         /// </summary>
-        Uri UriBase { get; }
+        bool Verbose { get; }
 
         /// <summary>
         /// Luis Api Version.
         /// </summary>
         LuisApiVersion ApiVersion { get; }
-
-        /// <summary>
-        /// Modify a Luis request to specify query parameters like spelling or logging.
-        /// </summary>
-        /// <param name="request">Request so far.</param>
-        /// <returns>Modified request.</returns>
-        LuisRequest ModifyRequest(LuisRequest request);
     }
 
     /// <summary>
@@ -105,12 +119,6 @@ namespace Microsoft.Bot.Builder.Luis
         /// </summary>
         /// <remarks>Null means default which is api.projectoxford.ai for V1 API and westus.api.cognitive.microsoft.com for V2 api.</remarks>
         public string Domain => domain;
-
-        private readonly Uri uriBase;
-        /// <summary>
-        /// Base URI for LUIS calls.
-        /// </summary>
-        public Uri UriBase => uriBase;
 
         private readonly LuisApiVersion apiVersion;
         /// <summary>
@@ -160,15 +168,10 @@ namespace Microsoft.Bot.Builder.Luis
             SetField.NotNull(out this.modelID, nameof(modelID), modelID);
             SetField.NotNull(out this.subscriptionKey, nameof(subscriptionKey), subscriptionKey);
             this.apiVersion = apiVersion;
-            if (domain == null)
-            {
-                domain = apiVersion == LuisApiVersion.V2 ? "westus.api.cognitive.microsoft.com" : "api.projectoxford.ai/luis/v1/application";
-            }
             this.log = log;
             this.domain = domain;
             this.spellCheck = spellCheck;
             this.staging = staging;
-            this.uriBase = new Uri(apiVersion == LuisApiVersion.V2 ? $"https://{domain}/luis/v2.0/apps/" : $"https://api.projectoxford.ai/luis/v1/application");
             this.verbose = verbose;
         }
 
@@ -178,7 +181,6 @@ namespace Microsoft.Bot.Builder.Luis
                 && object.Equals(this.ModelID, other.ModelID)
                 && object.Equals(this.SubscriptionKey, other.SubscriptionKey)
                 && object.Equals(this.ApiVersion, other.ApiVersion)
-                && object.Equals(this.UriBase, other.UriBase)
                 ;
         }
 
@@ -191,26 +193,7 @@ namespace Microsoft.Bot.Builder.Luis
         {
             return ModelID.GetHashCode()
                 ^ SubscriptionKey.GetHashCode()
-                ^ UriBase.GetHashCode()
                 ^ ApiVersion.GetHashCode();
-        }
-
-        public LuisRequest ModifyRequest(LuisRequest request)
-        {
-            request.Log = log;
-            if (SpellCheck)
-            {
-                request.SpellCheck = true;
-            }
-            if (Staging)
-            {
-                request.Staging = true;
-            }
-            if (Verbose)
-            {
-                request.Verbose = true;
-            }
-            return request;
         }
     }
 }
