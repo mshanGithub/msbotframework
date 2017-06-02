@@ -91,13 +91,6 @@ namespace Microsoft.Bot.Builder.Luis
         /// Luis Api Version.
         /// </summary>
         LuisApiVersion ApiVersion { get; }
-
-        /// <summary>
-        /// Modify a Luis request to specify query parameters like spelling or logging.
-        /// </summary>
-        /// <param name="request">Request so far.</param>
-        /// <returns>Modified request.</returns>
-        LuisRequest ModifyRequest(LuisRequest request);
     }
 
     /// <summary>
@@ -213,24 +206,6 @@ namespace Microsoft.Bot.Builder.Luis
                 ^ SubscriptionKey.GetHashCode()
                 ^ UriBase.GetHashCode()
                 ^ ApiVersion.GetHashCode();
-        }
-
-        public LuisRequest ModifyRequest(LuisRequest request)
-        {
-            request.Log = log;
-            if (SpellCheck)
-            {
-                request.SpellCheck = true;
-            }
-            if (Staging)
-            {
-                request.Staging = true;
-            }
-            if (Verbose)
-            {
-                request.Verbose = true;
-            }
-            return request;
         }
     }
 }

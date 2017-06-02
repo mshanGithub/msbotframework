@@ -249,7 +249,20 @@ namespace Microsoft.Bot.Builder.Luis
 
         public LuisRequest ModifyRequest(LuisRequest request)
         {
-            return model.ModifyRequest(request);
+            request.Log = model.Log;
+            if (model.SpellCheck)
+            {
+                request.SpellCheck = true;
+            }
+            if (model.Staging)
+            {
+                request.Staging = true;
+            }
+            if (model.Verbose)
+            {
+                request.Verbose = true;
+            }
+            return request;
         }
 
         Uri ILuisService.BuildUri(LuisRequest luisRequest)
