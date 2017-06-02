@@ -53,9 +53,24 @@ namespace Microsoft.Bot.Builder.Luis
     public interface ILuisModel
     {
         /// <summary>
+        /// Indicates if this query can be logged by LUIS.
+        /// </summary>
+        bool Log { get; }
+
+        /// <summary>
         /// The LUIS model ID.
         /// </summary>
         string ModelID { get; }
+
+        /// <summary>
+        /// Control spell checking.
+        /// </summary>
+        bool SpellCheck { get; }
+
+        /// <summary>
+        /// Whether to use staging or production endpoint.
+        /// </summary>
+        bool Staging { get; }
 
         /// <summary>
         /// The LUIS subscription key.
@@ -66,6 +81,11 @@ namespace Microsoft.Bot.Builder.Luis
         /// The base Uri for accessing LUIS.
         /// </summary>
         Uri UriBase { get; }
+
+        /// <summary>
+        /// Return verbose results from a query.
+        /// </summary>
+        bool Verbose { get; }
 
         /// <summary>
         /// Luis Api Version.
