@@ -143,7 +143,7 @@ namespace Microsoft.Bot.Builder.Luis
 
             var queryParameters = new List<string>();
             queryParameters.Add($"subscription-key={Uri.EscapeDataString(model.SubscriptionKey)}");
-            queryParameters.Add($"q={Uri.EscapeDataString(Query)}");
+            queryParameters.Add($"q={Uri.EscapeDataString(Query ?? string.Empty)}");
             UriBuilder builder;
 
             var id = Uri.EscapeDataString(model.ModelID);

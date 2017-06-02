@@ -222,7 +222,7 @@ namespace Microsoft.Bot.Builder.Dialogs
 
             if (winner == null)
             {
-                throw new InvalidOperationException("No winning intent selected from Luis results.");
+                new LuisServiceResult(new LuisResult(), new IntentRecommendation(string.Empty), this.services[0]);
             }
 
             if (winner.Result.Dialog?.Status == DialogResponse.DialogStatus.Question)
