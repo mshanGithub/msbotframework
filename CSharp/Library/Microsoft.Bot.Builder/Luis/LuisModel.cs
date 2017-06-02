@@ -52,7 +52,7 @@ namespace Microsoft.Bot.Builder.Luis
     /// </summary>
     public interface ILuisModel
     {
-/// <summary>
+        /// <summary>
         /// Domain where LUIS application is located.
         /// </summary>
         /// <remarks>Null means default which is api.projectoxford.ai for V1 API and westus.api.cognitive.microsoft.com for V2 api.</remarks>
