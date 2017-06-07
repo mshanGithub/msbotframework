@@ -63,8 +63,8 @@ export interface IFindMatchResult {
 
 export class EntityRecognizer {
     static dateExp = /^\d{4}-\d{2}-\d{2}/i;
-    static yesExp = /^(1|y|yes|yep|sure|ok|true)(\W|$)/i;
-    static noExp = /^(2|n|no|nope|not|false)(\W|$)/i;
+    static yesExp = /^(1|y|yes|yep|sure|ok|true|👍)(\W|$)/i;
+    static noExp = /^(2|n|no|nope|not|false|👎)(\W|$)/i;
     static numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
     static ordinalWords = 'first|second|third|fourth|fifth|sixth|seventh|eigth|ninth|tenth';
 
