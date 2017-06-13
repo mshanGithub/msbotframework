@@ -194,10 +194,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <XliffResource Include="MultilingualResources\Microsoft.Bot.Sample.AnnotatedSandwichBot.en.xlf">
+    <XliffResource Include="App_Start\MultilingualResources\Microsoft.Bot.Sample.AnnotatedSandwichBot.en.xlf">
       <SubType>Designer</SubType>
     </XliffResource>
-    <XliffResource Include="MultilingualResources\Microsoft.Bot.Sample.AnnotatedSandwichBot.fr.xlf">
+    <XliffResource Include="App_Start\MultilingualResources\Microsoft.Bot.Sample.AnnotatedSandwichBot.fr.xlf">
       <SubType>Designer</SubType>
     </XliffResource>
   </ItemGroup>
