@@ -8,7 +8,7 @@
     "default_error": "Oops. Ocurrió un problema. Por favor vuelva a intentar.",
     "list_or": " o ",
     "list_or_more": ", o ",
-    "confirm_yes": "sí",
+    "confirm_yes": "sí|si",
     "confirm_no": "no",    
     "boolean_choices": "true=y,yes,s,sí,si,vale,ok,\u1F44D,\u1F44C|false=n,no,falso,\u1F44E,\u270B,\u1F590",
     "yesExp": "^(1|s|sí|si|vale|ok)(\\W|$)",
