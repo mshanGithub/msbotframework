@@ -28,7 +28,7 @@ var LuisRecognizer = (function (_super) {
     LuisRecognizer.prototype.onRecognize = function (context, callback) {
         var result = { score: 0.0, intent: null };
         if (context && context.message && context.message.text) {
-            var utterance = context.message.text;
+            var utterance = context.message.text.replace(/<at>.*<\/at>/g, '');
             var locale = context.locale || '*';
             var model = this.models.hasOwnProperty(locale) ? this.models[locale] : this.models['*'];
             if (model) {

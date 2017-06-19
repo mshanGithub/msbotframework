@@ -55,7 +55,7 @@ export class LuisRecognizer extends IntentRecognizer {
     public onRecognize(context: IRecognizeContext, callback: (err: Error, result: IIntentRecognizerResult) => void): void {
         var result: IIntentRecognizerResult = { score: 0.0, intent: null };
         if (context && context.message && context.message.text) {
-            var utterance = context.message.text;
+            var utterance = context.message.text.replace(/<at>.*<\/at>/g, '');
             var locale = context.locale || '*';
             var model = this.models.hasOwnProperty(locale) ? this.models[locale] : this.models['*'];
             if (model) {
