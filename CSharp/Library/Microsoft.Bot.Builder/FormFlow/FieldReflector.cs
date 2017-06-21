@@ -360,6 +360,11 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 if (describe != null)
                 {
                     _description = describe;
+                    if (string.IsNullOrEmpty(_description.Description))
+                    {
+                        _description.Description = Language.CamelCase(name);
+                    }
+
                 }
                 else
                 {
