@@ -856,8 +856,17 @@ Is this what you wanted? {||}")
         {
             public string FieldNameWithoutAttributes { get; set; }
 
-            [Describe("FieldDescribe1")]
-            public string FieldNameWithDescribeAttributeOnly { get; set; }
+            [Describe(description: " ")]
+            public string FieldNameWithDescribeSpaceDescriptionAttributeOnly { get; set; }
+
+            [Describe(description: "")]
+            public string FieldNameWithDescribeEmptyDescriptionAttributeOnly { get; set; }
+
+            [Describe(description: "FieldDescribeDescription1")]
+            public string FieldNameWithDescribeDescriptionAttributeOnly { get; set; }
+
+            [Describe(title: "FieldDescribeNullDescription1")]
+            public string FieldNameWithDescribeNullDescriptionAttributeOnly { get; set; }
 
             [Describe("FieldName2")]
             [Terms("FieldName2")]
@@ -897,10 +906,25 @@ Is this what you wanted? {||}")
                     Assert.IsTrue(field.FieldDescription.Description == "Field Name Without Attributes");
                     Assert.IsTrue(field.FieldTerms.Any(ft => ft.StartsWith(field.FieldDescription.Description.ToLower())));
                 }
-                else if (field.Name == "FieldNameWithDescribeAttributeOnly")
+                else if (field.Name == "FieldNameWithDescribeSpaceDescriptionAttributeOnly")
                 {
-                    Assert.IsTrue(field.FieldDescription.Description == "FieldDescribe1");
+                    Assert.IsTrue(field.FieldDescription.Description == " ");
+                    Assert.IsTrue(field.FieldTerms.Contains("field name with describe space description attribute only"));
+                }
+                else if (field.Name == "FieldNameWithDescribeEmptyDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "");
+                    Assert.IsTrue(field.FieldTerms.Contains("field name with describe empty description attribute only"));
+                }
+                else if (field.Name == "FieldNameWithDescribeDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "FieldDescribeDescription1");
                     Assert.IsTrue(field.FieldTerms.Any(ft => ft.StartsWith(field.FieldDescription.Description.ToLower())));
+                }
+                else if (field.Name == "FieldNameWithDescribeNullDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == null);
+                    Assert.IsTrue(field.FieldTerms.Contains("field name with describe null description attribute only"));
                 }
                 else if (field.Name == "FieldNameWithDescribeTermsAttributesSame")
                 {
@@ -919,5 +943,6 @@ Is this what you wanted? {||}")
                 }
             }
         }
+
     }
 }
