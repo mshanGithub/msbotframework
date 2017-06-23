@@ -293,6 +293,7 @@ namespace Microsoft.Bot.Builder.Luis
         /// <returns>LUIS result.</returns>
         public static async Task<LuisResult> QueryAsync(this ILuisService service, LuisRequest request, CancellationToken token)
         {
+            service.ModifyRequest(request);
             var uri = service.BuildUri(request);
             return await service.QueryAsync(uri, token);
         }
