@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
 // 
@@ -46,7 +46,7 @@ namespace Microsoft.Bot.Builder.History
     /// </summary>
     public interface IActivityLogger
     {
-        Task LogAsync(IActivity activity);
+        Task LogAsync(IActivity activity, bool fromBotToUser);
     }
 
     /// <summary>
@@ -69,9 +69,9 @@ namespace Microsoft.Bot.Builder.History
         /// </summary>
         /// <param name="activity">Activity to log.</param>
         /// <returns></returns>
-        async Task IActivityLogger.LogAsync(IActivity activity)
+        async Task IActivityLogger.LogAsync(IActivity activity, bool fromBotToUser)
         {
-            Trace.TraceInformation(JsonConvert.SerializeObject(activity));
+            Trace.TraceInformation(JsonConvert.SerializeObject(new { Activity = activity, FromBotToUser = fromBotToUser }));
         }
     }
 
@@ -85,7 +85,7 @@ namespace Microsoft.Bot.Builder.History
         /// </summary>
         /// <param name="activity">Activity to be logged.</param>
         /// <returns></returns>
-        async Task IActivityLogger.LogAsync(IActivity activity)
+        async Task IActivityLogger.LogAsync(IActivity activity, bool fromBotToUser)
         {
         }
     }
@@ -105,7 +105,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
 
         async Task IPostToBot.PostAsync(IActivity activity, CancellationToken token)
         {
-            await this.logger.LogAsync(activity);
+            await this.logger.LogAsync(activity, false);
             await inner.PostAsync(activity, token);
         }
     }
@@ -127,7 +127,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
 
         async Task IBotToUser.PostAsync(IMessageActivity message, CancellationToken cancellationToken)
         {
-            await this.logger.LogAsync(message);
+            await this.logger.LogAsync(message, true);
             await this.inner.PostAsync(message, cancellationToken);
         }
     }
