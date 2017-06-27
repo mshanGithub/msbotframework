@@ -67,6 +67,6 @@ export class CardImage implements IIsCardImage {
     }
 
     static create(session: Session, url: string): CardImage {
-        return new CardImage(session).url(url);
+        return new CardImage(session).url(encodeURI(url));
     }
 }

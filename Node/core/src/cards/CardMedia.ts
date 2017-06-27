@@ -48,6 +48,6 @@ export class CardMedia {
     }
 
     static create(session: Session, url: string): CardMedia {
-        return new CardMedia(session).url(url);
+        return new CardMedia(session).url(encodeURI(url));
     }
 }

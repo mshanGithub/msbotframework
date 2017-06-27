@@ -77,7 +77,7 @@ export class CardAction implements IIsCardAction {
     }
     
     static openUrl(session: Session, url: string, title?: string|string[]): CardAction {
-        return new CardAction(session).type('openUrl').value(url).title(title || "Click to open website in your browser");
+        return new CardAction(session).type('openUrl').value(encodeURI(url)).title(title || "Click to open website in your browser");
     }
     
     static imBack(session: Session, msg: string, title?: string|string[]): CardAction {
@@ -89,19 +89,19 @@ export class CardAction implements IIsCardAction {
     }
     
     static playAudio(session: Session, url: string, title?: string|string[]): CardAction {
-        return new CardAction(session).type('playAudio').value(url).title(title || "Click to play audio file");
+        return new CardAction(session).type('playAudio').value(encodeURI(url)).title(title || "Click to play audio file");
     }
     
     static playVideo(session: Session, url: string, title?: string|string[]): CardAction {
-        return new CardAction(session).type('playVideo').value(url).title(title || "Click to play video");
+        return new CardAction(session).type('playVideo').value(encodeURI(url)).title(title || "Click to play video");
     }
     
     static showImage(session: Session, url: string, title?: string|string[]): CardAction {
-        return new CardAction(session).type('showImage').value(url).title(title || "Click to view image");
+        return new CardAction(session).type('showImage').value(encodeURI(url)).title(title || "Click to view image");
     }
     
     static downloadFile(session: Session, url: string, title?: string|string[]): CardAction {
-        return new CardAction(session).type('downloadFile').value(url).title(title || "Click to download file");
+        return new CardAction(session).type('downloadFile').value(encodeURI(url)).title(title || "Click to download file");
     }
 
     static dialogAction(session: Session, action: string, data?: string, title?: string|string[]): CardAction {
