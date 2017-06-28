@@ -28,7 +28,9 @@ var LuisRecognizer = (function (_super) {
     LuisRecognizer.prototype.onRecognize = function (context, callback) {
         var result = { score: 0.0, intent: null };
         if (context && context.message && context.message.text) {
-            var utterance = context.message.text.replace(/<at>.*<\/at>/g, '');
+            var utterance = context.message.text
+                .replace(/<at>.*<\/at>/g, '')
+                .replace(/@.*?(\s|$)/g, '');
             var locale = context.locale || '*';
             var model = this.models.hasOwnProperty(locale) ? this.models[locale] : this.models['*'];
             if (model) {
@@ -86,6 +88,7 @@ var LuisRecognizer = (function (_super) {
                         result = JSON.parse(body);
                         result.intents = result.intents || [];
                         result.entities = result.entities || [];
+                        result.compositeEntities = result.compositeEntities || [];
                         if (result.topScoringIntent && result.intents.length == 0) {
                             result.intents.push(result.topScoringIntent);
                         }
@@ -99,7 +102,7 @@ var LuisRecognizer = (function (_super) {
                 }
                 try {
                     if (!err) {
-                        callback(null, result.intents, result.entities);
+                        callback(null, result.intents, result.entities, result.compositeEntities);
                     }
                     else {
                         var m = err.toString();
