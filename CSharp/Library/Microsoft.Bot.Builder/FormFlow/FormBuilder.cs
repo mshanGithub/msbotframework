@@ -517,6 +517,10 @@ namespace Microsoft.Bot.Builder.FormFlow
             {
                 paths.Add(path);
             }
+            else if (type == typeof(char))
+            {
+                paths.Add(path);
+            }
         }
     }
 }
