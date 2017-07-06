@@ -334,7 +334,13 @@ export class UniversalBot extends Library {
     //-------------------------------------------------------------------------
     
     /** Loads a session object for an arbitrary address. */
-    public loadSession(address: IAddress, done: (err: Error, session: Session) => void): void {
+
+    public loadSession(address: IAddress, done?: (err: Error, session: Session) => void): void;
+    public loadSession(address: IAddress, dialogId?: string, dialogArgs?: any, done?: (err: Error, session: Session) => void): void;
+    public loadSession(address: IAddress, param1?: ((err: Error, session: Session) => void) | string, param2?: any, param3?: (err: Error, session: Session) => void): void {
+        const dialogId = typeof param1 === 'string' ? param1 : this.settings.defaultDialogId || '/';
+        const dialogArgs = param2 === undefined ? this.settings.defaultDialogArgs : param2;
+        const done = typeof param1 === 'string' ? param3 : param1;
         this.lookupUser(address, (user) => {
             var msg = <IMessage>{
                 type: consts.messageType,
@@ -355,7 +361,7 @@ export class UniversalBot extends Library {
                     persistUserData: this.settings.persistUserData,
                     persistConversationData: this.settings.persistConversationData 
                 };
-                this.createSession(storageCtx, msg, this.settings.defaultDialogId || '/', this.settings.defaultDialogArgs, done);
+                this.createSession(storageCtx, msg, dialogId, dialogArgs, done);
             }, this.errorLogger(<any>done));
         }, this.errorLogger(<any>done));
     }
