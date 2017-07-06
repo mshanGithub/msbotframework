@@ -119,16 +119,20 @@ export class LuisRecognizer extends IntentRecognizer {
                 var result: ILuisResults;
                 try {
                     if (!err) {
-                        result = JSON.parse(body);
-                        result.intents = result.intents || [];
-                        result.entities = result.entities || [];
-                        result.compositeEntities = result.compositeEntities || [];
-                        if (result.topScoringIntent && result.intents.length == 0) {
-                            result.intents.push(result.topScoringIntent);
-                        }
-                        if (result.intents.length == 1 && typeof result.intents[0].score !== 'number') {
-                            // Intents for the builtin Cortana app don't return a score.
-                            result.intents[0].score = 1.0;
+                        if (res.statusCode === 200) {
+                            result = JSON.parse(body);
+                            result.intents = result.intents || [];
+                            result.entities = result.entities || [];
+                            result.compositeEntities = result.compositeEntities || [];
+                            if (result.topScoringIntent && result.intents.length == 0) {
+                                result.intents.push(result.topScoringIntent);
+                            }
+                            if (result.intents.length == 1 && typeof result.intents[0].score !== 'number') {
+                                // Intents for the builtin Cortana app don't return a score.
+                                result.intents[0].score = 1.0;
+                            }
+                        } else {
+                            err = new Error(body);
                         }
                     }
                 } catch (e) {
