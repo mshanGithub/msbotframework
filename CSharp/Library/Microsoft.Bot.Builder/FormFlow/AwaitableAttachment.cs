@@ -117,7 +117,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                 help += $"{Environment.NewLine}- {validator.ProvideHelp()}";
             }
 
-            // TODO-MK: if field.Optional then display hint/tip that it can be skipped with 'none' for ex
+            // TODO: if field.Optional then display hint/tip that it can be skipped with 'none', for example
 
             return help;
         }
@@ -163,11 +163,8 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
                     return await httpClient.GetStreamAsync(source.ContentUrl);
                 }
             }
-            else
-            {
-                // TODO-MK: what to do if the content object is not null?
-                return null;
-            }
+
+            return null;
         }
 
         private IEnumerable<AttachmentValidatorAttribute> GetValidators<T>(IField<T> field) where T : class
