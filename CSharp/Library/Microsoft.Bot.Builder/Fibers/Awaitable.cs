@@ -133,11 +133,11 @@ namespace Microsoft.Bot.Builder.Dialogs
             return this.result;
         }
 
-        public async void OnCompleted(Action continuation)
+        public void OnCompleted(Action continuation)
         {
             if (!resolved)
             {
-                this.result = await this.resolver(this.source);
+                this.result = this.resolver(this.source).Result;
                 this.resolved = true;
             }
 
