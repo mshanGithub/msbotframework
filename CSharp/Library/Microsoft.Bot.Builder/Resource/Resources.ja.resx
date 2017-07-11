@@ -381,10 +381,10 @@
     <comment>0-attachment content type</comment>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">
-    <value>{＆}の添付ファイルを提出してください</value>
+    <value>{&amp;}の添付ファイルを提出してください</value>
   </data>
   <data name="TemplateAttachmentCollection" xml:space="preserve">
-    <value>{＆}の添付ファイルのコレクションを提出してください</value>
+    <value>{&amp;}の添付ファイルのコレクションを提出してください</value>
   </data>
   <data name="TemplateAttachmentCollectionDescription" xml:space="preserve">
     <value>{0}添付ファイルがリンクされています。</value>
