@@ -372,7 +372,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
             if (validateResult.IsValid 
                 && value != null 
-                && (_type.IsAttachmentType() || _type.IsAttachmentCollection()))
+                && (_type != null && (_type.IsAttachmentType() || _type.IsAttachmentCollection())))
             {
                 if (_type.IsAttachmentType())
                 {
