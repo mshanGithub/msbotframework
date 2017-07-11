@@ -101,7 +101,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public Stream GetResult()
         {
-            throw new NotImplementedException();
+            return ResolveFromSourceAsync(this.attachment).Result;
         }
 
         public void OnCompleted(Action continuation)
@@ -109,7 +109,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             throw new NotImplementedException();
         }
 
-        public virtual string ProvideHelp<T>(IField<T> field) where T: class
+        public virtual string ProvideHelp<T>(IField<T> field) where T : class
         {
             var help = string.Empty;
             foreach (var validator in this.GetValidators(field))
@@ -122,7 +122,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             return help;
         }
 
-        public virtual async Task<ValidateResult> ValidateAsync<T>(IField<T> field, T state) where T: class
+        public virtual async Task<ValidateResult> ValidateAsync<T>(IField<T> field, T state) where T : class
         {
             var result = new ValidateResult { IsValid = true, Value = this };
 
@@ -144,7 +144,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         protected virtual async Task<Stream> ResolveFromSourceAsync(Attachment source)
         {
-            if (source.Content == null)
+            if (!string.IsNullOrWhiteSpace(source.ContentUrl))
             {
                 using (HttpClient httpClient = new HttpClient())
                 {

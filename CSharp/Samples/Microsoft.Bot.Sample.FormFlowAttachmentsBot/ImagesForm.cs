@@ -81,11 +81,11 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
             {
                 await context.PostAsync("Here is a summary of the data you submitted:");
 
-                await context.PostAsync($"Your best image is '{state.BestImage.Attachment.Name}' - Type: {state.BestImage.Attachment.ContentType}");
+                await context.PostAsync($"Your best image is '{state.BestImage.Attachment.Name}' - Type: {state.BestImage.Attachment.ContentType} - Size: {RetrieveAttachmentSize(state.BestImage.GetResult())}");
 
                 if (state.SecondaryImage != null)
                 {
-                    await context.PostAsync($"Your secondary image is '{state.SecondaryImage.Attachment.Name}' - Type: {state.SecondaryImage.Attachment.ContentType}");
+                    await context.PostAsync($"Your secondary image is '{state.SecondaryImage.Attachment.Name}' - Type: {state.SecondaryImage.Attachment.ContentType} - Size: {RetrieveAttachmentSize(state.SecondaryImage.GetResult())}");
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
                 var customImagesTextInfo = string.Empty;
                 foreach (var image in state.CustomImages)
                 {
-                    customImagesTextInfo += $"Name: '{image.Attachment.Name}' - Type: {image.Attachment.ContentType}";
+                    customImagesTextInfo += $"Name: '{image.Attachment.Name}' - Type: {image.Attachment.ContentType} - Size: {RetrieveAttachmentSize(image.GetResult())}";
                 }
                 await context.PostAsync($"Here is the info of custom images you submitted:{Environment.NewLine}- {customImagesTextInfo}");
             };
@@ -107,6 +107,16 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
                 .Message("Welcome, please submit all required images")
                 .OnCompletion(onFormCompleted)
                 .Build();
+        }
+
+        private static long RetrieveAttachmentSize(Stream stream)
+        {
+            using(var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                ms.Position = 0;
+                return ms.Length;
+            }
         }
     }
 }
