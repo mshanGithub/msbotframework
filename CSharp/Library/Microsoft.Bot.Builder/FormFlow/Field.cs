@@ -386,7 +386,6 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
                         if (!validateResult.IsValid)
                         {
-                            // TODO-MK: add behavior configuration to iterate all items or break on first one (current behavior)
                             break;
                         }
                     }
