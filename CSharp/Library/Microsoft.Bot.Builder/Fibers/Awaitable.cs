@@ -137,7 +137,7 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             if (!resolved)
             {
-                this.result = this.resolver(this.source).Result;
+                this.result = Task.Run(() => this.resolver(this.source)).Result;
                 this.resolved = true;
             }
 
