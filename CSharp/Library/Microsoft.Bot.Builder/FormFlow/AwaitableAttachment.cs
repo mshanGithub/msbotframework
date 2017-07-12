@@ -101,7 +101,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
 
         public Stream GetResult()
         {
-            return ResolveFromSourceAsync(this.attachment).Result;
+            throw new NotImplementedException();
         }
 
         public void OnCompleted(Action continuation)
