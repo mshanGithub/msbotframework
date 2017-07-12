@@ -81,11 +81,13 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
             {
                 await context.PostAsync("Here is a summary of the data you submitted:");
 
-                await context.PostAsync($"Your best image is '{state.BestImage.Attachment.Name}' - Type: {state.BestImage.Attachment.ContentType} - Size: {RetrieveAttachmentSize(state.BestImage.GetResult())}");
+                var bestImageSize = await RetrieveAttachmentSizeAsync(state.BestImage);
+                await context.PostAsync($"Your best image is '{state.BestImage.Attachment.Name}' - Type: {state.BestImage.Attachment.ContentType} - Size: {bestImageSize} bytes");
 
                 if (state.SecondaryImage != null)
                 {
-                    await context.PostAsync($"Your secondary image is '{state.SecondaryImage.Attachment.Name}' - Type: {state.SecondaryImage.Attachment.ContentType} - Size: {RetrieveAttachmentSize(state.SecondaryImage.GetResult())}");
+                    var secondaryImageSize = await RetrieveAttachmentSizeAsync(state.SecondaryImage);
+                    await context.PostAsync($"Your secondary image is '{state.SecondaryImage.Attachment.Name}' - Type: {state.SecondaryImage.Attachment.ContentType} - Size: {secondaryImageSize} bytes");
                 }
                 else
                 {
@@ -95,9 +97,11 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
                 var customImagesTextInfo = string.Empty;
                 foreach (var image in state.CustomImages)
                 {
-                    customImagesTextInfo += $"Name: '{image.Attachment.Name}' - Type: {image.Attachment.ContentType} - Size: {RetrieveAttachmentSize(image.GetResult())}";
+                    var imgSize = await RetrieveAttachmentSizeAsync(image);
+                    customImagesTextInfo += $"{Environment.NewLine}- Name: '{image.Attachment.Name}' - Type: {image.Attachment.ContentType} - Size: {imgSize} bytes";
                 }
-                await context.PostAsync($"Here is the info of custom images you submitted:{Environment.NewLine}- {customImagesTextInfo}");
+
+                await context.PostAsync($"Here is the info of custom images you submitted: {customImagesTextInfo}");
             };
 
             // Form localization is done by setting the thread culture
@@ -109,14 +113,10 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
                 .Build();
         }
 
-        private static long RetrieveAttachmentSize(Stream stream)
+        private static async Task<long> RetrieveAttachmentSizeAsync(AwaitableAttachment attachment)
         {
-            using(var ms = new MemoryStream())
-            {
-                stream.CopyTo(ms);
-                ms.Position = 0;
-                return ms.Length;
-            }
+            var stream = await attachment;
+            return stream.Length;
         }
     }
 }
