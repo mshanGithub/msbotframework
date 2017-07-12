@@ -109,6 +109,7 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
             }
             catch (Exception)
             {
+                System.Diagnostics.Trace.TraceError($"Exception on deserializing stored data! Stack has been cleared. Details: {exc}");
                 // exception in loading the serialized data
                 item = default(T);
                 return false;
