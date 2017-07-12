@@ -35,12 +35,12 @@ namespace Microsoft.Bot.Sample.FormFlowAttachmentsBot
                             using (var imageStream = await image)
                             {
                                 var imageLength = await storageService.StoreImageAsync(imageStream);
-                                customImagesTextInfo += $"Name: '{image.Attachment.Name}' - Type: {image.Attachment.ContentType} - Length: {imageLength}";
+                                customImagesTextInfo += $"{Environment.NewLine}- Name: '{image.Attachment.Name}' - Type: {image.Attachment.ContentType} - Size: {imageLength} bytes\n";
                                 totalStorageRequired += imageLength;
                             }
                         }
 
-                        await context.PostAsync($"We have processed your custom images - we have used {totalStorageRequired} bytes to store them:{Environment.NewLine}- {customImagesTextInfo}");
+                        await context.PostAsync($"We have processed your custom images - we have used {totalStorageRequired} bytes to store them: {customImagesTextInfo}");
                     }
                     catch (FormCanceledException<ImagesForm> e)
                     {
