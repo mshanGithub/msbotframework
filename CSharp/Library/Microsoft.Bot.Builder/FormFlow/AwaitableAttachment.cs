@@ -146,21 +146,18 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         {
             if (!string.IsNullOrWhiteSpace(source.ContentUrl))
             {
-                using (HttpClient httpClient = new HttpClient())
+                using (var client = new HttpClient())
                 {
-                    // TODO-MK: handle specific channel stuff - ie. authorization, etc?
+                    if (Microsoft​App​Credentials.IsTrustedServiceUrl(source.ContentUrl))
+                    {
+                        await client.AddAPIAuthorization();
+                    }
 
-                    // Review usage of MicrosoftAppCredentials from common as it requires 
-                    // referencing all Microsoft.Extensions.Logging.Abstractions dependencies
-
-                    // Skype & MS Teams attachment URLs are secured by a JwtToken, so we need to pass the token from our bot.
-                    //if (new Uri(attachment.ContentUrl).Host.EndsWith("skype.com"))
-                    //{
-                    //    var token = await new MicrosoftAppCredentials().GetTokenAsync();
-                    //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    //}
-
-                    return await httpClient.GetStreamAsync(source.ContentUrl);
+                    var stream = await client.GetStreamAsync(source.ContentUrl);
+                    var ms = new MemoryStream();
+                    stream.CopyTo(ms);
+                    ms.Position = 0;
+                    return ms;
                 }
             }
 
