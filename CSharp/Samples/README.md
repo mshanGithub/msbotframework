@@ -21,7 +21,6 @@ There are several samples in this directory.
 * [Microsoft.Bot.Sample.PizzaBot](PizzaBot/) -- Integration of http://luis.ai with FormFlow.
 * [Microsoft.Bot.Sample.GraphBot](GraphBot/Microsoft.Bot.Sample.GraphBot) -- Integration of [Microsoft Graph Api](https://graph.microsoft.io) with dialog system.
 * [Microsoft.Bot.Sample.SimpleFacebookAuthBot](SimpleFacebookAuthBot/) -- A bot showcasing OAuth authentication using Facebook graph API.
-* [Microsoft.Bot.Sample.SimpleIVRBot](SimpleIVRBot/) -- A sample IVR bot using Skype calling API.
 * [Stock_Bot](Stock_Bot/) -- Samples that show calling a web service, LUIS, and LUIS Dialog.
 * [SearchPoweredBots](SearchPoweredBots) -- Samples that show integration of [Azure Search](https://azure.microsoft.com/en-us/services/search/) with dialogs.
 
