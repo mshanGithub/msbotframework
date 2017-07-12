@@ -43,7 +43,7 @@
     <value>Recomeçar</value>
   </data>
   <data name="CommandResetHelp" xml:space="preserve">
-    <value>Recomeçar: Recomeçar o preenchimento do formulário. (Com valores predeterminados com base no preenchimento anterior.)</value>
+    <value>Recomeçar: Recomeçar o preenchimento do formulário. (Com valores predeterminados baseados no preenchimento anterior.)</value>
   </data>
   <data name="CommandResetTerms" xml:space="preserve">
     <value>reiniciar;recomeçar;resetar;limpar;iniciar novamente;começar novamente</value>
@@ -52,7 +52,7 @@
     <value>Situação</value>
   </data>
   <data name="CommandStatusHelp" xml:space="preserve">
-    <value>Situação: Exibe o progresso de preenchimento do formulário até o momento.</value>
+    <value>Situação: Exibe o progresso no preenchimento do formulário até o momento.</value>
   </data>
   <data name="CommandStatusTerms" xml:space="preserve">
     <value>situação;progresso;resultados</value>

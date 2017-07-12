@@ -48,7 +48,7 @@
         </trans-unit>
         <trans-unit id="CommandResetHelp" translate="yes" xml:space="preserve">
           <source>Reset: Start over filling in the form.  (With defaults from your previous entries.)</source>
-          <target state="signed-off">Recomeçar: Recomeçar o preenchimento do formulário. (Com valores predeterminados com base no preenchimento anterior.)</target>
+          <target state="signed-off">Recomeçar: Recomeçar o preenchimento do formulário. (Com valores predeterminados baseados no preenchimento anterior.)</target>
         </trans-unit>
         <trans-unit id="CommandResetTerms" translate="yes" xml:space="preserve">
           <source>start over;reset;clear</source>
@@ -60,7 +60,7 @@
         </trans-unit>
         <trans-unit id="CommandStatusHelp" translate="yes" xml:space="preserve">
           <source>Status: Show your progress in filling in the form so far.</source>
-          <target state="signed-off">Situação: Exibe o progresso de preenchimento do formulário até o momento.</target>
+          <target state="signed-off">Situação: Exibe o progresso no preenchimento do formulário até o momento.</target>
         </trans-unit>
         <trans-unit id="CommandStatusTerms" translate="yes" xml:space="preserve">
           <source>status;progress;so far;results</source>
