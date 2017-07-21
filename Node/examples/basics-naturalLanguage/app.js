@@ -18,7 +18,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 // Add global LUIS recognizer to bot
-var model = process.env.model || 'https://api.projectoxford.ai/luis/v2.0/apps/c413b2ef-382c-45bd-8ff0-f76d60e2a821?subscription-key=6d0966209c6e4f6b835ce34492f3e6d9';
+var model = process.env.model || 'https://api.projectoxford.ai/luis/v1/application?id=c413b2ef-382c-45bd-8ff0-f76d60e2a821&subscription-key=6d0966209c6e4f6b835ce34492f3e6d9&q=';
 bot.recognizer(new builder.LuisRecognizer(model));
 
 // Set Alarm dialog
