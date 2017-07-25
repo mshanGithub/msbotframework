@@ -12,6 +12,9 @@ var urlJoin = require("url-join");
 var pjson = require('../../package.json');
 var MAX_DATA_LENGTH = 65000;
 var USER_AGENT = "Microsoft-BotFramework/3.1 (BotBuilder Node.js/" + pjson.version + ")";
+var URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+var SCOPE = 'https://graph.microsoft.com/.default';
+
 var ChatConnector = (function () {
     function ChatConnector(settings) {
         if (settings === void 0) { settings = {}; }
@@ -540,12 +543,12 @@ var ChatConnector = (function () {
         if (!this.accessToken || new Date().getTime() >= this.accessTokenExpires) {
             var opt = {
                 method: 'POST',
-                url: this.settings.endpoint.refreshEndpoint,
+                url: URL,
                 form: {
                     grant_type: 'client_credentials',
                     client_id: this.settings.appId,
                     client_secret: this.settings.appPassword,
-                    scope: this.settings.endpoint.refreshScope
+                    scope: SCOPE 
                 }
             };
             this.addUserAgent(opt);
