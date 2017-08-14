@@ -504,6 +504,7 @@ var ChatConnector = (function () {
         }
         this.addUserAgent(options);
         this.addAccessToken(options, function (err) {
+          console.log(options);
             if (!err) {
                 request(options, function (err, response, body) {
                     if (!err) {
