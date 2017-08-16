@@ -218,6 +218,8 @@ namespace Microsoft.Bot.Builder.Luis
     {
         private readonly ILuisModel model;
 
+        private double Threshold = 0.0d;
+
         /// <summary>
         /// Construct the LUIS service using the model information.
         /// </summary>
@@ -252,6 +254,17 @@ namespace Microsoft.Bot.Builder.Luis
             }
         }
 
+        public void ApplyThreshold(LuisResult result)
+        {
+            if (!(result.TopScoringIntent.Score < Threshold))
+            {
+                return;
+            }
+            
+            result.TopScoringIntent.Intent = string.Empty;
+            result.TopScoringIntent.Score = 1.0d;
+        }
+
         async Task<LuisResult> ILuisService.QueryAsync(Uri uri, CancellationToken token)
         {
             string json;
@@ -266,6 +279,7 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 var result = JsonConvert.DeserializeObject<LuisResult>(json);
                 Fix(result);
+                ApplyThreshold(result);
                 return result;
             }
             catch (JsonException ex)
