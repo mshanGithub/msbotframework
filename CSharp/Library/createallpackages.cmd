@@ -13,6 +13,9 @@ popd
 pushd Microsoft.Bot.Builder.Extensions.Telemetry
 call createpackage.cmd
 popd
-pushd Microsoft.Bot.Builder.Extensions.Telemetry
+pushd Microsoft.Bot.Builder.Extensions.Telemetry.DebugWriter
+call createpackage.cmd
+popd
+pushd Microsoft.Bot.Builder.Extensions.Telemetry.TextFileWriter
 call createpackage.cmd
 popd
