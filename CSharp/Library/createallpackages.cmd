@@ -13,3 +13,6 @@ popd
 pushd Microsoft.Bot.Builder.Extensions.Telemetry
 call createpackage.cmd
 popd
+pushd Microsoft.Bot.Builder.Extensions.Telemetry
+call createpackage.cmd
+popd
