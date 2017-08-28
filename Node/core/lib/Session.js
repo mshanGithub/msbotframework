@@ -296,7 +296,7 @@ var Session = (function (_super) {
         this.logger.log(this.dialogStack(), 'Session.endConversation()');
         var ss = this.sessionState;
         ss.callstack = [];
-        this.sendBatch();
+        this.sendBatch(_this._onBatchComplete);
         return this;
     };
     Session.prototype.endDialog = function (message) {
@@ -403,6 +403,9 @@ var Session = (function (_super) {
     };
     Session.prototype.isReset = function () {
         return this._isReset;
+    };
+    Session.prototype.onBatchComplete = function (handler) {
+        this._onBatchComplete = handler;
     };
     Session.prototype.sendBatch = function (done) {
         var _this = this;
@@ -652,7 +655,7 @@ var Session = (function (_super) {
                 clearTimeout(this.batchTimer);
             }
             this.batchTimer = setTimeout(function () {
-                _this.sendBatch();
+                _this.sendBatch(_this._onBatchComplete);
             }, this.options.autoBatchDelay);
         }
     };
