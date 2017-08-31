@@ -296,7 +296,7 @@ var Session = (function (_super) {
         this.logger.log(this.dialogStack(), 'Session.endConversation()');
         var ss = this.sessionState;
         ss.callstack = [];
-        this.sendBatch(_this._onBatchComplete);
+        this.sendBatch();
         return this;
     };
     Session.prototype.endDialog = function (message) {
@@ -404,9 +404,6 @@ var Session = (function (_super) {
     Session.prototype.isReset = function () {
         return this._isReset;
     };
-    Session.prototype.onBatchComplete = function (handler) {
-        this._onBatchComplete = handler;
-    };
     Session.prototype.sendBatch = function (done) {
         var _this = this;
         this.logger.log(this.dialogStack(), 'Session.sendBatch() sending ' + this.batch.length + ' message(s)');
@@ -439,6 +436,7 @@ var Session = (function (_super) {
                         if (_this.batchStarted) {
                             _this.startBatch();
                         }
+                        _this.emit('batchComplete', err, addresses);
                         if (done) {
                             done(err, addresses);
                         }
@@ -450,6 +448,7 @@ var Session = (function (_super) {
                     if (done) {
                         done(err, null);
                     }
+                    _this.emit('batchComplete', err, null);
                 });
             }
         });
@@ -661,10 +660,10 @@ var Session = (function (_super) {
             }
             if (this.options.autoBatchDelay>0) {
                 this.batchTimer = setTimeout(function () {
-                	_this.sendBatch(_this._onBatchComplete);
+                	_this.sendBatch();
                 }, this.options.autoBatchDelay);
             } else {
-            		_this.sendBatch(_this._onBatchComplete);
+            		_this.sendBatch();
             }
         }
     };
