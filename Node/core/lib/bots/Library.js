@@ -109,8 +109,8 @@ var Library = (function (_super) {
         var parts = entry ? entry.id.split(':') : null;
         if (parts && parts[0] == this.name) {
             var dialog = this.dialog(parts[1]);
+            var ctx = utils.clone(context);
             if (dialog) {
-                var ctx = utils.clone(context);
                 ctx.libraryName = this.name;
                 ctx.dialogData = entry.state;
                 ctx.activeDialog = true;
@@ -132,7 +132,7 @@ var Library = (function (_super) {
                 });
             }
             else {
-                ctx.logger.warn(ctx.dialogStack(), "Active dialog '" + entry.id + "' not found in library.");
+                //ctx.logger.warn(ctx.dialogStack(), "Active dialog '" + entry.id + "' not found in library.");
                 callback(null, results);
             }
         }
