@@ -952,6 +952,15 @@ export interface IPromptAttachmentFeatures extends IPromptFeatures {
     recognizeScore?: number;
 }
 
+export interface IPromptMultiTypesOptions extends IPromptOptions {
+}
+
+/** Optional features for [PromptAttachment](/en-us/node/builder/chat-reference/classes/_botbuilder_d_.promptattachment) class. */
+export interface IPromptMultiTypesFeatures extends IPromptFeatures {
+    recognizeScore?: number;
+}
+
+
 /** 
  * Route choices to pass to [Prompts.disambiguate()](/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts#disambiguate).
  * The key for the map should be the localized label to display to the user and the value should be
@@ -998,6 +1007,8 @@ export interface IPromptTimeResult extends IPromptResult<IEntity> { }
 
 /** Strongly typed Attachment Prompt Result. */
 export interface IPromptAttachmentResult extends IPromptResult<IAttachment[]> { }
+
+export interface IPromptMultiTypesResult extends IPromptResult<IMultiTypesResult> { }
 
 /** A recognized intent. */
 export interface IIntent {
@@ -1132,6 +1143,12 @@ export interface IFindMatchResult {
 
     /** Confidence score on a scale from 0.0 - 1.0 that a value matched the users utterance. */
     score: number;
+}
+
+export interface IMultiTypesResult {
+    type: string;
+
+    data: any;
 }
 
 /** Context object passed to IBotStorage calls. */
@@ -3399,6 +3416,16 @@ export class PromptTime extends Prompt<IPromptFeatures> {
      * @param features (Optional) features used to customize the prompts behaviour.
      */
     constructor(features?: IPromptFeatures);
+}
+
+/** Customizable multiTypes prompt. */
+export class PromptMultiTypes extends Prompt<IPromptMultiTypesFeatures> {
+    /**
+     * Creates a new customizable instance of the prompt. Your new prompt should be added as a
+     * dialog to either a bot or library.
+     * @param features (Optional) features used to customize the prompts behaviour.
+     */
+    constructor(features?: IPromptMultiTypesFeatures);
 }
 
 declare global {

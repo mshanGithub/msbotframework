@@ -64,6 +64,7 @@ export { PromptAttachment } from './dialogs/PromptAttachment';
 export { PromptChoice } from './dialogs/PromptChoice';
 export { PromptConfirm } from './dialogs/PromptConfirm';
 export { PromptNumber } from './dialogs/PromptNumber';
+export { PromptMultiTypes } from './dialogs/PromptMultiTypes';
 export { PromptRecognizers } from './dialogs/PromptRecognizers';
 export { Prompts } from './dialogs/Prompts';
 export { PromptText } from './dialogs/PromptText';

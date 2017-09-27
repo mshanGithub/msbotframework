@@ -43,6 +43,7 @@ import { PromptConfirm } from './PromptConfirm';
 import { PromptNumber, IPromptNumberOptions } from './PromptNumber';
 import { PromptText } from './PromptText';
 import { PromptTime } from './PromptTime';
+import { PromptMultiTypes, IPromptMultiTypesOptions } from './PromptMultiTypes';
 import * as consts from '../consts';
 import * as utils from '../utils';
 
@@ -59,7 +60,8 @@ interface IPrompts {
     attachment(session: Session, prompt: TextOrMessageType, options?: IPromptAttachmentOptions): void;
     disambiguate(session: Session, prompt: TextOrMessageType, choices: IDisambiguateChoices, options?: IPromptOptions): void;
     customize(type: PromptType, dialog: Dialog): IPrompts;
-
+    multiTypes(session: Session, prompt: TextOrMessageType, options?: IPromptMultiTypesOptions): void;
+    
     /** deprecated */
     configure(options: IPromptsOptions): void;
 }
@@ -140,6 +142,12 @@ export const Prompts = <IPrompts>{
     configure: (options) => {
         console.warn("Prompts.configure() has been deprecated as of version 3.8. Consider using custom prompts instead.");
         LegacyPrompts.configure(options);
+    },
+    multiTypes: (session, prompt, options) => {
+        validateSession(session);
+        let args: IPromptOptions = utils.clone(options || {});
+        args.prompt = prompt || options.prompt;
+        session.beginDialog(promptPrefix + 'multiTypes', args);
     }
 };
 
@@ -157,6 +165,7 @@ Prompts.customize(PromptType.confirm, new PromptConfirm());
 Prompts.customize(PromptType.number, new PromptNumber());
 Prompts.customize(PromptType.text, new PromptText());
 Prompts.customize(PromptType.time, new PromptTime());
+Prompts.customize(PromptType.multiTypes, new PromptMultiTypes());
 
 /**
  * Internal dialog that prompts a user to confirm a cancelAction().

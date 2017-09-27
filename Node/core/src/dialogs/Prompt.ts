@@ -43,7 +43,7 @@ import * as consts from '../consts';
 import * as async from 'async';
 import * as utils from '../utils';
 
-export enum PromptType { text, number, confirm, choice, time, attachment }
+export enum PromptType { text, number, confirm, choice, time, attachment, multiTypes }
 
 export enum ListStyle { none, inline, list, button, auto }
 
