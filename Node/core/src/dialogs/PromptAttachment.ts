@@ -62,7 +62,7 @@ export class PromptAttachment extends Prompt<IPromptAttachmentFeatures> {
                 let contentTypes = typeof options.contentTypes == 'string' ? options.contentTypes.split('|') : options.contentTypes;
                 let attachments: IAttachment[] = [];
                 context.message.attachments.forEach((value) => {
-                    if (this.allowed(value, contentTypes)) {
+                    if (PromptAttachment.allowed(value, contentTypes)) {
                         attachments.push(value);
                     }
                 });
@@ -86,7 +86,7 @@ export class PromptAttachment extends Prompt<IPromptAttachmentFeatures> {
         });
     }
 
-    private allowed(attachment: IAttachment, contentTypes?: string[]): boolean {
+    static allowed(attachment: IAttachment, contentTypes?: string[]): boolean {
         let allowed = false;
         if (contentTypes && contentTypes.length > 0) {
             const type = attachment.contentType.toLowerCase();

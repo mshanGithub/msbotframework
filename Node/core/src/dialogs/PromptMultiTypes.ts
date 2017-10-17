@@ -31,19 +31,30 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import { Prompt, IPromptFeatures, IPromptContext, IPromptOptions } from './Prompt';
-import * as chrono from 'chrono-node';
+import { Prompt, IPromptFeatures, IPromptContext, IPromptOptions } from './Prompt'
+import { PromptRecognizers } from './PromptRecognizers';
+import { IRecognizeContext } from './IntentRecognizer';
+import { IPromptNumberOptions } from './PromptNumber';
+import { IPromptAttachmentOptions, PromptAttachment } from './PromptAttachment';
 import * as consts from '../consts';
 
 export interface IPromptMultiTypesOptions extends IPromptOptions {
-    allowAttachment?: boolean;
-    allowDateTime?: boolean;
-    allowNumber?: boolean;
-    allowText?: boolean;
+    disallowAttachment?: boolean;
+    disallowTime?: boolean;
+    disallowNumber?: boolean;
+    disallowText?: boolean;
+    numberOptions?: IPromptNumberOptions;
+    timeOptions?: IPromptOptions;
+    attachmentOptions?: IPromptAttachmentOptions;
 }
 
 export interface IPromptMultiTypeFeatures extends IPromptFeatures {
     recognizeScore?: number;
+}
+
+interface IRecognitionResult {
+    score: number;
+    entity: any;
 }
 
 export class PromptMultiTypes extends Prompt<IPromptMultiTypeFeatures> {
@@ -54,28 +65,72 @@ export class PromptMultiTypes extends Prompt<IPromptMultiTypeFeatures> {
             recognizeScore: 0.5
         });
         this.updateFeatures(features);
-        
-        // Distinguish between the different supported types
+
+        // Distinguish between the different supported types using the existing input types' recognizers
         this.onRecognize((context, cb) => {
-            // the options object holds which types are allowed
             let options: IPromptMultiTypesOptions = context.dialogData.options;
-            
-            var strAsDateTime = chrono.parseDate(context.message.text);      
-            if (options.allowAttachment && context.message.attachments.length === 1) {
-                cb(null, 1.0, { "type": "attachment", "data": context.message.attachments[0] });
+
+            var entities = <IEntity<any>[]>[];
+            if (!options.disallowTime) {
+                var dateEntities = <IEntity<any>[]>this.recognizeTime(context, options.timeOptions);
+                entities = entities.concat(dateEntities);
             }
-            else if (options.allowDateTime && strAsDateTime) {
-                cb(null, 1.0, { "type": "date", "data": strAsDateTime });
+            if (!options.disallowNumber) {
+                var numberEntities = <IEntity<any>[]>this.recognizeNumber(context, options.numberOptions);
+                entities = entities.concat(numberEntities);
             }
-            else if (options.allowNumber && !isNaN(Number(context.message.text))) {
-                cb(null, 1.0, { "type": "number", "data": Number(context.message.text) });
+            if (!options.disallowAttachment) {
+                var attachmentEntities = <IEntity<any>[]>this.recognizeAttachment(context, options.attachmentOptions);
+                entities = entities.concat(attachmentEntities);
             }
-            else if (options.allowText && context.message.text.length > 0) {
-                cb(null, 1.0, { "type": "text", "data": context.message.text });
+
+            let top = PromptRecognizers.findTopEntity(entities);
+            if (top) {
+                // if any of the recognizers returned a valud result, we take it
+                if (top.type === 'chrono.duration') {
+                    cb(null, top.score, { "type": top.type, "data": top });
+                } else {
+                    cb(null, top.score, { "type": top.type, "data": top.entity });
+                }
             } else {
-                // Failed to identify the right input method
-                cb(null, 0.0);
+                // otherwise, it is either a text or not a valid input
+                if (!options.disallowText && context.message.text.length > 0) {
+                    cb(null, 1.0, { "type": "text", "data": context.message.text });
+                } else {
+                    cb(null, 0.0);
+                }
             }
         });
+    }
+
+    private recognizeNumber(context: IRecognizeContext, options?: IPromptNumberOptions): IEntity<number>[] {
+        return PromptRecognizers.recognizeNumbers(context, options);
+    }
+
+    private recognizeTime(context: IRecognizeContext, options?: IPromptOptions): IEntity<string>[] {
+        return PromptRecognizers.recognizeTimes(context, options);
+    }
+
+    private recognizeAttachment(context: IRecognizeContext, options?: IPromptAttachmentOptions): IEntity<IAttachment[]>[] {
+        let allowAll = true;
+        let contentTypes = <string[]>[];
+        if (options) {
+            contentTypes = typeof options.contentTypes == 'string' ? options.contentTypes.split('|') : options.contentTypes;
+            allowAll = false;
+        }
+
+        let attachments: IAttachment[] = [];
+        context.message.attachments.forEach((value) => {
+            if (allowAll || PromptAttachment.allowed(value, contentTypes)) {
+                console.log('adding ## attach ## ' + value)
+                attachments.push(value);
+            }
+        });
+
+        var entities = [];
+        if (attachments.length > 0) {
+            entities.push({ entity: attachments, type: 'attachments', score: 1.0 });
+        }
+        return entities;
     }
 }
