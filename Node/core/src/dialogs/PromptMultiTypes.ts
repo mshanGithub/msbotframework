@@ -122,7 +122,6 @@ export class PromptMultiTypes extends Prompt<IPromptMultiTypeFeatures> {
         let attachments: IAttachment[] = [];
         context.message.attachments.forEach((value) => {
             if (allowAll || PromptAttachment.allowed(value, contentTypes)) {
-                console.log('adding ## attach ## ' + value)
                 attachments.push(value);
             }
         });
