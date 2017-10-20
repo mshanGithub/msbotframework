@@ -218,7 +218,7 @@ namespace Microsoft.Bot.Builder.Luis
     {
         private readonly ILuisModel model;
 
-        private double Threshold = 0.0d;
+        private double threshold = 0.0d;
 
         /// <summary>
         /// Construct the LUIS service using the model information.
@@ -254,14 +254,23 @@ namespace Microsoft.Bot.Builder.Luis
             }
         }
 
-        public void ApplyThreshold(LuisResult result)
+        public static void ApplyThreshold(LuisResult result, double threshold, string backupIntent)
         {
-            if (!(result.TopScoringIntent.Score < Threshold))
+            if (!(result.TopScoringIntent.Score < threshold))
             {
                 return;
             }
-            
-            result.TopScoringIntent.Intent = string.Empty;
+            result.TopScoringIntent.Intent = backupIntent;
+            result.TopScoringIntent.Score = 1.0d;
+        }
+
+        public static void ApplyThreshold(LuisResult result, double threshold)
+        {
+            if (!(result.TopScoringIntent.Score < threshold))
+            {
+                return;
+            }
+            result.TopScoringIntent.Intent = "None";
             result.TopScoringIntent.Score = 1.0d;
         }
 
@@ -279,7 +288,6 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 var result = JsonConvert.DeserializeObject<LuisResult>(json);
                 Fix(result);
-                ApplyThreshold(result);
                 return result;
             }
             catch (JsonException ex)
