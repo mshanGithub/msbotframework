@@ -11,7 +11,8 @@ High Level Features:
 
 [Get started with the Bot Builder!](http://docs.botframework.com/sdkreference/csharp/)
 
-There are several samples in this directory.
+There are several samples in this directory, though some might not build. The samples at [Bot Builder SDK Samples repo](https://github.com/Microsoft/BotBuilder-Samples/tree/master/CSharp) are a better starting point. This directory contains:
+
 * [Microsoft.Bot.Sample.SimpleEchoBot](SimpleEchoBot/) -- Bot Connector example done with the Bot Builder framework.
 * [Microsoft.Bot.Sample.EchoBot](EchoBot/) -- Add state onto the previous example.
 * [Microsoft.Bot.Sample.SimpleSandwichBot](SimpleSandwichBot/) -- FormFlow example of how easy it is to create a rich dialog with guided conversation, help and clarification. 
