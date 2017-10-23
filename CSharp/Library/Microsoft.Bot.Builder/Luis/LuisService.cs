@@ -264,9 +264,9 @@ namespace Microsoft.Bot.Builder.Luis
             result.TopScoringIntent.Score = 1.0d;
         }
 
-        public static void ApplyThreshold(LuisResult result, double threshold)
+        public void ApplyThreshold(LuisResult result)
         {
-            if (!(result.TopScoringIntent.Score < threshold))
+            if (result.TopScoringIntent.Score > model.Threshold)
             {
                 return;
             }
@@ -288,6 +288,7 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 var result = JsonConvert.DeserializeObject<LuisResult>(json);
                 Fix(result);
+                ApplyThreshold(result);
                 return result;
             }
             catch (JsonException ex)
