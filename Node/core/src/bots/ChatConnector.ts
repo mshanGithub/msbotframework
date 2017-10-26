@@ -129,7 +129,15 @@ export class ChatConnector implements IConnector, IBotStorage {
                     requestData += chunk
                 });
                 req.on('end', () => {
-                    req.body = JSON.parse(requestData);
+                    try {
+                        req.body = JSON.parse(requestData);
+                    } catch (err) {
+                        logger.error('ChatConnector: receive - invalid request data received.');
+                        res.send(400);
+                        res.end();
+                        return;
+                    }
+
                     this.verifyBotFramework(req, res);
                 });
             }
@@ -285,7 +293,7 @@ export class ChatConnector implements IConnector, IBotStorage {
             // Issue request
             var options: request.Options = {
                 method: 'POST',
-                // We use urlJoin to concatenate urls. url.resolve should not be used here, 
+                // We use urlJoin to concatenate urls. url.resolve should not be used here,
                 // since it resolves urls as hrefs are resolved, which could result in losing
                 // the last fragment of the serviceUrl
                 url: urlJoin(address.serviceUrl, '/v3/conversations'),
@@ -346,7 +354,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         // Issue request
         var options: request.Options = {
             method: 'DELETE',
-            // We use urlJoin to concatenate urls. url.resolve should not be used here, 
+            // We use urlJoin to concatenate urls. url.resolve should not be used here,
             // since it resolves urls as hrefs are resolved, which could result in losing
             // the last fragment of the serviceUrl
             url: urlJoin(address.serviceUrl, path),
@@ -590,7 +598,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         // Issue request
         var options: request.Options = {
             method: method,
-            // We use urlJoin to concatenate urls. url.resolve should not be used here, 
+            // We use urlJoin to concatenate urls. url.resolve should not be used here,
             // since it resolves urls as hrefs are resolved, which could result in losing
             // the last fragment of the serviceUrl
             url: urlJoin(address.serviceUrl, path),
@@ -656,7 +664,7 @@ export class ChatConnector implements IConnector, IBotStorage {
 
     private tokenHalfWayExpired(secondstoHalfWayExpire: number = 1800, secondsToExpire: number = 300): boolean {
         var timeToExpiration = (this.accessTokenExpires - Date.now())/1000;
-        return timeToExpiration < secondstoHalfWayExpire 
+        return timeToExpiration < secondstoHalfWayExpire
             && timeToExpiration > secondsToExpire;
     }
 
@@ -696,7 +704,7 @@ export class ChatConnector implements IConnector, IBotStorage {
             this.refreshAccessToken((err, token) => {
                 cb(err, this.accessToken);
             });
-         
+
         }
         else if (this.tokenHalfWayExpired()) {
             // Refresh access token without error handling
@@ -725,7 +733,7 @@ export class ChatConnector implements IConnector, IBotStorage {
                 if (!err && token) {
                     if (!options.headers) {
                         options.headers = {};
-                    } 
+                    }
                     options.headers['Authorization'] = 'Bearer ' + token
                     cb(null);
                 } else {
