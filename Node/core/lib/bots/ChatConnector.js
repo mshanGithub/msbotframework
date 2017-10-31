@@ -12,6 +12,19 @@ var urlJoin = require("url-join");
 var pjson = require('../../package.json');
 var MAX_DATA_LENGTH = 65000;
 var USER_AGENT = "Microsoft-BotFramework/3.1 (BotBuilder Node.js/" + pjson.version + ")";
+
+function ChatConnectorError(action, payload) {
+  this.action = action;
+  this.payload = payload;
+
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, ChatConnectorError);
+  }
+}
+
+ChatConnectorError.prototype = new Error();
+ChatConnectorError.prototype.name = 'ChatConnectorError';
+
 var ChatConnector = (function () {
     function ChatConnector(settings) {
         if (settings === void 0) { settings = {}; }
@@ -35,6 +48,9 @@ var ChatConnector = (function () {
         this.botConnectorOpenIdMetadata = new OpenIdMetadata_1.OpenIdMetadata(this.settings.endpoint.botConnectorOpenIdMetadata);
         this.emulatorOpenIdMetadata = new OpenIdMetadata_1.OpenIdMetadata(this.settings.endpoint.emulatorOpenIdMetadata);
     }
+    ChatConnector.prototype.createError = function (action, payload) {
+      return new ChatConnectorError(action, payload);
+    };
     ChatConnector.prototype.listen = function () {
         var _this = this;
         return function (req, res) {
@@ -170,6 +186,7 @@ var ChatConnector = (function () {
                 else if (msg.address && msg.address.serviceUrl) {
                     _this.postMessage(msg, (idx == messages.length - 1), function (err, address) {
                         addresses.push(address);
+
                         cb(err);
                     });
                 }
@@ -184,6 +201,7 @@ var ChatConnector = (function () {
         }, function (err) { return done(err, !err ? addresses : null); });
     };
     ChatConnector.prototype.startConversation = function (address, done) {
+        var _this = this;
         if (address && address.user && address.bot && address.serviceUrl) {
             var options = {
                 method: 'POST',
@@ -232,7 +250,7 @@ var ChatConnector = (function () {
                 if (err) {
                     logger.error('ChatConnector: startConversation - error starting conversation.');
                 }
-                done(err, adr);
+                done(_this.createError('startConversation', { response: response, address: address }), adr);
             });
         }
         else {
@@ -259,7 +277,10 @@ var ChatConnector = (function () {
             url: urlJoin(address.serviceUrl, path),
             json: true
         };
-        this.authenticatedRequest(options, function (err, response, body) { return done(err); });
+        this.authenticatedRequest(options, function (err, response, body) {
+
+          return done(err ? _this.createError('delete', { response: response, address: address }) : null);
+        });
     };
     ChatConnector.prototype.getData = function (context, callback) {
         var _this = this;
@@ -466,6 +487,7 @@ var ChatConnector = (function () {
         return (event && event.type && event.type.toLowerCase() == consts.invokeType);
     };
     ChatConnector.prototype.postMessage = function (msg, lastMsg, cb, method) {
+        var _this = this;
         if (method === void 0) { method = 'POST'; }
         logger.info(address, 'ChatConnector: sending message.');
         this.prepOutgoingMessage(msg);
@@ -498,7 +520,7 @@ var ChatConnector = (function () {
                 }
             }
             else {
-                cb(err, null);
+                cb(_this.createError('postMessage', { response: response, message: msg }), null);
             }
         });
     };
