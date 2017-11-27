@@ -27,7 +27,7 @@ var PromptAttachment = (function (_super) {
                 var contentTypes_1 = typeof options.contentTypes == 'string' ? options.contentTypes.split('|') : options.contentTypes;
                 var attachments_1 = [];
                 context.message.attachments.forEach(function (value) {
-                    if (_this.allowed(value, contentTypes_1)) {
+                    if (PromptAttachment.allowed(value, contentTypes_1)) {
                         attachments_1.push(value);
                     }
                 });
@@ -48,7 +48,7 @@ var PromptAttachment = (function (_super) {
         });
         return _this;
     }
-    PromptAttachment.prototype.allowed = function (attachment, contentTypes) {
+    PromptAttachment.allowed = function (attachment, contentTypes) {
         var allowed = false;
         if (contentTypes && contentTypes.length > 0) {
             var type = attachment.contentType.toLowerCase();

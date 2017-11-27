@@ -10,6 +10,7 @@ var PromptConfirm_1 = require("./PromptConfirm");
 var PromptNumber_1 = require("./PromptNumber");
 var PromptText_1 = require("./PromptText");
 var PromptTime_1 = require("./PromptTime");
+var PromptMultiTypes_1 = require("./PromptMultiTypes");
 var consts = require("../consts");
 var utils = require("../utils");
 var promptPrefix = consts.Library.system + ':prompt-';
@@ -89,6 +90,12 @@ exports.Prompts = {
     configure: function (options) {
         console.warn("Prompts.configure() has been deprecated as of version 3.8. Consider using custom prompts instead.");
         LegacyPrompts_1.LegacyPrompts.configure(options);
+    },
+    multiTypes: function (session, prompt, options) {
+        validateSession(session);
+        var args = utils.clone(options || {});
+        args.prompt = prompt || options.prompt;
+        session.beginDialog(promptPrefix + 'multiTypes', args);
     }
 };
 function validateSession(session) {
@@ -102,6 +109,7 @@ exports.Prompts.customize(Prompt_1.PromptType.confirm, new PromptConfirm_1.Promp
 exports.Prompts.customize(Prompt_1.PromptType.number, new PromptNumber_1.PromptNumber());
 exports.Prompts.customize(Prompt_1.PromptType.text, new PromptText_1.PromptText());
 exports.Prompts.customize(Prompt_1.PromptType.time, new PromptTime_1.PromptTime());
+exports.Prompts.customize(Prompt_1.PromptType.multiTypes, new PromptMultiTypes_1.PromptMultiTypes());
 Library_1.systemLib.dialog(consts.DialogId.ConfirmCancel, [
     function (session, args) {
         session.dialogData.localizationNamespace = args.localizationNamespace;

@@ -25,6 +25,7 @@ var PromptType;
     PromptType[PromptType["choice"] = 3] = "choice";
     PromptType[PromptType["time"] = 4] = "time";
     PromptType[PromptType["attachment"] = 5] = "attachment";
+    PromptType[PromptType["multiTypes"] = 6] = "multiTypes";
 })(PromptType = exports.PromptType || (exports.PromptType = {}));
 var ListStyle;
 (function (ListStyle) {
