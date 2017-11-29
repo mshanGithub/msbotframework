@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Bot.Connector
 {

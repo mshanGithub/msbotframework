@@ -1,23 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Microsoft.Bot.Connector
 {
-    /// <summary>
-    /// Options for <see cref="BotAuthenticationMiddleware"/>.
-    /// </summary>
-    public sealed class BotAuthenticationOptions : AuthenticationSchemeOptions /* THIS CHANGED? from AuthenticationOptions*/
+    public sealed class BotAuthenticationOptions : JwtBearerOptions
     {
-        public BotAuthenticationOptions() : base()
-        {
-            AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme;
-            //AutomaticAuthenticate = true; NO LONGER EXISTS?
-            //AutomaticChallenge = false;
-        }
-
-        // HAD TO ADD?
-        string AuthenticationScheme { get; set; }
 
         /// <summary>
         /// The <see cref="ICredentialProvider"/> used for authentication.
@@ -33,11 +19,5 @@ namespace Microsoft.Bot.Connector
         /// Flag indicating if emulator tokens should be disabled.
         /// </summary>
         public bool DisableEmulatorTokens { set; get; } = false;
-
-        /// <summary>
-        /// Flag indicating if <see cref="BotAuthenticationHandler"/> should be stored in 
-        /// the returned <see cref="Microsoft.AspNetCore.Authentication.AuthenticationTicket"/>. 
-        /// </summary>
-        public bool SaveToken { set; get; } = true;
     }
 }
