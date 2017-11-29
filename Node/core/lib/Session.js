@@ -407,6 +407,13 @@ var Session = (function (_super) {
     Session.prototype.sendBatch = function (done) {
         var _this = this;
         this.logger.log(this.dialogStack(), 'Session.sendBatch() sending ' + this.batch.length + ' message(s)');
+        if (this.batch.length == 0) {
+            if (done) {
+                done(null, null);
+            }
+            this.emit('batchComplete', null, null);
+            return;
+        }
         if (this.sendingBatch) {
             this.batchStarted = true;
             return;
@@ -431,6 +438,7 @@ var Session = (function (_super) {
                         if (_this.batchStarted) {
                             _this.startBatch();
                         }
+                        _this.emit('batchComplete', err, addresses);
                         if (done) {
                             done(err, addresses);
                         }
@@ -442,6 +450,7 @@ var Session = (function (_super) {
                     if (done) {
                         done(err, null);
                     }
+                    _this.emit('batchComplete', err, null);
                 });
             }
         });
@@ -651,9 +660,14 @@ var Session = (function (_super) {
             if (this.batchTimer) {
                 clearTimeout(this.batchTimer);
             }
-            this.batchTimer = setTimeout(function () {
-                _this.sendBatch();
-            }, this.options.autoBatchDelay);
+            if (this.options.autoBatchDelay > 0) {
+                this.batchTimer = setTimeout(function () {
+                    _this.sendBatch();
+                }, this.options.autoBatchDelay);
+            }
+            else {
+                this.sendBatch();
+            }
         }
     };
     Session.prototype.createMessage = function (localizationNamespace, text, args) {

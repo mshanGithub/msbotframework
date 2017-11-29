@@ -511,7 +511,15 @@ export class Session extends events.EventEmitter {
 
     /** Manually triggers sending of the current auto-batch. */
     public sendBatch(done?: (err: Error, responses?: any[]) => void): void {
-        this.logger.log(this.dialogStack(), 'Session.sendBatch() sending ' + this.batch.length + ' message(s)');            
+        this.logger.log(this.dialogStack(), 'Session.sendBatch() sending ' + this.batch.length + ' message(s)');
+        if (this.batch.length == 0) {
+            // No messages to send.
+            if (done) {
+                done(null, null);
+            }
+            this.emit('batchComplete', null, null);
+            return;
+        }
         if (this.sendingBatch) {
             this.batchStarted = true;
             return;
@@ -536,6 +544,7 @@ export class Session extends events.EventEmitter {
                         if (this.batchStarted) {
                             this.startBatch();
                         }
+                        this.emit('batchComplete', err, addresses);
                         if (done) {
                             done(err, addresses);
                         }
@@ -546,6 +555,7 @@ export class Session extends events.EventEmitter {
                     if (done) {
                         done(err, null);
                     }
+                    this.emit('batchComplete', err, null);
                 });
             }
         });
@@ -795,9 +805,14 @@ export class Session extends events.EventEmitter {
             if (this.batchTimer) {
                 clearTimeout(this.batchTimer);
             }
-            this.batchTimer = setTimeout(() => {
+            if (this.options.autoBatchDelay > 0) {
+                this.batchTimer = setTimeout(() => {
+                    this.sendBatch();
+                }, this.options.autoBatchDelay);
+            } else {
+                // Run synchronously if delay = 0
                 this.sendBatch();
-            }, this.options.autoBatchDelay);
+            }
         }
     }
 
