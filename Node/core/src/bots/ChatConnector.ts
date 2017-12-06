@@ -549,6 +549,7 @@ export class ChatConnector implements IConnector, IBotStorage {
 
     private dispatch(msg: IMessage, res: IWebResponse, next: Function) {
         // Dispatch message/activity
+        next = next || function () {};
         try {
             this.prepIncomingMessage(msg);
             logger.info(msg, 'ChatConnector: message received.');

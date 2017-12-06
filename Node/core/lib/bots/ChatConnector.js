@@ -445,6 +445,7 @@ var ChatConnector = (function () {
         }
     };
     ChatConnector.prototype.dispatch = function (msg, res, next) {
+        next = next || function () { };
         try {
             this.prepIncomingMessage(msg);
             logger.info(msg, 'ChatConnector: message received.');
