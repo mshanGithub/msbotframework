@@ -3,11 +3,8 @@ using System.Collections.Generic;
 #if NET45
 using System.Diagnostics;
 #endif
-#if NET45
-using System.IdentityModel.Tokens;
-#else
+
 using System.IdentityModel.Tokens.Jwt;
-#endif
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -17,10 +14,10 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 
 using Microsoft.IdentityModel.Protocols;
-#if !NET45
+
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-#endif
+
 
 namespace Microsoft.Bot.Connector
 {
@@ -80,11 +77,8 @@ namespace Microsoft.Bot.Connector
 
             _openIdMetadata = _openIdMetadataCache.GetOrAdd(metadataUrl, key =>
             {
-#if NET45
-                return new ConfigurationManager<OpenIdConnectConfiguration>(metadataUrl);
-#else
+
                 return new ConfigurationManager<OpenIdConnectConfiguration>(metadataUrl, new OpenIdConnectConfigurationRetriever());
-#endif
             });
 
             _endorsementsData = _endorsementsCache.GetOrAdd(metadataUrl, key =>
@@ -166,11 +160,14 @@ namespace Microsoft.Bot.Connector
             if (identity == null)
                 return null;
 
-            Claim appIdClaim = identity.Claims.FirstOrDefault(c => _tokenValidationParameters.ValidIssuers.Contains(c.Issuer) && c.Type == "appid");
+            Claim versionClaim = identity.Claims.FirstOrDefault(c => c.Type == "ver");
+
+            Claim appIdClaim = identity.Claims.FirstOrDefault(c => _tokenValidationParameters.ValidIssuers.Contains(c.Issuer) &&
+                ((versionClaim != null && versionClaim.Value == "2.0" && c.Type == "azp") || c.Type == "appid"));
             if (appIdClaim == null)
                 return null;
 
-            // v3.1 emulator token
+            // v3.1 or v3.2 emulator token
             if (identity.Claims.Any(c => c.Type == "aud" && c.Value == appIdClaim.Value))
                 return appIdClaim.Value;
 
@@ -203,11 +200,8 @@ namespace Microsoft.Bot.Connector
             }
 
             // Update the signing tokens from the last refresh
-#if NET45
-            _tokenValidationParameters.IssuerSigningTokens = config.SigningTokens;
-#else
             _tokenValidationParameters.IssuerSigningKeys = config.SigningKeys;
-#endif
+
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
@@ -223,17 +217,17 @@ namespace Microsoft.Bot.Connector
                     var endorsements = await _endorsementsData.GetConfigurationAsync();
                     if (!string.IsNullOrEmpty(keyId) && endorsements.ContainsKey(keyId))
                     {
-                        if(!_validator(endorsements[keyId]))
+                        if (!_validator(endorsements[keyId]))
                         {
                             throw new ArgumentException($"Could not validate endorsement for key: {keyId} with endorsements: {string.Join(",", endorsements[keyId])}");
                         }
                     }
                 }
-                
+
                 if (_allowedSigningAlgorithms != null)
                 {
                     string algorithm = parsedJwtToken?.Header?.Alg;
-                    if(!_allowedSigningAlgorithms.Contains(algorithm))
+                    if (!_allowedSigningAlgorithms.Contains(algorithm))
                     {
                         throw new ArgumentException($"Token signing algorithm '{algorithm}' not in allowed list");
                     }
@@ -242,11 +236,10 @@ namespace Microsoft.Bot.Connector
             }
             catch (SecurityTokenSignatureKeyNotFoundException)
             {
+                string keys = string.Join(", ", ((config?.SigningKeys) ?? Enumerable.Empty<SecurityKey>()).Select(t => t.KeyId));
 #if NET45
-                string keys = string.Join(", ", ((config?.SigningTokens) ?? Enumerable.Empty<SecurityToken>()).Select(t => t.Id));
                 Trace.TraceError("Error finding key for token. Available keys: " + keys);
 #else
-                string keys = string.Join(", ", ((config?.SigningKeys) ?? Enumerable.Empty<SecurityKey>()).Select(t => t.KeyId));
                 IdentityModel.Logging.LogHelper.LogException<SecurityTokenSignatureKeyNotFoundException>("Error finding key for token.Available keys: " + keys);
 #endif
                 throw;

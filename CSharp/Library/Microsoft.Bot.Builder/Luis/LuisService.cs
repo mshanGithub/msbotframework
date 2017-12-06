@@ -237,6 +237,31 @@ namespace Microsoft.Bot.Builder.Luis
             return luisRequest.BuildUri(this.model);
         }
 
+        public static void Fix(LuisResult result)
+        {
+            // fix up Luis result for backward compatibility
+            // v2 api is not returning list of intents if verbose query parameter 
+            // is not set. This will move IntentRecommendation in TopScoringIntent
+            // to list of Intents.
+            if (result.Intents == null || result.Intents.Count == 0)
+            {
+                if (result.TopScoringIntent != null)
+                {
+                    result.Intents = new List<IntentRecommendation> { result.TopScoringIntent };
+                }
+            }
+        }
+
+        public void ApplyThreshold(LuisResult result)
+        {
+            if (result.TopScoringIntent.Score > model.Threshold)
+            {
+                return;
+            }
+            result.TopScoringIntent.Intent = "None";
+            result.TopScoringIntent.Score = 1.0d;
+        }
+
         async Task<LuisResult> ILuisService.QueryAsync(Uri uri, CancellationToken token)
         {
             string json;
@@ -250,14 +275,8 @@ namespace Microsoft.Bot.Builder.Luis
             try
             {
                 var result = JsonConvert.DeserializeObject<LuisResult>(json);
-                // fix up Luis result for backward compatibility
-                // v2 api is not returning list of intents if verbose query parameter 
-                // is not set. This will move IntentRecommendation in TopScoringIntent
-                // to list of Intents.
-                if (result.TopScoringIntent != null && result.Intents == null)
-                {
-                    result.Intents = new List<IntentRecommendation> { result.TopScoringIntent };
-                }
+                Fix(result);
+                ApplyThreshold(result);
                 return result;
             }
             catch (JsonException ex)
@@ -281,7 +300,8 @@ namespace Microsoft.Bot.Builder.Luis
         /// <returns>The LUIS result.</returns>
         public static async Task<LuisResult> QueryAsync(this ILuisService service, string text, CancellationToken token)
         {
-            return await service.QueryAsync(new LuisRequest(query: text), token);
+            var luisRequest = service.ModifyRequest(new LuisRequest(query: text));
+            return await service.QueryAsync(luisRequest, token);
         }
 
         /// <summary>
@@ -293,6 +313,7 @@ namespace Microsoft.Bot.Builder.Luis
         /// <returns>LUIS result.</returns>
         public static async Task<LuisResult> QueryAsync(this ILuisService service, LuisRequest request, CancellationToken token)
         {
+            service.ModifyRequest(request);
             var uri = service.BuildUri(request);
             return await service.QueryAsync(uri, token);
         }
