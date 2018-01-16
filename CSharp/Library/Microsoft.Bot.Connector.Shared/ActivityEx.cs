@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -29,6 +30,16 @@ namespace Microsoft.Bot.Connector
         /// Content-type for an Activity
         /// </summary>
         public const string ContentType = "application/vnd.microsoft.activity";
+
+        partial void CustomInit()
+        {
+            MembersAdded = MembersAdded ?? new List<ChannelAccount>();
+            MembersRemoved = MembersRemoved ?? new List<ChannelAccount>();
+            Attachments = Attachments ?? new List<Attachment>();
+            Entities = Entities ?? new List<Entity>();
+            ReactionsAdded = ReactionsAdded ?? new List<MessageReaction>();
+            ReactionsRemoved = ReactionsRemoved ?? new List<MessageReaction>();
+        }
 
         /// <summary>
         /// Take a message and create a reply message for it with the routing information 

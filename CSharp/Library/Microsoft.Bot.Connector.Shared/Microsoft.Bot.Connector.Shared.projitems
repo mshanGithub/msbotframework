@@ -22,7 +22,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Attachments.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\AttachmentsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\ConnectorClient.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\ConnectorClientExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Conversations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\ConversationsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\IAttachments.cs" />
@@ -36,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\AttachmentInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\AttachmentView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\AudioCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\BasicCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\CardAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\CardImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\ChannelAccount.cs" />
@@ -46,9 +46,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\Error.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\ErrorResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\ErrorResponseException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\Fact.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\GeoCoordinates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\HeroCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\MediaCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\MediaEventValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\MediaUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\MessageReaction.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\ResourceResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\SigninCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\SuggestedActions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\Thing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\ThumbnailCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\ThumbnailUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectorAPI\Models\VideoCard.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)EntityEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ErrorHandling.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ErrorResponseEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GeoCoordinatesEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpClientEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IActivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IContactRelationUpdateActivity.cs" />

@@ -10,25 +10,27 @@ namespace Microsoft.Bot.Connector
     using System.Linq;
 
     /// <summary>
-    /// Message reaction object
+    /// Thing (entity type: "https://schema.org/Thing")
     /// </summary>
-    public partial class MessageReaction
+    public partial class Thing
     {
         /// <summary>
-        /// Initializes a new instance of the MessageReaction class.
+        /// Initializes a new instance of the Thing class.
         /// </summary>
-        public MessageReaction()
+        public Thing()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MessageReaction class.
+        /// Initializes a new instance of the Thing class.
         /// </summary>
-        /// <param name="type">Message reaction type</param>
-        public MessageReaction(string type = default(string))
+        /// <param name="type">The type of the thing</param>
+        /// <param name="name">The name of the thing</param>
+        public Thing(string type = default(string), string name = default(string))
         {
             Type = type;
+            Name = name;
             CustomInit();
         }
 
@@ -38,10 +40,16 @@ namespace Microsoft.Bot.Connector
         partial void CustomInit();
 
         /// <summary>
-        /// Gets or sets message reaction type
+        /// Gets or sets the type of the thing
         /// </summary>
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the thing
+        /// </summary>
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
 
     }
 }

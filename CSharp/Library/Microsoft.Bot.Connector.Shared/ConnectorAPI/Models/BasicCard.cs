@@ -12,20 +12,20 @@ namespace Microsoft.Bot.Connector
     using System.Linq;
 
     /// <summary>
-    /// A Hero card (card with a single, large image)
+    /// A basic card
     /// </summary>
-    public partial class HeroCard
+    public partial class BasicCard
     {
         /// <summary>
-        /// Initializes a new instance of the HeroCard class.
+        /// Initializes a new instance of the BasicCard class.
         /// </summary>
-        public HeroCard()
+        public BasicCard()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the HeroCard class.
+        /// Initializes a new instance of the BasicCard class.
         /// </summary>
         /// <param name="title">Title of the card</param>
         /// <param name="subtitle">Subtitle of the card</param>
@@ -35,7 +35,7 @@ namespace Microsoft.Bot.Connector
         /// card</param>
         /// <param name="tap">This action will be activated when user taps on
         /// the card itself</param>
-        public HeroCard(string title = default(string), string subtitle = default(string), string text = default(string), IList<CardImage> images = default(IList<CardImage>), IList<CardAction> buttons = default(IList<CardAction>), CardAction tap = default(CardAction))
+        public BasicCard(string title = default(string), string subtitle = default(string), string text = default(string), IList<CardImage> images = default(IList<CardImage>), IList<CardAction> buttons = default(IList<CardAction>), CardAction tap = default(CardAction))
         {
             Title = title;
             Subtitle = subtitle;

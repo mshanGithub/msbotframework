@@ -12,20 +12,20 @@ namespace Microsoft.Bot.Connector
     using System.Linq;
 
     /// <summary>
-    /// An animation card (Ex: gif or short video clip)
+    /// Media card
     /// </summary>
-    public partial class AnimationCard
+    public partial class MediaCard
     {
         /// <summary>
-        /// Initializes a new instance of the AnimationCard class.
+        /// Initializes a new instance of the MediaCard class.
         /// </summary>
-        public AnimationCard()
+        public MediaCard()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the AnimationCard class.
+        /// Initializes a new instance of the MediaCard class.
         /// </summary>
         /// <param name="title">Title of this card</param>
         /// <param name="subtitle">Subtitle of this card</param>
@@ -42,7 +42,7 @@ namespace Microsoft.Bot.Connector
         /// <param name="aspect">Aspect ratio of thumbnail/media placeholder,
         /// allowed values are "16:9" and "4:3"</param>
         /// <param name="value">Supplementary parameter for this card</param>
-        public AnimationCard(string title = default(string), string subtitle = default(string), string text = default(string), ThumbnailUrl image = default(ThumbnailUrl), IList<MediaUrl> media = default(IList<MediaUrl>), IList<CardAction> buttons = default(IList<CardAction>), bool? shareable = default(bool?), bool? autoloop = default(bool?), bool? autostart = default(bool?), string aspect = default(string), object value = default(object))
+        public MediaCard(string title = default(string), string subtitle = default(string), string text = default(string), ThumbnailUrl image = default(ThumbnailUrl), IList<MediaUrl> media = default(IList<MediaUrl>), IList<CardAction> buttons = default(IList<CardAction>), bool? shareable = default(bool?), bool? autoloop = default(bool?), bool? autostart = default(bool?), string aspect = default(string), object value = default(object))
         {
             Title = title;
             Subtitle = subtitle;
