@@ -79,6 +79,11 @@ namespace Microsoft.Bot.Builder.Luis
         public bool? Verbose { get; set; }
 
         /// <summary>
+        /// The Bing Spell Check subscription key.
+        /// </summary>
+        public string BingSpellCheckSubscriptionKey { get; set; }
+
+        /// <summary>
         /// Any extra query parameters for the URL.
         /// </summary>
         public string ExtraParameters { get; set; }
@@ -162,6 +167,10 @@ namespace Microsoft.Bot.Builder.Luis
             if (Verbose != null)
             {
                 queryParameters.Add($"verbose={Uri.EscapeDataString(Convert.ToString(Verbose))}");
+            }
+            if (!string.IsNullOrWhiteSpace(BingSpellCheckSubscriptionKey))
+            {
+                queryParameters.Add($"bing-spell-check-subscription-key={Uri.EscapeDataString(BingSpellCheckSubscriptionKey)}");
             }
 #pragma warning disable CS0618
             if (ContextId != null)
@@ -252,6 +261,16 @@ namespace Microsoft.Bot.Builder.Luis
             }
         }
 
+        public void ApplyThreshold(LuisResult result)
+        {
+            if (result.TopScoringIntent.Score > model.Threshold)
+            {
+                return;
+            }
+            result.TopScoringIntent.Intent = "None";
+            result.TopScoringIntent.Score = 1.0d;
+        }
+
         async Task<LuisResult> ILuisService.QueryAsync(Uri uri, CancellationToken token)
         {
             string json;
@@ -266,6 +285,7 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 var result = JsonConvert.DeserializeObject<LuisResult>(json);
                 Fix(result);
+                ApplyThreshold(result);
                 return result;
             }
             catch (JsonException ex)

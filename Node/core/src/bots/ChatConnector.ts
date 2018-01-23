@@ -52,6 +52,8 @@ var MAX_DATA_LENGTH = 65000;
 
 var USER_AGENT = "Microsoft-BotFramework/3.1 (BotBuilder Node.js/" + pjson.version + ")";
 
+var StateApiDreprecatedMessage = "The Bot State API is deprecated.  Please refer to https://aka.ms/I6swrh for details on how to replace with your own storage.";
+
 export interface IChatConnectorSettings {
     appId?: string;
     appPassword?: string;
@@ -120,9 +122,10 @@ export class ChatConnector implements IConnector, IBotStorage {
     }
 
     public listen(): IWebMiddleware {
-        return (req: IWebRequest, res: IWebResponse) => {
+        function defaultNext() { }
+        return (req: IWebRequest, res: IWebResponse, next: Function) => {
             if (req.body) {
-                this.verifyBotFramework(req, res);
+                this.verifyBotFramework(req, res, next || defaultNext);
             } else {
                 var requestData = '';
                 req.on('data', (chunk: string) => {
@@ -138,13 +141,13 @@ export class ChatConnector implements IConnector, IBotStorage {
                         return;
                     }
 
-                    this.verifyBotFramework(req, res);
+                    this.verifyBotFramework(req, res, next || defaultNext);
                 });
             }
         };
     }
 
-    private verifyBotFramework(req: IWebRequest, res: IWebResponse): void {
+    private verifyBotFramework(req: IWebRequest, res: IWebResponse, next: Function): void {
         var token: string;
         var isEmulator = req.body['channelId'] === 'emulator';
         var authHeaderValue = req.headers ? req.headers['authorization'] || req.headers['Authorization'] : null;
@@ -170,6 +173,7 @@ export class ChatConnector implements IConnector, IBotStorage {
                     logger.error('ChatConnector: receive - invalid token. Requested by unexpected app ID.');
                     res.status(403);
                     res.end();
+                    next();
                     return;
                 }
 
@@ -236,26 +240,29 @@ export class ChatConnector implements IConnector, IBotStorage {
                         logger.error('ChatConnector: receive - invalid token. Check bot\'s app ID & Password.');
                         res.send(403, err);
                         res.end();
+                        next();
                         return;
                     }
 
-                    this.dispatch(req.body, res);
+                    this.dispatch(req.body, res, next);
                 } else {
                     logger.error('ChatConnector: receive - invalid signing key or OpenId metadata document.');
                     res.status(500);
                     res.end();
+                    next();
                     return;
                 }
             });
         } else if (isEmulator && !this.settings.appId && !this.settings.appPassword) {
             // Emulator running without auth enabled
             logger.warn(req.body, 'ChatConnector: receive - emulator running without security enabled.');
-            this.dispatch(req.body, res);
+            this.dispatch(req.body, res, next);
         } else {
             // Token not provided so
             logger.error('ChatConnector: receive - no security token sent.');
             res.status(401);
             res.end();
+            next();
         }
     }
 
@@ -273,14 +280,22 @@ export class ChatConnector implements IConnector, IBotStorage {
             try {
                 if (msg.type == 'delay') {
                     setTimeout(cb, (<any>msg).value);
-                } else if (msg.address && (<IChatConnectorAddress>msg.address).serviceUrl) {
-                    this.postMessage(msg, (idx == messages.length - 1), (err, address) => {
-                        addresses.push(address);
-                        cb(err);
-                    });
                 } else {
-                    logger.error('ChatConnector: send - message is missing address or serviceUrl.')
-                    cb(new Error('Message missing address or serviceUrl.'));
+                    const addressExists = !!msg.address;
+                    const serviceUrlExists = addressExists && !!(<IChatConnectorAddress>msg.address).serviceUrl;
+
+                    // checking for address exists is redundant here, its part of the def of serviceUrlExists
+                    if(serviceUrlExists) {
+                        this.postMessage(msg, (idx == messages.length - 1), (err, address) => {
+                            addresses.push(address);
+                            cb(err);
+                        });
+                    } else {
+                        const msg = `Message is missing ${addressExists ? 'address and serviceUrl' : 'serviceUrl'} `;
+
+                        logger.error(`ChatConnector: send - ${msg}`)
+                        cb(new Error(msg));
+                    }
                 }
             } catch (e) {
                 cb(e);
@@ -363,8 +378,11 @@ export class ChatConnector implements IConnector, IBotStorage {
         this.authenticatedRequest(options, (err, response, body) => done(err));
     }
 
+
     public getData(context: IBotStorageContext, callback: (err: Error, data: IChatConnectorStorageData) => void): void {
         try {
+            console.warn(StateApiDreprecatedMessage);
+
             // Build list of read commands
             var root = this.getStoragePath(context.address);
             var list: any[] = [];
@@ -445,6 +463,7 @@ export class ChatConnector implements IConnector, IBotStorage {
     }
 
     public saveData(context: IBotStorageContext, data: IChatConnectorStorageData, callback?: (err: Error) => void): void {
+        console.warn(StateApiDreprecatedMessage);
         var list: any[] = [];
         function addWrite(field: string, botData: any, url: string) {
             var hashKey = field + 'Hash';
@@ -545,7 +564,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         }
     }
 
-    private dispatch(msg: IMessage, res: IWebResponse) {
+    private dispatch(msg: IMessage, res: IWebResponse, next: Function) {
         // Dispatch message/activity
         try {
             this.prepIncomingMessage(msg);
@@ -555,18 +574,23 @@ export class ChatConnector implements IConnector, IBotStorage {
                 if (err) {
                     res.status(500);
                     res.end();
+                    next();
                     logger.error('ChatConnector: error dispatching event(s) - ', err.message || '');
                 } else if (body) {
                     res.send(status || 200, body);
+                    res.end();
+                    next();
                 } else {
                     res.status(status || 200);
                     res.end();
+                    next();
                 }
             })
         } catch (e) {
             console.error(e instanceof Error ? (<Error>e).stack : e.toString());
             res.status(500);
             res.end();
+            next();
         }
     }
 
@@ -643,7 +667,7 @@ export class ChatConnector implements IConnector, IBotStorage {
                                 if (response.statusCode < 400) {
                                     callback(null, response, body);
                                 } else {
-                                    var txt = "Request to '" + options.url + "' failed: [" + response.statusCode + "] " + response.statusMessage;
+                                    var txt = options.method + " to '" + options.url + "' failed: [" + response.statusCode + "] " + response.statusMessage;
                                     callback(new Error(txt), response, null);
                                 }
                                 break;
@@ -883,6 +907,5 @@ interface IWebResponse {
 
 /** Express or Restify Middleware Function. */
 interface IWebMiddleware {
-    (req: IWebRequest, res: IWebResponse, next?: Function): void;
+    (req: IWebRequest, res: IWebResponse, next: Function): void;
 }
-
