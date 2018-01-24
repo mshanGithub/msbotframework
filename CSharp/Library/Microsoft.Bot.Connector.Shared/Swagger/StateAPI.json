@@ -55,7 +55,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A bot data object will be returned containing your object with an ETag on it.\r\n\r\nUse the SetProperty<T>(property, value) and GetProperty<T>(property) to access properties on the object.",
+            "description": "A bot data object will be returned containing your object",
             "schema": {
               "$ref": "#/definitions/BotData"
             }
@@ -115,7 +115,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A bot data object will be returned containing your object with an ETag on it.\r\n\r\nUse the SetProperty<T>(property, value) and GetProperty<T>(property) to access properties on the object.",
+            "description": "A bot data object will be returned containing your object",
             "schema": {
               "$ref": "#/definitions/BotData"
             }
@@ -162,7 +162,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "An array of IDs",
             "schema": {
               "type": "array",
               "items": {
@@ -217,7 +217,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A bot data object will be returned containing your object with an ETag on it.\r\n\r\nUse the SetProperty<T>(property, value) and GetProperty<T>(property) to access properties on the object.",
+            "description": "A bot data object will be returned containing your object",
             "schema": {
               "$ref": "#/definitions/BotData"
             }
@@ -277,7 +277,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A bot data object will be returned containing your object with an ETag on it.\r\n\r\nUse the SetProperty<T>(property, value) and GetProperty<T>(property) to access properties on the object.",
+            "description": "A bot data object will be returned containing your object",
             "schema": {
               "$ref": "#/definitions/BotData"
             }
@@ -333,7 +333,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A bot data object will be returned containing your object with an ETag on it.\r\n\r\nUse the SetProperty<T>(property, value) and GetProperty<T>(property) to access properties on the object.",
+            "description": "A bot data object will be returned containing your object",
             "schema": {
               "$ref": "#/definitions/BotData"
             }
@@ -400,7 +400,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A bot data object will be returned containing your object with an ETag on it.\r\n\r\nUse the SetProperty<T>(property, value) and GetProperty<T>(property) to access properties on the object.",
+            "description": "A bot data object will be returned containing your object",
             "schema": {
               "$ref": "#/definitions/BotData"
             }

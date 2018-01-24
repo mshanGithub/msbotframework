@@ -1,10 +1,12 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Bot.Connector
 {
@@ -21,6 +23,10 @@ namespace Microsoft.Bot.Connector
         IContactRelationUpdateActivity,
         IInstallationUpdateActivity,
         IMessageActivity,
+        IMessageUpdateActivity,
+        IMessageDeleteActivity,
+        IMessageReactionActivity,
+        ISuggestionActivity,
         ITypingActivity,
         IEndOfConversationActivity,
         IEventActivity,
@@ -69,7 +75,6 @@ namespace Microsoft.Bot.Connector
         /// </summary>
         [JsonExtensionData(ReadData = true, WriteData = true)]
         public JObject Properties { get; set; } = new JObject();
-
 
         /// <summary>
         /// Create an instance of the Activity class with IMessageActivity masking
@@ -157,6 +162,30 @@ namespace Microsoft.Bot.Connector
         public IInvokeActivity AsInvokeActivity() { return IsActivity(ActivityTypes.Invoke) ? this : null; }
 
         /// <summary>
+        /// Return an IMessageUpdateAcitvity if this is a MessageUpdate activity
+        /// </summary>
+        /// <returns></returns>
+        public IMessageUpdateActivity AsMessageUpdateActivity() { return IsActivity(ActivityTypes.MessageUpdate) ? this : null; }
+
+        /// <summary>
+        /// Return an IMessageDeleteActivity if this is a MessageDelete activity
+        /// </summary>
+        /// <returns></returns>
+        public IMessageDeleteActivity AsMessageDeleteActivity() { return IsActivity(ActivityTypes.MessageDelete) ? this : null; }
+
+        /// <summary>
+        /// Return an IMessageReactionActivity if this is a MessageReaction activity
+        /// </summary>
+        /// <returns></returns>
+        public IMessageReactionActivity AsMessageReactionActivity() { return IsActivity(ActivityTypes.MessageReaction) ? this : null; }
+
+        /// <summary>
+        /// Return an ISuggestionActivity if this is a Suggestion activity
+        /// </summary>
+        /// <returns></returns>
+        public ISuggestionActivity AsSuggestionActivity() { return IsActivity(ActivityTypes.Suggestion) ? this : null; }
+
+        /// <summary>
         /// Maps type to activity types 
         /// </summary>
         /// <param name="type"> The type.</param>
@@ -214,52 +243,6 @@ namespace Microsoft.Bot.Connector
             return this.Entities?.Where(entity => String.Compare(entity.Type, "mention", ignoreCase: true) == 0)
                 .Select(e => e.Properties.ToObject<Mention>()).ToArray() ?? new Mention[0];
         }
-    }
-
-    public static class ActivityExtensions
-    {
-        /// <summary>
-        /// Get StateClient appropriate for this activity
-        /// </summary>
-        /// <param name="credentials">credentials for bot to access state api</param>
-        /// <param name="serviceUrl">alternate serviceurl to use for state service</param>
-        /// <param name="handlers"></param>
-        /// <param name="activity"></param>
-        /// <returns></returns>
-        [System.Obsolete("Deprecated: This method will only get the default state client, if you have implemented a custom state client it will not retrieve it")]
-        public static StateClient GetStateClient(this IActivity activity, MicrosoftAppCredentials credentials, string serviceUrl = null, params DelegatingHandler[] handlers)
-        {
-            bool useServiceUrl = (activity.ChannelId == "emulator");
-            if (useServiceUrl)
-                return new StateClient(new Uri(activity.ServiceUrl), credentials: credentials, handlers: handlers);
-
-            if (serviceUrl != null)
-                return new StateClient(new Uri(serviceUrl), credentials: credentials, handlers: handlers);
-
-            return new StateClient(credentials, true, handlers);
-        }
-
-        /// <summary>
-        /// Get StateClient appropriate for this activity
-        /// </summary>
-        /// <param name="microsoftAppId"></param>
-        /// <param name="microsoftAppPassword"></param>
-        /// <param name="serviceUrl">alternate serviceurl to use for state service</param>
-        /// <param name="handlers"></param>
-        /// <param name="activity"></param>
-        /// <returns></returns>
-        public static StateClient GetStateClient(this IActivity activity, string microsoftAppId = null, string microsoftAppPassword = null, string serviceUrl = null, params DelegatingHandler[] handlers) => GetStateClient(activity, new MicrosoftAppCredentials(microsoftAppId, microsoftAppPassword), serviceUrl, handlers);
-
-        /// <summary>
-        /// Return the "major" portion of the activity
-        /// </summary>
-        /// <param name="activity"></param>
-        /// <returns>normalized major portion of the activity, aka message/... will return "message"</returns>
-        public static string GetActivityType(this IActivity activity)
-        {
-            var type = activity.Type.Split('/').First();
-            return Activity.GetActivityType(type);
-        }
 
         /// <summary>
         /// Get channeldata as typed structure
@@ -267,13 +250,12 @@ namespace Microsoft.Bot.Connector
         /// <param name="activity"></param>
         /// <typeparam name="TypeT">type to use</typeparam>
         /// <returns>typed object or default(TypeT)</returns>
-        public static TypeT GetChannelData<TypeT>(this IActivity activity)
+        public TypeT GetChannelData<TypeT>()
         {
-            if (activity.ChannelData == null)
+            if (this.ChannelData == null)
                 return default(TypeT);
-            return ((JObject)activity.ChannelData).ToObject<TypeT>();
+            return ((JObject)this.ChannelData).ToObject<TypeT>();
         }
-
 
         /// <summary>
         /// Get channeldata as typed structure
@@ -284,19 +266,18 @@ namespace Microsoft.Bot.Connector
         /// <returns>
         /// <c>true</c> if value of <seealso cref="IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
         /// </returns>
-        public static bool TryGetChannelData<TypeT>(this IActivity activity,
-            out TypeT instance)
+        public bool TryGetChannelData<TypeT>(out TypeT instance)
         {
             instance = default(TypeT);
 
             try
             {
-                if (activity.ChannelData == null)
+                if (this.ChannelData == null)
                 {
                     return false;
                 }
 
-                instance = GetChannelData<TypeT>(activity);
+                instance = this.GetChannelData<TypeT>();
                 return true;
             }
             catch
@@ -304,6 +285,11 @@ namespace Microsoft.Bot.Connector
                 return false;
             }
         }
+
+    }
+
+    public static class ActivityExtensions
+    {
 
         /// <summary>
         /// Is there a mention of Id in the Text Property 

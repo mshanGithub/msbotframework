@@ -203,6 +203,30 @@
             Return an IInvokeActivity mask if this is an invoke activity
             </summary>
         </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.AsMessageUpdateActivity">
+            <summary>
+            Return an IMessageUpdateAcitvity if this is a MessageUpdate activity
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.AsMessageDeleteActivity">
+            <summary>
+            Return an IMessageDeleteActivity if this is a MessageDelete activity
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.AsMessageReactionActivity">
+            <summary>
+            Return an IMessageReactionActivity if this is a MessageReaction activity
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.AsSuggestionActivity">
+            <summary>
+            Return an ISuggestionActivity if this is a Suggestion activity
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Bot.Connector.Activity.GetActivityType(System.String)">
             <summary>
             Maps type to activity types 
@@ -222,12 +246,31 @@
             </summary>
             <returns>The array of mentions or an empty array, if none found.</returns>
         </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.GetChannelData``1">
+            <summary>
+            Get channeldata as typed structure
+            </summary>
+            <param name="activity"></param>
+            <typeparam name="TypeT">type to use</typeparam>
+            <returns>typed object or default(TypeT)</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.TryGetChannelData``1(``0@)">
+            <summary>
+            Get channeldata as typed structure
+            </summary>
+            <param name="activity"></param>
+            <typeparam name="TypeT">type to use</typeparam>
+            <param name="instance">The resulting instance, if possible</param>
+            <returns>
+            <c>true</c> if value of <seealso cref="P:Microsoft.Bot.Connector.IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
+            </returns>
+        </member>
         <member name="M:Microsoft.Bot.Connector.Activity.#ctor">
             <summary>
             Initializes a new instance of the Activity class.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Connector.Activity.#ctor(System.String,System.String,System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.String,System.String,Microsoft.Bot.Connector.ChannelAccount,Microsoft.Bot.Connector.ConversationAccount,Microsoft.Bot.Connector.ChannelAccount,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.ChannelAccount},System.Collections.Generic.IList{Microsoft.Bot.Connector.ChannelAccount},System.Collections.Generic.IList{Microsoft.Bot.Connector.MessageReaction},System.Collections.Generic.IList{Microsoft.Bot.Connector.MessageReaction},System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,Microsoft.Bot.Connector.SuggestedActions,System.Collections.Generic.IList{Microsoft.Bot.Connector.Attachment},System.Collections.Generic.IList{Microsoft.Bot.Connector.Entity},System.Object,System.String,System.String,System.Object,System.String,Microsoft.Bot.Connector.ConversationReference,System.String)">
+        <member name="M:Microsoft.Bot.Connector.Activity.#ctor(System.String,System.String,System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.String,System.String,Microsoft.Bot.Connector.ChannelAccount,Microsoft.Bot.Connector.ConversationAccount,Microsoft.Bot.Connector.ChannelAccount,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.ChannelAccount},System.Collections.Generic.IList{Microsoft.Bot.Connector.ChannelAccount},System.Collections.Generic.IList{Microsoft.Bot.Connector.MessageReaction},System.Collections.Generic.IList{Microsoft.Bot.Connector.MessageReaction},System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,Microsoft.Bot.Connector.SuggestedActions,System.Collections.Generic.IList{Microsoft.Bot.Connector.Attachment},System.Collections.Generic.IList{Microsoft.Bot.Connector.Entity},System.Object,System.String,System.String,System.Object,System.String,Microsoft.Bot.Connector.ConversationReference,System.String,System.Nullable{System.DateTimeOffset},System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.TextHighlight})">
             <summary>
             Initializes a new instance of the Activity class.
             </summary>
@@ -286,6 +329,17 @@
             activity</param>
             <param name="code">Code indicating why the conversation has
             ended</param>
+            <param name="expiration">DateTime to expire the activity as ISO
+            8601 encoded datetime</param>
+            <param name="importance">Importance of this activity
+            {Low|Normal|High}, null value indicates Normal importance see
+            ActivityImportance)</param>
+            <param name="deliveryMode">Hint to describe how this activity
+            should be delivered.
+            Currently: null or "Default" = default delivery
+            "Notification" = notification semantics</param>
+            <param name="textHighlights">TextHighlight in the activity
+            represented in the ReplyToId property</param>
         </member>
         <member name="P:Microsoft.Bot.Connector.Activity.Type">
             <summary>
@@ -457,52 +511,32 @@
             Gets or sets code indicating why the conversation has ended
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetStateClient(Microsoft.Bot.Connector.IActivity,Microsoft.Bot.Connector.MicrosoftAppCredentials,System.String,System.Net.Http.DelegatingHandler[])">
+        <member name="P:Microsoft.Bot.Connector.Activity.Expiration">
             <summary>
-            Get StateClient appropriate for this activity
+            Gets or sets dateTime to expire the activity as ISO 8601 encoded
+            datetime
             </summary>
-            <param name="credentials">credentials for bot to access state api</param>
-            <param name="serviceUrl">alternate serviceurl to use for state service</param>
-            <param name="handlers"></param>
-            <param name="activity"></param>
-            <returns></returns>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetStateClient(Microsoft.Bot.Connector.IActivity,System.String,System.String,System.String,System.Net.Http.DelegatingHandler[])">
+        <member name="P:Microsoft.Bot.Connector.Activity.Importance">
             <summary>
-            Get StateClient appropriate for this activity
+            Gets or sets importance of this activity
+            {Low|Normal|High}, null value indicates Normal importance see
+            ActivityImportance)
             </summary>
-            <param name="microsoftAppId"></param>
-            <param name="microsoftAppPassword"></param>
-            <param name="serviceUrl">alternate serviceurl to use for state service</param>
-            <param name="handlers"></param>
-            <param name="activity"></param>
-            <returns></returns>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetActivityType(Microsoft.Bot.Connector.IActivity)">
+        <member name="P:Microsoft.Bot.Connector.Activity.DeliveryMode">
             <summary>
-            Return the "major" portion of the activity
+            Gets or sets hint to describe how this activity should be
+            delivered.
+            Currently: null or "Default" = default delivery
+            "Notification" = notification semantics
             </summary>
-            <param name="activity"></param>
-            <returns>normalized major portion of the activity, aka message/... will return "message"</returns>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetChannelData``1(Microsoft.Bot.Connector.IActivity)">
+        <member name="P:Microsoft.Bot.Connector.Activity.TextHighlights">
             <summary>
-            Get channeldata as typed structure
+            Gets or sets textHighlight in the activity represented in the
+            ReplyToId property
             </summary>
-            <param name="activity"></param>
-            <typeparam name="TypeT">type to use</typeparam>
-            <returns>typed object or default(TypeT)</returns>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.TryGetChannelData``1(Microsoft.Bot.Connector.IActivity,``0@)">
-            <summary>
-            Get channeldata as typed structure
-            </summary>
-            <param name="activity"></param>
-            <typeparam name="TypeT">type to use</typeparam>
-            <param name="instance">The resulting instance, if possible</param>
-            <returns>
-            <c>true</c> if value of <seealso cref="P:Microsoft.Bot.Connector.IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
-            </returns>
         </member>
         <member name="M:Microsoft.Bot.Connector.ActivityExtensions.MentionsId(Microsoft.Bot.Connector.IMessageActivity,System.String)">
             <summary>
@@ -569,11 +603,6 @@
             End a conversation
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Connector.ActivityTypes.Trigger">
-            <summary>
-            NOTE: Trigger activity has been renamed to Event activity
-            </summary>
-        </member>
         <member name="F:Microsoft.Bot.Connector.ActivityTypes.Event">
             <summary>
             Asynchronous external event
@@ -589,6 +618,16 @@
             Delete user data
             </summary>
         </member>
+        <member name="F:Microsoft.Bot.Connector.ActivityTypes.MessageUpdate">
+            <summary>
+            An update to an existing Message Activity
+            </summary>
+        </member>
+        <member name="F:Microsoft.Bot.Connector.ActivityTypes.MessageDelete">
+            <summary>
+            Indicates a delete of an existing Message Activity
+            </summary>
+        </member>
         <member name="F:Microsoft.Bot.Connector.ActivityTypes.InstallationUpdate">
             <summary>
             Bot added or removed from channel
@@ -597,6 +636,11 @@
         <member name="F:Microsoft.Bot.Connector.ActivityTypes.MessageReaction">
             <summary>
             Reaction added or removed from activity
+            </summary>
+        </member>
+        <member name="F:Microsoft.Bot.Connector.ActivityTypes.Suggestion">
+            <summary>
+            Suggestion activity - private message 
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.Attachments">
@@ -1157,25 +1201,6 @@
             <param name="microsoftAppPassword">Optional. Your Microsoft app password. If null, this setting is read from settings["MicrosoftAppPassword"]</param>
             <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ConnectorClient.#ctor(System.Uri,Microsoft.Bot.Connector.MicrosoftAppCredentials,System.Boolean,System.Net.Http.DelegatingHandler[])">
-            <summary>
-            Create a new instance of the ConnectorClient class
-            </summary>
-            <param name="baseUri">Base URI for the Connector service</param>
-            <param name="credentials">Credentials for the Connector service</param>
-            <param name="addJwtTokenRefresher">True, if JwtTokenRefresher should be included; False otherwise.</param>
-            <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.ConnectorClient.#ctor(System.Uri,Microsoft.Bot.Connector.MicrosoftAppCredentials,System.Net.Http.HttpClientHandler,System.Boolean,System.Net.Http.DelegatingHandler[])">
-            <summary>
-            Create a new instances of the ConnectorClient.
-            </summary>
-            <param name="baseUri">Base URI for the Connector service</param>
-            <param name="credentials">Credentials for the Connector service</param>
-            <param name="httpClientHandler">The httpClientHandler used by http client</param>
-            <param name="addJwtTokenRefresher">True, if JwtTokenRefresher should be included; False otherwise.</param>
-            <param name="handlers">Optional. The delegating handlers to add to the http client pipeline.</param>
-        </member>
         <member name="T:Microsoft.Bot.Connector.Conversations">
             <summary>
             Conversations operations.
@@ -1251,7 +1276,7 @@
              A response object containing the response body and response headers.
              </return>
         </member>
-        <member name="M:Microsoft.Bot.Connector.Conversations.SendToConversationWithHttpMessagesAsync(Microsoft.Bot.Connector.Activity,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+        <member name="M:Microsoft.Bot.Connector.Conversations.SendToConversationWithHttpMessagesAsync(System.String,Microsoft.Bot.Connector.Activity,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
              <summary>
              SendToConversation
              </summary>
@@ -1270,11 +1295,11 @@
             
              Use SendToConversation in all other cases.
              </remarks>
-             <param name='activity'>
-             Activity to send
-             </param>
              <param name='conversationId'>
              Conversation ID
+             </param>
+             <param name='activity'>
+             Activity to send
              </param>
              <param name='customHeaders'>
              Headers that will be added to request.
@@ -1622,7 +1647,7 @@
              The cancellation token.
              </param>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ConversationsExtensions.SendToConversation(Microsoft.Bot.Connector.IConversations,Microsoft.Bot.Connector.Activity,System.String)">
+        <member name="M:Microsoft.Bot.Connector.ConversationsExtensions.SendToConversation(Microsoft.Bot.Connector.IConversations,System.String,Microsoft.Bot.Connector.Activity)">
              <summary>
              SendToConversation
              </summary>
@@ -1644,14 +1669,14 @@
              <param name='operations'>
              The operations group for this extension method.
              </param>
-             <param name='activity'>
-             Activity to send
-             </param>
              <param name='conversationId'>
              Conversation ID
+             </param>
+             <param name='activity'>
+             Activity to send
              </param>
         </member>
-        <member name="M:Microsoft.Bot.Connector.ConversationsExtensions.SendToConversationAsync(Microsoft.Bot.Connector.IConversations,Microsoft.Bot.Connector.Activity,System.String,System.Threading.CancellationToken)">
+        <member name="M:Microsoft.Bot.Connector.ConversationsExtensions.SendToConversationAsync(Microsoft.Bot.Connector.IConversations,System.String,Microsoft.Bot.Connector.Activity,System.Threading.CancellationToken)">
              <summary>
              SendToConversation
              </summary>
@@ -1673,11 +1698,11 @@
              <param name='operations'>
              The operations group for this extension method.
              </param>
-             <param name='activity'>
-             Activity to send
-             </param>
              <param name='conversationId'>
              Conversation ID
+             </param>
+             <param name='activity'>
+             Activity to send
              </param>
              <param name='cancellationToken'>
              The cancellation token.
@@ -2268,7 +2293,7 @@
              Thrown when a required parameter is null
              </exception>
         </member>
-        <member name="M:Microsoft.Bot.Connector.IConversations.SendToConversationWithHttpMessagesAsync(Microsoft.Bot.Connector.Activity,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+        <member name="M:Microsoft.Bot.Connector.IConversations.SendToConversationWithHttpMessagesAsync(System.String,Microsoft.Bot.Connector.Activity,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
              <summary>
              SendToConversation
              </summary>
@@ -2290,11 +2315,11 @@
             
              Use SendToConversation in all other cases.
              </remarks>
-             <param name='activity'>
-             Activity to send
-             </param>
              <param name='conversationId'>
              Conversation ID
+             </param>
+             <param name='activity'>
+             Activity to send
              </param>
              <param name='customHeaders'>
              The headers that will be added to request.
@@ -2523,220 +2548,6 @@
              Thrown when a required parameter is null
              </exception>
         </member>
-        <member name="T:Microsoft.Bot.Connector.ThumbnailCard">
-            <summary>
-            A thumbnail card (card with a single, small thumbnail image)
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.ThumbnailCard.#ctor">
-            <summary>
-            Initializes a new instance of the ThumbnailCard class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.ThumbnailCard.#ctor(System.String,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardImage},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},Microsoft.Bot.Connector.CardAction)">
-            <summary>
-            Initializes a new instance of the ThumbnailCard class.
-            </summary>
-            <param name="title">Title of the card</param>
-            <param name="subtitle">Subtitle of the card</param>
-            <param name="text">Text for the card</param>
-            <param name="images">Array of images for the card</param>
-            <param name="buttons">Set of actions applicable to the current
-            card</param>
-            <param name="tap">This action will be activated when user taps on
-            the card itself</param>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Title">
-            <summary>
-            Gets or sets title of the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Subtitle">
-            <summary>
-            Gets or sets subtitle of the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Text">
-            <summary>
-            Gets or sets text for the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Images">
-            <summary>
-            Gets or sets array of images for the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Buttons">
-            <summary>
-            Gets or sets set of actions applicable to the current card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Tap">
-            <summary>
-            Gets or sets this action will be activated when user taps on the
-            card itself
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.HeroCard">
-            <summary>
-            A Hero card (card with a single, large image)
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.HeroCard.#ctor">
-            <summary>
-            Initializes a new instance of the HeroCard class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.HeroCard.#ctor(System.String,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardImage},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},Microsoft.Bot.Connector.CardAction)">
-            <summary>
-            Initializes a new instance of the HeroCard class.
-            </summary>
-            <param name="title">Title of the card</param>
-            <param name="subtitle">Subtitle of the card</param>
-            <param name="text">Text for the card</param>
-            <param name="images">Array of images for the card</param>
-            <param name="buttons">Set of actions applicable to the current
-            card</param>
-            <param name="tap">This action will be activated when user taps on
-            the card itself</param>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.HeroCard.Title">
-            <summary>
-            Gets or sets title of the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.HeroCard.Subtitle">
-            <summary>
-            Gets or sets subtitle of the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.HeroCard.Text">
-            <summary>
-            Gets or sets text for the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.HeroCard.Images">
-            <summary>
-            Gets or sets array of images for the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.HeroCard.Buttons">
-            <summary>
-            Gets or sets set of actions applicable to the current card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.HeroCard.Tap">
-            <summary>
-            Gets or sets this action will be activated when user taps on the
-            card itself
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.ReceiptCard">
-            <summary>
-            A receipt card
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.ReceiptCard.#ctor">
-            <summary>
-            Initializes a new instance of the ReceiptCard class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.ReceiptCard.#ctor(System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.ReceiptItem},System.Collections.Generic.IList{Microsoft.Bot.Connector.Fact},Microsoft.Bot.Connector.CardAction,System.String,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction})">
-            <summary>
-            Initializes a new instance of the ReceiptCard class.
-            </summary>
-            <param name="title">Title of the card</param>
-            <param name="items">Array of Receipt Items</param>
-            <param name="facts">Array of Fact Objects   Array of key-value
-            pairs.</param>
-            <param name="tap">This action will be activated when user taps on
-            the card</param>
-            <param name="total">Total amount of money paid (or should be
-            paid)</param>
-            <param name="tax">Total amount of TAX paid(or should be
-            paid)</param>
-            <param name="vat">Total amount of VAT paid(or should be
-            paid)</param>
-            <param name="buttons">Set of actions applicable to the current
-            card</param>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Title">
-            <summary>
-            Gets or sets title of the card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Items">
-            <summary>
-            Gets or sets array of Receipt Items
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Facts">
-            <summary>
-            Gets or sets array of Fact Objects   Array of key-value pairs.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Tap">
-            <summary>
-            Gets or sets this action will be activated when user taps on the
-            card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Total">
-            <summary>
-            Gets or sets total amount of money paid (or should be paid)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Tax">
-            <summary>
-            Gets or sets total amount of TAX paid(or should be paid)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Vat">
-            <summary>
-            Gets or sets total amount of VAT paid(or should be paid)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Buttons">
-            <summary>
-            Gets or sets set of actions applicable to the current card
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.SigninCard">
-            <summary>
-            A card representing a request to sign in
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.SigninCard.#ctor">
-            <summary>
-            Initializes a new instance of the SigninCard class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.SigninCard.#ctor(System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction})">
-            <summary>
-            Initializes a new instance of the SigninCard class.
-            </summary>
-            <param name="text">Text for signin request</param>
-            <param name="buttons">Action to use to perform signin</param>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.SigninCard.Text">
-            <summary>
-            Gets or sets text for signin request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.SigninCard.Buttons">
-            <summary>
-            Gets or sets action to use to perform signin
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.SigninCard.Create(System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:Microsoft.Bot.Connector.SigninCard"/>
-            </summary>
-            <param name="text"> The <see cref="P:Microsoft.Bot.Connector.SigninCard.Text"/></param>
-            <param name="buttonLabel"> The signin button label.</param>
-            <param name="url"> The sigin url.</param>
-            <returns> The created sigin card.</returns>
-        </member>
         <member name="T:Microsoft.Bot.Connector.AnimationCard">
             <summary>
             An animation card (Ex: gif or short video clip)
@@ -2826,198 +2637,6 @@
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Connector.AnimationCard.Validate">
-            <summary>
-            Validate the object.
-            </summary>
-            <exception cref="T:Microsoft.Rest.ValidationException">
-            Thrown if validation fails
-            </exception>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.AudioCard">
-            <summary>
-            Audio card
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.AudioCard.#ctor">
-            <summary>
-            Initializes a new instance of the AudioCard class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.AudioCard.#ctor(System.String,System.String,System.String,Microsoft.Bot.Connector.ThumbnailUrl,System.Collections.Generic.IList{Microsoft.Bot.Connector.MediaUrl},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.Object)">
-            <summary>
-            Initializes a new instance of the AudioCard class.
-            </summary>
-            <param name="title">Title of this card</param>
-            <param name="subtitle">Subtitle of this card</param>
-            <param name="text">Text of this card</param>
-            <param name="image">Thumbnail placeholder</param>
-            <param name="media">Media URLs for this card</param>
-            <param name="buttons">Actions on this card</param>
-            <param name="shareable">This content may be shared with others
-            (default:true)</param>
-            <param name="autoloop">Should the client loop playback at end of
-            content (default:true)</param>
-            <param name="autostart">Should the client automatically start
-            playback of media in this card (default:true)</param>
-            <param name="aspect">Aspect ratio of thumbnail/media placeholder,
-            allowed values are "16:9" and "4:3"</param>
-            <param name="value">Supplementary parameter for this card</param>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Title">
-            <summary>
-            Gets or sets title of this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Subtitle">
-            <summary>
-            Gets or sets subtitle of this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Text">
-            <summary>
-            Gets or sets text of this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Image">
-            <summary>
-            Gets or sets thumbnail placeholder
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Media">
-            <summary>
-            Gets or sets media URLs for this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Buttons">
-            <summary>
-            Gets or sets actions on this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Shareable">
-            <summary>
-            Gets or sets this content may be shared with others (default:true)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Autoloop">
-            <summary>
-            Gets or sets should the client loop playback at end of content
-            (default:true)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Autostart">
-            <summary>
-            Gets or sets should the client automatically start playback of
-            media in this card (default:true)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Aspect">
-            <summary>
-            Gets or sets aspect ratio of thumbnail/media placeholder, allowed
-            values are "16:9" and "4:3"
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.AudioCard.Value">
-            <summary>
-            Gets or sets supplementary parameter for this card
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.AudioCard.Validate">
-            <summary>
-            Validate the object.
-            </summary>
-            <exception cref="T:Microsoft.Rest.ValidationException">
-            Thrown if validation fails
-            </exception>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.VideoCard">
-            <summary>
-            Video card
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.VideoCard.#ctor">
-            <summary>
-            Initializes a new instance of the VideoCard class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.VideoCard.#ctor(System.String,System.String,System.String,Microsoft.Bot.Connector.ThumbnailUrl,System.Collections.Generic.IList{Microsoft.Bot.Connector.MediaUrl},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.Object)">
-            <summary>
-            Initializes a new instance of the VideoCard class.
-            </summary>
-            <param name="title">Title of this card</param>
-            <param name="subtitle">Subtitle of this card</param>
-            <param name="text">Text of this card</param>
-            <param name="image">Thumbnail placeholder</param>
-            <param name="media">Media URLs for this card</param>
-            <param name="buttons">Actions on this card</param>
-            <param name="shareable">This content may be shared with others
-            (default:true)</param>
-            <param name="autoloop">Should the client loop playback at end of
-            content (default:true)</param>
-            <param name="autostart">Should the client automatically start
-            playback of media in this card (default:true)</param>
-            <param name="aspect">Aspect ratio of thumbnail/media placeholder,
-            allowed values are "16:9" and "4:3"</param>
-            <param name="value">Supplementary parameter for this card</param>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Title">
-            <summary>
-            Gets or sets title of this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Subtitle">
-            <summary>
-            Gets or sets subtitle of this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Text">
-            <summary>
-            Gets or sets text of this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Image">
-            <summary>
-            Gets or sets thumbnail placeholder
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Media">
-            <summary>
-            Gets or sets media URLs for this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Buttons">
-            <summary>
-            Gets or sets actions on this card
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Shareable">
-            <summary>
-            Gets or sets this content may be shared with others (default:true)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Autoloop">
-            <summary>
-            Gets or sets should the client loop playback at end of content
-            (default:true)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Autostart">
-            <summary>
-            Gets or sets should the client automatically start playback of
-            media in this card (default:true)
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Aspect">
-            <summary>
-            Gets or sets aspect ratio of thumbnail/media placeholder, allowed
-            values are "16:9" and "4:3"
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.VideoCard.Value">
-            <summary>
-            Gets or sets supplementary parameter for this card
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.VideoCard.Validate">
             <summary>
             Validate the object.
             </summary>
@@ -3174,6 +2793,102 @@
             <summary>
             Gets or sets name of the attachment
             </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.AudioCard">
+            <summary>
+            Audio card
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.AudioCard.#ctor">
+            <summary>
+            Initializes a new instance of the AudioCard class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.AudioCard.#ctor(System.String,System.String,System.String,Microsoft.Bot.Connector.ThumbnailUrl,System.Collections.Generic.IList{Microsoft.Bot.Connector.MediaUrl},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the AudioCard class.
+            </summary>
+            <param name="title">Title of this card</param>
+            <param name="subtitle">Subtitle of this card</param>
+            <param name="text">Text of this card</param>
+            <param name="image">Thumbnail placeholder</param>
+            <param name="media">Media URLs for this card</param>
+            <param name="buttons">Actions on this card</param>
+            <param name="shareable">This content may be shared with others
+            (default:true)</param>
+            <param name="autoloop">Should the client loop playback at end of
+            content (default:true)</param>
+            <param name="autostart">Should the client automatically start
+            playback of media in this card (default:true)</param>
+            <param name="aspect">Aspect ratio of thumbnail/media placeholder,
+            allowed values are "16:9" and "4:3"</param>
+            <param name="value">Supplementary parameter for this card</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Title">
+            <summary>
+            Gets or sets title of this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Subtitle">
+            <summary>
+            Gets or sets subtitle of this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Text">
+            <summary>
+            Gets or sets text of this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Image">
+            <summary>
+            Gets or sets thumbnail placeholder
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Media">
+            <summary>
+            Gets or sets media URLs for this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Buttons">
+            <summary>
+            Gets or sets actions on this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Shareable">
+            <summary>
+            Gets or sets this content may be shared with others (default:true)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Autoloop">
+            <summary>
+            Gets or sets should the client loop playback at end of content
+            (default:true)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Autostart">
+            <summary>
+            Gets or sets should the client automatically start playback of
+            media in this card (default:true)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Aspect">
+            <summary>
+            Gets or sets aspect ratio of thumbnail/media placeholder, allowed
+            values are "16:9" and "4:3"
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.AudioCard.Value">
+            <summary>
+            Gets or sets supplementary parameter for this card
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.AudioCard.Validate">
+            <summary>
+            Validate the object.
+            </summary>
+            <exception cref="T:Microsoft.Rest.ValidationException">
+            Thrown if validation fails
+            </exception>
         </member>
         <member name="T:Microsoft.Bot.Connector.BasicCard">
             <summary>
@@ -3730,6 +3445,60 @@
             Gets or sets the name of the thing
             </summary>
         </member>
+        <member name="T:Microsoft.Bot.Connector.HeroCard">
+            <summary>
+            A Hero card (card with a single, large image)
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.HeroCard.#ctor">
+            <summary>
+            Initializes a new instance of the HeroCard class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.HeroCard.#ctor(System.String,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardImage},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},Microsoft.Bot.Connector.CardAction)">
+            <summary>
+            Initializes a new instance of the HeroCard class.
+            </summary>
+            <param name="title">Title of the card</param>
+            <param name="subtitle">Subtitle of the card</param>
+            <param name="text">Text for the card</param>
+            <param name="images">Array of images for the card</param>
+            <param name="buttons">Set of actions applicable to the current
+            card</param>
+            <param name="tap">This action will be activated when user taps on
+            the card itself</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.HeroCard.Title">
+            <summary>
+            Gets or sets title of the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.HeroCard.Subtitle">
+            <summary>
+            Gets or sets subtitle of the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.HeroCard.Text">
+            <summary>
+            Gets or sets text for the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.HeroCard.Images">
+            <summary>
+            Gets or sets array of images for the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.HeroCard.Buttons">
+            <summary>
+            Gets or sets set of actions applicable to the current card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.HeroCard.Tap">
+            <summary>
+            Gets or sets this action will be activated when user taps on the
+            card itself
+            </summary>
+        </member>
         <member name="T:Microsoft.Bot.Connector.MediaCard">
             <summary>
             Media card
@@ -3886,6 +3655,44 @@
             Thrown if validation fails
             </exception>
         </member>
+        <member name="T:Microsoft.Bot.Connector.Mention">
+            <summary>
+            Mention information (entity type: "mention")
+            </summary>
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Mention.#ctor">
+            <summary>
+            Initializes a new instance of the Mention class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.Mention.#ctor(Microsoft.Bot.Connector.ChannelAccount,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the Mention class.
+            </summary>
+            <param name="mentioned">The mentioned user</param>
+            <param name="text">Sub Text which represents the mention (can be
+            null or empty)</param>
+            <param name="type">Entity Type (typically from schema.org
+            types)</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Mention.Mentioned">
+            <summary>
+            Gets or sets the mentioned user
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Mention.Text">
+            <summary>
+            Gets or sets sub Text which represents the mention (can be null or
+            empty)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.Mention.Type">
+            <summary>
+            Gets or sets entity Type (typically from schema.org types)
+            </summary>
+        </member>
         <member name="T:Microsoft.Bot.Connector.MessageReaction">
             <summary>
             Message reaction object
@@ -3905,6 +3712,749 @@
         <member name="P:Microsoft.Bot.Connector.MessageReaction.Type">
             <summary>
             Gets or sets message reaction type
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.MicrosoftPayMethodData">
+            <summary>
+            W3C Payment Method Data for Microsoft Pay
+            </summary>
+            <summary>
+            Pay method data for Microsoft Payment.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.MicrosoftPayMethodData.#ctor">
+            <summary>
+            Initializes a new instance of the MicrosoftPayMethodData class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.MicrosoftPayMethodData.#ctor(System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String})">
+            <summary>
+            Initializes a new instance of the MicrosoftPayMethodData class.
+            </summary>
+            <param name="mechantId">Microsoft Pay Merchant ID</param>
+            <param name="supportedNetworks">Supported payment networks (e.g.,
+            "visa" and "mastercard")</param>
+            <param name="supportedTypes">Supported payment types (e.g.,
+            "credit")</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.MicrosoftPayMethodData.MechantId">
+            <summary>
+            Gets or sets microsoft Pay Merchant ID
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.MicrosoftPayMethodData.SupportedNetworks">
+            <summary>
+            Gets or sets supported payment networks (e.g., "visa" and
+            "mastercard")
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.MicrosoftPayMethodData.SupportedTypes">
+            <summary>
+            Gets or sets supported payment types (e.g., "credit")
+            </summary>
+        </member>
+        <member name="F:Microsoft.Bot.Connector.MicrosoftPayMethodData.MethodName">
+            <summary>
+            The pay method name.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.MicrosoftPayMethodData.#ctor(System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.Boolean)">
+            <summary>
+            Initializes a new instance of the MicrosoftPayMethodData class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.MicrosoftPayMethodData.Mode">
+            <summary>
+            Payment method mode
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.MicrosoftPayMethodData.ToPaymentMethodData">
+            <summary>
+            Get Microsoft Pay method data
+            </summary>
+            <returns>Payment method data</returns>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentAddress">
+            <summary>
+            Address within a Payment Request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentAddress.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentAddress class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentAddress.#ctor(System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the PaymentAddress class.
+            </summary>
+            <param name="country">This is the CLDR (Common Locale Data
+            Repository) region code. For example, US, GB, CN, or JP</param>
+            <param name="addressLine">This is the most specific part of the
+            address. It can include, for example, a street name, a house
+            number, apartment number, a rural delivery route, descriptive
+            instructions, or a post office box number.</param>
+            <param name="region">This is the top level administrative
+            subdivision of the country. For example, this can be a state, a
+            province, an oblast, or a prefecture.</param>
+            <param name="city">This is the city/town portion of the
+            address.</param>
+            <param name="dependentLocality">This is the dependent locality or
+            sublocality within a city. For example, used for neighborhoods,
+            boroughs, districts, or UK dependent localities.</param>
+            <param name="postalCode">This is the postal code or ZIP code, also
+            known as PIN code in India.</param>
+            <param name="sortingCode">This is the sorting code as used in, for
+            example, France.</param>
+            <param name="languageCode">This is the BCP-47 language code for the
+            address. It's used to determine the field separators and the order
+            of fields when formatting the address for display.</param>
+            <param name="organization">This is the organization, firm, company,
+            or institution at this address.</param>
+            <param name="recipient">This is the name of the recipient or
+            contact person.</param>
+            <param name="phone">This is the phone number of the recipient or
+            contact person.</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.Country">
+            <summary>
+            Gets or sets this is the CLDR (Common Locale Data Repository)
+            region code. For example, US, GB, CN, or JP
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.AddressLine">
+            <summary>
+            Gets or sets this is the most specific part of the address. It can
+            include, for example, a street name, a house number, apartment
+            number, a rural delivery route, descriptive instructions, or a post
+            office box number.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.Region">
+            <summary>
+            Gets or sets this is the top level administrative subdivision of
+            the country. For example, this can be a state, a province, an
+            oblast, or a prefecture.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.City">
+            <summary>
+            Gets or sets this is the city/town portion of the address.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.DependentLocality">
+            <summary>
+            Gets or sets this is the dependent locality or sublocality within a
+            city. For example, used for neighborhoods, boroughs, districts, or
+            UK dependent localities.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.PostalCode">
+            <summary>
+            Gets or sets this is the postal code or ZIP code, also known as PIN
+            code in India.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.SortingCode">
+            <summary>
+            Gets or sets this is the sorting code as used in, for example,
+            France.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.LanguageCode">
+            <summary>
+            Gets or sets this is the BCP-47 language code for the address. It's
+            used to determine the field separators and the order of fields when
+            formatting the address for display.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.Organization">
+            <summary>
+            Gets or sets this is the organization, firm, company, or
+            institution at this address.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.Recipient">
+            <summary>
+            Gets or sets this is the name of the recipient or contact person.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentAddress.Phone">
+            <summary>
+            Gets or sets this is the phone number of the recipient or contact
+            person.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentCurrencyAmount">
+            <summary>
+            Supplies monetary amounts
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentCurrencyAmount.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentCurrencyAmount class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentCurrencyAmount.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the PaymentCurrencyAmount class.
+            </summary>
+            <param name="currency">A currency identifier</param>
+            <param name="value">Decimal monetary value</param>
+            <param name="currencySystem">Currency system</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentCurrencyAmount.Currency">
+            <summary>
+            Gets or sets a currency identifier
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentCurrencyAmount.Value">
+            <summary>
+            Gets or sets decimal monetary value
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentCurrencyAmount.CurrencySystem">
+            <summary>
+            Gets or sets currency system
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentDetails">
+            <summary>
+            Provides information about the requested transaction
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentDetails.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentDetails class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentDetails.#ctor(Microsoft.Bot.Connector.PaymentItem,System.Collections.Generic.IList{Microsoft.Bot.Connector.PaymentItem},System.Collections.Generic.IList{Microsoft.Bot.Connector.PaymentShippingOption},System.Collections.Generic.IList{Microsoft.Bot.Connector.PaymentDetailsModifier},System.String)">
+            <summary>
+            Initializes a new instance of the PaymentDetails class.
+            </summary>
+            <param name="total">Contains the total amount of the payment
+            request</param>
+            <param name="displayItems">Contains line items for the payment
+            request that the user agent may display</param>
+            <param name="shippingOptions">A sequence containing the different
+            shipping options for the user to choose from</param>
+            <param name="modifiers">Contains modifiers for particular payment
+            method identifiers</param>
+            <param name="error">Error description</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetails.Total">
+            <summary>
+            Gets or sets contains the total amount of the payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetails.DisplayItems">
+            <summary>
+            Gets or sets contains line items for the payment request that the
+            user agent may display
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetails.ShippingOptions">
+            <summary>
+            Gets or sets a sequence containing the different shipping options
+            for the user to choose from
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetails.Modifiers">
+            <summary>
+            Gets or sets contains modifiers for particular payment method
+            identifiers
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetails.Error">
+            <summary>
+            Gets or sets error description
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentDetailsModifier">
+            <summary>
+            Provides details that modify the PaymentDetails based on payment method
+            identifier
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentDetailsModifier.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentDetailsModifier class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentDetailsModifier.#ctor(System.Collections.Generic.IList{System.String},Microsoft.Bot.Connector.PaymentItem,System.Collections.Generic.IList{Microsoft.Bot.Connector.PaymentItem},System.Object)">
+            <summary>
+            Initializes a new instance of the PaymentDetailsModifier class.
+            </summary>
+            <param name="supportedMethods">Contains a sequence of payment
+            method identifiers</param>
+            <param name="total">This value overrides the total field in the
+            PaymentDetails dictionary for the payment method identifiers in the
+            supportedMethods field</param>
+            <param name="additionalDisplayItems">Provides additional display
+            items that are appended to the displayItems field in the
+            PaymentDetails dictionary for the payment method identifiers in the
+            supportedMethods field</param>
+            <param name="data">A JSON-serializable object that provides
+            optional information that might be needed by the supported payment
+            methods</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetailsModifier.SupportedMethods">
+            <summary>
+            Gets or sets contains a sequence of payment method identifiers
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetailsModifier.Total">
+            <summary>
+            Gets or sets this value overrides the total field in the
+            PaymentDetails dictionary for the payment method identifiers in the
+            supportedMethods field
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetailsModifier.AdditionalDisplayItems">
+            <summary>
+            Gets or sets provides additional display items that are appended to
+            the displayItems field in the PaymentDetails dictionary for the
+            payment method identifiers in the supportedMethods field
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentDetailsModifier.Data">
+            <summary>
+            Gets or sets a JSON-serializable object that provides optional
+            information that might be needed by the supported payment methods
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentItem">
+            <summary>
+            Indicates what the payment request is for and the value asked for
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentItem.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentItem class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentItem.#ctor(System.String,Microsoft.Bot.Connector.PaymentCurrencyAmount,System.Nullable{System.Boolean})">
+            <summary>
+            Initializes a new instance of the PaymentItem class.
+            </summary>
+            <param name="label">Human-readable description of the item</param>
+            <param name="amount">Monetary amount for the item</param>
+            <param name="pending">When set to true this flag means that the
+            amount field is not final.</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentItem.Label">
+            <summary>
+            Gets or sets human-readable description of the item
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentItem.Amount">
+            <summary>
+            Gets or sets monetary amount for the item
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentItem.Pending">
+            <summary>
+            Gets or sets when set to true this flag means that the amount field
+            is not final.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentMethodData">
+            <summary>
+            Indicates a set of supported payment methods and any associated payment
+            method specific data for those methods
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentMethodData.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentMethodData class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentMethodData.#ctor(System.Collections.Generic.IList{System.String},System.Object)">
+            <summary>
+            Initializes a new instance of the PaymentMethodData class.
+            </summary>
+            <param name="supportedMethods">Required sequence of strings
+            containing payment method identifiers for payment methods that the
+            merchant web site accepts</param>
+            <param name="data">A JSON-serializable object that provides
+            optional information that might be needed by the supported payment
+            methods</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentMethodData.SupportedMethods">
+            <summary>
+            Gets or sets required sequence of strings containing payment method
+            identifiers for payment methods that the merchant web site accepts
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentMethodData.Data">
+            <summary>
+            Gets or sets a JSON-serializable object that provides optional
+            information that might be needed by the supported payment methods
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentOptions">
+            <summary>
+            Provides information about the options desired for the payment request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentOptions.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentOptions class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentOptions.#ctor(System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String)">
+            <summary>
+            Initializes a new instance of the PaymentOptions class.
+            </summary>
+            <param name="requestPayerName">Indicates whether the user agent
+            should collect and return the payer's name as part of the payment
+            request</param>
+            <param name="requestPayerEmail">Indicates whether the user agent
+            should collect and return the payer's email address as part of the
+            payment request</param>
+            <param name="requestPayerPhone">Indicates whether the user agent
+            should collect and return the payer's phone number as part of the
+            payment request</param>
+            <param name="requestShipping">Indicates whether the user agent
+            should collect and return a shipping address as part of the payment
+            request</param>
+            <param name="shippingType">If requestShipping is set to true, then
+            the shippingType field may be used to influence the way the user
+            agent presents the user interface for gathering the shipping
+            address</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentOptions.RequestPayerName">
+            <summary>
+            Gets or sets indicates whether the user agent should collect and
+            return the payer's name as part of the payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentOptions.RequestPayerEmail">
+            <summary>
+            Gets or sets indicates whether the user agent should collect and
+            return the payer's email address as part of the payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentOptions.RequestPayerPhone">
+            <summary>
+            Gets or sets indicates whether the user agent should collect and
+            return the payer's phone number as part of the payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentOptions.RequestShipping">
+            <summary>
+            Gets or sets indicates whether the user agent should collect and
+            return a shipping address as part of the payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentOptions.ShippingType">
+            <summary>
+            Gets or sets if requestShipping is set to true, then the
+            shippingType field may be used to influence the way the user agent
+            presents the user interface for gathering the shipping address
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentRequest">
+            <summary>
+            A request to make a payment
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequest.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentRequest class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequest.#ctor(System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.PaymentMethodData},Microsoft.Bot.Connector.PaymentDetails,Microsoft.Bot.Connector.PaymentOptions,System.String)">
+            <summary>
+            Initializes a new instance of the PaymentRequest class.
+            </summary>
+            <param name="id">ID of this payment request</param>
+            <param name="methodData">Allowed payment methods for this
+            request</param>
+            <param name="details">Details for this request</param>
+            <param name="options">Provides information about the options
+            desired for the payment request</param>
+            <param name="expires">Expiration for this request, in ISO 8601
+            duration format (e.g., 'P1D')</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequest.Id">
+            <summary>
+            Gets or sets ID of this payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequest.MethodData">
+            <summary>
+            Gets or sets allowed payment methods for this request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequest.Details">
+            <summary>
+            Gets or sets details for this request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequest.Options">
+            <summary>
+            Gets or sets provides information about the options desired for the
+            payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequest.Expires">
+            <summary>
+            Gets or sets expiration for this request, in ISO 8601 duration
+            format (e.g., 'P1D')
+            </summary>
+        </member>
+        <member name="F:Microsoft.Bot.Connector.PaymentRequest.PaymentActionType">
+            <summary>
+            Action type for Payment action
+            </summary>
+        </member>
+        <member name="F:Microsoft.Bot.Connector.PaymentRequest.PaymentContentType">
+            <summary>
+            Content-type for Payment card
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentRequestComplete">
+            <summary>
+            Payload delivered when completing a payment request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestComplete.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentRequestComplete class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestComplete.#ctor(System.String,Microsoft.Bot.Connector.PaymentRequest,Microsoft.Bot.Connector.PaymentResponse)">
+            <summary>
+            Initializes a new instance of the PaymentRequestComplete class.
+            </summary>
+            <param name="id">Payment request ID</param>
+            <param name="paymentRequest">Initial payment request</param>
+            <param name="paymentResponse">Corresponding payment
+            response</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestComplete.Id">
+            <summary>
+            Gets or sets payment request ID
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestComplete.PaymentRequest">
+            <summary>
+            Gets or sets initial payment request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestComplete.PaymentResponse">
+            <summary>
+            Gets or sets corresponding payment response
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentRequestCompleteResult">
+            <summary>
+            Result from a completed payment request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestCompleteResult.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentRequestCompleteResult
+            class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestCompleteResult.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the PaymentRequestCompleteResult
+            class.
+            </summary>
+            <param name="result">Result of the payment request
+            completion</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestCompleteResult.Result">
+            <summary>
+            Gets or sets result of the payment request completion
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentRequestUpdate">
+            <summary>
+            An update to a payment request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestUpdate.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentRequestUpdate class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestUpdate.#ctor(System.String,Microsoft.Bot.Connector.PaymentDetails,Microsoft.Bot.Connector.PaymentAddress,System.String)">
+            <summary>
+            Initializes a new instance of the PaymentRequestUpdate class.
+            </summary>
+            <param name="id">ID for the payment request to update</param>
+            <param name="details">Update payment details</param>
+            <param name="shippingAddress">Updated shipping address</param>
+            <param name="shippingOption">Updated shipping options</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestUpdate.Id">
+            <summary>
+            Gets or sets ID for the payment request to update
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestUpdate.Details">
+            <summary>
+            Gets or sets update payment details
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestUpdate.ShippingAddress">
+            <summary>
+            Gets or sets updated shipping address
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestUpdate.ShippingOption">
+            <summary>
+            Gets or sets updated shipping options
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentRequestUpdateResult">
+            <summary>
+            A result object from a Payment Request Update invoke operation
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestUpdateResult.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentRequestUpdateResult class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentRequestUpdateResult.#ctor(Microsoft.Bot.Connector.PaymentDetails)">
+            <summary>
+            Initializes a new instance of the PaymentRequestUpdateResult class.
+            </summary>
+            <param name="details">Update payment details</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentRequestUpdateResult.Details">
+            <summary>
+            Gets or sets update payment details
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentResponse">
+            <summary>
+            A PaymentResponse is returned when a user has selected a payment method
+            and approved a payment request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentResponse.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentResponse class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentResponse.#ctor(System.String,System.Object,Microsoft.Bot.Connector.PaymentAddress,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the PaymentResponse class.
+            </summary>
+            <param name="methodName">The payment method identifier for the
+            payment method that the user selected to fulfil the
+            transaction</param>
+            <param name="details">A JSON-serializable object that provides a
+            payment method specific message used by the merchant to process the
+            transaction and determine successful fund transfer</param>
+            <param name="shippingAddress">If the requestShipping flag was set
+            to true in the PaymentOptions passed to the PaymentRequest
+            constructor, then shippingAddress will be the full and final
+            shipping address chosen by the user</param>
+            <param name="shippingOption">If the requestShipping flag was set to
+            true in the PaymentOptions passed to the PaymentRequest
+            constructor, then shippingOption will be the id attribute of the
+            selected shipping option</param>
+            <param name="payerEmail">If the requestPayerEmail flag was set to
+            true in the PaymentOptions passed to the PaymentRequest
+            constructor, then payerEmail will be the email address chosen by
+            the user</param>
+            <param name="payerPhone">If the requestPayerPhone flag was set to
+            true in the PaymentOptions passed to the PaymentRequest
+            constructor, then payerPhone will be the phone number chosen by the
+            user</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentResponse.MethodName">
+            <summary>
+            Gets or sets the payment method identifier for the payment method
+            that the user selected to fulfil the transaction
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentResponse.Details">
+            <summary>
+            Gets or sets a JSON-serializable object that provides a payment
+            method specific message used by the merchant to process the
+            transaction and determine successful fund transfer
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentResponse.ShippingAddress">
+            <summary>
+            Gets or sets if the requestShipping flag was set to true in the
+            PaymentOptions passed to the PaymentRequest constructor, then
+            shippingAddress will be the full and final shipping address chosen
+            by the user
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentResponse.ShippingOption">
+            <summary>
+            Gets or sets if the requestShipping flag was set to true in the
+            PaymentOptions passed to the PaymentRequest constructor, then
+            shippingOption will be the id attribute of the selected shipping
+            option
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentResponse.PayerEmail">
+            <summary>
+            Gets or sets if the requestPayerEmail flag was set to true in the
+            PaymentOptions passed to the PaymentRequest constructor, then
+            payerEmail will be the email address chosen by the user
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentResponse.PayerPhone">
+            <summary>
+            Gets or sets if the requestPayerPhone flag was set to true in the
+            PaymentOptions passed to the PaymentRequest constructor, then
+            payerPhone will be the phone number chosen by the user
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.PaymentShippingOption">
+            <summary>
+            Describes a shipping option
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentShippingOption.#ctor">
+            <summary>
+            Initializes a new instance of the PaymentShippingOption class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.PaymentShippingOption.#ctor(System.String,System.String,Microsoft.Bot.Connector.PaymentCurrencyAmount,System.Nullable{System.Boolean})">
+            <summary>
+            Initializes a new instance of the PaymentShippingOption class.
+            </summary>
+            <param name="id">String identifier used to reference this
+            PaymentShippingOption</param>
+            <param name="label">Human-readable description of the item</param>
+            <param name="amount">Contains the monetary amount for the
+            item</param>
+            <param name="selected">Indicates whether this is the default
+            selected PaymentShippingOption</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentShippingOption.Id">
+            <summary>
+            Gets or sets string identifier used to reference this
+            PaymentShippingOption
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentShippingOption.Label">
+            <summary>
+            Gets or sets human-readable description of the item
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentShippingOption.Amount">
+            <summary>
+            Gets or sets contains the monetary amount for the item
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.PaymentShippingOption.Selected">
+            <summary>
+            Gets or sets indicates whether this is the default selected
+            PaymentShippingOption
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.Place">
@@ -3956,6 +4506,76 @@
         <member name="P:Microsoft.Bot.Connector.Place.Name">
             <summary>
             Gets or sets the name of the thing
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.ReceiptCard">
+            <summary>
+            A receipt card
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.ReceiptCard.#ctor">
+            <summary>
+            Initializes a new instance of the ReceiptCard class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.ReceiptCard.#ctor(System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.ReceiptItem},System.Collections.Generic.IList{Microsoft.Bot.Connector.Fact},Microsoft.Bot.Connector.CardAction,System.String,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction})">
+            <summary>
+            Initializes a new instance of the ReceiptCard class.
+            </summary>
+            <param name="title">Title of the card</param>
+            <param name="items">Array of Receipt Items</param>
+            <param name="facts">Array of Fact Objects   Array of key-value
+            pairs.</param>
+            <param name="tap">This action will be activated when user taps on
+            the card</param>
+            <param name="total">Total amount of money paid (or should be
+            paid)</param>
+            <param name="tax">Total amount of TAX paid(or should be
+            paid)</param>
+            <param name="vat">Total amount of VAT paid(or should be
+            paid)</param>
+            <param name="buttons">Set of actions applicable to the current
+            card</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Title">
+            <summary>
+            Gets or sets title of the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Items">
+            <summary>
+            Gets or sets array of Receipt Items
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Facts">
+            <summary>
+            Gets or sets array of Fact Objects   Array of key-value pairs.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Tap">
+            <summary>
+            Gets or sets this action will be activated when user taps on the
+            card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Total">
+            <summary>
+            Gets or sets total amount of money paid (or should be paid)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Tax">
+            <summary>
+            Gets or sets total amount of TAX paid(or should be paid)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Vat">
+            <summary>
+            Gets or sets total amount of VAT paid(or should be paid)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ReceiptCard.Buttons">
+            <summary>
+            Gets or sets set of actions applicable to the current card
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.ReceiptItem">
@@ -4042,6 +4662,42 @@
             Gets or sets id of the resource
             </summary>
         </member>
+        <member name="T:Microsoft.Bot.Connector.SigninCard">
+            <summary>
+            A card representing a request to sign in
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.SigninCard.#ctor">
+            <summary>
+            Initializes a new instance of the SigninCard class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.SigninCard.#ctor(System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction})">
+            <summary>
+            Initializes a new instance of the SigninCard class.
+            </summary>
+            <param name="text">Text for signin request</param>
+            <param name="buttons">Action to use to perform signin</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.SigninCard.Text">
+            <summary>
+            Gets or sets text for signin request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.SigninCard.Buttons">
+            <summary>
+            Gets or sets action to use to perform signin
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.SigninCard.Create(System.String,System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:Microsoft.Bot.Connector.SigninCard"/>
+            </summary>
+            <param name="text"> The <see cref="P:Microsoft.Bot.Connector.SigninCard.Text"/></param>
+            <param name="buttonLabel"> The signin button label.</param>
+            <param name="url"> The sigin url.</param>
+            <returns> The created sigin card.</returns>
+        </member>
         <member name="T:Microsoft.Bot.Connector.SuggestedActions">
             <summary>
             SuggestedActions that can be performed
@@ -4073,6 +4729,29 @@
             Gets or sets actions that can be shown to the user
             </summary>
         </member>
+        <member name="M:Microsoft.Bot.Connector.TextHighlight.#ctor">
+            <summary>
+            Initializes a new instance of the TextHighlight class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.TextHighlight.#ctor(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Initializes a new instance of the TextHighlight class.
+            </summary>
+            <param name="text">plain text fragment to highlight</param>
+            <param name="occurence">index of occurence of the Text (Starting at
+            1)</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.TextHighlight.Text">
+            <summary>
+            Gets or sets plain text fragment to highlight
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.TextHighlight.Occurence">
+            <summary>
+            Gets or sets index of occurence of the Text (Starting at 1)
+            </summary>
+        </member>
         <member name="T:Microsoft.Bot.Connector.Thing">
             <summary>
             Thing (entity type: "https://schema.org/Thing")
@@ -4098,6 +4777,60 @@
         <member name="P:Microsoft.Bot.Connector.Thing.Name">
             <summary>
             Gets or sets the name of the thing
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.ThumbnailCard">
+            <summary>
+            A thumbnail card (card with a single, small thumbnail image)
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.ThumbnailCard.#ctor">
+            <summary>
+            Initializes a new instance of the ThumbnailCard class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.ThumbnailCard.#ctor(System.String,System.String,System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.CardImage},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},Microsoft.Bot.Connector.CardAction)">
+            <summary>
+            Initializes a new instance of the ThumbnailCard class.
+            </summary>
+            <param name="title">Title of the card</param>
+            <param name="subtitle">Subtitle of the card</param>
+            <param name="text">Text for the card</param>
+            <param name="images">Array of images for the card</param>
+            <param name="buttons">Set of actions applicable to the current
+            card</param>
+            <param name="tap">This action will be activated when user taps on
+            the card itself</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Title">
+            <summary>
+            Gets or sets title of the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Subtitle">
+            <summary>
+            Gets or sets subtitle of the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Text">
+            <summary>
+            Gets or sets text for the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Images">
+            <summary>
+            Gets or sets array of images for the card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Buttons">
+            <summary>
+            Gets or sets set of actions applicable to the current card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ThumbnailCard.Tap">
+            <summary>
+            Gets or sets this action will be activated when user taps on the
+            card itself
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.ThumbnailUrl">
@@ -4130,6 +4863,102 @@
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Connector.ThumbnailUrl.Validate">
+            <summary>
+            Validate the object.
+            </summary>
+            <exception cref="T:Microsoft.Rest.ValidationException">
+            Thrown if validation fails
+            </exception>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.VideoCard">
+            <summary>
+            Video card
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.VideoCard.#ctor">
+            <summary>
+            Initializes a new instance of the VideoCard class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.VideoCard.#ctor(System.String,System.String,System.String,Microsoft.Bot.Connector.ThumbnailUrl,System.Collections.Generic.IList{Microsoft.Bot.Connector.MediaUrl},System.Collections.Generic.IList{Microsoft.Bot.Connector.CardAction},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the VideoCard class.
+            </summary>
+            <param name="title">Title of this card</param>
+            <param name="subtitle">Subtitle of this card</param>
+            <param name="text">Text of this card</param>
+            <param name="image">Thumbnail placeholder</param>
+            <param name="media">Media URLs for this card</param>
+            <param name="buttons">Actions on this card</param>
+            <param name="shareable">This content may be shared with others
+            (default:true)</param>
+            <param name="autoloop">Should the client loop playback at end of
+            content (default:true)</param>
+            <param name="autostart">Should the client automatically start
+            playback of media in this card (default:true)</param>
+            <param name="aspect">Aspect ratio of thumbnail/media placeholder,
+            allowed values are "16:9" and "4:3"</param>
+            <param name="value">Supplementary parameter for this card</param>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Title">
+            <summary>
+            Gets or sets title of this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Subtitle">
+            <summary>
+            Gets or sets subtitle of this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Text">
+            <summary>
+            Gets or sets text of this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Image">
+            <summary>
+            Gets or sets thumbnail placeholder
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Media">
+            <summary>
+            Gets or sets media URLs for this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Buttons">
+            <summary>
+            Gets or sets actions on this card
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Shareable">
+            <summary>
+            Gets or sets this content may be shared with others (default:true)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Autoloop">
+            <summary>
+            Gets or sets should the client loop playback at end of content
+            (default:true)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Autostart">
+            <summary>
+            Gets or sets should the client automatically start playback of
+            media in this card (default:true)
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Aspect">
+            <summary>
+            Gets or sets aspect ratio of thumbnail/media placeholder, allowed
+            values are "16:9" and "4:3"
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.VideoCard.Value">
+            <summary>
+            Gets or sets supplementary parameter for this card
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.VideoCard.Validate">
             <summary>
             Validate the object.
             </summary>
@@ -4263,22 +5092,22 @@
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.Id">
             <summary>
-            Id for the activity
+            ID for the activity
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.ServiceUrl">
             <summary>
-            ServiceUrl
+            Service URL where responses to this activity should be sent
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.Timestamp">
             <summary>
-            UTC Time when message was sent
+            Timestamp when this message was sent (UTC)
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.LocalTimestamp">
             <summary>
-            Client Time when message was sent Ex: 2016-09-23T13:07:49.4714686-07:00
+            Client time when message was sent (local time or UTC)
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.ChannelId">
@@ -4288,7 +5117,7 @@
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.From">
             <summary>
-            Sender address data 
+            Sender address
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.Conversation">
@@ -4303,12 +5132,17 @@
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.ReplyToId">
             <summary>
-            The original id this message is a response to
+            The original ID this activity is a response to
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.IActivity.Entities">
+            <summary>
+            Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Connector.IActivity.ChannelData">
             <summary>
-            Channel specific payload
+            Channel-specific payload
             </summary>
             <remarks>
             Some channels will provide channel specific data.
@@ -4318,11 +5152,20 @@
             For a message coming into the channel it might accept a payload allowing you to create a "native" response for the channel.
             
             Example:
-            * Email - The Email Channel will put the original Email metadata into the ChannelData object for outgoing messages, and will accep
+            * Email - The Email Channel will put the original Email metadata into the ChannelData object for outgoing messages, and will accept
             on incoming message a Subject property, and a HtmlBody which can contain Html.  
             
             The channel data essentially allows a bot to have access to native functionality on a per channel basis.
             </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Microsoft.Bot.Connector.IActivity.GetChannelData``1" -->
+        <member name="M:Microsoft.Bot.Connector.IActivity.TryGetChannelData``1(``0@)">
+            <summary>
+            Try to get the channeldata as a strongly typed object 
+            </summary>
+            <typeparam name="TypeT"></typeparam>
+            <param name="instance"></param>
+            <returns>false if there is no valid channeldata available</returns>
         </member>
         <member name="M:Microsoft.Bot.Connector.IActivity.AsMessageActivity">
             <summary>
@@ -4362,6 +5205,26 @@
         <member name="M:Microsoft.Bot.Connector.IActivity.AsInvokeActivity">
             <summary>
             Returns IInvokeActivity if this is an invoke activity, null otherwise
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.IActivity.AsMessageUpdateActivity">
+            <summary>
+            Returns IMessageUpdateActivity if this is a message update activity, null otherwise
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.IActivity.AsMessageDeleteActivity">
+            <summary>
+            Returns IMessageDeleteActivity if this is a message delete activity, null otherwise
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.IActivity.AsMessageReactionActivity">
+            <summary>
+            Returns IMessageDeleteActivity if this is a message delete activity, null otherwise
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.IActivity.AsSuggestionActivity">
+            <summary>
+            Returns IMessageDeleteActivity if this is a message delete activity, null otherwise
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.IContactRelationUpdateActivity">
@@ -4414,11 +5277,6 @@
             Content to display when ending the conversation
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Connector.IEndOfConversationActivity.Entities">
-            <summary>
-            Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.
-            </summary>
-        </member>
         <member name="T:Microsoft.Bot.Connector.IEventActivity">
             <summary>
             Asynchronous external event
@@ -4437,11 +5295,6 @@
         <member name="P:Microsoft.Bot.Connector.IEventActivity.RelatesTo">
             <summary>
             Reference to another conversation or activity
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.ITriggerActivity">
-            <summary>
-            NOTE: Trigger activity has been renamed to Event activity
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.IInstallationUpdateActivity">
@@ -4527,14 +5380,23 @@
             SuggestedActions are used to express actions for interacting with a card like keyboards/quickReplies
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Connector.IMessageActivity.Entities">
+        <member name="P:Microsoft.Bot.Connector.IMessageActivity.Importance">
             <summary>
-            Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.
+            Importance of the activity 
+            Valid values are "low", "normal", and "high". Default value is "normal."
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Connector.IMessageActivity.HasContent">
+        <member name="P:Microsoft.Bot.Connector.IMessageActivity.DeliveryMode">
             <summary>
-            True if this activity has text, attachments, or channelData
+            Hint to describe how this activity should be delivered.  
+            null or "default" = default delivery
+            "notification" = notification semantics
+            See DeliveryModes for current constants
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.IMessageActivity.Expiration">
+            <summary>
+            DateTime to expire the activity as ISO 8601 encoded datetime
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Connector.IMessageActivity.GetMentions">
@@ -4545,6 +5407,36 @@
         <member name="P:Microsoft.Bot.Connector.IMessageActivity.Value">
             <summary>
             Value provided with CardAction
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.IMessageActivity.HasContent">
+            <summary>
+            True if this activity has text, attachments, or channelData
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.IMessageDeleteActivity">
+            <summary>
+            Indicates a delete of an existing Message Activity
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.IMessageReactionActivity">
+            <summary>
+            A reaction to a Message Activity
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.IMessageReactionActivity.ReactionsAdded">
+            <summary>
+            Reactions added to the activity
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.IMessageReactionActivity.ReactionsRemoved">
+            <summary>
+            Reactions removed from the activity
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.IMessageUpdateActivity">
+            <summary>
+            An update to an existing Message Activity
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.ActivityImportance">
@@ -4587,6 +5479,19 @@
             <summary>
             The sender is actively expecting a response from the user.
             </summary> 
+        </member>
+        <member name="T:Microsoft.Bot.Connector.ISuggestionActivity">
+            <summary>
+            SuggestionActivity (Type="suggestion")
+            </summary>
+            <remarks>
+            A suggestion is a private message for the Recipient which can offer a suggestion activity for an activity by ReplyToId property
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ISuggestionActivity.TextHighlights">
+            <summary>
+            TextHighlight in the activity represented in the ReplyToId property
+            </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.ITypingActivity">
             <summary>
@@ -4683,15 +5588,6 @@
             This makes sure that authorization headers stay intact between 307 redirects.
             </remarks>
         </member>
-        <member name="T:Microsoft.Bot.Connector.Mention">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Mention.#ctor">
-            <summary>
-            Initializes a new instance of the Entity class.
-            </summary>
-        </member>
         <member name="T:Microsoft.Bot.Connector.MessageReactionTypes">
             <summary>
             Message reaction types
@@ -4741,618 +5637,12 @@
             </summary>
             <param name="request">The HTTP request.</param><param name="cancellationToken">Cancellation token.</param>
         </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData">
-            <summary>
-            Pay method data for Microsoft Payment.
-            </summary>
-            <summary>
-            W3C Payment Method Data for Microsoft Pay
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.MethodName">
-            <summary>
-            The pay method name.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.#ctor(System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.Boolean)">
-            <summary>
-            Initializes a new instance of the MicrosoftPayMethodData class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.Mode">
-            <summary>
-            Payment method mode
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.ToPaymentMethodData">
-            <summary>
-            Get Microsoft Pay method data
-            </summary>
-            <returns>Payment method data</returns>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.#ctor">
-            <summary>
-            Initializes a new instance of the MicrosoftPayMethodData class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.#ctor(System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String})">
-            <summary>
-            Initializes a new instance of the MicrosoftPayMethodData class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.MerchantId">
-            <summary>
-            Microsoft Pay Merchant ID
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.SupportedNetworks">
-            <summary>
-            Supported payment networks (e.g., "visa" and "mastercard")
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.MicrosoftPayMethodData.SupportedTypes">
-            <summary>
-            Supported payment types (e.g., "credit")
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentAddress">
-            <summary>
-            Address within a Payment Request
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentAddress.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentAddress class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentAddress.#ctor(System.String,System.Collections.Generic.IList{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Initializes a new instance of the PaymentAddress class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.Country">
-            <summary>
-            This is the CLDR (Common Locale Data Repository) region code. For
-            example, US, GB, CN, or JP
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.AddressLine">
-            <summary>
-            This is the most specific part of the address. It can include, for
-            example, a street name, a house number, apartment number, a rural
-            delivery route, descriptive instructions, or a post office box
-            number.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.Region">
-            <summary>
-            This is the top level administrative subdivision of the country.
-            For example, this can be a state, a province, an oblast, or a
-            prefecture.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.City">
-            <summary>
-            This is the city/town portion of the address.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.DependentLocality">
-            <summary>
-            This is the dependent locality or sublocality within a city. For
-            example, used for neighborhoods, boroughs, districts, or UK
-            dependent localities.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.PostalCode">
-            <summary>
-            This is the postal code or ZIP code, also known as PIN code in
-            India.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.SortingCode">
-            <summary>
-            This is the sorting code as used in, for example, France.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.LanguageCode">
-            <summary>
-            This is the BCP-47 language code for the address. It's used to
-            determine the field separators and the order of fields when
-            formatting the address for display.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.Organization">
-            <summary>
-            This is the organization, firm, company, or institution at this
-            address.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.Recipient">
-            <summary>
-            This is the name of the recipient or contact person.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentAddress.Phone">
-            <summary>
-            This is the phone number of the recipient or contact person.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount">
-            <summary>
-            Supplies monetary amounts
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentCurrencyAmount class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount.#ctor(System.String,System.String,System.String)">
-            <summary>
-            Initializes a new instance of the PaymentCurrencyAmount class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount.Currency">
-            <summary>
-            A currency identifier
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount.Value">
-            <summary>
-            Decimal monetary value
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount.CurrencySystem">
-            <summary>
-            Currency system
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentDetails">
-            <summary>
-            Provides information about the requested transaction
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentDetails.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentDetails class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentDetails.#ctor(Microsoft.Bot.Connector.Payments.PaymentItem,System.Collections.Generic.IList{Microsoft.Bot.Connector.Payments.PaymentItem},System.Collections.Generic.IList{Microsoft.Bot.Connector.Payments.PaymentShippingOption},System.Collections.Generic.IList{Microsoft.Bot.Connector.Payments.PaymentDetailsModifier},System.String)">
-            <summary>
-            Initializes a new instance of the PaymentDetails class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetails.Total">
-            <summary>
-            Contains the total amount of the payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetails.DisplayItems">
-            <summary>
-            Contains line items for the payment request that the user agent
-            may display
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetails.ShippingOptions">
-            <summary>
-            A sequence containing the different shipping options for the user
-            to choose from
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetails.Modifiers">
-            <summary>
-            Contains modifiers for particular payment method identifiers
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetails.Error">
-            <summary>
-            Error description
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier">
-            <summary>
-            Provides details that modify the PaymentDetails based on payment
-            method identifier
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentDetailsModifier class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier.#ctor(System.Collections.Generic.IList{System.String},Microsoft.Bot.Connector.Payments.PaymentItem,System.Collections.Generic.IList{Microsoft.Bot.Connector.Payments.PaymentItem},System.Object)">
-            <summary>
-            Initializes a new instance of the PaymentDetailsModifier class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier.SupportedMethods">
-            <summary>
-            Contains a sequence of payment method identifiers
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier.Total">
-            <summary>
-            This value overrides the total field in the PaymentDetails
-            dictionary for the payment method identifiers in the
-            supportedMethods field
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier.AdditionalDisplayItems">
-            <summary>
-            Provides additional display items that are appended to the
-            displayItems field in the PaymentDetails dictionary for the
-            payment method identifiers in the supportedMethods field
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentDetailsModifier.Data">
-            <summary>
-            A JSON-serializable object that provides optional information that
-            might be needed by the supported payment methods
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentItem">
-            <summary>
-            Indicates what the payment request is for and the value asked for
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentItem.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentItem class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentItem.#ctor(System.String,Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount,System.Nullable{System.Boolean})">
-            <summary>
-            Initializes a new instance of the PaymentItem class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentItem.Label">
-            <summary>
-            Human-readable description of the item
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentItem.Amount">
-            <summary>
-            Monetary amount for the item
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentItem.Pending">
-            <summary>
-            When set to true this flag means that the amount field is not
-            final.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentMethodData">
-            <summary>
-            Indicates a set of supported payment methods and any associated
-            payment method specific data for those methods
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentMethodData.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentMethodData class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentMethodData.#ctor(System.Collections.Generic.IList{System.String},System.Object)">
-            <summary>
-            Initializes a new instance of the PaymentMethodData class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentMethodData.SupportedMethods">
-            <summary>
-            Required sequence of strings containing payment method identifiers
-            for payment methods that the merchant web site accepts
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentMethodData.Data">
-            <summary>
-            A JSON-serializable object that provides optional information that
-            might be needed by the supported payment methods
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentOptions">
-            <summary>
-            Provides information about the options desired for the payment request
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentOptions.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentOptions class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentOptions.#ctor(System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String)">
-            <summary>
-            Initializes a new instance of the PaymentOptions class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentOptions.RequestPayerName">
-            <summary>
-            Indicates whether the user agent should collect and return the
-            payer's name as part of the payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentOptions.RequestPayerEmail">
-            <summary>
-            Indicates whether the user agent should collect and return the
-            payer's email address as part of the payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentOptions.RequestPayerPhone">
-            <summary>
-            Indicates whether the user agent should collect and return the
-            payer's phone number as part of the payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentOptions.RequestShipping">
-            <summary>
-            Indicates whether the user agent should collect and return a
-            shipping address as part of the payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentOptions.ShippingType">
-            <summary>
-            If requestShipping is set to true, then the shippingType field may
-            be used to influence the way the user agent presents the user
-            interface for gathering the shipping address
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentRequest">
-            <summary>
-            A request to make a payment
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequest.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentRequest class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequest.#ctor(System.String,System.Collections.Generic.IList{Microsoft.Bot.Connector.Payments.PaymentMethodData},Microsoft.Bot.Connector.Payments.PaymentDetails,Microsoft.Bot.Connector.Payments.PaymentOptions,System.String)">
-            <summary>
-            Initializes a new instance of the PaymentRequest class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequest.Id">
-            <summary>
-            ID of this payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequest.MethodData">
-            <summary>
-            Allowed payment methods for this request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequest.Details">
-            <summary>
-            Details for this request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequest.Options">
-            <summary>
-            Provides information about the options desired for the payment
-            request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequest.Expires">
-            <summary>
-            Expiration for this request, in ISO 8601 duration format (e.g.,
-            'P1D')
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentRequest.PaymentActionType">
-            <summary>
-            Action type for Payment action
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentRequest.PaymentContentType">
-            <summary>
-            Content-type for Payment card
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentRequestComplete">
-            <summary>
-            Payload delivered when completing a payment request
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestComplete.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentRequestComplete class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestComplete.#ctor(System.String,Microsoft.Bot.Connector.Payments.PaymentRequest,Microsoft.Bot.Connector.Payments.PaymentResponse)">
-            <summary>
-            Initializes a new instance of the PaymentRequestComplete class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestComplete.Id">
-            <summary>
-            Payment request ID
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestComplete.PaymentRequest">
-            <summary>
-            Initial payment request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestComplete.PaymentResponse">
-            <summary>
-            Corresponding payment response
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentRequestCompleteResult">
-            <summary>
-            Result from a completed payment request
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestCompleteResult.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentRequestCompleteResult
-            class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestCompleteResult.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the PaymentRequestCompleteResult
-            class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestCompleteResult.Result">
-            <summary>
-            Result of the payment request completion
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate">
-            <summary>
-            An update to a payment request
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentRequestUpdate class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate.#ctor(System.String,Microsoft.Bot.Connector.Payments.PaymentDetails,Microsoft.Bot.Connector.Payments.PaymentAddress,System.String)">
-            <summary>
-            Initializes a new instance of the PaymentRequestUpdate class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate.Id">
-            <summary>
-            ID for the payment request to update
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate.Details">
-            <summary>
-            Update payment details
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate.ShippingAddress">
-            <summary>
-            Updated shipping address
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestUpdate.ShippingOption">
-            <summary>
-            Updated shipping options
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentRequestUpdateResult">
-            <summary>
-            A result object from a Payment Request Update invoke operation
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestUpdateResult.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentRequestUpdateResult class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentRequestUpdateResult.#ctor(Microsoft.Bot.Connector.Payments.PaymentDetails)">
-            <summary>
-            Initializes a new instance of the PaymentRequestUpdateResult class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentRequestUpdateResult.Details">
-            <summary>
-            Update payment details
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentResponse">
-            <summary>
-            A PaymentResponse is returned when a user has selected a payment
-            method and approved a payment request
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentResponse.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentResponse class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentResponse.#ctor(System.String,System.Object,Microsoft.Bot.Connector.Payments.PaymentAddress,System.String,System.String,System.String)">
-            <summary>
-            Initializes a new instance of the PaymentResponse class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentResponse.MethodName">
-            <summary>
-            The payment method identifier for the payment method that the user
-            selected to fulfil the transaction
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentResponse.Details">
-            <summary>
-            A JSON-serializable object that provides a payment method specific
-            message used by the merchant to process the transaction and
-            determine successful fund transfer
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentResponse.ShippingAddress">
-            <summary>
-            If the requestShipping flag was set to true in the PaymentOptions
-            passed to the PaymentRequest constructor, then shippingAddress
-            will be the full and final shipping address chosen by the user
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentResponse.ShippingOption">
-            <summary>
-            If the requestShipping flag was set to true in the PaymentOptions
-            passed to the PaymentRequest constructor, then shippingOption
-            will be the id attribute of the selected shipping option
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentResponse.PayerEmail">
-            <summary>
-            If the requestPayerEmail flag was set to true in the
-            PaymentOptions passed to the PaymentRequest constructor, then
-            payerEmail will be the email address chosen by the user
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentResponse.PayerPhone">
-            <summary>
-            If the requestPayerPhone flag was set to true in the
-            PaymentOptions passed to the PaymentRequest constructor, then
-            payerPhone will be the phone number chosen by the user
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentShippingOption">
-            <summary>
-            Describes a shipping option
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentShippingOption.#ctor">
-            <summary>
-            Initializes a new instance of the PaymentShippingOption class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Connector.Payments.PaymentShippingOption.#ctor(System.String,System.String,Microsoft.Bot.Connector.Payments.PaymentCurrencyAmount,System.Nullable{System.Boolean})">
-            <summary>
-            Initializes a new instance of the PaymentShippingOption class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentShippingOption.Id">
-            <summary>
-            String identifier used to reference this PaymentShippingOption
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentShippingOption.Label">
-            <summary>
-            Human-readable description of the item
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentShippingOption.Amount">
-            <summary>
-            Contains the monetary amount for the item
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.Payments.PaymentShippingOption.Selected">
-            <summary>
-            Indicates whether this is the default selected
-            PaymentShippingOption
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentOperations">
+        <member name="T:Microsoft.Bot.Connector.PaymentOperations">
             <summary>
             Names for invocable operations in the payment callback protocol
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentOperations.UpdateShippingAddressOperationName">
+        <member name="F:Microsoft.Bot.Connector.PaymentOperations.UpdateShippingAddressOperationName">
             <summary>
             Name for the Update Shipping Address operation invocation
             </summary>
@@ -5360,7 +5650,7 @@
             This operation accepts a PaymentRequestUpdate object and returns a PaymentDetails object or an error
             </remarks>
         </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentOperations.UpdateShippingOptionOperationName">
+        <member name="F:Microsoft.Bot.Connector.PaymentOperations.UpdateShippingOptionOperationName">
             <summary>
             Name for the Update Shipping Option operation invocation
             </summary>
@@ -5368,7 +5658,7 @@
             This operation accepts a PaymentRequestUpdate object and returns a PaymentDetails object or an error
             </remarks>
         </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentOperations.PaymentCompleteOperationName">
+        <member name="F:Microsoft.Bot.Connector.PaymentOperations.PaymentCompleteOperationName">
             <summary>
             Name for the payment completion operation invocation
             </summary>
@@ -5376,22 +5666,22 @@
             This operation accepts a PaymentRequestComplete object and returns a PaymentRequestResult object or an error
             </remarks>
         </member>
-        <member name="T:Microsoft.Bot.Connector.Payments.PaymentShippingTypes">
+        <member name="T:Microsoft.Bot.Connector.PaymentShippingTypes">
             <summary>
             Different shipping types. See http://www.w3.org/TR/payment-request/#dom-paymentoptions-shippingtype for more information.
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentShippingTypes.Shipping">
+        <member name="F:Microsoft.Bot.Connector.PaymentShippingTypes.Shipping">
             <summary>
             This is the default and refers to the address being collected as the destination for shipping.
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentShippingTypes.Delivery">
+        <member name="F:Microsoft.Bot.Connector.PaymentShippingTypes.Delivery">
             <summary>
             This refers to the address being collected as being used for delivery. This is commonly faster than shipping. For example, it might be used for food delivery.
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Connector.Payments.PaymentShippingTypes.PickUp">
+        <member name="F:Microsoft.Bot.Connector.PaymentShippingTypes.PickUp">
             <summary>
             This refers to the address being collected as part of a service pickup. For example, this could be the address for laundry pickup.
             </summary>

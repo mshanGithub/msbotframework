@@ -10,14 +10,13 @@ call ..\node_modules\.bin\replace "FromProperty" "From" . -r --include="*.cs"
 call ..\node_modules\.bin\replace "fromProperty" "from" . -r --include="*.cs"
 cd ..
 
-call AutoRest --namespace Microsoft.Bot.Connector.Payments --input-file=swagger\Connector-Payments.json --output-folder=Payments --add-credentials --override-client=PaymentsClient --use-datetimeoffset
-
-cd Payments\Models\
-call ..\..\node_modules\.bin\replace "namespace Microsoft.Bot.Connector.Payments.Models" "namespace Microsoft.Bot.Connector.Payments" . -r --include="*.cs"
-call ..\..\node_modules\.bin\replace "using Models;" "" . -r --include="*.cs"
-call ..\..\node_modules\.bin\replace "using Microsoft.Rest;" "" . -r --include="*.cs"
-call ..\..\node_modules\.bin\replace "using Microsoft.Rest.Serialization;" "" . -r --include="*.cs"
-cd ..\..
+rem call AutoRest --namespace Microsoft.Bot.Connector.Payments --input-file=swagger\Connector-Payments.json --output-folder=Payments --add-credentials --override-client=PaymentsClient --use-datetimeoffset
+rem cd Payments\Models\
+rem call ..\..\node_modules\.bin\replace "namespace Microsoft.Bot.Connector.Payments.Models" "namespace Microsoft.Bot.Connector.Payments" . -r --include="*.cs"
+rem call ..\..\node_modules\.bin\replace "using Models;" "" . -r --include="*.cs"
+rem call ..\..\node_modules\.bin\replace "using Microsoft.Rest;" "" . -r --include="*.cs"
+rem rem call ..\..\node_modules\.bin\replace "using Microsoft.Rest.Serialization;" "" . -r --include="*.cs"
+rem cd ..\..
 
 rem ..\..\packages\autorest.0.16.0\tools\AutoRest -namespace Microsoft.Bot.Connector -input swagger\StateAPI.json -outputDirectory StateApi -AddCredentials -ClientName StateClient
 call autorest --input-file=.\Swagger\StateAPI.json --csharp --namespace:Microsoft.Bot.Connector --output-folder=StateAPI --add-credentials --override-client-name=StateClient --use-datetimeoffset
