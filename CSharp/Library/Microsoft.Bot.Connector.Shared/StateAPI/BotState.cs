@@ -79,6 +79,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<BotData>> GetUserDataWithHttpMessagesAsync(string channelId, string userId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)
@@ -242,6 +243,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<BotData>> SetUserDataWithHttpMessagesAsync(string channelId, string userId, BotData botData, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)
@@ -414,6 +416,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<IList<string>>> DeleteStateForUserWithHttpMessagesAsync(string channelId, string userId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)
@@ -574,6 +577,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<BotData>> GetConversationDataWithHttpMessagesAsync(string channelId, string conversationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)
@@ -737,6 +741,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<BotData>> SetConversationDataWithHttpMessagesAsync(string channelId, string conversationId, BotData botData, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)
@@ -911,6 +916,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<BotData>> GetPrivateConversationDataWithHttpMessagesAsync(string channelId, string conversationId, string userId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)
@@ -1083,6 +1089,7 @@ namespace Microsoft.Bot.Connector
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
+        [System.Obsolete()]
         public async Task<HttpOperationResponse<BotData>> SetPrivateConversationDataWithHttpMessagesAsync(string channelId, string conversationId, string userId, BotData botData, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channelId == null)

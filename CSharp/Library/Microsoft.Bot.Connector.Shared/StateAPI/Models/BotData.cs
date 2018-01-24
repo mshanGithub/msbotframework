@@ -22,7 +22,7 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// Initializes a new instance of the BotData class.
         /// </summary>
-        public BotData(object data = default(object), string eTag = default(string))
+        public BotData(string eTag = default(string), object data = default(object))
         {
             Data = data;
             ETag = eTag;

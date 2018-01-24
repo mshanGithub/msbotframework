@@ -819,7 +819,7 @@
             Initializes a new instance of the BotData class.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Connector.BotData.#ctor(System.Object,System.String)">
+        <member name="M:Microsoft.Bot.Connector.BotData.#ctor(System.String,System.Object)">
             <summary>
             Initializes a new instance of the BotData class.
             </summary>

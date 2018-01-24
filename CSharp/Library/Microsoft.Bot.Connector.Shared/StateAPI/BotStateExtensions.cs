@@ -32,6 +32,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='userId'>
             /// id for the user on the channel
             /// </param>
+            [System.Obsolete()]
             public static BotData GetUserData(this IBotState operations, string channelId, string userId)
             {
                 return operations.GetUserDataAsync(channelId, userId).GetAwaiter().GetResult();
@@ -55,6 +56,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<BotData> GetUserDataAsync(this IBotState operations, string channelId, string userId, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetUserDataWithHttpMessagesAsync(channelId, userId, null, cancellationToken).ConfigureAwait(false))
@@ -81,6 +83,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='botData'>
             /// the new botdata
             /// </param>
+            [System.Obsolete()]
             public static BotData SetUserData(this IBotState operations, string channelId, string userId, BotData botData)
             {
                 return operations.SetUserDataAsync(channelId, userId, botData).GetAwaiter().GetResult();
@@ -107,6 +110,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<BotData> SetUserDataAsync(this IBotState operations, string channelId, string userId, BotData botData, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.SetUserDataWithHttpMessagesAsync(channelId, userId, botData, null, cancellationToken).ConfigureAwait(false))
@@ -131,6 +135,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='userId'>
             /// id for the user on the channel
             /// </param>
+            [System.Obsolete()]
             public static IList<string> DeleteStateForUser(this IBotState operations, string channelId, string userId)
             {
                 return operations.DeleteStateForUserAsync(channelId, userId).GetAwaiter().GetResult();
@@ -155,6 +160,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<IList<string>> DeleteStateForUserAsync(this IBotState operations, string channelId, string userId, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.DeleteStateForUserWithHttpMessagesAsync(channelId, userId, null, cancellationToken).ConfigureAwait(false))
@@ -178,6 +184,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='conversationId'>
             /// The id for the conversation on the channel
             /// </param>
+            [System.Obsolete()]
             public static BotData GetConversationData(this IBotState operations, string channelId, string conversationId)
             {
                 return operations.GetConversationDataAsync(channelId, conversationId).GetAwaiter().GetResult();
@@ -201,6 +208,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<BotData> GetConversationDataAsync(this IBotState operations, string channelId, string conversationId, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetConversationDataWithHttpMessagesAsync(channelId, conversationId, null, cancellationToken).ConfigureAwait(false))
@@ -227,6 +235,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='botData'>
             /// the new botdata
             /// </param>
+            [System.Obsolete()]
             public static BotData SetConversationData(this IBotState operations, string channelId, string conversationId, BotData botData)
             {
                 return operations.SetConversationDataAsync(channelId, conversationId, botData).GetAwaiter().GetResult();
@@ -253,6 +262,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<BotData> SetConversationDataAsync(this IBotState operations, string channelId, string conversationId, BotData botData, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.SetConversationDataWithHttpMessagesAsync(channelId, conversationId, botData, null, cancellationToken).ConfigureAwait(false))
@@ -279,6 +289,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='userId'>
             /// id for the user on the channel
             /// </param>
+            [System.Obsolete()]
             public static BotData GetPrivateConversationData(this IBotState operations, string channelId, string conversationId, string userId)
             {
                 return operations.GetPrivateConversationDataAsync(channelId, conversationId, userId).GetAwaiter().GetResult();
@@ -305,6 +316,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<BotData> GetPrivateConversationDataAsync(this IBotState operations, string channelId, string conversationId, string userId, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetPrivateConversationDataWithHttpMessagesAsync(channelId, conversationId, userId, null, cancellationToken).ConfigureAwait(false))
@@ -334,6 +346,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='botData'>
             /// the new botdata
             /// </param>
+            [System.Obsolete()]
             public static BotData SetPrivateConversationData(this IBotState operations, string channelId, string conversationId, string userId, BotData botData)
             {
                 return operations.SetPrivateConversationDataAsync(channelId, conversationId, userId, botData).GetAwaiter().GetResult();
@@ -363,6 +376,7 @@ namespace Microsoft.Bot.Connector
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
+            [System.Obsolete()]
             public static async Task<BotData> SetPrivateConversationDataAsync(this IBotState operations, string channelId, string conversationId, string userId, BotData botData, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.SetPrivateConversationDataWithHttpMessagesAsync(channelId, conversationId, userId, botData, null, cancellationToken).ConfigureAwait(false))
