@@ -33,6 +33,32 @@
 
 export const locales: { [locale:string]: { [key:string]: string; }; } = {};
 
+locales['cs'] = {
+    "default_text": "Omlouvám se, ale nerozumím. Zkuste to prosím znovu.",
+    "default_number": "Zadané číslo nebylo rozpoznáno. Zadejte prosím validní číslo.",
+    "default_confirm": "Omlouvám se, ale nerozumím. Odpovězte prosím 'ano' nebo 'ne'.",
+    "default_choice": "Omlouvám se, ale nerozumím. Vyberte prosím korektní možnost ze seznamu.",
+    "default_time": "Zadaný datum nebyl rozpoznán. Zkuste to prosím znovu ve formátu (MM/DD/RRRR HH:MM:SS).",
+    "default_file": "Soubor nebyl nahrán. Zkuste to prosím znovu.",
+    "default_error": "A jéje. Něco se pokazilo a bude třeba začít znovu.",
+    "list_or": " nebo ",
+    "list_or_more": ", nebo ",
+    "confirm_yes": "ano",
+    "confirm_no": "ne",
+    "boolean_choices": "true=y,yes,ok,a,ano,jj,jo,určitě,\uD83D\uDC4D,\uD83D\uDC4C|false=n,no,ne,nikoliv,nikoli,\uD83D\uDC4E,\u270B,\uD83D\uDD90",
+    "number_terms": "0=nula|1=jedna,jeden,jednička|2=dva,dvojka|3=tři,trojka|4=čtyři,čtyřka|5=pět,pětka|6=šest,šestka|7=sedm,sedmička|8=osm,osmička|9=devět,devítka|10=deset,desítka|11=jedenáct,jedenáctka|12=dvanáct,dvanáctka|13=třináct,třináctka|14=čtrnáct,čtrnáctka|15=patnáct,patnáctka|16=šestnáct,šestnáctka|17=sedmnáct,sedmnáctka|18=osmnáct,osmnáctka|19=devatenáct,devatenáctka|20=dvacet,dvacítka",
+    "number_ordinals": "1=1.,první|2=2.,druhý,druhá,druhé|3=3.,třetí|4=4.,čtvrtý,čtvrtá,čtvrté|5=5.,pátý,pátá,páté|6=6.,šestý,šestá,šesté|7=7.,sedmý,sedmá,sedmé|8=8.,osmý,osmá,osmé|9=9.,devátý,devátá,deváté|10=10.,desátý,desátá,desáté",
+    "number_reverse_ordinals": "-1=poslední|-2=předposlední,druhý od konce,druhá od konce,druhé od konce|-3=třetí od konce|-4=čtvrtý od konce,čtvrtá od konce,čtvrté od konce|-5=pátý od konce,pátá od konce,páté od konce",
+    "number_minValue_error": "Zadané číslo je menší než povolené minimum %(minValue)d. Zadejte prosím validní číslo.",
+    "number_maxValue_error": "Zadané číslo je větší než povolené maximum %(maxValue)d. Zadejte prosím validní číslo.",
+    "number_range_error": "Zadané číslo je mimo povolený rozsah od %(minValue)d do %(maxValue)d. Zadejte prosím validní číslo.",
+    "number_integer_error": "Zadané číslo není celočíselné. Zadejte prosím číslo bez desetinné čárky.",
+    "text_minLength_error": "Zadaný text má menší délku než je povolené minimum %(minLength)d. Zadejte prosím validní text.",
+    "text_maxLength_error": "Zadaný text má větší délku než je povolené maximum %(maxLength)d. Zadejte prosím validní text.",
+    "yesExp": "^(1|y|yes|ok|a|ano|jj|jo|určitě|true)(\\W|$)",
+    "noExp": "^(2|n|no|ne|nikoliv|nikoli|false)(\\W|$)"
+};
+
 locales['de'] = {
     "default_text": "Das habe ich nicht verstanden. Bitte versuch es nochmal",
     "default_number": "Die Zahl habe ich nicht verstanden. Bitte geben Sie eine Nummer an.",
