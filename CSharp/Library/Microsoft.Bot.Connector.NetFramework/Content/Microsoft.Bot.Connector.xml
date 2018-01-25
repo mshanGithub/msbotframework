@@ -229,7 +229,7 @@
         </member>
         <member name="M:Microsoft.Bot.Connector.Activity.GetActivityType(System.String)">
             <summary>
-            Maps type to activity types 
+            Normalize activity type 
             </summary>
             <param name="type"> The type.</param>
             <returns> The activity type.</returns>
@@ -537,6 +537,13 @@
             Gets or sets textHighlight in the activity represented in the
             ReplyToId property
             </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetActivityType(Microsoft.Bot.Connector.IActivity)">
+            <summary>
+            Return the "major" portion of the activity
+            </summary>
+            <param name="activity"></param>
+            <returns>normalized major portion of the activity, aka message/... will return "message"</returns>
         </member>
         <member name="M:Microsoft.Bot.Connector.ActivityExtensions.MentionsId(Microsoft.Bot.Connector.IMessageActivity,System.String)">
             <summary>

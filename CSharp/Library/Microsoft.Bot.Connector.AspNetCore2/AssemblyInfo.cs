@@ -10,8 +10,8 @@
 [assembly: AssemblyCulture("")]
 
 
-[assembly: AssemblyVersion("2.0.0.6")]
-[assembly: AssemblyFileVersion("2.0.0.6")]
+[assembly: AssemblyVersion("2.0.0.7")]
+[assembly: AssemblyFileVersion("2.0.0.7")]
 
 //[assembly: AssemblyKeyFileAttribute(@"..\\..\\buildtools\\35MSSharedLib1024.snk")] 
 //[assembly: AssemblyDelaySignAttribute(true)]

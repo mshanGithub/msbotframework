@@ -186,7 +186,7 @@ namespace Microsoft.Bot.Connector
         public ISuggestionActivity AsSuggestionActivity() { return IsActivity(ActivityTypes.Suggestion) ? this : null; }
 
         /// <summary>
-        /// Maps type to activity types 
+        /// Normalize activity type 
         /// </summary>
         /// <param name="type"> The type.</param>
         /// <returns> The activity type.</returns>
@@ -209,6 +209,30 @@ namespace Microsoft.Bot.Connector
 
             if (String.Equals(type, ActivityTypes.Ping, StringComparison.OrdinalIgnoreCase))
                 return ActivityTypes.Ping;
+
+            if (String.Equals(type, ActivityTypes.EndOfConversation, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.EndOfConversation;
+
+            if (String.Equals(type, ActivityTypes.Event, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Event;
+
+            if (String.Equals(type, ActivityTypes.InstallationUpdate, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.InstallationUpdate;
+
+            if (String.Equals(type, ActivityTypes.Invoke, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Invoke;
+
+            if (String.Equals(type, ActivityTypes.MessageDelete, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.MessageDelete;
+
+            if (String.Equals(type, ActivityTypes.MessageReaction, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.MessageReaction;
+
+            if (String.Equals(type, ActivityTypes.MessageUpdate, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.MessageUpdate;
+
+            if (String.Equals(type, ActivityTypes.Suggestion, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Suggestion;
 
             return $"{Char.ToLower(type[0])}{type.Substring(1)}";
         }
@@ -290,6 +314,16 @@ namespace Microsoft.Bot.Connector
 
     public static class ActivityExtensions
     {
+
+        /// <summary>
+        /// Normalize ActivityType 
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <returns>normalized activity type</returns>
+        public static string GetActivityType(this IActivity activity)
+        {
+            return Activity.GetActivityType(activity.Type);
+        }
 
         /// <summary>
         /// Is there a mention of Id in the Text Property 
