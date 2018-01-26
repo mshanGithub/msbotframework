@@ -540,10 +540,10 @@
         </member>
         <member name="M:Microsoft.Bot.Connector.ActivityExtensions.GetActivityType(Microsoft.Bot.Connector.IActivity)">
             <summary>
-            Return the "major" portion of the activity
+            Normalize ActivityType 
             </summary>
             <param name="activity"></param>
-            <returns>normalized major portion of the activity, aka message/... will return "message"</returns>
+            <returns>normalized activity type</returns>
         </member>
         <member name="M:Microsoft.Bot.Connector.ActivityExtensions.MentionsId(Microsoft.Bot.Connector.IMessageActivity,System.String)">
             <summary>
