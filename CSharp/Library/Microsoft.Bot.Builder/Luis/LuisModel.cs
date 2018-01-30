@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
 // 
@@ -72,6 +72,11 @@ namespace Microsoft.Bot.Builder.Luis
         LuisApiVersion ApiVersion { get; }
 
         /// <summary>
+        /// Threshold for top scoring intent
+        /// </summary>
+        double Threshold { get; }
+        
+        /// <summary>
         /// Modify a Luis request to specify query parameters like spelling or logging.
         /// </summary>
         /// <param name="request">Request so far.</param>
@@ -117,6 +122,12 @@ namespace Microsoft.Bot.Builder.Luis
         /// </summary>
         public LuisApiVersion ApiVersion => apiVersion;
 
+	    private readonly double threshold;
+        /// <summary>
+        /// Threshold for top scoring intent
+        /// </summary>
+        public double Threshold => threshold;
+
         private ILuisOptions Options => (ILuisOptions)this;
 
         /// <summary>
@@ -144,11 +155,17 @@ namespace Microsoft.Bot.Builder.Luis
         /// </summary>
         public bool Verbose { get { return Options.Verbose.Value; } set { Options.Verbose = value; } }
 
+        /// <summary>
+        /// The Bing Spell Check subscription key.
+        /// </summary>
+        public string BingSpellCheckSubscriptionKey { get { return Options.BingSpellCheckSubscriptionKey; } set { Options.BingSpellCheckSubscriptionKey = value;  } }
+
         bool? ILuisOptions.Log { get; set; }
         bool? ILuisOptions.SpellCheck { get; set; }
         bool? ILuisOptions.Staging { get; set; }
         double? ILuisOptions.TimezoneOffset { get; set; }
         bool? ILuisOptions.Verbose { get; set; }
+        string ILuisOptions.BingSpellCheckSubscriptionKey { get; set; }
 
         public static Uri UriFor(LuisApiVersion apiVersion, string domain = null)
         {
@@ -167,14 +184,16 @@ namespace Microsoft.Bot.Builder.Luis
         /// <param name="subscriptionKey">The LUIS subscription key.</param>
         /// <param name="apiVersion">The LUIS API version.</param>
         /// <param name="domain">Domain where LUIS model is located.</param>
-        public LuisModelAttribute(string modelID, string subscriptionKey,
-            LuisApiVersion apiVersion = LuisApiVersion.V2, string domain = null)
+	    /// <param name="threshold">Threshold for the top scoring intent.</param>
+	    public LuisModelAttribute(string modelID, string subscriptionKey,
+            LuisApiVersion apiVersion = LuisApiVersion.V2, string domain = null, double threshold = 0.0d)
         {
             SetField.NotNull(out this.modelID, nameof(modelID), modelID);
             SetField.NotNull(out this.subscriptionKey, nameof(subscriptionKey), subscriptionKey);
             this.apiVersion = apiVersion;
             this.domain = domain;
             this.uriBase = UriFor(apiVersion, domain);
+            this.threshold = threshold;
 
             this.Log = true;
         }

@@ -44,6 +44,7 @@ import * as url from 'url';
 import * as http from 'http';
 import * as jwt from 'jsonwebtoken';
 import * as zlib from 'zlib';
+import * as Promise from 'promise';
 import urlJoin = require('url-join');
 
 var pjson = require('../../package.json');
@@ -51,6 +52,8 @@ var pjson = require('../../package.json');
 var MAX_DATA_LENGTH = 65000;
 
 var USER_AGENT = "Microsoft-BotFramework/3.1 (BotBuilder Node.js/" + pjson.version + ")";
+
+var StateApiDreprecatedMessage = "The Bot State API is deprecated.  Please refer to https://aka.ms/I6swrh for details on how to replace with your own storage.";
 
 export interface IChatConnectorSettings {
     appId?: string;
@@ -67,11 +70,11 @@ export interface IChatConnectorEndpoint {
     botConnectorOpenIdMetadata: string;
     botConnectorIssuer: string;
     botConnectorAudience: string;
-    msaOpenIdMetadata: string;
-    msaIssuer: string;
-    msaAudience: string;
     emulatorOpenIdMetadata: string;
-    emulatorIssuer: string;
+    emulatorAuthV31IssuerV1: string;
+    emulatorAuthV31IssuerV2: string;
+    emulatorAuthV32IssuerV1: string;
+    emulatorAuthV32IssuerV2: string;
     emulatorAudience: string;
     stateEndpoint: string;
 }
@@ -79,7 +82,14 @@ export interface IChatConnectorEndpoint {
 export interface IChatConnectorAddress extends IAddress {
     id?: string;            // Incoming Message ID
     serviceUrl?: string;    // Specifies the URL to: post messages back, comment, annotate, delete
+}
+
+export interface IStartConversationAddress extends IChatConnectorAddress {
+    activity?: any;
     channelData?: any;
+    isGroup?: boolean;
+    members?: IIdentity[];
+    topicName?: string;
 }
 
 export class ChatConnector implements IConnector, IBotStorage {
@@ -88,8 +98,8 @@ export class ChatConnector implements IConnector, IBotStorage {
     private accessToken: string;
     private accessTokenExpires: number;
     private botConnectorOpenIdMetadata: OpenIdMetadata;
-    private msaOpenIdMetadata: OpenIdMetadata;
     private emulatorOpenIdMetadata: OpenIdMetadata;
+    private refreshingToken: Promise.IThenable<string>;
 
     constructor(protected settings: IChatConnectorSettings = {}) {
         if (!this.settings.endpoint) {
@@ -99,39 +109,47 @@ export class ChatConnector implements IConnector, IBotStorage {
                 botConnectorOpenIdMetadata: this.settings.openIdMetadata || 'https://login.botframework.com/v1/.well-known/openidconfiguration',
                 botConnectorIssuer: 'https://api.botframework.com',
                 botConnectorAudience: this.settings.appId,
-                msaOpenIdMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-                msaIssuer: 'https://sts.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/',
-                msaAudience: 'https://graph.microsoft.com',
                 emulatorOpenIdMetadata: 'https://login.microsoftonline.com/botframework.com/v2.0/.well-known/openid-configuration',
-                emulatorAudience: 'https://sts.windows.net/d6d49420-f39b-4df7-a1dc-d59a935871db/',
-                emulatorIssuer: this.settings.appId,
+                emulatorAudience: this.settings.appId,
+                emulatorAuthV31IssuerV1: 'https://sts.windows.net/d6d49420-f39b-4df7-a1dc-d59a935871db/',
+                emulatorAuthV31IssuerV2: 'https://login.microsoftonline.com/d6d49420-f39b-4df7-a1dc-d59a935871db/v2.0',
+                emulatorAuthV32IssuerV1: 'https://sts.windows.net/f8cdef31-a31e-4b4a-93e4-5f571e91255a/',
+                emulatorAuthV32IssuerV2: 'https://login.microsoftonline.com/f8cdef31-a31e-4b4a-93e4-5f571e91255a/v2.0',
                 stateEndpoint: this.settings.stateEndpoint || 'https://state.botframework.com'
             }
         }
 
         this.botConnectorOpenIdMetadata = new OpenIdMetadata(this.settings.endpoint.botConnectorOpenIdMetadata);
-        this.msaOpenIdMetadata = new OpenIdMetadata(this.settings.endpoint.msaOpenIdMetadata);
         this.emulatorOpenIdMetadata = new OpenIdMetadata(this.settings.endpoint.emulatorOpenIdMetadata);
     }
 
     public listen(): IWebMiddleware {
-        return (req: IWebRequest, res: IWebResponse) => {
+        function defaultNext() { }
+        return (req: IWebRequest, res: IWebResponse, next: Function) => {
             if (req.body) {
-                this.verifyBotFramework(req, res);
+                this.verifyBotFramework(req, res, next || defaultNext);
             } else {
                 var requestData = '';
                 req.on('data', (chunk: string) => {
                     requestData += chunk
                 });
                 req.on('end', () => {
-                    req.body = JSON.parse(requestData);
-                    this.verifyBotFramework(req, res);
+                    try {
+                        req.body = JSON.parse(requestData);
+                    } catch (err) {
+                        logger.error('ChatConnector: receive - invalid request data received.');
+                        res.send(400);
+                        res.end();
+                        return;
+                    }
+
+                    this.verifyBotFramework(req, res, next || defaultNext);
                 });
             }
         };
     }
 
-    private verifyBotFramework(req: IWebRequest, res: IWebResponse): void {
+    private verifyBotFramework(req: IWebRequest, res: IWebResponse, next: Function): void {
         var token: string;
         var isEmulator = req.body['channelId'] === 'emulator';
         var authHeaderValue = req.headers ? req.headers['authorization'] || req.headers['Authorization'] : null;
@@ -149,25 +167,46 @@ export class ChatConnector implements IConnector, IBotStorage {
             var openIdMetadata: OpenIdMetadata;
             const algorithms: string[] = ['RS256', 'RS384', 'RS512'];
 
-            if (isEmulator && decoded.payload.iss == this.settings.endpoint.msaIssuer) {
-                // This token came from MSA, so check it via the emulator path
-                openIdMetadata = this.msaOpenIdMetadata;
-                verifyOptions = {
-                    algorithms: algorithms,
-                    issuer: this.settings.endpoint.msaIssuer,
-                    audience: this.settings.endpoint.msaAudience,
-                    clockTolerance: 300
-                };
-            } else if (isEmulator && decoded.payload.iss == this.settings.endpoint.emulatorIssuer) {
-                // This token came from the emulator, so check it via the emulator path
-                openIdMetadata = this.emulatorOpenIdMetadata;
-                verifyOptions = {
-                    algorithms: algorithms,
-                    issuer: this.settings.endpoint.emulatorIssuer,
-                    audience: this.settings.endpoint.emulatorAudience,
-                    clockTolerance: 300
-                };
-            } else {
+            if (isEmulator) {
+
+                // validate the claims from the emulator
+                if ((decoded.payload.ver === '2.0' && decoded.payload.azp !== this.settings.appId) ||
+                    (decoded.payload.ver !== '2.0' && decoded.payload.appid !== this.settings.appId)) {
+                    logger.error('ChatConnector: receive - invalid token. Requested by unexpected app ID.');
+                    res.status(403);
+                    res.end();
+                    next();
+                    return;
+                }
+
+                // the token came from the emulator, so ensure the correct issuer is used
+                let issuer: string;
+                if (decoded.payload.ver === '1.0' && decoded.payload.iss == this.settings.endpoint.emulatorAuthV31IssuerV1) {
+                    // This token came from the emulator as a v1 token using the Auth v3.1 issuer
+                    issuer = this.settings.endpoint.emulatorAuthV31IssuerV1;
+                } else if (decoded.payload.ver === '2.0' && decoded.payload.iss == this.settings.endpoint.emulatorAuthV31IssuerV2) {
+                    // This token came from the emulator as a v2 token using the Auth v3.1 issuer
+                    issuer = this.settings.endpoint.emulatorAuthV31IssuerV2;
+                } else if (decoded.payload.ver === '1.0' && decoded.payload.iss == this.settings.endpoint.emulatorAuthV32IssuerV1) {
+                    // This token came from the emulator as a v1 token using the Auth v3.2 issuer
+                    issuer = this.settings.endpoint.emulatorAuthV32IssuerV1;
+                } else if (decoded.payload.ver === '2.0' && decoded.payload.iss == this.settings.endpoint.emulatorAuthV32IssuerV2) {
+                    // This token came from the emulator as a v2 token using the Auth v3.2 issuer
+                    issuer = this.settings.endpoint.emulatorAuthV32IssuerV2;
+                }
+
+                if (issuer) {
+                    openIdMetadata = this.emulatorOpenIdMetadata;
+                    verifyOptions = {
+                        algorithms: algorithms,
+                        issuer: issuer,
+                        audience: this.settings.endpoint.emulatorAudience,
+                        clockTolerance: 300
+                    };
+                }
+            }
+
+            if (!verifyOptions) {
                 // This is a normal token, so use our Bot Connector verification
                 openIdMetadata = this.botConnectorOpenIdMetadata;
                 verifyOptions = {
@@ -175,13 +214,6 @@ export class ChatConnector implements IConnector, IBotStorage {
                     audience: this.settings.endpoint.botConnectorAudience,
                     clockTolerance: 300
                 };
-            }
-
-            if (isEmulator && decoded.payload.appid != this.settings.appId) {
-                logger.error('ChatConnector: receive - invalid token. Requested by unexpected app ID.');
-                res.status(403);
-                res.end();
-                return;
             }
 
             openIdMetadata.getKey(decoded.header.kid, key => {
@@ -210,26 +242,29 @@ export class ChatConnector implements IConnector, IBotStorage {
                         logger.error('ChatConnector: receive - invalid token. Check bot\'s app ID & Password.');
                         res.send(403, err);
                         res.end();
+                        next();
                         return;
                     }
 
-                    this.dispatch(req.body, res);
+                    this.dispatch(req.body, res, next);
                 } else {
                     logger.error('ChatConnector: receive - invalid signing key or OpenId metadata document.');
                     res.status(500);
                     res.end();
+                    next();
                     return;
                 }
             });
         } else if (isEmulator && !this.settings.appId && !this.settings.appPassword) {
             // Emulator running without auth enabled
             logger.warn(req.body, 'ChatConnector: receive - emulator running without security enabled.');
-            this.dispatch(req.body, res);
+            this.dispatch(req.body, res, next);
         } else {
             // Token not provided so
             logger.error('ChatConnector: receive - no security token sent.');
             res.status(401);
             res.end();
+            next();
         }
     }
 
@@ -247,14 +282,22 @@ export class ChatConnector implements IConnector, IBotStorage {
             try {
                 if (msg.type == 'delay') {
                     setTimeout(cb, (<any>msg).value);
-                } else if (msg.address && (<IChatConnectorAddress>msg.address).serviceUrl) {
-                    this.postMessage(msg, (idx == messages.length - 1), (err, address) => {
-                        addresses.push(address);
-                        cb(err);
-                    });
                 } else {
-                    logger.error('ChatConnector: send - message is missing address or serviceUrl.')
-                    cb(new Error('Message missing address or serviceUrl.'));
+                    const addressExists = !!msg.address;
+                    const serviceUrlExists = addressExists && !!(<IChatConnectorAddress>msg.address).serviceUrl;
+
+                    // checking for address exists is redundant here, its part of the def of serviceUrlExists
+                    if(serviceUrlExists) {
+                        this.postMessage(msg, (idx == messages.length - 1), (err, address) => {
+                            addresses.push(address);
+                            cb(err);
+                        });
+                    } else {
+                        const msg = `Message is missing ${addressExists ? 'address and serviceUrl' : 'serviceUrl'} `;
+
+                        logger.error(`ChatConnector: send - ${msg}`)
+                        cb(new Error(msg));
+                    }
                 }
             } catch (e) {
                 cb(e);
@@ -262,22 +305,25 @@ export class ChatConnector implements IConnector, IBotStorage {
         }, (err) => done(err, !err ? addresses : null));
     }
 
-    public startConversation(address: IChatConnectorAddress, done: (err: Error, address?: IAddress) => void): void {
+    public startConversation(address: IStartConversationAddress, done: (err: Error, address?: IAddress) => void): void {
         if (address && address.user && address.bot && address.serviceUrl) {
             // Issue request
             var options: request.Options = {
                 method: 'POST',
-                // We use urlJoin to concatenate urls. url.resolve should not be used here, 
+                // We use urlJoin to concatenate urls. url.resolve should not be used here,
                 // since it resolves urls as hrefs are resolved, which could result in losing
                 // the last fragment of the serviceUrl
                 url: urlJoin(address.serviceUrl, '/v3/conversations'),
                 body: {
                     bot: address.bot,
-                    members: [address.user],
-                    channelData: address.channelData
+                    members: address.members || [address.user]
                 },
                 json: true
             };
+            if (address.activity) { options.body.activity = address.activity }
+            if (address.channelData) { options.body.channelData = address.channelData }
+            if (address.isGroup !== undefined) { options.body.isGroup = address.isGroup }
+            if (address.topicName) { options.body.topicName = address.topicName }
             this.authenticatedRequest(options, (err, response, body) => {
                 var adr: IChatConnectorAddress;
                 if (!err) {
@@ -286,9 +332,8 @@ export class ChatConnector implements IConnector, IBotStorage {
                         if (obj && obj.hasOwnProperty('id')) {
                             adr = utils.clone(address);
                             adr.conversation = { id: obj['id'] };
-                            if (adr.id) {
-                                delete adr.id;
-                            }
+                            if (obj['serviceUrl']) { adr.serviceUrl = obj['serviceUrl'] }
+                            if (adr.id) { delete adr.id }
                         } else {
                             err = new Error('Failed to start conversation: no conversation ID returned.')
                         }
@@ -326,7 +371,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         // Issue request
         var options: request.Options = {
             method: 'DELETE',
-            // We use urlJoin to concatenate urls. url.resolve should not be used here, 
+            // We use urlJoin to concatenate urls. url.resolve should not be used here,
             // since it resolves urls as hrefs are resolved, which could result in losing
             // the last fragment of the serviceUrl
             url: urlJoin(address.serviceUrl, path),
@@ -335,8 +380,11 @@ export class ChatConnector implements IConnector, IBotStorage {
         this.authenticatedRequest(options, (err, response, body) => done(err));
     }
 
+
     public getData(context: IBotStorageContext, callback: (err: Error, data: IChatConnectorStorageData) => void): void {
         try {
+            console.warn(StateApiDreprecatedMessage);
+
             // Build list of read commands
             var root = this.getStoragePath(context.address);
             var list: any[] = [];
@@ -417,6 +465,7 @@ export class ChatConnector implements IConnector, IBotStorage {
     }
 
     public saveData(context: IBotStorageContext, data: IChatConnectorStorageData, callback?: (err: Error) => void): void {
+        console.warn(StateApiDreprecatedMessage);
         var list: any[] = [];
         function addWrite(field: string, botData: any, url: string) {
             var hashKey = field + 'Hash';
@@ -517,7 +566,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         }
     }
 
-    private dispatch(msg: IMessage, res: IWebResponse) {
+    private dispatch(msg: IMessage, res: IWebResponse, next: Function) {
         // Dispatch message/activity
         try {
             this.prepIncomingMessage(msg);
@@ -527,18 +576,23 @@ export class ChatConnector implements IConnector, IBotStorage {
                 if (err) {
                     res.status(500);
                     res.end();
+                    next();
                     logger.error('ChatConnector: error dispatching event(s) - ', err.message || '');
                 } else if (body) {
                     res.send(status || 200, body);
+                    res.end();
+                    next();
                 } else {
                     res.status(status || 200);
                     res.end();
+                    next();
                 }
             })
         } catch (e) {
             console.error(e instanceof Error ? (<Error>e).stack : e.toString());
             res.status(500);
             res.end();
+            next();
         }
     }
 
@@ -570,7 +624,7 @@ export class ChatConnector implements IConnector, IBotStorage {
         // Issue request
         var options: request.Options = {
             method: method,
-            // We use urlJoin to concatenate urls. url.resolve should not be used here, 
+            // We use urlJoin to concatenate urls. url.resolve should not be used here,
             // since it resolves urls as hrefs are resolved, which could result in losing
             // the last fragment of the serviceUrl
             url: urlJoin(address.serviceUrl, path),
@@ -615,7 +669,7 @@ export class ChatConnector implements IConnector, IBotStorage {
                                 if (response.statusCode < 400) {
                                     callback(null, response, body);
                                 } else {
-                                    var txt = "Request to '" + options.url + "' failed: [" + response.statusCode + "] " + response.statusMessage;
+                                    var txt = options.method + " to '" + options.url + "' failed: [" + response.statusCode + "] " + response.statusMessage;
                                     callback(new Error(txt), response, null);
                                 }
                                 break;
@@ -630,39 +684,73 @@ export class ChatConnector implements IConnector, IBotStorage {
         });
     }
 
-    public getAccessToken(cb: (err: Error, accessToken: string) => void): void {
-        if (!this.accessToken || new Date().getTime() >= this.accessTokenExpires) {
-            // Refresh access token
-            var opt: request.Options = {
-                method: 'POST',
-                url: this.settings.endpoint.refreshEndpoint,
-                form: {
-                    grant_type: 'client_credentials',
-                    client_id: this.settings.appId,
-                    client_secret: this.settings.appPassword,
-                    scope: this.settings.endpoint.refreshScope
-                }
-            };
-            this.addUserAgent(opt);
-            request(opt, (err, response, body) => {
-                if (!err) {
-                    if (body && response.statusCode < 300) {
-                        // Subtract 5 minutes from expires_in so they'll we'll get a
-                        // new token before it expires.
-                        var oauthResponse = JSON.parse(body);
-                        this.accessToken = oauthResponse.access_token;
-                        this.accessTokenExpires = new Date().getTime() + ((oauthResponse.expires_in - 300) * 1000);
-                        cb(null, this.accessToken);
-                    } else {
-                        cb(new Error('Refresh access token failed with status code: ' + response.statusCode), null);
+    private tokenExpired(): boolean {
+        return Date.now() >= this.accessTokenExpires;
+    }
+
+    private tokenHalfWayExpired(secondstoHalfWayExpire: number = 1800, secondsToExpire: number = 300): boolean {
+        var timeToExpiration = (this.accessTokenExpires - Date.now())/1000;
+        return timeToExpiration < secondstoHalfWayExpire
+            && timeToExpiration > secondsToExpire;
+    }
+
+    private refreshAccessToken(cb: (err: Error, accessToken: string) => void): void {
+        // Get token only on first access. Other callers will block while waiting for token.
+        if (!this.refreshingToken) {
+            this.refreshingToken = new Promise<string>((resolve, reject) => {
+                var opt: request.Options = {
+                    method: 'POST',
+                    url: this.settings.endpoint.refreshEndpoint,
+                    form: {
+                        grant_type: 'client_credentials',
+                        client_id: this.settings.appId,
+                        client_secret: this.settings.appPassword,
+                        scope: this.settings.endpoint.refreshScope
                     }
-                } else {
-                    cb(err, null);
-                }
-            });
-        } else {
-            cb(null, this.accessToken);
+                };
+                this.addUserAgent(opt);
+                request(opt, (err, response, body) => {
+                    if (!err) {
+                        if (body && response.statusCode < 300) {
+                            // Subtract 5 minutes from expires_in so they'll we'll get a
+                            // new token before it expires.
+                            var oauthResponse = JSON.parse(body);
+                            this.accessToken = oauthResponse.access_token;
+                            this.accessTokenExpires = new Date().getTime() + ((oauthResponse.expires_in - 300) * 1000);
+                            this.refreshingToken = undefined;
+                            resolve(this.accessToken);
+                        } else {
+                            reject(new Error('Refresh access token failed with status code: ' + response.statusCode));
+                        }
+                    } else {
+                        reject(err);
+                    }
+                });
+            })
         }
+        this.refreshingToken.then((token) => cb(null, token), (err) => cb(err, null));
+    }
+
+    public getAccessToken(cb: (err: Error, accessToken: string) => void): void {
+        if (this.accessToken == null || this.tokenExpired()) {
+            // Refresh access token with error handling
+            this.refreshAccessToken((err, token) => {
+                cb(err, this.accessToken);
+            });
+
+        }
+        else if (this.tokenHalfWayExpired()) {
+            // Refresh access token without error handling
+            var oldToken = this.accessToken;
+            this.refreshAccessToken((err, token) => {
+                if (!err)
+                    cb(null, this.accessToken);
+                else
+                    cb(null, oldToken);
+            });
+        }
+        else
+            cb(null, this.accessToken);
     }
 
     private addUserAgent(options: request.Options): void {
@@ -678,7 +766,7 @@ export class ChatConnector implements IConnector, IBotStorage {
                 if (!err && token) {
                     if (!options.headers) {
                         options.headers = {};
-                    } 
+                    }
                     options.headers['Authorization'] = 'Bearer ' + token
                     cb(null);
                 } else {
@@ -828,6 +916,5 @@ interface IWebResponse {
 
 /** Express or Restify Middleware Function. */
 interface IWebMiddleware {
-    (req: IWebRequest, res: IWebResponse, next?: Function): void;
+    (req: IWebRequest, res: IWebResponse, next: Function): void;
 }
-

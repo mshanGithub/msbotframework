@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.Bot.Builder.Tests</RootNamespace>
     <AssemblyName>Microsoft.Bot.Builder.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -58,9 +58,8 @@
       <HintPath>..\..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -101,6 +100,7 @@
     <Compile Include="DialogTaskManagerTests.cs" />
     <Compile Include="DialogTaskTests.cs" />
     <Compile Include="DialogTestBase.cs" />
+    <Compile Include="OrderedContractResolver.cs" />
     <Compile Include="PromptRecognizerTests.cs" />
     <Compile Include="RaceCondition\RaceConditionTests.cs" />
     <Compile Include="RaceCondition\Resources.Designer.cs">
@@ -117,7 +117,6 @@
     <Compile Include="DispatchDialogTests .cs" />
     <Compile Include="ExceptionTests.cs" />
     <Compile Include="FiberTests.cs" />
-    <Compile Include="FormTests.cs" />
     <Compile Include="LuisResolutionTests.cs" />
     <Compile Include="LuisTests.cs" />
     <Compile Include="LocalizationTests.cs" />
@@ -145,21 +144,13 @@
       <Project>{cdfec7d6-847e-4c13-956b-0a960ae3eb60}</Project>
       <Name>Microsoft.Bot.Builder</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.NetFramework\Microsoft.Bot.Connector.csproj">
+    <ProjectReference Include="..\..\Library\Microsoft.Bot.Connector.NetFramework\Microsoft.Bot.Connector.NetFramework.csproj">
       <Project>{df397efc-91db-4911-9971-c509926fc288}</Project>
       <Name>Microsoft.Bot.Connector</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Microsoft.Bot.Builder.FormFlow.Json\Microsoft.Bot.Builder.FormFlow.Json.csproj">
       <Project>{8674f271-4437-4178-b4e2-15f91b322e5d}</Project>
       <Name>Microsoft.Bot.Builder.FormFlow.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Samples\AnnotatedSandwichBot\Microsoft.Bot.Sample.AnnotatedSandwichBot.csproj">
-      <Project>{2e4d097f-8e3d-4223-9b39-1b29ea5e5e75}</Project>
-      <Name>Microsoft.Bot.Sample.AnnotatedSandwichBot</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FormTest\FormTest.csproj">
-      <Project>{77bd8c61-fb06-4bf7-a346-d2c87284390a}</Project>
-      <Name>FormTest</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +206,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\SimpleForm-Prompter.script">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\SimpleForm-Skip.script">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\SimpleForm.script">

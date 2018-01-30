@@ -68,6 +68,20 @@ export class CardAction implements IIsCardAction {
         return this;
     }
 
+    public text(text: string|string[], ...args: any[]): this {
+        if (text) {
+            this.data.text = fmtText(this.session, text, args);
+        }
+        return this;
+    }
+
+    public displayText(text: string|string[], ...args: any[]): this {
+        if (text) {
+            this.data.displayText = fmtText(this.session, text, args);
+        }
+        return this;
+    }
+
     public toAction(): ICardAction {
         return this.data;
     }
@@ -108,11 +122,23 @@ export class CardAction implements IIsCardAction {
         return new CardAction(session).type('downloadFile').value(url).title(title || "Click to download file");
     }
 
+    static invoke(session: Session, action: string, data: any, title: string) {
+        const value: { [key: string]: any }= {}
+
+        value[action] = data;
+
+        return new CardAction(session).type('invoke').value(JSON.stringify(value)).title(title || "Click to send response to bot");
+    };
+
     static dialogAction(session: Session, action: string, data?: string, title?: string|string[]): CardAction {
         var value = 'action?' + action;
         if (data) {
             value += '=' + data;
         }
         return new CardAction(session).type('postBack').value(value).title(title || "Click to send response to bot");
+    }
+
+    static messageBack(session: Session, msg: string, title?: string|string[]): CardAction {
+        return new CardAction(session).type('messageBack').value(msg).title(title || "Click to send response to bot");
     }
 }

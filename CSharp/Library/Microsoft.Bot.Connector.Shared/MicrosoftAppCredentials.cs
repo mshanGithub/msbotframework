@@ -6,10 +6,8 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if !NET45
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-#endif
 using Microsoft.Rest;
 using Newtonsoft.Json;
 
@@ -42,14 +40,13 @@ namespace Microsoft.Bot.Connector
 
 #if !NET45
         protected ILogger logger;
-#endif
+#endif 
 
-#if NET45
         public MicrosoftAppCredentials(string appId = null, string password = null)
         {
             MicrosoftAppId = appId;
             MicrosoftAppPassword = password;
-
+#if NET45
             if(appId == null)
             {
                 MicrosoftAppId = ConfigurationManager.AppSettings[MicrosoftAppIdKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppIdKey, EnvironmentVariableTarget.Process);
@@ -59,25 +56,24 @@ namespace Microsoft.Bot.Connector
             {
                 MicrosoftAppPassword = ConfigurationManager.AppSettings[MicrosoftAppPasswordKey] ?? Environment.GetEnvironmentVariable(MicrosoftAppPasswordKey, EnvironmentVariableTarget.Process);
             }
-
+#endif
             TokenCacheKey = $"{MicrosoftAppId}-cache";
         }
-#else
-        public MicrosoftAppCredentials(string appId = null, string password = null, ILogger logger = null)
-        {
-            MicrosoftAppId = appId;
-            MicrosoftAppPassword = password;
 
-            TokenCacheKey = $"{MicrosoftAppId}-cache";
+#if !NET45
+        public MicrosoftAppCredentials(string appId, string password, ILogger logger)
+            : this(appId, password)
+        {
             this.logger = logger;
         }
+#endif
 
+#if !NET45
         public MicrosoftAppCredentials(IConfiguration configuration, ILogger logger = null)
             : this(configuration.GetSection(MicrosoftAppIdKey)?.Value, configuration.GetSection(MicrosoftAppPasswordKey)?.Value, logger)
         {
         }
 #endif
-
 
 
         public string MicrosoftAppId { get; set; }
@@ -158,28 +154,47 @@ namespace Microsoft.Bot.Connector
         {
             if (ShouldSetToken(request))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
+                string token = await this.GetTokenAsync().ConfigureAwait(false);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-            await base.ProcessHttpRequestAsync(request, cancellationToken);
+            await base.ProcessHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
 
 
         public async Task<string> GetTokenAsync(bool forceRefresh = false)
         {
-            string token;
             OAuthResponse oAuthToken;
-            if (cache.TryGetValue(TokenCacheKey, out oAuthToken) && !forceRefresh && TokenNotExpired(oAuthToken))
+            bool tokenInCache = cache.TryGetValue(TokenCacheKey, out oAuthToken);
+            string token = tokenInCache ? oAuthToken.access_token : null;
+            if (!tokenInCache || !TokenNotExpired(oAuthToken) || forceRefresh)
             {
-                token = oAuthToken.access_token;
+                token = await RefreshAndStoreToken().ConfigureAwait(false);
             }
-            else
+            else if (!TokenWithinSafeTimeLimits(oAuthToken))
             {
-                oAuthToken = await RefreshTokenAsync().ConfigureAwait(false);
-                cache.AddOrUpdate(TokenCacheKey, oAuthToken, (key, oldToken) => oAuthToken);
-                token = oAuthToken.access_token;
+                string oldToken = token;
+                token = await RefreshAndStoreToken().ConfigureAwait(false);
+                if (string.IsNullOrEmpty(token))
+                {
+                    token = oldToken;
+                }
             }
             return token;
+        }
+
+        private async Task<string> RefreshAndStoreToken()
+        {
+            try
+            {
+                OAuthResponse oAuthToken = await RefreshTokenAsync().ConfigureAwait(false);
+                cache.AddOrUpdate(TokenCacheKey, oAuthToken, (key, oldToken) => oAuthToken);
+                return oAuthToken.access_token;
+            }
+            catch (OAuthException)
+            {
+                throw;
+            }
         }
 
         private bool ShouldSetToken(HttpRequestMessage request)
@@ -263,6 +278,13 @@ namespace Microsoft.Bot.Connector
         private bool TokenNotExpired(OAuthResponse token)
         {
             return token.expiration_time > DateTime.UtcNow;
+        }
+
+        private bool TokenWithinSafeTimeLimits(OAuthResponse token)
+        {
+            int secondsToHalfwayExpire = Math.Min(token.expires_in / 2, 1800);
+            TimeSpan TimeToExpiration = token.expiration_time - DateTime.UtcNow;
+            return TimeToExpiration.TotalSeconds > secondsToHalfwayExpire;
         }
 
         protected class OAuthResponse
