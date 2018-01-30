@@ -47,7 +47,6 @@ using Microsoft.Bot.Builder.FormFlowTest;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Sample.AnnotatedSandwichBot;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -362,7 +361,7 @@ Is this what you wanted? {||}")
         {
             var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
             await VerifyFormScript(pathScript,
-                "en-us", 
+                "en-us",
                 () => new FormBuilder<SimpleForm>()
                 .AddRemainingFields()
                 .Confirm(@"**Results**
@@ -372,7 +371,7 @@ Is this what you wanted? {||}")
 * SomeChoices: {SomeChoices}
 * Date: {Date}
 Is this what you wanted? {||}")
-                .Build(), 
+                .Build(),
                 FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
                 "Hi",
                 "some text here",
@@ -420,13 +419,30 @@ Is this what you wanted? {||}")
                 // Test limits beyond double
                 (double.MaxValue).ToString().Replace("308", "309"),
                 (double.MinValue).ToString().Replace("308", "309"),
-                
+
                 // Min and max accepted values
                 float.MaxValue.ToString(),
                 "back",
                 float.MinValue.ToString(),
                 "quit");
-          }
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-Skip.script")]
+        public async Task SimpleForm_Skip_Script()
+        {
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
+                "en-us",
+                () => new FormBuilder<SimpleForm>().Build(),
+                FormOptions.None, new SimpleForm() { Float = 4.3f }, Array.Empty<EntityRecommendation>(),
+                "hi",
+                "some text",
+                "99",
+                // Float should be skipped
+                "word",
+                "quit");
+        }
 
         [TestMethod]
         [DeploymentItem(@"Scripts\PizzaForm.script")]
@@ -496,7 +512,7 @@ Is this what you wanted? {||}")
                 "hi",
                 "1", // onions for topping clarification
                 "2", // address choice from validation
-                "med", 
+                "med",
                 // Kind "4",
                 "drink bread",
                 "thin",
@@ -600,35 +616,6 @@ Is this what you wanted? {||}")
                 );
         }
 
-        [TestMethod]
-        [DeploymentItem(@"Scripts\JSON.script")]
-        public async Task JSON_Script()
-        {
-            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
-            await VerifyFormScript(pathScript,
-                "en-us", () => SandwichOrder.BuildJsonForm(), FormOptions.None, new JObject(), Array.Empty<EntityRecommendation>(),
-                "hi",
-                "ham",
-                "six",
-                "nine grain",
-                "wheat",
-                "1",
-                "peppers",
-                "1",
-                "2",
-                "n",
-                "no",
-                "ok",
-                "abc",
-                "1 state st",
-                "",
-                "9/9/2016 1pm",
-                "status",
-                "y",
-                "2.5"
-                );
-        }
-
         public class MyClass
         {
             [Prompt("I didn't get you")]
@@ -666,7 +653,7 @@ Is this what you wanted? {||}")
         public async Task FormFlow_Localization()
         {
             // This ensures there are no bad templates in resources
-            foreach (var locale in new string[] { "ar", "cs", "de", "en", "es", "fa", "fr", "it", "ja", "ru", "zh-Hans", "cs", "de-DE" })
+            foreach (var locale in new string[] { "ar", "cs", "de", "en", "es", "fa", "fr", "it", "ja", "pt-BR", "ru", "zh-Hans", "cs", "de-DE" })
             {
                 var root = new FormDialog<PizzaOrder>(new PizzaOrder(), () => PizzaOrder.BuildForm(), cultureInfo: CultureInfo.GetCultureInfo(locale));
                 Assert.AreNotEqual(null, root);
@@ -744,7 +731,7 @@ Is this what you wanted? {||}")
 
                 "back",
                 "word that",
-                
+
                 "back",
                 "-word",
 

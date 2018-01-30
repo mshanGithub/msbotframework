@@ -34,6 +34,26 @@ var CardAction = (function () {
         }
         return this;
     };
+    CardAction.prototype.text = function (text) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (text) {
+            this.data.text = Message_1.fmtText(this.session, text, args);
+        }
+        return this;
+    };
+    CardAction.prototype.displayText = function (text) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (text) {
+            this.data.displayText = Message_1.fmtText(this.session, text, args);
+        }
+        return this;
+    };
     CardAction.prototype.toAction = function () {
         return this.data;
     };
@@ -64,12 +84,21 @@ var CardAction = (function () {
     CardAction.downloadFile = function (session, url, title) {
         return new CardAction(session).type('downloadFile').value(url).title(title || "Click to download file");
     };
+    CardAction.invoke = function (session, action, data, title) {
+        var value = {};
+        value[action] = data;
+        return new CardAction(session).type('invoke').value(JSON.stringify(value)).title(title || "Click to send response to bot");
+    };
+    ;
     CardAction.dialogAction = function (session, action, data, title) {
         var value = 'action?' + action;
         if (data) {
             value += '=' + data;
         }
         return new CardAction(session).type('postBack').value(value).title(title || "Click to send response to bot");
+    };
+    CardAction.messageBack = function (session, msg, title) {
+        return new CardAction(session).type('messageBack').value(msg).title(title || "Click to send response to bot");
     };
     return CardAction;
 }());

@@ -19,7 +19,7 @@ namespace Microsoft.Bot.Connector
         public const string ImBack = "imBack";
 
         /// <summary>
-        /// Client will post message to bot privately, so other participants inside conversation will not see that was posted. 
+        /// Client will post message to bot privately, so other participants inside conversation will not see that was posted.
         /// </summary>
         public const string PostBack = "postBack";
 
@@ -47,5 +47,15 @@ namespace Microsoft.Bot.Connector
         /// Signin button
         /// </summary>
         public const string Signin = "signin";
+
+        /// <summary>
+        /// Post message to bot
+        /// </summary>
+        public const string MessageBack = "messageBack";
+
+        /// <summary>
+        /// Post invoke activity to bot
+        /// </summary>
+        public const string Invoke = "invoke";
     }
 }

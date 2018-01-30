@@ -1,13 +1,13 @@
-﻿using Autofac;
-using Autofac.Integration.WebApi;
-using Microsoft.Bot.Builder.Dialogs.Internals;
-using Microsoft.Bot.Sample.AlarmBot.Models;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System;
 using System.Reflection;
 using System.Web.Http;
+using Autofac;
+using Autofac.Integration.WebApi;
+using Microsoft.Bot.Builder.Azure;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Connector;
+using Microsoft.Bot.Sample.AlarmBot.Models;
 
 namespace Microsoft.Bot.Sample.AlarmBot
 {
@@ -15,35 +15,47 @@ namespace Microsoft.Bot.Sample.AlarmBot
     {
         protected void Application_Start(object sender, EventArgs e)
         {
-            {
-                // http://docs.autofac.org/en/latest/integration/webapi.html#quick-start
-                var builder = new ContainerBuilder();
+            var config = GlobalConfiguration.Configuration;
 
-                // register the Bot Builder module
-                builder.RegisterModule(new DialogModule());
-                // register the alarm dependencies
-                builder.RegisterModule(new AlarmModule());
+            Conversation.UpdateContainer(
+                builder =>
+                {
+                    // Register the Bot Builder module
+                    builder.RegisterModule(new DialogModule());
+                    // Register the alarm dependencies
+                    builder.RegisterModule(new AlarmModule());
 
-                // Get your HttpConfiguration.
-                var config = GlobalConfiguration.Configuration;
+                    builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
 
-                // Register your Web API controllers.
-                builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+                    // Bot Storage: Here we register the state storage for your bot. 
+                    // Default store: volatile in-memory store - Only for prototyping!
+                    // We provide adapters for Azure Table, CosmosDb, SQL Azure, or you can implement your own!
+                    // For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
+                    var store = new InMemoryDataStore();
 
-                // OPTIONAL: Register the Autofac filter provider.
-                builder.RegisterWebApiFilterProvider(config);
+                    // Other storage options
+                    // var store = new TableBotDataStore("...DataStorageConnectionString..."); // requires Microsoft.BotBuilder.Azure Nuget package 
+                    // var store = new DocumentDbBotDataStore("cosmos db uri", "cosmos db key"); // requires Microsoft.BotBuilder.Azure Nuget package 
 
-                // Set the dependency resolver to be Autofac.
-                var container = builder.Build();
-                config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-            }
+                    builder.Register(c => store)
+                        .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
+                        .AsSelf()
+                        .SingleInstance();
+
+                    // Register your Web API controllers.
+                    builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+                    builder.RegisterWebApiFilterProvider(config);
+                });
+
+            // Set the dependency resolver to be Autofac.
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(Conversation.Container);
 
             // WebApiConfig stuff
-            GlobalConfiguration.Configure(config =>
+            GlobalConfiguration.Configure(cfg =>
             {
-                config.MapHttpAttributeRoutes();
+                cfg.MapHttpAttributeRoutes();
 
-                config.Routes.MapHttpRoute(
+                cfg.Routes.MapHttpRoute(
                     name: "DefaultApi",
                     routeTemplate: "api/{controller}/{id}",
                     defaults: new { id = RouteParameter.Optional }
