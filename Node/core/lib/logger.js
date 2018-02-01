@@ -5,6 +5,7 @@ var Channel = require("./Channel");
 var consts = require("./consts");
 var sprintf = require("sprintf-js");
 var debugLoggingEnabled = new RegExp('\\bbotbuilder\\b', 'i').test(process.env.NODE_DEBUG || '');
+exports.listeners = new Set();
 function error(fmt) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -12,6 +13,7 @@ function error(fmt) {
     }
     var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
     console.error('ERROR: ' + msg);
+    delegateToListeners('error', 'ERROR: ' + msg);
 }
 exports.error = error;
 function warn(addressable, fmt) {
@@ -22,6 +24,7 @@ function warn(addressable, fmt) {
     var prefix = getPrefix(addressable);
     var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
     console.warn(prefix + 'WARN: ' + msg);
+    delegateToListeners('warn', prefix + 'WARN: ' + msg);
 }
 exports.warn = warn;
 function info(addressable, fmt) {
@@ -34,6 +37,7 @@ function info(addressable, fmt) {
         var prefix = getPrefix(addressable);
         var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
         console.info(prefix + msg);
+        delegateToListeners('info', prefix + msg);
     }
 }
 exports.info = info;
@@ -60,9 +64,11 @@ function debugLog(trace, fmt, args) {
     var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
     if (trace) {
         console.trace(msg);
+        delegateToListeners('trace', msg);
     }
     else {
         console.log(msg);
+        delegateToListeners('debug', msg);
     }
 }
 function getPrefix(addressable) {
@@ -102,3 +108,6 @@ function getPrefix(addressable) {
     return prefix;
 }
 exports.getPrefix = getPrefix;
+function delegateToListeners(functionName, message) {
+    exports.listeners.forEach(function (listener) { return (functionName in listener && listener[functionName](message)); });
+}

@@ -33,31 +33,45 @@
 
 import { Session } from './Session';
 import { IRecognizeContext } from './dialogs/IntentRecognizer'
-import { PromptType, IPromptOptions } from './dialogs/Prompt';
+import { PromptType } from './dialogs/Prompt';
 import { IPromptArgs } from './deprecated/LegacyPrompts';
 import * as Channel from './Channel';
 import * as consts from './consts';
 import * as sprintf from 'sprintf-js';
 
+export interface LogListener {
+    error?: (message: string) => void;
+    warn?: (message: string) => void;
+    info?: (message: string) => void;
+    debug?: (message: string) => void;
+    trace?: (message: string) => void;
+}
+
+declare type LogListenerApi = 'error' | 'warn' | 'info' | 'debug' | 'trace';
+
 const debugLoggingEnabled = new RegExp('\\bbotbuilder\\b', 'i').test(process.env.NODE_DEBUG || '');
+export const listeners = new Set<LogListener>();
 
 export function error(fmt: string, ...args: any[]): void {
     var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
     console.error('ERROR: ' + msg);
+    delegateToListeners('error', 'ERROR: ' + msg);
 }
 
-export function warn(addressable: Session|IRecognizeContext|IMessage|IAddress, fmt: string, ...args: any[]): void {
+export function warn(addressable: Session | IRecognizeContext | IMessage | IAddress, fmt: string, ...args: any[]): void {
     var prefix = getPrefix(<Session>addressable);
     var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
     console.warn(prefix + 'WARN: ' + msg);
+    delegateToListeners('warn', prefix + 'WARN: ' + msg);
 }
 
-export function info(addressable: Session|IRecognizeContext|IMessage|IAddress, fmt: string, ...args: any[]): void {
+export function info(addressable: Session | IRecognizeContext | IMessage | IAddress, fmt: string, ...args: any[]): void {
     var channelId = Channel.getChannelId(addressable);
-    if (channelId === Channel.channels.emulator || debugLoggingEnabled){
+    if (channelId === Channel.channels.emulator || debugLoggingEnabled) {
         var prefix = getPrefix(<Session>addressable);
         var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
         console.info(prefix + msg);
+        delegateToListeners('info', prefix + msg);
     }
 }
 
@@ -66,24 +80,26 @@ export function debug(fmt: string, ...args: any[]): void {
 }
 
 export function trace(fmt: string, ...args: any[]): void {
-    debugLog(true, fmt, args);    
+    debugLog(true, fmt, args);
 }
 
-function debugLog(trace:boolean, fmt: string, args: any[]): void {
+function debugLog(trace: boolean, fmt: string, args: any[]): void {
     if (!debugLoggingEnabled) {
         return;
     }
 
     var msg = args.length > 0 ? sprintf.vsprintf(fmt, args) : fmt;
     if (trace) {
-        console.trace(msg);    
+        console.trace(msg);
+        delegateToListeners('trace', msg);
     } else {
-        console.log(msg);            
-    }        
+        console.log(msg);
+        delegateToListeners('debug', msg);
+    }
 }
 
 
-export function getPrefix(addressable: Session|IDialogState[]): string {
+export function getPrefix(addressable: Session | IDialogState[]): string {
     var prefix = '';
     var callstack: IDialogState[];
     if (Array.isArray(addressable)) {
@@ -100,7 +116,7 @@ export function getPrefix(addressable: Session|IDialogState[]): string {
                     prefix += 'Prompts.' + promptType + ' - ';
                     break;
                 case consts.DialogId.FirstRun:
-                    prefix += 'Middleware.firstRun - '; 
+                    prefix += 'Middleware.firstRun - ';
                     break;
                 default:
                     if (cur.id.indexOf('*:') == 0) {
@@ -115,4 +131,8 @@ export function getPrefix(addressable: Session|IDialogState[]): string {
         }
     }
     return prefix;
+}
+
+function delegateToListeners(functionName: LogListenerApi, message: string): void {
+    listeners.forEach((listener: LogListener) => (functionName in listener && listener[functionName](message)));
 }
