@@ -151,6 +151,20 @@ namespace Microsoft.Bot.Builder.Tests
                 Assert.IsTrue(resolver.TryResolve(null, out actual));
                 Assert.IsFalse(resolver.TryResolve(Some, out actual));
             }
+
+            {
+                IThinkingActivity actual;
+                Assert.IsFalse(resolver.TryResolve(null, out actual));
+                Assert.IsFalse(resolver.TryResolve(Some, out actual));
+            }
+
+            expected.Type = ActivityTypes.Thinking;
+
+            {
+                IThinkingActivity actual;
+                Assert.IsTrue(resolver.TryResolve(null, out actual));
+                Assert.IsFalse(resolver.TryResolve(Some, out actual));
+            }
         }
 
         [TestMethod]

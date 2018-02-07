@@ -28,6 +28,7 @@ namespace Microsoft.Bot.Connector
         IMessageReactionActivity,
         ISuggestionActivity,
         ITypingActivity,
+        IThinkingActivity,
         IEndOfConversationActivity,
         IEventActivity,
         IInvokeActivity
@@ -97,6 +98,11 @@ namespace Microsoft.Bot.Connector
         public static ITypingActivity CreateTypingActivity() { return new Activity(ActivityTypes.Typing); }
 
         /// <summary>
+        /// Create an instance of the Activity class with IThinkingActivity masking
+        /// </summary>
+        public static IThinkingActivity CreateThinkingActivity() { return new Activity(ActivityTypes.Thinking); }
+
+        /// <summary>
         /// Create an instance of the Activity class with IActivity masking
         /// </summary>
         public static IActivity CreatePingActivity() { return new Activity(ActivityTypes.Ping); }
@@ -145,6 +151,11 @@ namespace Microsoft.Bot.Connector
         /// Return an ITypingActivity mask if this is a typing activity
         /// </summary>
         public ITypingActivity AsTypingActivity() { return IsActivity(ActivityTypes.Typing) ? this : null; }
+
+        /// <summary>
+        /// Return an IThinkingActivity mask if this is a thinking activity
+        /// </summary>
+        public IThinkingActivity AsThinkingActivity() { return IsActivity(ActivityTypes.Thinking) ? this : null; }
 
         /// <summary>
         /// Return an IEndOfConversationActivity mask if this is an end of conversation activity
@@ -206,6 +217,9 @@ namespace Microsoft.Bot.Connector
 
             if (String.Equals(type, ActivityTypes.Typing, StringComparison.OrdinalIgnoreCase))
                 return ActivityTypes.Typing;
+
+            if (String.Equals(type, ActivityTypes.Thinking, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Thinking;
 
             if (String.Equals(type, ActivityTypes.Ping, StringComparison.OrdinalIgnoreCase))
                 return ActivityTypes.Ping;

@@ -71,6 +71,9 @@ namespace Microsoft.Bot.Builder.Tests
             Task Activity(ITypingActivity activity);
             [MethodBind]
             [ScorableGroup(2)]
+            Task Activity(IThinkingActivity activity);
+            [MethodBind]
+            [ScorableGroup(2)]
             Task Activity(IActivity activity);
 
 
@@ -221,6 +224,26 @@ namespace Microsoft.Bot.Builder.Tests
             luisTwoByText[activity.Text] = Result(null, null, null, null);
             methods
                 .Setup(m => m.Activity((IMessageActivity) this.activity))
+                .Returns(Task.CompletedTask);
+
+            // act
+            await ActAsync();
+
+            // assert
+            VerifyMocks();
+        }
+
+        [TestMethod]
+        public async Task Dispatch_Activity_Thinking()
+        {
+            // arrange
+            activity.Type = ActivityTypes.Thinking;
+            activity.Text = "blah";
+
+            luisOneByText[activity.Text] = Result(1.0, 0.9, 0.8, 0.7);
+            luisTwoByText[activity.Text] = Result(0.7, 0.8, 0.9, 1.0);
+            methods
+                .Setup(m => m.Activity((IThinkingActivity)this.activity))
                 .Returns(Task.CompletedTask);
 
             // act

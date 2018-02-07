@@ -133,6 +133,11 @@ namespace Microsoft.Bot.Builder.Tests
                 return methods.Activity(activity);
             }
 
+            public Task Activity(IThinkingActivity activity)
+            {
+                return methods.Activity(activity);
+            }
+
             public Task Activity(IMessageActivity activity)
             {
                 return methods.Activity(activity);

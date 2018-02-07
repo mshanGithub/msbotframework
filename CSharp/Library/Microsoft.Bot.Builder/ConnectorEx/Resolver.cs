@@ -57,6 +57,7 @@ namespace Microsoft.Bot.Builder.Scorables.Internals
             { ActivityTypes.Event, typeof(IEventActivity) },
             { ActivityTypes.Invoke, typeof(IInvokeActivity) },
             { ActivityTypes.Typing, typeof(ITypingActivity) },
+            { ActivityTypes.Thinking, typeof(IThinkingActivity) },
         };
 
         public override bool TryResolve(Type type, object tag, out object value)

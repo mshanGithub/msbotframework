@@ -31,6 +31,11 @@ namespace Microsoft.Bot.Connector
         public const string Typing = "typing";
 
         /// <summary>
+        /// a user is thinking
+        /// </summary>
+        public const string Thinking = "thinking";
+
+        /// <summary>
         /// Bounce a message off of the server without replying or changing it's state
         /// </summary>
         public const string Ping = "ping";
