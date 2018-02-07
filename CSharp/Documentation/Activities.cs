@@ -21,6 +21,7 @@ This table gives you basic overview of the Activity types:
 | **conversationUpdate**        | IConversationUpdateActivity| your %bot was added to a conversation or other conversation metadata changed  |
 | **contactRelationUpdate**     | IContactRelationUpdateActivity| The %bot was added to or removed from a user's contact list                   |
 | **typing**                    | ITypingActivity | The user or %bot on the other end of the conversation is typing               |
+| **thinking**                  | IThinkingActivity | The user or %bot on the other end of the conversation is thinking               |
 | **ping**                      | n/a | an activity sent to test the security of a bot.  |
 | **deleteUserData**            | n/a | A user has requested for the bot to delete any profile / user data      | 
 
@@ -413,6 +414,9 @@ the **Action** property will indicate whether the operation was an **add** or a 
 Typing is an indicator of activity on the other side of the conversation. Generally it's used by Bots to 
 cover "dead air" while the %bot is fulfilling a request of some sort. The %Bot may also receive Typing 
 messages from the user, for whatever purposes it might find useful.
+
+\section thinking Thinking
+> Similar to typing, a message that indicates that the user or %Bot is thinking
 
 \section ping Ping 
 > A message that is used to test that a %Bot has implemented security correctly

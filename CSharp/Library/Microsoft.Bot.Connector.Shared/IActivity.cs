@@ -126,6 +126,11 @@ namespace Microsoft.Bot.Connector
         ITypingActivity AsTypingActivity();
 
         /// <summary>
+        /// Return IThinkingActivity if this is a thinking activity, null otherwise
+        /// </summary>
+        IThinkingActivity AsThinkingActivity();
+
+        /// <summary>
         /// Return IEndOfConversationActivity if this is an end-of-conversation activity, null otherwise
         /// </summary>
         IEndOfConversationActivity AsEndOfConversationActivity();

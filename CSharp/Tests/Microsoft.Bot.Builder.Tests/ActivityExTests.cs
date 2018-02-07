@@ -88,6 +88,10 @@ namespace Microsoft.Bot.Builder.Tests
             activity = new Activity(type: ActivityTypes.Typing);
             Assert.IsNotNull(activity.AsTypingActivity());
             Assert.IsNull(activity.AsEventActivity());
+
+            activity = new Activity(type: ActivityTypes.Thinking);
+            Assert.IsNotNull(activity.AsThinkingActivity());
+            Assert.IsNull(activity.AsEventActivity());
         }
 
         [TestMethod]
@@ -146,6 +150,10 @@ namespace Microsoft.Bot.Builder.Tests
 
             activity = new Activity(type: ActivityTypes.Typing);
             Assert.IsNotNull(activity.AsTypingActivity());
+            Assert.IsNull(activity.AsEventActivity());
+
+            activity = new Activity(type: ActivityTypes.Thinking);
+            Assert.IsNotNull(activity.AsThinkingActivity());
             Assert.IsNull(activity.AsEventActivity());
         }
 

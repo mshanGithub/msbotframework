@@ -29,7 +29,7 @@ namespace Microsoft.Bot.Connector
         /// Initializes a new instance of the Activity class.
         /// </summary>
         /// <param name="type">The type of the activity
-        /// [message|contactRelationUpdate|converationUpdate|typing|endOfConversation|event|invoke]</param>
+        /// [message|contactRelationUpdate|converationUpdate|typing|thinking|endOfConversation|event|invoke]</param>
         /// <param name="id">ID of this activity</param>
         /// <param name="timestamp">UTC Time when message was sent (set by
         /// service)</param>
@@ -142,7 +142,7 @@ namespace Microsoft.Bot.Connector
 
         /// <summary>
         /// Gets or sets the type of the activity
-        /// [message|contactRelationUpdate|converationUpdate|typing|endOfConversation|event|invoke]
+        /// [message|contactRelationUpdate|converationUpdate|typing|thinking|endOfConversation|event|invoke]
         /// </summary>
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
