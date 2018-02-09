@@ -552,9 +552,20 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
                 botData.Data = this.MakeData();
                 await this.botDataStore.SaveAsync(botDataKey, botStoreType, botData, cancellationToken);
             }
-            return this.WrapData((T)botData.Data);
-        }
 
+            T data;
+            if (botData.Data is JObject)
+            {
+                data = ((JObject) botData.Data).ToObject<T>();
+            }
+            else
+            {
+                data = (T) botData.Data;
+            }
+
+            return this.WrapData(data);
+        }
+        
         private void CheckNull(string name, IBotDataBag value)
         {
             if (value == null)
