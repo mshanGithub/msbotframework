@@ -132,7 +132,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         {
             if (value == null)
             {
-                throw new InvalidOperationException($"\"{name}\" cannot be null. Probably forgot to call {nameof(IDialogTaskManager.LoadDialogTasks)}() first.");
+                throw new InvalidOperationException($"\"{name}\" cannot be null. Probably forgot to call {nameof(IDialogTaskManager)}.{nameof(IDialogTaskManager.LoadDialogTasks)}() first.");
             }
             return value;
         }
