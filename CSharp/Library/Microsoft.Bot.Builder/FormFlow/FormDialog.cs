@@ -270,16 +270,8 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             try
             {
-                var toBotText = (toBot != null ? (await toBot).Text : null);
-                var stepInput = toBotText == null ? "" : toBotText.Trim();
-                if (stepInput.StartsWith("\""))
-                {
-                    stepInput = stepInput.Substring(1);
-                }
-                if (stepInput.EndsWith("\""))
-                {
-                    stepInput = stepInput.Substring(0, stepInput.Length - 1);
-                }
+                var message = toBot == null ? null : await toBot;
+
                 // Ensure we have initial definition for field steps
                 foreach (var step in _form.Steps)
                 {
