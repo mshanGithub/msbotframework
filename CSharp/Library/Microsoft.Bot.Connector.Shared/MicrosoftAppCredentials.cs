@@ -202,9 +202,6 @@ namespace Microsoft.Bot.Connector
                         // if we are past the refresh time
                         if (DateTime.UtcNow > refreshTime)
                         {
-#if NET45
-                            System.Diagnostics.Debug.WriteLine("auto token refresh needed");
-#endif
                             // set new refresh time
                             autoRefreshTimes[CacheKey] = DateTime.UtcNow + AutoTokenRefreshTimeSpan;
 
@@ -214,9 +211,6 @@ namespace Microsoft.Bot.Connector
                                 {
                                     if (task.IsCompleted)
                                     {
-#if NET45
-                                        System.Diagnostics.Debug.WriteLine("auto token refresh completed");
-#endif
                                         tokenTaskCache[CacheKey] = task;
                                     }
                                 });
@@ -316,9 +310,6 @@ namespace Microsoft.Bot.Connector
 
         private async Task<OAuthResponse> RefreshTokenAsync()
         {
-#if NET45
-            System.Diagnostics.Debug.WriteLine("Refreshing token!");
-#endif
             var content = new FormUrlEncodedContent(new Dictionary<string, string>()
                 {
                     { "grant_type", "client_credentials" },
