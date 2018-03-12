@@ -172,6 +172,9 @@
   </data>
   <data name="DefaultChoiceLastSeparator" xml:space="preserve">
     <value>، یا </value>
+  </data>  
+  <data name="DefaultContentTypesSeparator" xml:space="preserve">
+    <value>یا</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>، </value>
@@ -372,11 +375,11 @@
     <value>0 = صفر | 1 = یکی | 2 = دو | 3 = سه | 4 = چهار | 5 پنج = | 6 = شش | 7 = هفت | 8 = هشت | 9 = 9 | 10 ده = | 11 یازده = | 12 = دوازده | 13 = 13 | 14 = چهارده | 15 = پانزده | 16 = شانزده | 17 = هفده | 18 = 18 | 19 نوزده = | 20 = بیست</value>
   </data>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>پیوست '{0}' نامعتبر است! نوع محتوا باید حاوی '{1}'.</value>
+    <value>پیوست '{0}' نامعتبر است! نوع محتوا باید حاوی {1}.</value>
     <comment>0-attachmnet name, 1-expected content-type</comment>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>شما باید یک پیوست ارائه که در آن نوع محتوا است '{0}.</value>
+    <value>شما باید یک پیوست ارائه که در آن نوع محتوا است {0}.</value>
     <comment>0-attachment content type</comment>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">

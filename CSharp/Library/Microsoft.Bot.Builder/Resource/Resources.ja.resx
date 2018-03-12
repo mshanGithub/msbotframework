@@ -172,6 +172,9 @@
   </data>
   <data name="DefaultChoiceLastSeparator" xml:space="preserve">
     <value>、または</value>
+  </data>  
+  <data name="DefaultChoiceLastSeparator" xml:space="preserve">
+    <value>または</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>、</value>
@@ -373,11 +376,11 @@
     <value>0 = 0 | 1 = 1 つ | 2 = 2 | 3 = 3 | 4 = 4 | 5 = 5 | 6 = 6 | 7 = 7 | 8 = 8 | 9 = 9 | 10 = 10 | 11 = 11 | 12 = 12 | 13 = 13 | 14 = 14 | 15 = 15 | 16 = 16 | 17 = 17 | 18 = 18 | 19 = 19 | 20 = 20</value>
   </data>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>添付ファイル '{0}'は無効です！ コンテンツタイプには '{1}'が含まれている必要があります。</value>
+    <value>添付ファイル '{0}'は無効です！ コンテンツタイプには {1}が含まれている必要があります。</value>
     <comment>0-attachmnet name, 1-expected content-type</comment>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>コンテンツタイプが '{0}'の添付ファイルを提供する必要があります。</value>
+    <value>コンテンツタイプが {0}の添付ファイルを提供する必要があります。</value>
     <comment>0-attachment content type</comment>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">

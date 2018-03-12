@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>Attachment '{0}' is invalid! The content-type should contain '{1}'.</value>
+    <value>Attachment '{0}' is invalid! The content-type should contain {1}.</value>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>You should provide an attachment where content-type has '{0}'.</value>
+    <value>You should provide an attachment where content-type has {0}.</value>
   </data>
   <data name="CommandBack" xml:space="preserve">
     <value>Back</value>
@@ -173,8 +173,8 @@
     <value>{0}. {1}</value>
     <comment>0-number, 1-description</comment>
   </data>
-  <data name="DefaultChoiceLastSeparator" xml:space="preserve">
-    <value>, or </value>
+  <data name="DefaultContentTypesSeparator" xml:space="preserve">
+    <value>or</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>, </value>

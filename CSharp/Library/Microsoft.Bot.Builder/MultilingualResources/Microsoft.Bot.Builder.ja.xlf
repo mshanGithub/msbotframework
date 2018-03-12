@@ -7,12 +7,12 @@
     <body>
       <group id="MICROSOFT.BOT.BUILDER/RESOURCE/RESOURCES.RESX" datatype="resx">
         <trans-unit id="AttachmentContentTypeValidatorError" translate="yes" xml:space="preserve">
-          <source>Attachment '{0}' is invalid! The content-type should contain '{1}'.</source>
-          <target state="final">添付ファイル '{0}'は無効です！ コンテンツタイプには '{1}'が含まれている必要があります。</target>
+          <source>Attachment '{0}' is invalid! The content-type should contain {1}.</source>
+          <target state="final">添付ファイル '{0}'は無効です！ コンテンツタイプには {1}が含まれている必要があります。</target>
         </trans-unit>
         <trans-unit id="AttachmentContentTypeValidatorHelp" translate="yes" xml:space="preserve">
-          <source>You should provide an attachment where content-type has '{0}'.</source>
-          <target state="final">コンテンツタイプが '{0}'の添付ファイルを提供する必要があります。</target>
+          <source>You should provide an attachment where content-type has {0}.</source>
+          <target state="final">コンテンツタイプが {0}の添付ファイルを提供する必要があります。</target>
         </trans-unit>
         <trans-unit id="CommandBack" translate="yes" xml:space="preserve">
           <source>Back</source>
@@ -87,6 +87,10 @@
         <trans-unit id="DefaultChoiceLastSeparator" translate="yes" xml:space="preserve">
           <source>, or </source>
           <target state="final" state-qualifier="mt-suggestion">、または</target>
+        </trans-unit>        
+        <trans-unit id="DefaultContentTypesSeparator" translate="yes" xml:space="preserve">
+          <source>or</source>
+          <target state="final" state-qualifier="mt-suggestion">または</target>
         </trans-unit>
         <trans-unit id="DefaultChoiceSeparator" translate="yes" xml:space="preserve">
           <source>, </source>

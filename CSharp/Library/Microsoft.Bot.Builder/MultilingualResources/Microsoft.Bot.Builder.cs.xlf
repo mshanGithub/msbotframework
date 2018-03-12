@@ -7,12 +7,12 @@
     <body>
       <group id="MICROSOFT.BOT.BUILDER/RESOURCE/RESOURCES.RESX" datatype="resx">
         <trans-unit id="AttachmentContentTypeValidatorError" translate="yes" xml:space="preserve">
-          <source>Attachment '{0}' is invalid! The content-type should contain '{1}'.</source>
-          <target state="final">Příloha '{0}' je neplatná! Obsahový typ by měl obsahovat '{1}'.</target>
+          <source>Attachment '{0}' is invalid! The content-type should contain {1}.</source>
+          <target state="final">Příloha '{0}' je neplatná! Obsahový typ by měl obsahovat {1}.</target>
         </trans-unit>
         <trans-unit id="AttachmentContentTypeValidatorHelp" translate="yes" xml:space="preserve">
-          <source>You should provide an attachment where content-type has '{0}'.</source>
-          <target state="final">Měli byste zadat přílohu, kde má typ obsahu '{0}'.</target>
+          <source>You should provide an attachment where content-type has {0}.</source>
+          <target state="final">Měli byste zadat přílohu, kde má typ obsahu {0}.</target>
         </trans-unit>        
         <trans-unit id="CommandBack" translate="yes" xml:space="preserve">
           <source>Back</source>
@@ -86,6 +86,11 @@
         </trans-unit>
         <trans-unit id="DefaultChoiceLastSeparator" translate="yes" xml:space="preserve">
           <source>, or </source>
+          <target state="needs-review-translation">nebo</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
+        </trans-unit>        
+        <trans-unit id="DefaultContentTypesSeparator" translate="yes" xml:space="preserve">
+          <source>or</source>
           <target state="needs-review-translation">nebo</target>
           <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>

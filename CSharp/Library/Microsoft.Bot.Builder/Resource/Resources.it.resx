@@ -172,6 +172,9 @@
   </data>
   <data name="DefaultChoiceLastSeparator" xml:space="preserve">
     <value> o </value>
+  </data>  
+  <data name="DefaultContentTypesSeparator" xml:space="preserve">
+    <value>o</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>,</value>
@@ -372,11 +375,11 @@
     <value>0=zero|1=uno|2=due|3=tre|4=quattro|5=cinque|6=six|7=sette|8=otto|9=nove|10=dieci|11=undici|12=dodici|13=tredici|14=quattordici|15=quindici|16=sedici|17=diciassette|18=diciotto|19=diciannove|20=venti</value>
   </data>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>L'allegato '{0}' non è valido! Il tipo di contenuto deve contenere '{1}'.</value>
+    <value>L'allegato '{0}' non è valido! Il tipo di contenuto deve contenere {1}.</value>
     <comment>0-attachmnet name, 1-expected content-type</comment>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>Dovresti fornire un allegato dove il tipo di contenuto ha '{0}'.</value>
+    <value>Dovresti fornire un allegato dove il tipo di contenuto ha {0}.</value>
     <comment>0-attachment content type</comment>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">

@@ -175,6 +175,9 @@
   </data>
   <data name="DefaultChoiceLastSeparator" xml:space="preserve">
     <value>,oder </value>
+  </data>  
+  <data name="DefaultContentTypesSeparator" xml:space="preserve">
+    <value>oder</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>,</value>
@@ -374,10 +377,10 @@
     <value>0=Null|1=eins|2=zwei|3=drei|4=vier|5=fünf|6=sechs|7=sieben|8=acht|9=neun|10=10|11=elf|12=zwölf|13=dreizehn|14=14|15=15|16=16|17=17|18=18|19=19|20=20</value>
   </data>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>Attachment '{0}' ist ungültig! Der Inhaltstyp sollte '{1}' enthalten.</value>
+    <value>Attachment '{0}' ist ungültig! Der Inhaltstyp sollte {1} enthalten.</value>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>Sie sollten einen Anhang angeben, in dem Inhaltstyp '{0}' hat.</value>
+    <value>Sie sollten einen Anhang angeben, in dem Inhaltstyp {0} hat.</value>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">
     <value>Bitte fügen Sie einen Anhang für {&amp;}</value>

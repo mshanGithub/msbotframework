@@ -172,6 +172,9 @@
   </data>
   <data name="DefaultChoiceLastSeparator" xml:space="preserve">
     <value> или </value>
+  </data>  
+  <data name="DefaultContentTypesSeparator" xml:space="preserve">
+    <value>или</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>,</value>
@@ -374,11 +377,11 @@
     <value>0=ноль|1=один|2=два|3=три|4=4|5=5|6=6|7=7|8=8|9=9|10=10|11=одиннадцать|12=12|13=тринадцать|14=четырнадцать|15=15|16=16|17=семнадцать|18=18|19=девятнадцать|20=20</value>
   </data>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>Вложение '{0}' недопустимо! Тип содержимого должен содержать '{1}'.</value>
+    <value>Вложение '{0}' недопустимо! Тип содержимого должен содержать {1}.</value>
     <comment>0-attachmnet name, 1-expected content-type</comment>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>Вы должны предоставить вложение, где content-type имеет '{0}'.</value>
+    <value>Вы должны предоставить вложение, где content-type имеет {0}.</value>
     <comment>0-attachment content type</comment>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">

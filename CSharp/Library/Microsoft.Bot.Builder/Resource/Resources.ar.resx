@@ -172,6 +172,9 @@
   </data>
   <data name="DefaultChoiceLastSeparator" xml:space="preserve">
     <value>, أو </value>
+  </data>  
+  <data name="DefaultContentTypesSeparator" xml:space="preserve">
+    <value>أو</value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
     <value>, </value>
@@ -372,7 +375,7 @@
     <value>0 = صفر | 1 = واحد | 2 = اثنين | 3 = ثلاثة | 4 = أربعة | 5 = خمسة | 6 = ستة | 7 = سبعة | 8 = ثمانية | 9 = تسعة | 10 = عشرة | 11 = أحد عشر | 12 = اثنا عشر | 13 = ثلاثة عشر | 14 = أربعة عشر | 15 = 15 | 16 = ستة عشر | 17 = سبعة عشر | 18 = 18 | 19 = تسعة عشر | 20 = عشرين</value>
   </data>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>المرفق '{0}' غير صالح! يجب أن يحتوي نوع المحتوى على '{1}'.</value>
+    <value>المرفق {0} غير صالح! يجب أن يحتوي نوع المحتوى على '{1}'.</value>
     <comment>0-attachmnet name, 1-expected content-type</comment>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
