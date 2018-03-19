@@ -65,8 +65,8 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         private readonly ConnectorClient connectorClient;
         private readonly StateClient stateClient;
 
-        private static readonly ConcurrentDictionary<string, ConnectorClient> connectorClients = new ConcurrentDictionary<string, ConnectorClient>();
-        private static readonly ConcurrentDictionary<string, StateClient> stateClients = new ConcurrentDictionary<string, StateClient>();
+        private readonly ConcurrentDictionary<string, ConnectorClient> connectorClients = new ConcurrentDictionary<string, ConnectorClient>();
+        private readonly ConcurrentDictionary<string, StateClient> stateClients = new ConcurrentDictionary<string, StateClient>();
 
         public ConnectorClientFactory(IAddress address, MicrosoftAppCredentials credentials)
         {

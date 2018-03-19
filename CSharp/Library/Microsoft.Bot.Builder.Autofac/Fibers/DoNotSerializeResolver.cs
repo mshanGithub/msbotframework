@@ -86,7 +86,7 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
         {
             if (tag == null)
             {
-                var services = ServicesByType.GetOrAdd(type, t => Services(t).Distinct().ToArray());
+                var services = ServicesByType.GetOrAdd(type, t => Services(t).Distinct().Where(st => !IsAutoFacImplicit(st)).ToArray());
                 for (int index = 0; index < services.Count; ++index)
                 {
                     var serviceType = services[index];
@@ -97,11 +97,6 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
                     IComponentRegistration registration;
                     if (registry.TryGetRegistration(service, out registration))
                     {
-                        if (IsAutoFacImplicit(serviceType))
-                        {
-                            continue;
-                        }
-
                         value = this.context.ResolveComponent(registration, this.parameters);
                         return true;
                     }

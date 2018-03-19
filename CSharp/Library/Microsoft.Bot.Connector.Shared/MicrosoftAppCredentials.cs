@@ -191,7 +191,7 @@ namespace Microsoft.Bot.Connector
                         oAuthTokenTask = _getCurrentTokenTask(forceRefresh:false);
 
                         // if the task is completed and is the expired token, then we need to force a new one 
-                        // (This happens if bot has been 100% idle for an past the expiration point)
+                        // (This happens if bot has been 100% idle past the expiration point)
                         if (oAuthTokenTask.IsCompleted && oAuthTokenTask.Result.access_token == oAuthToken.access_token)
                         {
                             oAuthTokenTask = _getCurrentTokenTask(forceRefresh: true);
