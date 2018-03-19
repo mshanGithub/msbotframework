@@ -91,7 +91,8 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
     /// </summary>
     public class InMemoryDataStore : IBotDataStore<BotData>
     {
-        internal readonly MemoryCache store = new MemoryCache(nameof(InMemoryDataStore), new NameValueCollection() { { "PhysicalMemoryLimitPercentage", "50" } });
+        // This should be moved to autofac registration
+        internal static readonly MemoryCache store = new MemoryCache(nameof(InMemoryDataStore), new NameValueCollection() { { "PhysicalMemoryLimitPercentage", "50" } });
 
         private static CacheItemPolicy cacheItemPolicy = new CacheItemPolicy() { SlidingExpiration = TimeSpan.FromMinutes(15) };
 
@@ -262,7 +263,8 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
     public class CachingBotDataStore : IBotDataStore<BotData>
     {
         private readonly IBotDataStore<BotData> inner;
-        internal readonly MemoryCache cache = new MemoryCache(nameof(CachingBotDataStore), new NameValueCollection() { { "PhysicalMemoryLimitPercentage", "50" } });
+        // this should be moved to autofac registration
+        internal static readonly MemoryCache cache = new MemoryCache(nameof(CachingBotDataStore), new NameValueCollection() { { "PhysicalMemoryLimitPercentage", "50" } });
         internal static CacheItemPolicy cacheItemPolicy = new CacheItemPolicy() { SlidingExpiration = TimeSpan.FromMinutes(15) };
         private readonly CachingBotDataStoreConsistencyPolicy dataConsistencyPolicy;
 
