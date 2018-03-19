@@ -597,12 +597,12 @@ var ChatConnector = (function () {
                 };
                 _this.addUserAgent(opt);
                 request(opt, function (err, response, body) {
+                    _this.refreshingToken = undefined;
                     if (!err) {
                         if (body && response.statusCode < 300) {
                             var oauthResponse = JSON.parse(body);
                             _this.accessToken = oauthResponse.access_token;
                             _this.accessTokenExpires = new Date().getTime() + ((oauthResponse.expires_in - 300) * 1000);
-                            _this.refreshingToken = undefined;
                             resolve(_this.accessToken);
                         }
                         else {

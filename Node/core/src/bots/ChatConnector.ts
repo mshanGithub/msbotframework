@@ -710,6 +710,7 @@ export class ChatConnector implements IConnector, IBotStorage {
                 };
                 this.addUserAgent(opt);
                 request(opt, (err, response, body) => {
+                    this.refreshingToken = undefined;
                     if (!err) {
                         if (body && response.statusCode < 300) {
                             // Subtract 5 minutes from expires_in so they'll we'll get a
@@ -717,7 +718,6 @@ export class ChatConnector implements IConnector, IBotStorage {
                             var oauthResponse = JSON.parse(body);
                             this.accessToken = oauthResponse.access_token;
                             this.accessTokenExpires = new Date().getTime() + ((oauthResponse.expires_in - 300) * 1000);
-                            this.refreshingToken = undefined;
                             resolve(this.accessToken);
                         } else {
                             reject(new Error('Refresh access token failed with status code: ' + response.statusCode));
@@ -921,3 +921,5 @@ interface IWebResponse {
 interface IWebMiddleware {
     (req: IWebRequest, res: IWebResponse, next: Function): void;
 }
+
+
