@@ -6,7 +6,7 @@
 
 namespace Microsoft.Bot.Connector
 {
-    
+
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
@@ -16,50 +16,52 @@ namespace Microsoft.Bot.Connector
     /// </summary>
     public static partial class AttachmentsExtensions
     {
-            /// <summary>
-            /// GetAttachmentInfo
-            /// </summary>
-            /// <remarks>
-            /// Get AttachmentInfo structure describing the attachment views
-            /// </remarks>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='attachmentId'>
-            /// attachment id
-            /// </param>
-            public static AttachmentInfo GetAttachmentInfo(this IAttachments operations, string attachmentId)
-            {
-                return operations.GetAttachmentInfoAsync(attachmentId).GetAwaiter().GetResult();
-            }
+        /// <summary>
+        /// GetAttachmentInfo
+        /// </summary>
+        /// <remarks>
+        /// Get AttachmentInfo structure describing the attachment views
+        /// </remarks>
+        /// <param name='operations'>
+        /// The operations group for this extension method.
+        /// </param>
+        /// <param name='attachmentId'>
+        /// attachment id
+        /// </param>
+        public static AttachmentInfo GetAttachmentInfo(this IAttachments operations, string attachmentId)
+        {
+            return operations.GetAttachmentInfoAsync(attachmentId).GetAwaiter().GetResult();
+        }
 
-            /// <summary>
-            /// GetAttachmentInfo
-            /// </summary>
-            /// <remarks>
-            /// Get AttachmentInfo structure describing the attachment views
-            /// </remarks>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='attachmentId'>
-            /// attachment id
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<AttachmentInfo> GetAttachmentInfoAsync(this IAttachments operations, string attachmentId, CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        /// GetAttachmentInfo
+        /// </summary>
+        /// <remarks>
+        /// Get AttachmentInfo structure describing the attachment views
+        /// </remarks>
+        /// <param name='operations'>
+        /// The operations group for this extension method.
+        /// </param>
+        /// <param name='attachmentId'>
+        /// attachment id
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        public static async Task<AttachmentInfo> GetAttachmentInfoAsync(this IAttachments operations, string attachmentId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using (var _result = await operations.GetAttachmentInfoWithHttpMessagesAsync(attachmentId, null, cancellationToken).ConfigureAwait(false))
             {
-                using (var _result = await operations.GetAttachmentInfoWithHttpMessagesAsync(attachmentId, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
+                return _result.Body;
             }
+        }
 
         /// <summary>
         /// GetAttachment
         /// </summary>
+        /// <remarks>
         /// Get the named view as binary content
+        /// </remarks>
         /// <param name='operations'>
         /// The operations group for this extension method.
         /// </param>
@@ -77,7 +79,9 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// GetAttachment
         /// </summary>
+        /// <remarks>
         /// Get the named view as binary content
+        /// </remarks>
         /// <param name='operations'>
         /// The operations group for this extension method.
         /// </param>
