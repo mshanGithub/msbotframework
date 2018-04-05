@@ -88,7 +88,7 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// Get the channel data as strongly typed object
         /// </summary>
-        /// <typeparatm name="TypeT"></typeparam>
+        /// <typeparam name="TypeT"></typeparam>
         /// <returns></returns>
         TypeT GetChannelData<TypeT>();
 
@@ -99,7 +99,7 @@ namespace Microsoft.Bot.Connector
         /// <param name="instance"></param>
         /// <returns>false if there is no valid channeldata available</returns>
         bool TryGetChannelData<TypeT>(out TypeT instance);
-
+        
         /// <summary>
         /// Return IMessageActivity if this is a message activity, null otherwise
         /// </summary>
@@ -156,8 +156,13 @@ namespace Microsoft.Bot.Connector
         IMessageReactionActivity AsMessageReactionActivity();
 
         /// <summary>
-        /// Returns IMessageDeleteActivity if this is a message delete activity, null otherwise
+        /// Returns ISuggestionActivity if this is a Suggestion activity, null otherwise
         /// </summary>
         ISuggestionActivity AsSuggestionActivity();
+
+        /// <summary>
+        /// Returns ITraceActivity if this is a Trace activity, null otherwise
+        /// </summary>
+        ITraceActivity AsTraceActivity();
     }
 }

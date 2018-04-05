@@ -31,7 +31,8 @@ namespace Microsoft.Bot.Connector
         ITypingActivity,
         IEndOfConversationActivity,
         IEventActivity,
-        IInvokeActivity
+        IInvokeActivity,
+        ITraceActivity
     {
         /// <summary>
         /// Content-type for an Activity
@@ -190,6 +191,12 @@ namespace Microsoft.Bot.Connector
         public ISuggestionActivity AsSuggestionActivity() { return IsActivity(ActivityTypes.Suggestion) ? this : null; }
 
         /// <summary>
+        /// Return an ITraceActivity if this is a trace activity
+        /// </summary>
+        /// <returns></returns>
+        public ITraceActivity AsTraceActivity() { return IsActivity(ActivityTypes.Trace) ? this : null; }
+
+        /// <summary>
         /// Normalize activity type 
         /// </summary>
         /// <param name="type"> The type.</param>
@@ -275,7 +282,6 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// Get channeldata as typed structure
         /// </summary>
-        /// <param name="activity"></param>
         /// <typeparam name="TypeT">type to use</typeparam>
         /// <returns>typed object or default(TypeT)</returns>
         public TypeT GetChannelData<TypeT>()
@@ -290,7 +296,6 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// Get channeldata as typed structure
         /// </summary>
-        /// <param name="activity"></param>
         /// <typeparam name="TypeT">type to use</typeparam>
         /// <param name="instance">The resulting instance, if possible</param>
         /// <returns>
@@ -313,7 +318,6 @@ namespace Microsoft.Bot.Connector
                 return false;
             }
         }
-
     }
 
     public static class ActivityExtensions

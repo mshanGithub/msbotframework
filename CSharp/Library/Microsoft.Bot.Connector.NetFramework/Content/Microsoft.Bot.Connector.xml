@@ -182,6 +182,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Bot.Connector.Activity.AsTraceActivity">
+            <summary>
+            Return an ITraceActivity if this is a trace activity
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Bot.Connector.Activity.GetActivityType(System.String)">
             <summary>
             Normalize activity type 
@@ -205,7 +211,6 @@
             <summary>
             Get channeldata as typed structure
             </summary>
-            <param name="activity"></param>
             <typeparam name="TypeT">type to use</typeparam>
             <returns>typed object or default(TypeT)</returns>
         </member>
@@ -213,7 +218,6 @@
             <summary>
             Get channeldata as typed structure
             </summary>
-            <param name="activity"></param>
             <typeparam name="TypeT">type to use</typeparam>
             <param name="instance">The resulting instance, if possible</param>
             <returns>
@@ -5584,7 +5588,13 @@
             The channel data essentially allows a bot to have access to native functionality on a per channel basis.
             </remarks>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Microsoft.Bot.Connector.IActivity.GetChannelData``1" -->
+        <member name="M:Microsoft.Bot.Connector.IActivity.GetChannelData``1">
+            <summary>
+            Get the channel data as strongly typed object
+            </summary>
+            <typeparam name="TypeT"></typeparam>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Bot.Connector.IActivity.TryGetChannelData``1(``0@)">
             <summary>
             Try to get the channeldata as a strongly typed object 
@@ -5650,7 +5660,12 @@
         </member>
         <member name="M:Microsoft.Bot.Connector.IActivity.AsSuggestionActivity">
             <summary>
-            Returns IMessageDeleteActivity if this is a message delete activity, null otherwise
+            Returns ISuggestionActivity if this is a Suggestion activity, null otherwise
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Connector.IActivity.AsTraceActivity">
+            <summary>
+            Returns ITraceActivity if this is a Trace activity, null otherwise
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.IContactRelationUpdateActivity">
@@ -5701,11 +5716,6 @@
         <member name="P:Microsoft.Bot.Connector.IEndOfConversationActivity.Text">
             <summary>
             Content to display when ending the conversation
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Connector.IEndOfConversationActivity.Entities">
-            <summary>
-            Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.IEventActivity">
@@ -5886,6 +5896,26 @@
         <member name="P:Microsoft.Bot.Connector.ISuggestionActivity.TextHighlights">
             <summary>
             TextHighlight in the activity represented in the ReplyToId property
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Connector.ITraceActivity">
+            <summary>
+            An activity by which a bot can log internal information into a logged conversation transcript
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ITraceActivity.Name">
+            <summary>
+            Name of the trace activity 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ITraceActivity.Value">
+            <summary>
+            Open-ended value
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Connector.ITraceActivity.RelatesTo">
+            <summary>
+            Reference to another conversation or activity
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Connector.ITypingActivity">
