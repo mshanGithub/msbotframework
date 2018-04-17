@@ -45,12 +45,12 @@ import * as events from 'events';
 import * as async from 'async';
 
 export interface IConnector {
-    onEvent(handler: (events: IEvent[], cb?: (err: Error) => void) => void): void;
-    onInvoke?(handler: (event: IEvent, cb?: (err: Error, body: any, status?: number) => void) => void): void;
-    send(messages: IMessage[], cb: (err: Error, addresses?: IAddress[]) => void): void;
-    startConversation(address: IAddress, cb: (err: Error, address?: IAddress) => void): void;
-    update?(message: IMessage, done: (err: Error, address?: IAddress) => void): void;
-    delete?(address: IAddress, done: (err: Error) => void): void;
+    onEvent(handler: (events: IEvent[], cb?: (err?: Error) => void) => void): void;
+    onInvoke?(handler: (event: IEvent, cb?: (err: Error | undefined, body: any, status?: number) => void) => void): void;
+    send(messages: IMessage[], cb: (err?: Error, addresses?: IAddress[]) => void): void;
+    startConversation(address: IAddress, cb: (err?: Error, address?: IAddress) => void): void;
+    update?(message: IMessage, done: (err?: Error, address?: IAddress) => void): void;
+    delete?(address: IAddress, done: (err?: Error) => void): void;
 }
 
 export interface ISessionOptions {
