@@ -325,11 +325,17 @@ namespace Microsoft.Bot.Builder.Dialogs
             {
                 LuisResult = luisResult,
                 LuisOptions = luisOptions,
-                LuisModel = luisModel
+                LuisModel = RemoveSensitiveData(luisModel)
             };
             var activity = Activity.CreateTraceActivityReply(context.Activity as Activity, "LuisDialog", LuisTraceType, luisTraceInfo, LuisTraceLabel) as IMessageActivity;
             await context.PostAsync(activity).ConfigureAwait(false);
         }
+
+        public static ILuisModel RemoveSensitiveData(ILuisModel luisModel)
+        {
+            return new LuisModelAttribute(luisModel.ModelID, Obfuscated,luisModel.ApiVersion, luisModel.UriBase.Host, luisModel.Threshold);
+        }
+
     }
 
     /// <summary>
