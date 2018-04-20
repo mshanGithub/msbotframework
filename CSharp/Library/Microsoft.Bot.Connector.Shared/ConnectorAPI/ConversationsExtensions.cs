@@ -225,6 +225,11 @@ namespace Microsoft.Bot.Connector
             /// </param>
             public static async Task<ResourceResponse> SendToConversationAsync(this IConversations operations, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))
             {
+                if (activity.Type == ActivityTypes.Trace && activity.ChannelId != "emulator")
+                {
+                    return new ResourceResponse(activity.Id ?? string.Empty);
+                }
+
                 using (var _result = await operations.SendToConversationWithHttpMessagesAsync(conversationId, activity, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
