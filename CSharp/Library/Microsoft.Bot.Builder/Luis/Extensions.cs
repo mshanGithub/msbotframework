@@ -55,9 +55,9 @@ namespace Microsoft.Bot.Builder.Luis
         {
             Func<EntityRecommendation, IList<EntityRecommendation>, bool> doesNotOverlapRange = (current, recommendations) =>
             {
-                return recommendations.Where(r => current != r)
-                            .Any(r => r.StartIndex.HasValue && r.EndIndex.HasValue && current.StartIndex.HasValue && Enumerable.Range(r.StartIndex.Value, r.EndIndex.Value - r.StartIndex.Value + 1)
-                                        .Contains(current.StartIndex.Value));
+                return !recommendations.Where(r => current != r)
+                            .Any(r => r.StartIndex.HasValue && r.EndIndex.HasValue && current.StartIndex.HasValue && 
+                                 r.StartIndex.Value <= current.StartIndex.Value && r.EndIndex.Value >= current.EndIndex.Value);
             };
 
 
