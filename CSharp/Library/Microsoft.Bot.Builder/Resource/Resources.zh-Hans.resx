@@ -12,6 +12,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
+    <value>附件“{0}”无效！ 内容类型应包含“{1}”。</value>
+    <comment>0-attachmnet name, 1-expected content-type</comment>
+  </data>
+  <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
+    <value>您应该提供内容类型为“{0}”的附件。</value>
+    <comment>0-attachment content type</comment>
+  </data>
   <data name="CommandBack" xml:space="preserve">
     <value>返回</value>
   </data>
@@ -97,6 +105,28 @@
   </data>
   <data name="PromptRetry" xml:space="preserve">
     <value>不好意思，我没听懂. 请换一种表达</value>
+  </data>
+  <data name="TemplateAttachment" xml:space="preserve">
+    <value>请提交{&amp;}的附件</value>
+  </data>
+  <data name="TemplateAttachmentCollection" xml:space="preserve">
+    <value>请提交{&amp;}的附件集合</value>
+  </data>
+  <data name="TemplateAttachmentCollectionDescription" xml:space="preserve">
+    <value>{0}个连结的附件。</value>
+    <comment>0-attachments count</comment>
+  </data>
+  <data name="TemplateAttachmentCollectionHelp" xml:space="preserve">
+    <value>您可以提交一个或多个附件。{0}</value>
+    <comment>0-dynamic help from attachment class</comment>
+  </data>
+  <data name="TemplateAttachmentDescription" xml:space="preserve">
+    <value>附件名为“{0}”，内容类型为“{1}”。</value>
+    <comment>0-attachment name, 1-attachment content-type</comment>
+  </data>
+  <data name="TemplateAttachmentHelp" xml:space="preserve">
+    <value>您可以提交一个附件。{0}</value>
+    <comment>0-dynamic help from attachment class</comment>
   </data>
   <data name="TemplateBool" xml:space="preserve">
     <value>您是需要 {&amp;}? {||}</value>
@@ -250,5 +280,20 @@
   </data>
   <data name="UnhandledExceptionToUser" xml:space="preserve">
     <value>对不起，我的 bot 代码时遇到问题。</value>
+  </data>
+  <data name="NumberExpression" xml:space="preserve">
+    <value>[+-]?(?:\d+\.?\d*|\d*\.?\d+)</value>
+  </data>
+  <data name="NumberOrdinals" xml:space="preserve">
+    <value>1 = 1，第一，第一个 | 2 = 2、 第二，第二人 | 3 = 3，第三，第三个 | 4 = 4，第四，第四个 | 5 = 5，第五，第五个 | 6 = 6，第六，第六个 | 7 = 7、 第七、 第七个 | 8 = 8，八，八人 | 9 = 9，第九、 第九一 | 10 = 10，第十，第十一个</value>
+  </data>
+  <data name="NumberReverseOrdinals" xml:space="preserve">
+    <value>-1 = 最后，最后一个 |-2 = 倒数第二到最后，从去年的第二次 |-3 = 从最后的倒数第三个，第三 |-4 = 从去年排名第四至最后，第四 |-5 = 从最后到最后，第五号</value>
+  </data>
+  <data name="BooleanChoices" xml:space="preserve">
+    <value>true = y，是的没错，当然，好的 \u1f44d，\u1f44c|false=n，不，不行，\u1f44e、 \\u270b、 \\u1f590</value>
+  </data>
+  <data name="NumberTerms" xml:space="preserve">
+    <value>0 = 零 | 1 = 一 | 2 = 两个 | 3 = 3 | 4 = 四 | 5 = 五 | 6 = 6 | 7 = 七 | 8 = 八 | 9 = 九 | 10 = 十 | 11 = 11 | 12 = 12 | 13 = 十三 | 14 = 十四岁 | 15 = 十五岁 | 16 = 十六岁 | 17 = 十七岁 | 18 = 十八岁 | 19 = 十九岁 | 20 = 二十</value>
   </data>
 </root>

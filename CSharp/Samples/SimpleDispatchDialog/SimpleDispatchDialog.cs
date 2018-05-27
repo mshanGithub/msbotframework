@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,10 +33,12 @@ namespace Microsoft.Bot.Sample.SimpleDispatchDialog
                     ContinueWithNextGroup();
                     break;
 
+                case ActivityTypes.Ping:
+                    Trace.TraceInformation("Ping received");
+                    break;
                 case ActivityTypes.ContactRelationUpdate:
                 case ActivityTypes.Typing:
-                case ActivityTypes.DeleteUserData:
-                case ActivityTypes.Ping:
+                case ActivityTypes.DeleteUserData:                
                 default:
                     await context.PostAsync($"Unknown activity type ignored: {activity.Type}");
                     break;
@@ -91,7 +94,7 @@ namespace Microsoft.Bot.Sample.SimpleDispatchDialog
             "Didn't get that!");
         }
         
-        // When you say "echo: <text to echo>", it will increament the counter and echo the <text to echo>.
+        // When you say "echo: <text to echo>", it will increment the counter and echo the <text to echo>.
         [RegexPattern("^echo: (?<echo>.*)")]
         [ScorableGroup(2)]
         public async Task Echo(IDialogContext context, IActivity activity, [Entity("echo")] string echoString)

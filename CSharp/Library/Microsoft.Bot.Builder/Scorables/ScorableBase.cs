@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -141,6 +141,11 @@ namespace Microsoft.Bot.Builder.Scorables.Internals
         protected DelegatingScorable(IScorable<Item, Score> inner)
         {
             SetField.NotNull(out this.inner, nameof(inner), inner);
+        }
+
+        public override string ToString()
+        {
+            return this.inner.ToString();
         }
 
         public virtual Task<object> PrepareAsync(Item item, CancellationToken token)

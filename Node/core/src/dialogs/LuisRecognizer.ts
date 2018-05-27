@@ -31,18 +31,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import { IIntentRecognizer, IRecognizeContext, IIntentRecognizerResult } from './IntentRecognizerSet';
+import { IntentRecognizer, IRecognizeContext, IIntentRecognizerResult } from './IntentRecognizer';
 import * as utils from '../utils';
 import * as request from 'request';
+import * as url from 'url';
 
 export interface ILuisModelMap {
     [local: string]: string;
 }
 
-export class LuisRecognizer implements IIntentRecognizer {
+export class LuisRecognizer extends IntentRecognizer {
     private models: ILuisModelMap;
 
     constructor(models: string|ILuisModelMap) {
+        super();
         if (typeof models == 'string') {
             this.models = { '*': <string>models };
         } else {
@@ -50,18 +52,21 @@ export class LuisRecognizer implements IIntentRecognizer {
         }
     }
 
-    public recognize(context: IRecognizeContext, cb: (err: Error, result: IIntentRecognizerResult) => void): void {
-        var result: IIntentRecognizerResult = { score: 0.0, intent: null };
+    public onRecognize(context: IRecognizeContext, callback: (err: Error, result: IIntentRecognizerResult) => void): void {
+        let result: IIntentRecognizerResult = { score: 0.0, intent: null };
         if (context && context.message && context.message.text) {
-            var utterance = context.message.text;
-            var locale = context.locale || '*';
-            var model = this.models.hasOwnProperty(locale) ? this.models[locale] : this.models['*'];
+            // Find model
+            const locale = context.locale || '*';
+            const dashPos = locale.indexOf('-');
+            const parentLocale = dashPos > 0 ? locale.substr(0, dashPos) : '*';
+            const model = this.models[locale] || this.models[parentLocale] || this.models['*'];
             if (model) {
-                LuisRecognizer.recognize(utterance, model, (err, intents, entities) => {
+                const utterance = context.message.text;
+                LuisRecognizer.recognize(utterance, model, (err, intents, entities, compositeEntities) => {
                     if (!err) {
                         result.intents = intents;
                         result.entities = entities;
-
+                        result.compositeEntities = compositeEntities;
                         // Return top intent
                         var top: IIntent;
                         intents.forEach((intent) => {
@@ -80,8 +85,8 @@ export class LuisRecognizer implements IIntentRecognizer {
                             // Correct score for 'none' intent
                             // - The 'none' intent often has a score of 1.0 which
                             //   causes issues when trying to recognize over multiple
-                            //   model. Setting to 0.1 lets the intent still be 
-                            //   triggered but keeps it from trompling other models.
+                            //   models. Setting to 0.1 lets the intent still be 
+                            //   triggered but keeps it from stomping on other models.
                             switch (top.intent.toLowerCase()) {
                                 case 'builtin.intent.none':
                                 case 'none':
@@ -89,34 +94,38 @@ export class LuisRecognizer implements IIntentRecognizer {
                                     break;
                             }
                         }
-                        cb(null, result);
+                        callback(null, result);
                     } else {
-                        cb(err, null);
+                        callback(err, null);
                     }
                 });
             } else {
-                cb(new Error("LUIS model not found for locale '" + locale + "'."), null);
+                callback(new Error("LUIS model not found for locale '" + locale + "'."), null);
             }
         } else {
-            cb(null, result);
+            callback(null, result);
         }
     }
 
-    static recognize(utterance: string, modelUrl: string, callback: (err: Error, intents?: IIntent[], entities?: IEntity[]) => void): void {
+    static recognize(utterance: string, modelUrl: string, callback: (err: Error, intents?: IIntent[], entities?: IEntity<any>[], compositeEntities?: ICompositeEntity<any>[]) => void): void {
         try {
-            var uri = modelUrl.trim();
-            if (uri.lastIndexOf('&q=') != uri.length - 3) {
-                uri += '&q=';
+            // Format url
+            var uri = url.parse(modelUrl, true);
+            uri.query['q'] = utterance || '';
+            if (uri.search) {
+                delete uri.search;
             }
-            uri += encodeURIComponent(utterance || '');
-            request.get(uri, (err: Error, res: any, body: string) => {
-                // Parse result
+
+            // Call model
+            request.get(url.format(uri), (err: Error, res: any, body: string) => {
+                // Parse results
                 var result: ILuisResults;
                 try {
-                    if (!err) {
+                    if (res && res.statusCode === 200) {
                         result = JSON.parse(body);
                         result.intents = result.intents || [];
                         result.entities = result.entities || [];
+                        result.compositeEntities = result.compositeEntities || [];
                         if (result.topScoringIntent && result.intents.length == 0) {
                             result.intents.push(result.topScoringIntent);
                         }
@@ -124,6 +133,8 @@ export class LuisRecognizer implements IIntentRecognizer {
                             // Intents for the builtin Cortana app don't return a score.
                             result.intents[0].score = 1.0;
                         }
+                    } else {
+                        err = new Error(body);
                     }
                 } catch (e) {
                     err = e;
@@ -132,7 +143,7 @@ export class LuisRecognizer implements IIntentRecognizer {
                 // Return result
                 try {
                     if (!err) {
-                        callback(null, result.intents, result.entities);
+                        callback(null, result.intents, result.entities, result.compositeEntities);
                     } else {
                         var m = err.toString();
                         callback(err instanceof Error ? err : new Error(m));
@@ -151,5 +162,6 @@ interface ILuisResults {
     query: string;
     topScoringIntent: IIntent;
     intents: IIntent[];
-    entities: IEntity[];
+    entities: IEntity<string>[];
+    compositeEntities?: ICompositeEntity<any>[];
 }

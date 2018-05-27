@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -36,14 +36,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Autofac;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Connector;
-
-using Autofac;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Microsoft.Bot.Builder.Tests
@@ -93,7 +90,7 @@ namespace Microsoft.Bot.Builder.Tests
 
             builder
                 .RegisterType<BotToUserQueue>()
-                .AsSelf()                
+                .AsSelf()
                 .InstancePerLifetimeScope();
 
             builder
@@ -105,7 +102,7 @@ namespace Microsoft.Bot.Builder.Tests
 
             if (options.HasFlag(Options.LastWriteWinsCachingBotDataStore))
             {
-                builder.Register<CachingBotDataStore>(c => new CachingBotDataStore(c.Resolve<ConnectorStore>(), CachingBotDataStoreConsistencyPolicy.LastWriteWins))
+                builder.Register<CachingBotDataStore>(c => new CachingBotDataStore(c.ResolveKeyed<IBotDataStore<BotData>>(typeof(ConnectorStore)), CachingBotDataStoreConsistencyPolicy.LastWriteWins))
                     .As<IBotDataStore<BotData>>()
                     .AsSelf()
                     .InstancePerLifetimeScope();
@@ -131,12 +128,15 @@ namespace Microsoft.Bot.Builder.Tests
         {
             return new Activity()
             {
+                Id = Guid.NewGuid().ToString(),
                 Type = ActivityTypes.Message,
                 From = new ChannelAccount { Id = ChannelID.User },
                 Conversation = new ConversationAccount { Id = Guid.NewGuid().ToString() },
                 Recipient = new ChannelAccount { Id = ChannelID.Bot },
                 ServiceUrl = "InvalidServiceUrl",
                 ChannelId = "Test",
+                Attachments = Array.Empty<Attachment>(),
+                Entities = Array.Empty<Entity>(),
             };
         }
 
@@ -164,16 +164,34 @@ namespace Microsoft.Bot.Builder.Tests
 
                 var queue = container.Resolve<Queue<IMessageActivity>>();
 
+                // if user has more to say, bot should have said something
+                if (index + 1 < pairs.Length)
+                {
+                    Assert.AreNotEqual(0, queue.Count);
+                }
+
                 while (queue.Count > 0)
                 {
-                    ++index;
-
                     var toUser = queue.Dequeue();
-
-                    var actual = toUser.Text;
-                    var expected = pairs[index];
-
-                    Assert.AreEqual(expected, actual);
+                    switch (toUser.Type)
+                    {
+                        case ActivityTypes.Message:
+                            Assert.AreEqual(pairs[++index], toUser.Text);
+                            break;
+                        case ActivityTypes.EndOfConversation:
+                            Assert.AreEqual(pairs[++index], toUser.AsEndOfConversationActivity().Code);
+                            break;
+                        case ActivityTypes.Trace:
+                            var trace  = toUser.AsTraceActivity();
+                            Assert.IsNotNull(trace.Value);
+                            Assert.AreEqual(LuisDialog<object>.LuisTraceLabel, trace.Label);
+                            Assert.AreEqual(LuisDialog<object>.LuisTraceType, trace.ValueType);
+                            Assert.AreEqual(LuisDialog<object>.LuisTraceName, trace.Name);
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                    
                 }
             }
         }
@@ -200,6 +218,20 @@ namespace Microsoft.Bot.Builder.Tests
         public static string NewID()
         {
             return Guid.NewGuid().ToString();
+        }
+
+        public static async Task AssertOutgoingActivity(ILifetimeScope container, Action<IMessageActivity> asserts)
+        {
+            var queue = container.Resolve<Queue<IMessageActivity>>();
+
+            if (queue.Count != 1)
+            {
+                Assert.Fail("Expecting only 1 activity");
+            }
+
+            var toUser = queue.Dequeue();
+
+            asserts(toUser);
         }
     }
 }

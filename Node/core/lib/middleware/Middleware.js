@@ -1,8 +1,9 @@
 "use strict";
-var Dialog_1 = require('../dialogs/Dialog');
-var Library_1 = require('../bots/Library');
-var SimpleDialog_1 = require('../dialogs/SimpleDialog');
-var consts = require('../consts');
+Object.defineProperty(exports, "__esModule", { value: true });
+var Dialog_1 = require("../dialogs/Dialog");
+var Library_1 = require("../bots/Library");
+var SimpleDialog_1 = require("../dialogs/SimpleDialog");
+var consts = require("../consts");
 var Middleware = (function () {
     function Middleware() {
     }

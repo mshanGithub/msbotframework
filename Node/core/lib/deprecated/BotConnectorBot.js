@@ -1,6 +1,7 @@
 "use strict";
-var UniversalBot_1 = require('../bots/UniversalBot');
-var ChatConnector_1 = require('../bots/ChatConnector');
+Object.defineProperty(exports, "__esModule", { value: true });
+var UniversalBot_1 = require("../bots/UniversalBot");
+var ChatConnector_1 = require("../bots/ChatConnector");
 var BotConnectorBot = (function () {
     function BotConnectorBot(options) {
         console.warn('BotConnectorBot class is deprecated. Use UniversalBot with a ChatConnector class.');

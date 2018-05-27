@@ -6,6 +6,16 @@
     </header>
     <body>
       <group id="MICROSOFT.BOT.BUILDER/RESOURCE/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="AttachmentContentTypeValidatorError" translate="yes" xml:space="preserve">
+          <source>Attachment '{0}' is invalid! The content-type should contain '{1}'.</source>
+          <target state="final">المرفق '{0}' غير صالح! يجب أن يحتوي نوع المحتوى على '{1}'.</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">0-attachmnet name, 1-expected content-type</note>
+        </trans-unit>
+        <trans-unit id="AttachmentContentTypeValidatorHelp" translate="yes" xml:space="preserve">
+          <source>You should provide an attachment where content-type has '{0}'.</source>
+          <target state="final">يجب تقديم مرفق حيث يكون نوع المحتوى '{0}'.</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">0-attachment content type</note>
+        </trans-unit>
         <trans-unit id="CommandBack" translate="yes" xml:space="preserve">
           <source>Back</source>
           <target state="final">ارجع</target>
@@ -119,6 +129,34 @@
         <trans-unit id="PromptRetry" translate="yes" xml:space="preserve">
           <source>I didn't understand. Say something in reply.</source>
           <target state="final">لا أفهم, قل شيء</target>
+        </trans-unit>
+        <trans-unit id="TemplateAttachment" translate="yes" xml:space="preserve">
+          <source>Please submit an attachment for {&amp;}</source>
+          <target state="final">يرجى إرسال مرفق ل {&amp;}</target>
+        </trans-unit>
+        <trans-unit id="TemplateAttachmentCollection" translate="yes" xml:space="preserve">
+          <source>Please submit a collection of attachments for {&amp;}</source>
+          <target state="final">الرجاء إرسال مجموعة من المرفقات ل {&amp;}</target>
+        </trans-unit>
+        <trans-unit id="TemplateAttachmentCollectionDescription" translate="yes" xml:space="preserve">
+          <source>{0} attachment/s linked.</source>
+          <target state="final">تم ربط المرفقات {0}.</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">0-attachments count</note>
+        </trans-unit>
+        <trans-unit id="TemplateAttachmentCollectionHelp" translate="yes" xml:space="preserve">
+          <source>You can submit one or more attachments.{0}</source>
+          <target state="final">يمكنك إرسال مرفق واحد أو أكثر.{0}</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">0-dynamic help from attachment class</note>
+        </trans-unit>
+        <trans-unit id="TemplateAttachmentDescription" translate="yes" xml:space="preserve">
+          <source>Attachment named '{0}' with content-type '{1}'.</source>
+          <target state="final">مرفق باسم '{0}' مع نوع المحتوى '{1}'.</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">0-attachment name, 1-attachment content-type</note>
+        </trans-unit>
+        <trans-unit id="TemplateAttachmentHelp" translate="yes" xml:space="preserve">
+          <source>You can submit one attachment.{0}</source>
+          <target state="final">يمكنك إرسال مرفق واحد.{0}</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">0-dynamic help from attachment class</note>
         </trans-unit>
         <trans-unit id="TemplateBool" translate="yes" xml:space="preserve">
           <source>Would you like a {&amp;}? {||}</source>
@@ -321,6 +359,26 @@
         <trans-unit id="UnhandledExceptionToUser" translate="yes" xml:space="preserve">
           <source>Sorry, my bot code is having an issue.</source>
           <target state="needs-review-translation" state-qualifier="mt-suggestion">عذراً، رمز بوت هو وجود مشكلة.</target>
+        </trans-unit>
+        <trans-unit id="NumberExpression" translate="yes" xml:space="preserve">
+          <source>[+-]?(?:\d+\.?\d*|\d*\.?\d+)</source>
+          <target state="translated" state-qualifier="mt-suggestion">[+-]?(?:\d+\.?\d*|\d*\.?\d+)</target>
+        </trans-unit>
+        <trans-unit id="NumberOrdinals" translate="yes" xml:space="preserve">
+          <source>1=1st,first,first one|2=2nd,second,second one|3=3rd,third,third one|4=4th,fourth,fourth one|5=5th,fifth,fifth one|6=6th,sixth,sixth one|7=7th,seventh,seventh one|8=8th,eigth,eigth one|9=9th,ninth,ninth one|10=10th,tenth,tenth one</source>
+          <target state="needs-review-translation" state-qualifier="mt-suggestion">1= 1، أولاً، أول واحد | 2 = 2، ثانيا، ثانية واحدة | 3 = 3، ثالثا، ثلث | 4 = 4، رابعا، الرابع | 5 = 5، خامسا، الخامس الذي | 6 = 6، السادسة، واحد السادسة | 7 = 7، سابعا، واحد السابعة | 8 = 8, الثامن, الثامن واحد | 9 = 9، والتاسعة واحد التاسعة | 10 = 10، العاشرة، العاشرة واحد</target>
+        </trans-unit>
+        <trans-unit id="NumberReverseOrdinals" translate="yes" xml:space="preserve">
+          <source>-1=last,last one|-2=next to last,second to last,second from last|-3=third to last,third from last|-4=fourth to last,fourth from last|-5=fifth to last,fith from last</source>
+          <target state="needs-review-translation" state-qualifier="mt-suggestion">-1 = آخر، واحد آخر |-2 = بجانب آخر، ثانيا من الماضي، الثاني من آخر |-3 = الثالثة الثالثة إلى آخر، ومن آخر |-4 = الرابعة الرابعة إلى آخر، ومن آخر |-5 = يتسابق الخامسة إلى آخر، من آخر</target>
+        </trans-unit>
+        <trans-unit id="BooleanChoices" translate="yes" xml:space="preserve">
+          <source>true=y,yes,yep,sure,ok,\u1f44d,\u1f44c|false=n,no,nope,\u1f44e,\\u270b,\\u1f590</source>
+          <target state="needs-review-translation" state-qualifier="mt-suggestion">صحيح = نعم، نعم، نعم، \u1f44d بالتأكيد، موافق،، \u1f44c|false=n، لا، كلا، \u1f44e، \\u270b، \\u1f590</target>
+        </trans-unit>
+        <trans-unit id="NumberTerms" translate="yes" xml:space="preserve">
+          <source>0=zero|1=one|2=two|3=three|4=four|5=five|6=six|7=seven|8=eight|9=nine|10=ten|11=eleven|12=twelve|13=thirteen|14=fourteen|15=fifteen|16=sixteen|17=seventeen|18=eighteen|19=nineteen|20=twenty</source>
+          <target state="needs-review-translation" state-qualifier="mt-suggestion">0 = صفر | 1 = واحد | 2 = اثنين | 3 = ثلاثة | 4 = أربعة | 5 = خمسة | 6 = ستة | 7 = سبعة | 8 = ثمانية | 9 = تسعة | 10 = عشرة | 11 = أحد عشر | 12 = اثنا عشر | 13 = ثلاثة عشر | 14 = أربعة عشر | 15 = 15 | 16 = ستة عشر | 17 = سبعة عشر | 18 = 18 | 19 = تسعة عشر | 20 = عشرين</target>
         </trans-unit>
       </group>
     </body>

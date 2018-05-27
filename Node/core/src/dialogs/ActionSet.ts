@@ -32,7 +32,7 @@
 //
 
 import { Session } from '../Session';
-import { IRecognizeContext, IRecognizeResult, IIntentRecognizerResult } from './IntentRecognizerSet';
+import { IRecognizeContext, IRecognizeResult, IIntentRecognizerResult } from './IntentRecognizer';
 import { IRouteResult } from '../bots/Library';
 import * as consts from '../consts';
 import * as utils from '../utils';
@@ -45,9 +45,8 @@ export interface IActionHandler {
 export interface IDialogActionOptions {
     matches?: RegExp|RegExp[]|string|string[];
     intentThreshold?: number;
-    onFindAction?: (context: IFindActionRouteContext, callback: (err: Error, score: number, routeData?: IActionRouteData) => void) => void;
+    onFindAction?: (context: IFindActionRouteContext, callback: (err: Error | null, score: number, routeData?: IActionRouteData) => void) => void;
     onSelectAction?: (session: Session, args?: any, next?: Function) => void;
-    label?: string;
 }
 
 export interface IBeginDialogActionOptions extends IDialogActionOptions {
@@ -127,8 +126,9 @@ export class ActionSet {
                     } else {
                         var matches = exp.exec(text);
                         if (matches && matches.length) {
+                            // Score is coverage on a scale of 0.4 - 1.0.
                             var intent: IIntentRecognizerResult = {
-                                score: matches[0].length / text.length,
+                                score: 0.4 + ((matches[0].length / text.length) * 0.6),
                                 intent: exp.toString(),
                                 expression: exp,
                                 matched: matches
@@ -176,7 +176,7 @@ export class ActionSet {
             }
             callback(null, results);
         } else {
-            async.forEachOf(this.actions, (entry: IActionHandlerEntry, action: string, cb: ErrorCallback) => {
+            async.forEachOf(this.actions, (entry: IActionHandlerEntry, action: string, cb: async.ErrorCallback<any>) => {
                 if (entry.options.onFindAction) {
                     entry.options.onFindAction(context, (err, score, routeData) => {
                         if (!err) {
@@ -331,13 +331,30 @@ export class ActionSet {
         return this;
     }
 
-    private action(name: string, handler: IActionHandler, options: IDialogActionOptions = {}): this {
-        // Ensure unique
-        if (this.actions.hasOwnProperty(name)) {
-            throw new Error("DialogAction[" + name + "] already exists.")
+    public customAction(options: IDialogActionOptions): this {
+        if (!options || !options.onSelectAction) {
+            throw "An onSelectAction handler is required."
         }
-        this.actions[name] = { handler: handler, options: options };
+        var name = options.matches ? 'custom(' + options.matches.toString() + ')' : 'custom(onFindAction())';
+        return this.action(name, (session, args) => {
+            session.logger.warn(session.dialogStack(), "Shouldn't call next() in onSelectAction() for " + name);
+            session.save().sendBatch();
+        }, options);
+    }
+
+    private action(name: string, handler: IActionHandler, options: IDialogActionOptions = {}): this {
+        var key = this.uniqueActionName(name);
+        this.actions[key] = { handler: handler, options: options };
         return this;
+    }
+
+    private uniqueActionName(name: string, cnt = 1): string {
+        var key = cnt > 1 ? name + cnt : name;
+        if (this.actions.hasOwnProperty(key)) {
+            return this.uniqueActionName(name, cnt + 1);
+        } else {
+            return key;
+        }
     }
 }
 

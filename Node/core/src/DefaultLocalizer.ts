@@ -31,7 +31,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import { Library } from './bots/Library';
+import { Library, systemLib } from './bots/Library';
+import * as systemResources from './systemResources';
 import * as logger from './logger';
 import * as consts from './consts';
 import * as fs from 'fs';
@@ -64,11 +65,12 @@ export class DefaultLocalizer implements ILocalizer {
                 // - Order is important here. We want the bots root path to be last so that any
                 //   overrides for the bot will be applied last.
                 var path = library.localePath();
-                if (path) {
+                if (path && fs.existsSync(path)) {
                     _that.localePaths.push(path);
                 }
             }
-        }        
+        }
+        libsSeen[systemLib.name] = true;    // <-- skip system library
         addPaths(root);
     }
 
@@ -80,7 +82,7 @@ export class DefaultLocalizer implements ILocalizer {
         }
     }
 
-    public load(locale: string, done?: ErrorCallback): void {
+    public load(locale: string, done?: async.ErrorCallback<any>): void {
         logger.debug("localizer.load(%s)", locale);                                               
 
         // Build list of locales to load
@@ -158,21 +160,19 @@ export class DefaultLocalizer implements ILocalizer {
         return this.defaultLocale();
     }
     private loadLocale(locale: string): Promise.IThenable<boolean> {
+        const asyncEachSeries = Promise.denodeify(async.eachSeries);
+
         // Load local on first access
         if (!this.locales.hasOwnProperty(locale)) {
             var entry: ILocaleEntry;
             this.locales[locale] = entry = { loaded: null, entries: {} };
             entry.loaded = new Promise((resolve, reject) => {
-                // Load locale in all file paths
-                async.eachSeries(this.localePaths, (path, cb) => {
-                    this.loadLocalePath(locale, path).done(() => cb(), (err) => cb(err));
-                }, (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(true);
-                    }
-                });
+                this.loadSystemResources(locale)
+                    .then(() => {
+                        return asyncEachSeries(this.localePaths, (localePath: string, cb: (err?: Error) => void) => {
+                            this.loadLocalePath(locale, localePath).done(() => cb(), (err) => cb(err));
+                        });
+                    }).done(() => resolve(true), (err) => reject(err));
             });
         } 
         return this.locales[locale].loaded;
@@ -192,7 +192,7 @@ export class DefaultLocalizer implements ILocalizer {
                 })
                 .then((files: string[]) => {
                     // List of files retreived
-                    return asyncEach(files, (file: string, cb: ErrorCallback) => {
+                    return asyncEach(files, (file: string, cb: async.ErrorCallback<any>) => {
                         if (file.substring(file.length - 5).toLowerCase() == ".json") {
                             logger.debug("localizer.load(%s) - Loading %s/%s", locale, dir, file);
                             this.parseFile(locale, dir, file)
@@ -255,6 +255,28 @@ export class DefaultLocalizer implements ILocalizer {
                 }, (err) => {
                     reject(err);
                 });
+        });
+    }
+
+    private loadSystemResources(locale: string): Promise.IThenable<number> {
+        return new Promise<number>((resolve, reject) => {
+            const entries = systemResources.locales[(locale || '').toLowerCase()];
+            if (entries) {
+                // Add system resource strings to table
+                let cnt = 0;
+                const table = this.locales[locale];
+                const ns = systemLib.name.toLocaleLowerCase();
+                for (const key in entries) {
+                    var k = this.createKey(ns, key);
+                    table.entries[k] = entries[key];
+                    ++cnt;
+                }
+                resolve(cnt);                        
+            } else {
+                // Locale not supported
+                logger.debug("localizer.loadSystemResources(%s) - Locale not supported.", locale);                                
+                resolve(-1);
+            }
         });
     }
 

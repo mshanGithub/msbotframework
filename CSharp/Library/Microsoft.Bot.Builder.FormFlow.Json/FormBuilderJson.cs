@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -138,14 +138,17 @@ namespace Microsoft.Bot.Builder.FormFlow.Json
                     if (entry.Value.Script == null)
                     {
                         entry.Value.Choice = choice++;
-                        builder.Append($"\ncase {entry.Value.Choice}: {{{entry.Key}}}; break;");
+                        builder.AppendLine();
+                        builder.Append($"case {entry.Value.Choice}: {{{entry.Key}}}; break;");
                         entries.Add(entry.Value);
                     }
                 }
                 if (entries.Any())
                 {
                     // Define does not need to return a result.
-                    builder.Append("\n}\nreturn null;");
+                    builder.AppendLine();
+                    builder.AppendLine("}");
+                    builder.Append("return null;");
                     var fun = Compile<ScriptGlobals, object>(builder.ToString());
                     foreach (var entry in entries)
                     {
@@ -388,7 +391,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Json
         private void FieldPaths(Type type, string path, List<string> paths)
         {
             var newPath = (path == "" ? path : path + ".");
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => !f.IsDefined(typeof(IgnoreFieldAttribute))))
             {
                 TypePaths(field.FieldType, newPath + field.Name, paths);
             }

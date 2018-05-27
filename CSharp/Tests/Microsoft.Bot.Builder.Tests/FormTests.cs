@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -36,27 +36,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-
+using Autofac;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Connector;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.FormFlow.Advanced;
 using Microsoft.Bot.Builder.FormFlow.Json;
 using Microsoft.Bot.Builder.FormFlowTest;
-using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Luis.Models;
-using Microsoft.Bot.Sample.AnnotatedSandwichBot;
-
-using Moq;
-using Autofac;
+using Microsoft.Bot.Connector;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Microsoft.Bot.Builder.Tests
 {
@@ -110,31 +104,30 @@ namespace Microsoft.Bot.Builder.Tests
             params string[] inputs)
             where T : class
         {
-            var newPath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "-new" + Path.GetExtension(filePath));
+            var newPath = Script.NewScriptPathFor(filePath);
             File.Delete(newPath);
             var currentState = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(initialState));
             try
             {
                 using (var stream = new StreamReader(filePath))
-                using (var container = Build(Options.ResolveDialogFromContainer | Options.Reflection))
+                using (var container = Build(Options.Reflection))
                 {
-                    var root = new FormDialog<T>(currentState, buildForm, options, entities, CultureInfo.GetCultureInfo(locale));
-                    var builder = new ContainerBuilder();
-                    builder
-                        .RegisterInstance(root)
-                        .AsSelf()
-                        .As<IDialog<object>>();
-                    builder.Update(container);
+                    Func<IDialog<object>> makeRoot = () => new FormDialog<T>(currentState, buildForm, options, entities);
                     Assert.AreEqual(locale, stream.ReadLine());
                     Assert.AreEqual(SerializeToJson(initialState), stream.ReadLine());
                     Assert.AreEqual(SerializeToJson(entities), stream.ReadLine());
-                    await Script.VerifyScript(container, false, stream, (state) => Assert.AreEqual(state, SerializeToJson(currentState)), inputs);
+                    await Script.VerifyScript(container, makeRoot, false, stream, (stack, state) =>
+                    {
+                        var form = ((FormDialog<T>)stack.Frames[0].Target);
+                        Assert.AreEqual(state, SerializeToJson(form.State));
+                    }, inputs, locale);
                 }
             }
             catch (Exception)
             {
                 // There was an error, so record new script and pass on error
                 await RecordFormScript(newPath, locale, buildForm, options, initialState, entities, inputs);
+                TestContext.AddResultFile(newPath);
                 throw;
             }
         }
@@ -207,10 +200,14 @@ namespace Microsoft.Bot.Builder.Tests
             }
         }
 
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm.script")]
         public async Task Simple_Form_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\SimpleForm.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => new FormBuilder<SimpleForm>().AddRemainingFields().Build(), FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
                 "Hi",
 
@@ -235,9 +232,11 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-next.script")]
         public async Task SimpleForm_Next_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\SimpleForm-next.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => new FormBuilder<SimpleForm>()
                     .Field(new FieldReflector<SimpleForm>("Text")
                         .SetNext((value, state) => new NextStep(new string[] { "Float" })))
@@ -254,9 +253,11 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-dependency.script")]
         public async Task SimpleForm_Dependency_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\SimpleForm-dependency.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us",
                 () => new FormBuilder<SimpleForm>()
                     .Field("Float")
@@ -289,9 +290,11 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-NotUnderstood.script")]
         public async Task SimpleForm_NotUnderstood_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\SimpleForm-NotUnderstood.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => new FormBuilder<SimpleForm>().AddRemainingFields().Build(), FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
                 "Hi",
                 "some text here",
@@ -305,9 +308,148 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-Prompter.script")]
+        public async Task SimpleForm_Prompter_Script()
+        {
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
+                "en-us",
+                () => new FormBuilder<SimpleForm>()
+                .Prompter(async (context, prompt, state, field) =>
+                {
+                    if (field != null)
+                    {
+                        prompt.Prompt = field.Name + ": " + prompt.Prompt;
+                    }
+                    var preamble = context.MakeMessage();
+                    var promptMessage = context.MakeMessage();
+                    if (prompt.GenerateMessages(preamble, promptMessage))
+                    {
+                        await context.PostAsync(preamble);
+                    }
+                    await context.PostAsync(promptMessage);
+                    return prompt;
+                })
+                .AddRemainingFields()
+                .Confirm(@"**Results**
+* Text: {Text}
+* Integer: {Integer}
+* Float: {Float}
+* SomeChoices: {SomeChoices}
+* Date: {Date}
+Is this what you wanted? {||}")
+                .Build(),
+                FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "Hi",
+                "some text here",
+                "99",
+                "1.5",
+                "more than one",
+                "foo",
+                "two",
+                "1/1/2016",
+                "no",
+                "text",
+                "abc",
+                "yes"
+                );
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-Preamble.script")]
+        public async Task SimpleForm_Preamble_Script()
+        {
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
+                "en-us",
+                () => new FormBuilder<SimpleForm>()
+                .AddRemainingFields()
+                .Confirm(@"**Results**
+* Text: {Text}
+* Integer: {Integer}
+* Float: {Float}
+* SomeChoices: {SomeChoices}
+* Date: {Date}
+Is this what you wanted? {||}")
+                .Build(),
+                FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "Hi",
+                "some text here",
+                "99",
+                "1.5",
+                "more than one",
+                "foo",
+                "two",
+                "1/1/2016",
+                "no",
+                "text",
+                "abc",
+                "yes"
+                );
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-Limits.script")]
+        public async Task SimpleForm_Limits_Script()
+        {
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
+                "en-us",
+                () => new FormBuilder<SimpleForm>().Build(),
+                FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
+                "hi",
+                "integer",
+                // Test the limits of int vs long
+                ((long)int.MaxValue + 1).ToString(),
+                ((long)int.MinValue - 1).ToString(),
+
+                // Test the limits beyond long
+                long.MaxValue.ToString() + "1",
+                long.MinValue.ToString() + "1",
+
+                // Min and max accepted values
+                int.MaxValue.ToString(),
+                "back",
+                int.MinValue.ToString(),
+
+                // Test the limits of float vs. double
+                ((double)float.MaxValue + 1.0).ToString(),
+                ((double)float.MinValue * 2.0).ToString(),
+
+                // Test limits beyond double
+                (double.MaxValue).ToString().Replace("308", "309"),
+                (double.MinValue).ToString().Replace("308", "309"),
+
+                // Min and max accepted values
+                float.MaxValue.ToString(),
+                "back",
+                float.MinValue.ToString(),
+                "quit");
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Scripts\SimpleForm-Skip.script")]
+        public async Task SimpleForm_Skip_Script()
+        {
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
+                "en-us",
+                () => new FormBuilder<SimpleForm>().Build(),
+                FormOptions.None, new SimpleForm() { Float = 4.3f }, Array.Empty<EntityRecommendation>(),
+                "hi",
+                "some text",
+                "99",
+                // Float should be skipped
+                "word",
+                "quit");
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"Scripts\PizzaForm.script")]
         public async Task Pizza_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\PizzaForm.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => PizzaOrder.BuildForm(), FormOptions.None, new PizzaOrder(), Array.Empty<EntityRecommendation>(),
                 "hi",
                 "garbage",
@@ -350,31 +492,33 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\PizzaForm-entities.script")]
         public async Task Pizza_Entities_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\PizzaForm-entities.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => PizzaOrder.BuildForm(), FormOptions.None, new PizzaOrder(),
                 new Luis.Models.EntityRecommendation[] {
-                                new Luis.Models.EntityRecommendation("DeliveryAddress","Address", "abc"),
-                                new Luis.Models.EntityRecommendation("Kind", "Kind", "byo"),
+                                new Luis.Models.EntityRecommendation("DeliveryAddress", entity:"2"),
+                                new Luis.Models.EntityRecommendation("Kind", entity:"byo"),
                                 // This should be skipped because it is not active
-                                new Luis.Models.EntityRecommendation("Signature", "Signature", "Hawaiian"),
-                                new Luis.Models.EntityRecommendation("BYO.Toppings", "Toppings", "onions"),
-                                new Luis.Models.EntityRecommendation("BYO.Toppings", "Toppings", "peppers"),
-                                new Luis.Models.EntityRecommendation("BYO.Toppings", "Toppings", "ice"),
-                                new Luis.Models.EntityRecommendation("Notfound", "NotFound", "OK")
+                                new Luis.Models.EntityRecommendation("Signature", entity:"Hawaiian"),
+                                new Luis.Models.EntityRecommendation("BYO.Toppings", entity:"onions"),
+                                new Luis.Models.EntityRecommendation("BYO.Toppings", entity:"peppers"),
+                                new Luis.Models.EntityRecommendation("BYO.Toppings", entity:"ice"),
+                                new Luis.Models.EntityRecommendation("NumberOfPizzas", entity:"5"),
+                                new Luis.Models.EntityRecommendation("NotFound", entity:"OK")
                             },
                 "hi",
                 "1", // onions for topping clarification
-                "2",
+                "2", // address choice from validation
                 "med",
                 // Kind "4",
                 "drink bread",
                 "thin",
                 "1",
-                "?",
                 // "beef, onion, ice cream",
-                "3",
+                // Already have address
                 "y",
                 "1 2",
                 "none",
@@ -387,9 +531,11 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\PizzaFormButton.script")]
         public async Task Pizza_Button_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\PizzaFormButton.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => PizzaOrder.BuildForm(style: ChoiceStyleOptions.Auto), FormOptions.None, new PizzaOrder(), Array.Empty<EntityRecommendation>(),
                 "hi",
                 "garbage",
@@ -432,9 +578,11 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\PizzaForm-fr.script")]
         public async Task Pizza_fr_Script()
         {
-            await VerifyFormScript(@"..\..\Scripts\PizzaForm-fr.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "fr", () => PizzaOrder.BuildForm(), FormOptions.None, new PizzaOrder(), Array.Empty<EntityRecommendation>(),
                 "bonjour",
                 "2",
@@ -468,33 +616,6 @@ namespace Microsoft.Bot.Builder.Tests
                 );
         }
 
-        [TestMethod]
-        public async Task JSON_Script()
-        {
-            await VerifyFormScript(@"..\..\Scripts\JSON.script",
-                "en-us", () => SandwichOrder.BuildJsonForm(), FormOptions.None, new JObject(), Array.Empty<EntityRecommendation>(),
-                "hi",
-                "ham",
-                "six",
-                "nine grain",
-                "wheat",
-                "1",
-                "peppers",
-                "1",
-                "2",
-                "n",
-                "no",
-                "ok",
-                "abc",
-                "1 state st",
-                "",
-                "9/9/2016 1pm",
-                "status",
-                "y",
-                "2.5"
-                );
-        }
-
         public class MyClass
         {
             [Prompt("I didn't get you")]
@@ -516,9 +637,11 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\Optional.script")]
         public async Task Optional()
         {
-            await VerifyFormScript(@"..\..\Scripts\Optional.script",
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
+            await VerifyFormScript(pathScript,
                 "en-us", () => MyClass.Build(), FormOptions.None, new MyClass(), Array.Empty<EntityRecommendation>(),
                 "ok",
                 "This is something",
@@ -530,7 +653,7 @@ namespace Microsoft.Bot.Builder.Tests
         public async Task FormFlow_Localization()
         {
             // This ensures there are no bad templates in resources
-            foreach (var locale in new string[] { "ar", "cs", "de", "en", "es", "fa", "fr", "it", "ja", "ru", "zh-Hans", "cs", "de-DE" })
+            foreach (var locale in new string[] { "ar", "cs", "de", "en", "es", "fa", "fr", "it", "ja", "pt-BR", "ru", "zh-Hans", "cs", "de-DE" })
             {
                 var root = new FormDialog<PizzaOrder>(new PizzaOrder(), () => PizzaOrder.BuildForm(), cultureInfo: CultureInfo.GetCultureInfo(locale));
                 Assert.AreNotEqual(null, root);
@@ -581,10 +704,12 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         [TestMethod]
+        [DeploymentItem(@"Scripts\Form_Term_Matching.script")]
         public async Task Form_Term_Matching()
         {
+            var pathScript = TestFiles.DeploymentItemPathsForCaller(TestContext, this.GetType()).Single();
             // [Terms("word", @"\bpword\(123\)", @"32 jump\b")]
-            await VerifyFormScript(@"..\..\Scripts\Form_Term_Matching.script",
+            await VerifyFormScript(pathScript,
                 "en-us", () => new FormBuilder<SimpleForm>().Build(), FormOptions.None, new SimpleForm(), Array.Empty<EntityRecommendation>(),
                 "Hi",
 
@@ -606,7 +731,7 @@ namespace Microsoft.Bot.Builder.Tests
 
                 "back",
                 "word that",
-                
+
                 "back",
                 "-word",
 
@@ -696,5 +821,99 @@ namespace Microsoft.Bot.Builder.Tests
                     );
             }
         }
+
+
+        private class TestFormAttribute
+        {
+            public string FieldNameWithoutAttributes { get; set; }
+
+            [Describe(description: " ")]
+            public string FieldNameWithDescribeSpaceDescriptionAttributeOnly { get; set; }
+
+            [Describe(description: "")]
+            public string FieldNameWithDescribeEmptyDescriptionAttributeOnly { get; set; }
+
+            [Describe(description: "FieldDescribeDescription1")]
+            public string FieldNameWithDescribeDescriptionAttributeOnly { get; set; }
+
+            [Describe(title: "FieldDescribeNullDescription1")]
+            public string FieldNameWithDescribeNullDescriptionAttributeOnly { get; set; }
+
+            [Describe("FieldName2")]
+            [Terms("FieldName2")]
+            public string FieldNameWithDescribeTermsAttributesSame { get; set; }
+
+            [Describe("FieldDescribe3")]
+            [Terms("FieldTerms3")]
+            public string FieldNameWithDescribeTermsAttributesDiffer { get; set; }
+
+            [Terms("FieldTerms4")]
+            public string FieldNameWithTermsAttributeOnly { get; set; }
+
+            public IForm<TestFormAttribute> FormBuilder;
+            public TestFormAttribute()
+            {
+                FormBuilder = BuildForm();
+            }
+
+            public static IForm<TestFormAttribute> BuildForm()
+            {
+                return new FormBuilder<TestFormAttribute>()
+                    .Message("Provide test field name:")
+                    .Build();
+
+            }
+
+
+        }
+
+        [TestMethod]
+        public async Task VerifyFormBuilderDescribeTermsAttributes()
+        {
+            foreach (var field in (new TestFormAttribute()).FormBuilder.Fields)
+            {
+                if (field.Name == "FieldNameWithoutAttributes")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "Field Name Without Attributes");
+                    Assert.IsTrue(field.FieldTerms.Any(ft => ft.StartsWith(field.FieldDescription.Description.ToLower())));
+                }
+                else if (field.Name == "FieldNameWithDescribeSpaceDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == " ");
+                    Assert.IsTrue(field.FieldTerms.Contains("field name with describe space description attribute only"));
+                }
+                else if (field.Name == "FieldNameWithDescribeEmptyDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "");
+                    Assert.IsTrue(field.FieldTerms.Contains("field name with describe empty description attribute only"));
+                }
+                else if (field.Name == "FieldNameWithDescribeDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "FieldDescribeDescription1");
+                    Assert.IsTrue(field.FieldTerms.Any(ft => ft.StartsWith(field.FieldDescription.Description.ToLower())));
+                }
+                else if (field.Name == "FieldNameWithDescribeNullDescriptionAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == null);
+                    Assert.IsTrue(field.FieldTerms.Contains("field name with describe null description attribute only"));
+                }
+                else if (field.Name == "FieldNameWithDescribeTermsAttributesSame")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "FieldName2");
+                    Assert.IsTrue(field.FieldTerms.Contains("FieldName2"));
+                }
+                else if (field.Name == "FieldNameWithDescribeTermsAttributesDiffer")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "FieldDescribe3");
+                    Assert.IsTrue(field.FieldTerms.Contains("FieldTerms3"));
+                }
+                else if (field.Name == "FieldNameWithTermsAttributeOnly")
+                {
+                    Assert.IsTrue(field.FieldDescription.Description == "Field Name With Terms Attribute Only");
+                    Assert.IsTrue(field.FieldTerms.Contains("FieldTerms4"));
+                }
+            }
+        }
+
     }
 }

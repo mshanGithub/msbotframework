@@ -31,36 +31,37 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import { IRecognizeContext } from './IntentRecognizerSet';
-import { IIntentRecognizer, IIntentRecognizerResult } from './IntentRecognizerSet';
+import { IntentRecognizer, IRecognizeContext, IIntentRecognizerResult } from './IntentRecognizer';
 import * as utils from '../utils';
 
 export interface IRegExpMap {
     [local: string]: RegExp;
 }
 
-export class RegExpRecognizer implements IIntentRecognizer {
+export class RegExpRecognizer extends IntentRecognizer {
     private expressions: IRegExpMap;
 
     constructor(public intent: string, expressions: RegExp|IRegExpMap) {
-        if (expressions instanceof RegExp) {
+        super();
+        if (expressions instanceof RegExp || typeof (<any>expressions).exec === 'function') {
             this.expressions = { '*': <RegExp>expressions };
         } else {
             this.expressions = <IRegExpMap>(expressions || {});
         }
     }
 
-    public recognize(context: IRecognizeContext, cb: (err: Error, result: IIntentRecognizerResult) => void): void {
+    public onRecognize(context: IRecognizeContext, cb: (err: Error, result: IIntentRecognizerResult) => void): void {
         var result: IIntentRecognizerResult = { score: 0.0, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
             var locale = context.locale || '*';
             var exp = this.expressions.hasOwnProperty(locale) ? this.expressions[locale] : this.expressions['*'];
             if (exp) {
-                var matches = exp.exec(context.message.text);
+                var matches = new RegExp(exp).exec(context.message.text);
                 if (matches && matches.length) {
+                    // Score is coverage on a scale of 0.4 - 1.0.
                     var matched = matches[0];
-                    result.score = matched.length / context.message.text.length;
+                    result.score = 0.4 + ((matched.length / context.message.text.length) * 0.6);
                     result.intent = this.intent;
                     result.expression = exp;
                     result.matched = matches;

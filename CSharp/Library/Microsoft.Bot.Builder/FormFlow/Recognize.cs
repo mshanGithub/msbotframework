@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -32,13 +32,18 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Chronic;
 using System.Threading;
+
+using Chronic;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
 {
@@ -140,19 +145,21 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             return new Prompter<T>(_helpFormat, _form, this).Prompt(state, null, args.ToArray()).Prompt;
         }
 
-        public IEnumerable<TermMatch> Matches(string input, object defaultValue)
+        public IEnumerable<TermMatch> Matches(IMessageActivity input, object defaultValue)
         {
+            var inputText = MessageActivityHelper.GetSanitizedTextInput(input);
+
             // if the user hit enter on an optional prompt, then consider taking the current choice as a low confidence option
-            bool userSkippedPrompt = string.IsNullOrWhiteSpace(input) && (defaultValue != null || _noPreference != null);
+            bool userSkippedPrompt = string.IsNullOrWhiteSpace(inputText) && (defaultValue != null || _noPreference != null);
             if (userSkippedPrompt)
             {
-                yield return new TermMatch(0, input.Length, 1.0, defaultValue);
+                yield return new TermMatch(0, inputText.Length, 1.0, defaultValue);
             }
 
             foreach (var expression in _expressions)
             {
                 double maxWords = expression.MaxWords;
-                foreach (Match match in expression.Expression.Matches(input))
+                foreach (Match match in expression.Expression.Matches(inputText))
                 {
                     var group1 = match.Groups[1];
                     var group2 = match.Groups[2];
@@ -378,20 +385,22 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         /// <returns>TermMatch if input is a match.</returns>
         public abstract TermMatch Parse(string input);
 
-        public virtual IEnumerable<TermMatch> Matches(string input, object defaultValue = null)
+        public virtual IEnumerable<TermMatch> Matches(IMessageActivity input, object defaultValue = null)
         {
-            var matchValue = input.Trim().ToLower();
+            var inputText = MessageActivityHelper.GetSanitizedTextInput(input);
+
+            var matchValue = inputText.Trim().ToLower();
             if (_noPreference != null && _noPreference.Contains(matchValue))
             {
-                yield return new TermMatch(0, input.Length, 1.0, null);
+                yield return new TermMatch(0, inputText.Length, 1.0, null);
             }
             else if ((defaultValue != null || _noPreference != null) && (matchValue == "" || _currentChoices.Contains(matchValue)))
             {
-                yield return new TermMatch(0, input.Length, 1.0, defaultValue);
+                yield return new TermMatch(0, inputText.Length, 1.0, defaultValue);
             }
             else
             {
-                var result = Parse(input);
+                var result = Parse(inputText);
                 if (result != null)
                 {
                     yield return result;
@@ -604,7 +613,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             long number;
             if (long.TryParse(input, NumberStyles.Integer, Thread.CurrentThread.CurrentUICulture.NumberFormat, out number))
             {
-                if (!_showLimits || (number >= _min && number <= _max))
+                if (number >= _min && number <= _max)
                 {
                     result = new TermMatch(0, input.Length, 1.0, number);
                 }
@@ -668,7 +677,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             double number;
             if (double.TryParse(input, NumberStyles.Float, Thread.CurrentThread.CurrentUICulture.NumberFormat, out number))
             {
-                if (!_showLimits || (number >= _min && number <= _max))
+                if (number >= _min && number <= _max)
                 {
                     result = new TermMatch(0, input.Length, 1.0, number);
                 }
@@ -754,5 +763,94 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
         }
 
         private Parser _parser;
+    }
+
+    /// <summary>
+    /// Recognize an attachment within the activity instance.
+    /// </summary>
+    /// <typeparam name="T">Form state.</typeparam>
+    public sealed class RecognizeAttachment<T> : RecognizePrimitive<T>
+        where T : class
+    {
+        private readonly bool multipleAttachments;
+
+        public RecognizeAttachment(IField<T> field, bool multipleAttachments = false)
+            : base(field)
+        {
+            this.multipleAttachments = multipleAttachments;
+        }
+
+        public override string Help(T state, object defaultValue)
+        {
+            var prompt = new Prompter<T>(
+                _field.Template(this.multipleAttachments ? TemplateUsage.AttachmentCollectionHelp : TemplateUsage.AttachmentFieldHelp),
+                _field.Form,
+                null);
+
+            // create instance just to call virtual method
+            var awaitableAttachment = Activator.CreateInstance(this.GetAttachmentTypeFromField(), default(Attachment)) as AwaitableAttachment;
+            return prompt.Prompt(state, _field, awaitableAttachment.ProvideHelp(_field)).Prompt;
+        }
+
+        public override TermMatch Parse(string input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DescribeAttribute ValueDescription(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<string> ValidInputs(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<TermMatch> Matches(IMessageActivity input, object defaultValue = null)
+        {
+            var result = new List<TermMatch>();
+
+            // get awaitable attachment default or custom type
+            var awaitableAttachmentType = this.GetAttachmentTypeFromField();
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                input.Text = string.Empty;
+            }
+
+            // create attachment list
+            var attachments = Activator.CreateInstance(typeof(List<>).MakeGenericType(awaitableAttachmentType)) as IList;
+            foreach (var attachment in input.Attachments)
+            {
+                var awaitableAttachment = Activator.CreateInstance(awaitableAttachmentType, attachment) as AwaitableAttachment;
+                attachments.Add(awaitableAttachment);
+            }
+
+            // build result
+            if (attachments.Count > 0)
+            {
+                result.Add(new TermMatch(0, input.Text.Length, 1.0, this.multipleAttachments ? attachments : attachments[0]));
+            }
+            else if (_field.Optional)
+            {
+                var commandRecognizer = _field.Form.BuildCommandRecognizer();
+                var commands = (input.Text == null || input.Text.Trim().StartsWith("\""))                    
+                    ? new TermMatch[0]
+                    : MatchAnalyzer.Coalesce(commandRecognizer.Prompt.Recognizer.Matches(input), input.Text);
+
+                // if optional and no result at all then assign defaultValue
+                if (!commands.Any())
+                {
+                    result.Add(new TermMatch(0, input.Text.Length, 1.0, defaultValue));
+                }
+            }
+
+            return result;
+        }
+
+        private Type GetAttachmentTypeFromField()
+        {
+            return this._field.Type.IsAttachmentCollection() ? this._field.Type.GetGenericArguments()[0] : this._field.Type;
+        }
     }
 }

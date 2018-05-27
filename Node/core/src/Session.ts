@@ -33,27 +33,38 @@
 
 import { Library, IRouteResult } from './bots/Library';
 import { Dialog, IDialogResult, ResumeReason, IRecognizeDialogContext } from './dialogs/Dialog';
-import { IRecognizeResult, IRecognizeContext } from './dialogs/IntentRecognizerSet';
+import { IRecognizeResult, IRecognizeContext } from './dialogs/IntentRecognizer';
 import { ActionSet, IFindActionRouteContext, IActionRouteData } from './dialogs/ActionSet';
-import { Message } from './Message';
+import { Message, InputHint } from './Message';
 import { DefaultLocalizer } from './DefaultLocalizer';
+import { SessionLogger } from './SessionLogger';
 import * as consts from './consts';
 import * as utils from './utils';
-import * as logger from './logger';
 import * as sprintf from 'sprintf-js';
 import * as events from 'events';
 import * as async from 'async';
 
+export interface IConnector {
+    onEvent(handler: (events: IEvent[], cb?: (err: Error) => void) => void): void;
+    onInvoke?(handler: (event: IEvent, cb?: (err: Error, body: any, status?: number) => void) => void): void;
+    send(messages: IMessage[], cb: (err: Error, addresses?: IAddress[]) => void): void;
+    startConversation(address: IAddress, cb: (err: Error, address?: IAddress) => void): void;
+    update?(message: IMessage, done: (err: Error, address?: IAddress) => void): void;
+    delete?(address: IAddress, done: (err: Error) => void): void;
+}
+
 export interface ISessionOptions {
     onSave: (done: (err: Error) => void) => void;
-    onSend: (messages: IMessage[], done: (err: Error) => void) => void;
+    onSend: (messages: IMessage[], done: (err: Error, addresses?: IAddress[]) => void) => void;
+    connector: IConnector;
     library: Library;
     localizer: ILocalizer;
+    logger: SessionLogger;
     middleware: ISessionMiddleware[];
     dialogId: string;
     dialogArgs?: any;
     autoBatchDelay?: number;
-    dialogErrorMessage?: string|string[]|IMessage|IIsMessage;
+    dialogErrorMessage?: TextOrMessageType;
     actions?: ActionSet;
 }
 
@@ -61,8 +72,13 @@ export interface ISessionMiddleware {
     (session: Session, next: Function): void;
 }
 
+export interface IWatchableHandler {
+    (context: IRecognizeContext, callback: (err: Error, value: any) => void): void;
+}
+
 export class Session extends events.EventEmitter {
     private msgSent = false;
+    private _hasError = false;
     private _isReset = false;
     private lastSendTime = new Date().getTime();
     private batch: IMessage[] = [];
@@ -74,8 +90,10 @@ export class Session extends events.EventEmitter {
 
     constructor(protected options: ISessionOptions) {
         super();
+        this.connector = options.connector;
         this.library = options.library;
         this.localizer = options.localizer;
+        this.logger = options.logger;
         if (typeof this.options.autoBatchDelay !== 'number') {
             this.options.autoBatchDelay = 250;  // 250ms delay
         }
@@ -87,7 +105,9 @@ export class Session extends events.EventEmitter {
             userData: this.userData,
             conversationData: this.conversationData,
             privateConversationData: this.privateConversationData,
+            dialogData: this.dialogData,
             localizer: this.localizer,
+            logger: this.logger,
             dialogStack: () => { return this.dialogStack(); },
             preferredLocale: () => { return this.preferredLocale(); },
             gettext: (...args: any[]) => { return Session.prototype.gettext.call(this, args); }, 
@@ -138,6 +158,7 @@ export class Session extends events.EventEmitter {
         return this;
     }
 
+    public connector: IConnector;
     public library: Library;
     public sessionState: ISessionState;
     public message: IMessage;
@@ -145,29 +166,30 @@ export class Session extends events.EventEmitter {
     public conversationData: any;
     public privateConversationData: any;
     public dialogData: any;
-    public localizer:ILocalizer = null;
+    public localizer: ILocalizer = null;
+    public logger: SessionLogger = null;
 
-    /** An error has occured. */
+    /** An error has occurred. */
     public error(err: Error): this {
-        logger.info(this, 'session.error()');
+        // Log error
+        var m = err.toString();
+        err = err instanceof Error ? err : new Error(m);
+        this.emit('error', err);
+        this.logger.error(this.dialogStack(), err);
 
         // End conversation with a message
+        this._hasError = true;
         if (this.options.dialogErrorMessage) {
             this.endConversation(this.options.dialogErrorMessage);
         } else {
             var locale = this.preferredLocale();
             this.endConversation(this.localizer.gettext(locale, 'default_error', consts.Library.system));
         }
-
-        // Log error
-        var m = err.toString();
-        err = err instanceof Error ? err : new Error(m);
-        this.emit('error', err);
         return this;
     }
 
     /** Gets/sets the users preferred locale. */
-    public preferredLocale(locale?: string, callback?: ErrorCallback): string {
+    public preferredLocale(locale?: string, callback?: async.ErrorCallback<any>): string {
         if (locale) {
             this._locale = locale;
             if (this.userData) {
@@ -208,24 +230,24 @@ export class Session extends events.EventEmitter {
     
     /** Used to manually save the current session state. */
     public save(): this {
-        logger.info(this, 'session.save()');            
+        this.logger.log(this.dialogStack(), 'Session.save()');            
         this.startBatch();
         return this;
     }
 
     /** Sends a message to the user. */
-    public send(message: string|string[]|IMessage|IIsMessage, ...args: any[]): this {
+    public send(message: TextOrMessageType, ...args: any[]): this {
         args.unshift(this.curLibraryName(), message);
         return Session.prototype.sendLocalized.apply(this, args);
     }
 
     /** Sends a message to a user using a specific localization namespace. */
-    public sendLocalized(localizationNamespace: string, message: string|string[]|IMessage|IIsMessage, ...args: any[]): this {
+    public sendLocalized(libraryNamespace: string, message: TextOrMessageType, ...args: any[]): this {
         this.msgSent = true;
         if (message) {
             var m: IMessage;
             if (typeof message == 'string' || Array.isArray(message)) {
-                m = this.createMessage(localizationNamespace, <string|string[]>message, args);
+                m = this.createMessage(libraryNamespace, <TextType>message, args);
             } else if ((<IIsMessage>message).toMessage) {
                 m = (<IIsMessage>message).toMessage();
             } else {
@@ -233,10 +255,35 @@ export class Session extends events.EventEmitter {
             }
             this.prepareMessage(m);
             this.batch.push(m);
-            logger.info(this, 'session.send()');            
+            this.logger.log(this.dialogStack(), 'Session.send()');            
         }
         this.startBatch();
         return this;
+    }
+
+    /** Sends a text, and optional SSML, message to the user. */
+    public say(text: TextType, options?: IMessageOptions): this;
+    public say(text: TextType, speak?: TextType, options?: IMessageOptions): this;
+    public say(text: TextType, speak?: any, options?: IMessageOptions): this {
+        if (typeof speak === 'object') {
+            options = <any>speak;
+            speak = null;
+        }
+        return this.sayLocalized(this.curLibraryName(), text, speak, options);
+    }
+
+    /** Sends a text, and optional SSML, message to the user using a specific localization namespace. */
+    public sayLocalized(libraryNamespace: string, text: TextType, speak?: TextType, options?: IMessageOptions): this {
+        this.msgSent = true;
+        let msg = new Message(this).text(text).speak(speak).toMessage();
+        if (options) {
+            ['attachments', 'attachmentLayout', 'entities', 'textFormat', 'inputHint'].forEach((field) => {
+                if (options.hasOwnProperty(field)) {
+                    (<any>msg)[field] = (<any>options)[field];
+                }
+            });
+        }
+        return this.sendLocalized(libraryNamespace, msg);
     }
 
     /** Sends a typing indicator to the user. */
@@ -245,8 +292,17 @@ export class Session extends events.EventEmitter {
         var m = <IMessage>{ type: 'typing' };
         this.prepareMessage(m);
         this.batch.push(m);
-        logger.info(this, 'session.sendTyping()');            
-        this.sendBatch();
+        this.logger.log(this.dialogStack(), 'Session.sendTyping()');            
+        return this;        
+    }
+
+    /** Inserts a delay between outgoing messages. */
+    public delay(delay: number): this {
+        this.msgSent = true;
+        var m = <any>{ type: 'delay', value: delay };
+        this.prepareMessage(m);
+        this.batch.push(m);
+        this.logger.log(this.dialogStack(), 'Session.delay(%d)', delay);
         return this;        
     }
 
@@ -258,7 +314,7 @@ export class Session extends events.EventEmitter {
     /** Begins a new dialog. */
     public beginDialog(id: string, args?: any): this {
         // Find dialog
-        logger.info(this, 'session.beginDialog(%s)', id);            
+        this.logger.log(this.dialogStack(), 'Session.beginDialog(' + id + ')');            
         var id = this.resolveDialogId(id);
         var dialog = this.findDialog(id);
         if (!dialog) {
@@ -281,7 +337,7 @@ export class Session extends events.EventEmitter {
     /** Replaces the existing dialog with a new one.  */
     public replaceDialog(id: string, args?: any): this {
         // Find dialog
-        logger.info(this, 'session.replaceDialog(%s)', id);            
+        this.logger.log(this.dialogStack(), 'Session.replaceDialog(' + id + ')');            
         var id = this.resolveDialogId(id);
         var dialog = this.findDialog(id);
         if (!dialog) {
@@ -313,11 +369,18 @@ export class Session extends events.EventEmitter {
             this.batch.push(m);
         }
 
-        // Clear private conversation data
+        // Clear conversation data
+        this.conversationData = {};
         this.privateConversationData = {};
-                
+
+        // Add end conversation message
+        let code = this._hasError ? 'unknown' : 'completedSuccessfully';
+        let mec: IMessage = <any>{ type: 'endOfConversation', code: code };
+        this.prepareMessage(mec);
+        this.batch.push(mec);
+
         // Clear stack and save.
-        logger.info(this, 'session.endConversation()');            
+        this.logger.log(this.dialogStack(), 'Session.endConversation()');            
         var ss = this.sessionState;
         ss.callstack = [];
         this.sendBatch();
@@ -351,7 +414,7 @@ export class Session extends events.EventEmitter {
             }
                     
             // Pop dialog off the stack and then resume parent.
-            logger.info(this, 'session.endDialog()');            
+            this.logger.log(this.dialogStack(), 'Session.endDialog()');            
             var childId = cur.id;
             cur = this.popDialog();
             this.startBatch();
@@ -382,7 +445,7 @@ export class Session extends events.EventEmitter {
             result.childId = cur.id;
                     
             // Pop dialog off the stack and resume parent dlg.
-            logger.info(this, 'session.endDialogWithResult()');            
+            this.logger.log(this.dialogStack(), 'Session.endDialogWithResult()');            
             cur = this.popDialog();
             this.startBatch();
             if (cur) {
@@ -399,20 +462,20 @@ export class Session extends events.EventEmitter {
         return this;
     }
 
-    /** Cancels a specific dialog on teh stack and optionally replaces it with a new one. */
+    /** Cancels a specific dialog on the stack and optionally replaces it with a new one. */
     public cancelDialog(dialogId: string|number, replaceWithId?: string, replaceWithArgs?: any): this {
         // Delete dialog(s)
         var childId = typeof dialogId === 'number' ? this.sessionState.callstack[<number>dialogId].id : <string>dialogId;
         var cur = this.deleteDialogs(dialogId);
         if (replaceWithId) {
-            logger.info(this, 'session.cancelDialog(%s)', replaceWithId);            
+            this.logger.log(this.dialogStack(), 'Session.cancelDialog(' + replaceWithId + ')');            
             var id = this.resolveDialogId(replaceWithId);
             var dialog = this.findDialog(id);
             this.pushDialog({ id: id, state: {} });
             this.startBatch();
             dialog.begin(this, replaceWithArgs);
         } else {
-            logger.info(this, 'session.cancelDialog()');            
+            this.logger.log(this.dialogStack(), 'Session.cancelDialog()');            
             this.startBatch();
             if (cur) {
                 var dialog = this.findDialog(cur.id);
@@ -430,7 +493,7 @@ export class Session extends events.EventEmitter {
 
     /** Resets the dialog stack and starts a new dialog. */
     public reset(dialogId?: string, dialogArgs?: any): this {
-        logger.info(this, 'session.reset()');            
+        this.logger.log(this.dialogStack(), 'Session.reset()');            
         this._isReset = true;
         this.sessionState.callstack = [];
         if (!dialogId) {
@@ -447,9 +510,10 @@ export class Session extends events.EventEmitter {
     }
 
     /** Manually triggers sending of the current auto-batch. */
-    public sendBatch(callback?: (err: Error) => void): void {
-        logger.info(this, 'session.sendBatch() sending %d messages', this.batch.length);            
+    public sendBatch(done?: (err: Error, responses?: any[]) => void): void {
+        this.logger.log(this.dialogStack(), 'Session.sendBatch() sending ' + this.batch.length + ' message(s)');            
         if (this.sendingBatch) {
+            this.batchStarted = true;
             return;
         }
         if (this.batchTimer) {
@@ -465,44 +529,28 @@ export class Session extends events.EventEmitter {
         if (cur) {
             cur.state = this.dialogData;
         }
-        this.options.onSave((err) => {
+        this.onSave((err) => {
             if (!err) {
-                if (batch.length) {
-                    this.options.onSend(batch, (err) => {
-                        this.sendingBatch = false;
+                this.onSend(batch, (err, addresses) => {
+                    this.onFinishBatch(() => {
                         if (this.batchStarted) {
                             this.startBatch();
                         }
-                        if (callback) {
-                            callback(err);
+                        if (done) {
+                            done(err, addresses);
                         }
                     });
-                } else {
-                    this.sendingBatch = false;
-                    if (this.batchStarted) {
-                        this.startBatch();
-                    }
-                    if (callback) {
-                        callback(err);
-                    }
-                }
+                });
             } else {
-                this.sendingBatch = false;
-                switch ((<any>err).code || '') {
-                    case consts.Errors.EBADMSG:
-                    case consts.Errors.EMSGSIZE:
-                        // Something wrong with state so reset everything 
-                        this.userData = {};
-                        this.batch = [];
-                        this.endConversation(this.options.dialogErrorMessage || 'Oops. Something went wrong and we need to start over.');
-                        break;
-                } 
-                if (callback) {
-                    callback(err);
-                }
+                this.onFinishBatch(() => {
+                    if (done) {
+                        done(err, null);
+                    }
+                });
             }
         });
     }
+
 
     //-------------------------------------------------------------------------
     // DialogStack Management
@@ -586,13 +634,14 @@ export class Session extends events.EventEmitter {
 
     /** Ensures that all of the entries on a dialog stack reference valid dialogs within a library hierarchy. */
     static validateDialogStack(stack: IDialogState[], root: Library): boolean {
+        let valid = true;
         Session.forEachDialogStackEntry(stack, false, (entry) => {
             var pair = entry.id.split(':');
             if (!root.findDialog(pair[0], pair[1])) {
-                return false;
+                valid = false;
             }
         });
-        return true;
+        return valid;
     }
 
     //-------------------------------------------------------------------------
@@ -616,8 +665,129 @@ export class Session extends events.EventEmitter {
     }
 
     //-----------------------------------------------------
+    // Watch Statements
+    //-----------------------------------------------------
+
+    /** Enables/disables the watch statment for a given variable. */
+    public watch(variable: string, enable = true): this {
+        let name = variable.toLowerCase();
+        if (!this.userData.hasOwnProperty(consts.Data.DebugWatches)) {
+            this.userData[consts.Data.DebugWatches] = {};
+        }
+        if (watchableHandlers.hasOwnProperty(name)) {
+            var entry = watchableHandlers[name];
+            this.userData[consts.Data.DebugWatches][entry.name] = enable;
+        } else {
+            throw new Error("Invalid watch statement. '" + variable + "' isn't watchable");
+        }
+        return this;
+    }
+
+    /** Returns the list of enabled watch statements for the session. */
+    public watchList(): string[] {
+        var watches: string[] = []; 
+        if (this.userData.hasOwnProperty(consts.Data.DebugWatches)) {
+            for (let name in this.userData[consts.Data.DebugWatches]) {
+                if (this.userData[consts.Data.DebugWatches][name]) {
+                    watches.push(name);
+                }
+            }
+        }
+        return watches;
+    }
+
+    /** Adds or retrieves a watchable variable from the session. */
+    static watchable(variable: string, handler?: IWatchableHandler): IWatchableHandler {
+        if (handler) {
+            watchableHandlers[variable.toLowerCase()] = { name: variable, handler: handler };
+        } else {
+            let entry = watchableHandlers[variable.toLowerCase()];
+            if (entry) {
+                handler = entry.handler;
+            }
+        }
+        return handler;
+    }
+
+    /** Returns the list of watchable variables. */
+    static watchableList(): string[] {
+        let variables: string[] = [];
+        for (let name in watchableHandlers) {
+            if (watchableHandlers.hasOwnProperty(name)) {
+                variables.push(watchableHandlers[name].name);
+            }
+        }
+        return variables;
+    }
+
+    //-----------------------------------------------------
     // PRIVATE HELPERS
     //-----------------------------------------------------
+
+    private onSave(cb: (err: Error) => void): void {
+        this.options.onSave((err) => {
+            if (err) {
+                this.logger.error(this.dialogStack(), err);
+                switch ((<any>err).code || '') {
+                    case consts.Errors.EBADMSG:
+                    case consts.Errors.EMSGSIZE:
+                        // Something wrong with state so reset everything 
+                        this.userData = {};
+                        this.batch = [];
+                        this.endConversation(this.options.dialogErrorMessage || 'Oops. Something went wrong and we need to start over.');
+                        break;
+                } 
+            }
+            cb(err);
+        });
+    }
+
+    private onSend(batch: IMessage[], cb: (err: Error, responses?: any[]) => void): void {
+        if (batch && batch.length > 0) {
+            this.options.onSend(batch, (err, responses) => {
+                if (err) {
+                    this.logger.error(this.dialogStack(), err);
+                }
+                cb(err, responses);
+            })
+        } else {
+            cb(null, null);
+        }
+    }
+
+    private onFinishBatch(cb: Function): void {
+        // Dump watchList
+        var ctx = this.toRecognizeContext();
+        async.each(this.watchList(), (variable, cb) => {
+            let entry = watchableHandlers[variable.toLowerCase()];
+            if (entry && entry.handler) {
+                try {
+                    entry.handler(ctx, (err, value) => {
+                        if (!err) {
+                            this.logger.dump(variable, value);
+                        } 
+                        cb(err);
+                    });
+                } catch (e) {
+                    cb(e);
+                }
+            } else {
+                cb(new Error("'" + variable + "' isn't watchable."));
+            }
+        }, (err: Error) => {
+            // Flush logs
+            if (err) {
+                this.logger.error(this.dialogStack(), err);
+            }
+            this.logger.flush((err) => {
+                this.sendingBatch = false;
+                if (err) {
+                    console.error(err);
+                }
+                cb();
+            });
+        });
+    }
 
     private startBatch(): void {
         this.batchStarted = true;
@@ -747,3 +917,15 @@ export class Session extends events.EventEmitter {
         return this.message.sourceEvent;
     }
 }
+
+// Initialize default list of watchable variables.
+let watchableHandlers: { [name: string]: { name: string; handler: IWatchableHandler; }; } = {
+    'userdata': { name: 'userData', handler: (ctx, cb) => cb(null, ctx.userData) },
+    'conversationdata': { name: 'conversationData', handler: (ctx, cb) => cb(null, ctx.conversationData) },
+    'privateconversationdata': { name: 'privateConversationData', handler: (ctx, cb) => cb(null, ctx.privateConversationData) },
+    'dialogdata': { name: 'dialogData', handler: (ctx, cb) => cb(null, ctx.dialogData) },
+    'dialogstack': { name: 'dialogStack', handler: (ctx, cb) => cb(null, ctx.dialogStack()) },
+    'preferredlocale': { name: 'preferredLocale', handler: (ctx, cb) => cb(null, ctx.preferredLocale()) },
+    'libraryname': { name: 'libraryName', handler: (ctx, cb) => cb(null, ctx.libraryName) }
+};
+

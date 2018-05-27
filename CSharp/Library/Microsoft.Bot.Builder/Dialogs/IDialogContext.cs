@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -31,10 +31,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 
@@ -70,8 +69,8 @@ namespace Microsoft.Bot.Builder.Dialogs
         /// The activity posted to bot.
         /// </summary>
         /// <remarks> This is the incoming activity in reactive cases.
-        /// for proactive case, i.e. <see cref="Conversation.ResumeAsync{T}"/> code path,
-        /// it will be the <see cref="IMessageActivity"/> returned by <see cref="ResumptionCookie.GetMessage"/>.
+        /// for proactive case, i.e. Conversation.ResumeAsync code path,
+        /// it will be the <see cref="IMessageActivity"/> returned by <see cref="ConversationReference.GetPostToBotMessage"/>.
         /// </remarks>
         IActivity Activity { get; }
     }
@@ -84,12 +83,51 @@ namespace Microsoft.Bot.Builder.Dialogs
     }
 
     /// <summary>
+    /// Optional message properties that can be sent <see cref="Extensions.SayAsync(IBotToUser, string, string, MessageOptions, string, CancellationToken)"/>
+    /// </summary>
+    public class MessageOptions
+    {
+        public MessageOptions()
+        {
+            this.TextFormat = TextFormatTypes.Markdown;
+            this.AttachmentLayout = AttachmentLayoutTypes.List;
+            this.Attachments = new List<Attachment>();
+            this.Entities = new List<Entity>();
+        }
+
+        /// <summary>
+        /// Indicates whether the bot is accepting, expecting, or ignoring input
+        /// </summary>
+        public string InputHint { get; set; }
+
+        /// <summary>
+        /// Format of text fields [plain|markdown] Default:markdown
+        /// </summary>
+        public string TextFormat { get; set; }
+
+        /// <summary>
+        /// Hint for how to deal with multiple attachments: [list|carousel] Default:list
+        /// </summary>
+        public string AttachmentLayout { get; set; }
+
+        /// <summary>
+        /// Attachments
+        /// </summary>
+        public IList<Attachment> Attachments { get; set; }
+
+        /// <summary>
+        /// Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.
+        /// </summary>
+        public IList<Entity> Entities { get; set; }
+    }
+
+    /// <summary>
     /// Helper methods.
     /// </summary>
     public static partial class Extensions
     {
         /// <summary>
-        /// Post a message to be sent to the bot, using previous messages to establish a conversation context.
+        /// Post a message to be sent to the user, using previous messages to establish a conversation context.
         /// </summary>
         /// <remarks>
         /// If the locale parameter is not set, locale of the incoming message will be used for reply.
@@ -112,6 +150,44 @@ namespace Microsoft.Bot.Builder.Dialogs
             await botToUser.PostAsync(message, cancellationToken);
         }
 
+
+        /// <summary>
+        /// Post a message and optional SSML to be sent to the user, using previous messages to establish a conversation context.
+        /// </summary>
+        /// <remarks>
+        /// If the locale parameter is not set, locale of the incoming message will be used for reply.
+        /// </remarks>
+        /// <param name="botToUser">Communication channel to use.</param>
+        /// <param name="text">The message text.</param>
+        /// <param name="speak">The SSML markup for text to speech.</param>
+        /// <param name="options">The options for the message.</param>
+        /// <param name="locale">The locale of the text.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task that represents the post operation.</returns>
+        public static async Task SayAsync(this IBotToUser botToUser, string text, string speak = null, MessageOptions options = null, string locale = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var message = botToUser.MakeMessage();
+
+            message.Text = text;
+            message.Speak = speak;
+
+            if (!string.IsNullOrEmpty(locale))
+            {
+                message.Locale = locale;
+            }
+
+            if (options != null)
+            {
+                message.InputHint = options.InputHint;
+                message.TextFormat = options.TextFormat;
+                message.AttachmentLayout = options.AttachmentLayout;
+                message.Attachments = options.Attachments;
+                message.Entities = options.Entities;
+            }
+
+            await botToUser.PostAsync(message, cancellationToken);
+        }
+
         /// <summary>
         /// Suspend the current dialog until the user has sent a message to the bot.
         /// </summary>
@@ -121,28 +197,20 @@ namespace Microsoft.Bot.Builder.Dialogs
         {
             stack.Wait<IMessageActivity>(resume);
         }
-    }
-}
-
-namespace Microsoft.Bot.Builder.Dialogs.Internals
-{
-    /// <summary>
-    /// Methods to send a message from the bot to the user. 
-    /// </summary>
-    public interface IBotToUser
-    {
-        /// <summary>
-        /// Post a message to be sent to the user.
-        /// </summary>
-        /// <param name="message">The message for the user.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A task that represents the post operation.</returns>
-        Task PostAsync(IMessageActivity message, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Make a message.
+        /// Call a child dialog, add it to the top of the stack and post the message to the child dialog.
         /// </summary>
-        /// <returns>The new message.</returns>
-        IMessageActivity MakeMessage();
+        /// <typeparam name="R">The type of result expected from the child dialog.</typeparam>
+        /// <param name="stack">The dialog stack.</param>
+        /// <param name="child">The child dialog.</param>
+        /// <param name="resume">The method to resume when the child dialog has completed.</param>
+        /// <param name="message">The message that will be posted to child dialog.</param>
+        /// <param name="token">A cancellation token.</param>
+        /// <returns>A task representing the Forward operation.</returns>
+        public static async Task Forward<R>(this IDialogStack stack, IDialog<R> child, ResumeAfter<R> resume, IMessageActivity message, CancellationToken token = default(CancellationToken))
+        {
+            await stack.Forward<R, IMessageActivity>(child, resume, message, token);
+        }
     }
 }

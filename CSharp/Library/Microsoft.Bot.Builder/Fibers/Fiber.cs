@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -234,7 +234,11 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
                 }
                 catch (Exception error)
                 {
-                    this.stack.Pop();
+                    if (this.stack.Count != 0)
+                    {
+                        this.stack.Pop();
+                    }
+
                     if (this.stack.Count == 0)
                     {
                         throw;

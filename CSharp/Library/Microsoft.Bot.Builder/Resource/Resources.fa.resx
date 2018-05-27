@@ -12,6 +12,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
+    <value>پیوست '{0}' نامعتبر است! نوع محتوا باید حاوی '{1}'.</value>
+    <comment>0-attachmnet name, 1-expected content-type</comment>
+  </data>
+  <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
+    <value>شما باید یک پیوست ارائه که در آن نوع محتوا است '{0}.</value>
+    <comment>0-attachment content type</comment>
+  </data>
   <data name="CommandBack" xml:space="preserve">
     <value>بازگشت</value>
   </data>
@@ -25,7 +33,7 @@
     <value>راهنما</value>
   </data>
   <data name="CommandHelpHelp" xml:space="preserve">
-    <value>کمک: انواع پاسخ می توانید وارد کنید را نشان می دهد.</value>
+    <value>راهنما: نمایش انواع پاسخی که می توانید وارد کنید.</value>
   </data>
   <data name="CommandHelpTerms" xml:space="preserve">
     <value>کمک; انتخاب; \?</value>
@@ -49,7 +57,7 @@
     <value>بیش از شروع; تنظیم مجدد; روشن</value>
   </data>
   <data name="CommandStatus" xml:space="preserve">
-    <value>Status</value>
+    <value>وضعیت</value>
   </data>
   <data name="CommandStatusHelp" xml:space="preserve">
     <value>وضعیت: پیشرفت شما را در پر کردن فرم تا کنون نشان می دهد.</value>
@@ -96,13 +104,35 @@
     <value>بله؛ y; مطمئن خوب; بله</value>
   </data>
   <data name="PromptRetry" xml:space="preserve">
-    <value>من درک نمی کنند. چیزی در پاسخ می گویند.</value>
+    <value>من متوجه نشدم، لطفا پاسخی دهید</value>
+  </data>
+  <data name="TemplateAttachment" xml:space="preserve">
+    <value>لطفا پیوست ارسال کنید {&amp;}</value>
+  </data>
+  <data name="TemplateAttachmentCollection" xml:space="preserve">
+    <value>لطفا مجموعه ای از فایل پیوست ارسال برای {&amp;}</value>
+  </data>
+  <data name="TemplateAttachmentCollectionDescription" xml:space="preserve">
+    <value>{0} فایل پیوست مرتبط است.</value>
+    <comment>0-attachments count</comment>
+  </data>
+  <data name="TemplateAttachmentCollectionHelp" xml:space="preserve">
+    <value>شما می توانید یک یا چند پیوست ارسال کنید.{0}</value>
+    <comment>0-dynamic help from attachment class</comment>
+  </data>
+  <data name="TemplateAttachmentDescription" xml:space="preserve">
+    <value>پیوست به نام "{0} 'نوع محتوای' {1} '.</value>
+    <comment>0-attachment name, 1-attachment content-type</comment>
+  </data>
+  <data name="TemplateAttachmentHelp" xml:space="preserve">
+    <value>شما می توانید یک فایل ضمیمه ارسال کنید.{0}</value>
+    <comment>0-dynamic help from attachment class</comment>
   </data>
   <data name="TemplateBool" xml:space="preserve">
     <value>{&amp;} داری؟ {||}</value>
   </data>
   <data name="TemplateBoolHelp" xml:space="preserve">
-    <value>لطفا را وارد کنید "بله" یا "هیچ" {?، {0}}.</value>
+    <value>لطفا "بله" یا "خیر" را وارد کنید {?، {0}}.</value>
     <comment>0-current choice, 1-no preference</comment>
   </data>
   <data name="TemplateClarify" xml:space="preserve">
@@ -158,25 +188,25 @@
     <comment>0-not understood term</comment>
   </data>
   <data name="TemplateHelp" xml:space="preserve">
-    <value>شما پر در زمینه {&amp;}.  پاسخ احتمالی:
+    <value>شما فیلد {&amp;} را پر کردید. پاسخ های احتمالی:
 {0}
 {1}</value>
     <comment>0-recognizer help, 1-command help</comment>
   </data>
   <data name="TemplateHelpClarify" xml:space="preserve">
-    <value>قادر به روشن ارزش {&amp;} است.  پاسخ احتمالی:
+    <value>شما مقدار {&amp;} را وارد کردید است. پاسخ های احتمالی:
 {0}
 {1}</value>
     <comment>0-recognizer help, 1-command help</comment>
   </data>
   <data name="TemplateHelpConfirm" xml:space="preserve">
-    <value>لطفا جواب این سوال.  پاسخ احتمالی:
+    <value>لطفا جواب این سوال را بدهید.  پاسخ های احتمالی:
 {0}
 {1}</value>
     <comment>0-recognizer help, 1-command help</comment>
   </data>
   <data name="TemplateHelpNavigation" xml:space="preserve">
-    <value>انتخاب کنید چه زمینه را تغییر دهید.  پاسخ احتمالی:
+    <value>انتخاب کنید کدام فیلد را تغییر میدهید.  پاسخ های احتمالی:
 {0}
 {1}</value>
     <comment>0-recognizer help, 1-command help</comment>
@@ -194,7 +224,7 @@
     <comment>0-current choice, 1-no preference, 2-min, 3-max</comment>
   </data>
   <data name="TemplateNavigation" xml:space="preserve">
-    <value>چه تغییر دارید؟ {||}</value>
+    <value>چه تغییری دارید؟ {||}</value>
   </data>
   <data name="TemplateNavigationCommandHelp" xml:space="preserve">
     <value>شما با وارد کردن نام آن به میدان دیگری تعویض کنید. ({0}).</value>
@@ -243,12 +273,27 @@
     <value>تلاش های زیادی</value>
   </data>
   <data name="UserProfileDeleted" xml:space="preserve">
-    <value>مشخصات کاربر حذف شده!</value>
+    <value>مشخصات کاربر حذف شد!</value>
   </data>
   <data name="Confirmation" xml:space="preserve">
     <value>تأیید</value>
   </data>
   <data name="UnhandledExceptionToUser" xml:space="preserve">
-    <value>با عرض پوزش، من کد ربات است که با داشتن یک مسئله.</value>
+    <value>با عرض پوزش، کد ربات من با مشکل روبرو شده است.</value>
+  </data>
+  <data name="NumberExpression" xml:space="preserve">
+    <value>[+-]?(?:\d+\.?\d*|\d*\.?\d+)</value>
+  </data>
+  <data name="NumberOrdinals" xml:space="preserve">
+    <value>1=1، اول، یکی از اولین | 2 = 2, دوم, دوم یکی | 3 = 3 سوم، یک سوم | 4 = 4 چهارم، یک چهارم | 5 = 5 پنجم، یک پنجم | 6 = 6، ششم، یک ششم | 7 = 7 هفتم، یک هفتم | 8 = 8 هشتم, ودر یکی | 9 = 9 نهم، یکی از نهم | 10 = 10 دهم، یک دهم</value>
+  </data>
+  <data name="NumberReverseOrdinals" xml:space="preserve">
+    <value>-1 = آخرین، یکی از آخرین | -2 = کنار گذشته، دوم به گذشته، دوم از آخرین | -3 = سوم سوم به گذشته، از آخرین | -4 = چهارم چهارم به گذشته، از آخرین | -5 = fith پنجم به گذشته، از آخرین به روز رسانی</value>
+  </data>
+  <data name="BooleanChoices" xml:space="preserve">
+    <value>درست = y، بله، بله، مطمئن، خوب، \u1f44d، \u1f44c|false=n، نه، جواب منفی، \u1f44e، \\u270b، \\u1f590</value>
+  </data>
+  <data name="NumberTerms" xml:space="preserve">
+    <value>0 = صفر | 1 = یکی | 2 = دو | 3 = سه | 4 = چهار | 5 پنج = | 6 = شش | 7 = هفت | 8 = هشت | 9 = 9 | 10 ده = | 11 یازده = | 12 = دوازده | 13 = 13 | 14 = چهارده | 15 = پانزده | 16 = شانزده | 17 = هفده | 18 = 18 | 19 نوزده = | 20 = بیست</value>
   </data>
 </root>

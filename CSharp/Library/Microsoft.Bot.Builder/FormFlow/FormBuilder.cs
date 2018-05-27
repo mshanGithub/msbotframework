@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -31,9 +31,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Microsoft.Bot.Builder.FormFlow.Advanced;
-using Microsoft.Bot.Builder.Resource;
-using Microsoft.Bot.Connector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,8 +39,11 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-using Microsoft.Bot.Builder.Dialogs;
 using System.Threading.Tasks;
+
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.FormFlow.Advanced;
+using Microsoft.Bot.Builder.Resource;
 
 namespace Microsoft.Bot.Builder.FormFlow
 {
@@ -66,46 +66,15 @@ namespace Microsoft.Bot.Builder.FormFlow
             }
             if (this._form._prompter == null)
             {
-                this._form._prompter = async (context, prompt) =>
+                this._form._prompter = async (context, prompt, state, field) =>
                 {
-                    var msg = context.MakeMessage();
-                    if (prompt.Buttons?.Count > 0)
+                    var preamble = context.MakeMessage();
+                    var promptMessage = context.MakeMessage();
+                    if (prompt.GenerateMessages(preamble, promptMessage))
                     {
-                        var style = prompt.Style;
-                        if (style == ChoiceStyleOptions.Auto)
-                        {
-                            foreach (var button in prompt.Buttons)
-                            {
-                                // Images require carousel
-                                if (button.Image != null)
-                                {
-                                    style = ChoiceStyleOptions.Carousel;
-                                    break;
-                                }
-                            }
-                        }
-                        if (style == ChoiceStyleOptions.Carousel)
-                        {
-                            msg.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                            msg.Attachments = prompt.GenerateHeroCards();
-                        }
-                        else
-                        {
-                            msg.AttachmentLayout = AttachmentLayoutTypes.List;
-                            msg.Attachments = prompt.GenerateHeroCard();
-                        }
+                        await context.PostAsync(preamble);
                     }
-                    else if (prompt.Description?.Image != null)
-                    {
-                        msg.AttachmentLayout = AttachmentLayoutTypes.List;
-                        var card = new HeroCard() { Title = prompt.Prompt, Images = new List<CardImage> { new CardImage(prompt.Description.Image) } };
-                        msg.Attachments = new List<Attachment> { card.ToAttachment() };
-                    }
-                    else
-                    {
-                        msg.Text = prompt.Prompt;
-                    }
-                    await context.PostAsync(msg);
+                    await context.PostAsync(promptMessage);
                     return prompt;
                 };
             }
@@ -130,7 +99,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                     _form.Localize(rs.GetEnumerator(), out missing, out extra);
                     if (missing.Any())
                     {
-                        throw new MissingManifestResourceException($"Missing resources {missing}");
+                        throw new MissingManifestResourceException($"Missing {missing.Count()} resources {string.Join(", ", missing)}");
                     }
                 }
             }
@@ -201,7 +170,7 @@ namespace Microsoft.Bot.Builder.FormFlow
             return this;
         }
 
-        public virtual IFormBuilder<T> Prompter(PromptAsyncDelegate prompter)
+        public virtual IFormBuilder<T> Prompter(PromptAsyncDelegate<T> prompter)
         {
             _form._prompter = prompter;
             return this;
@@ -214,7 +183,15 @@ namespace Microsoft.Bot.Builder.FormFlow
 
         private Dictionary<TemplateUsage, int> _templateArgs = new Dictionary<TemplateUsage, int>
         {
-            {TemplateUsage.Bool, 0 },
+            { TemplateUsage.AttachmentCollection, 0 },
+            { TemplateUsage.AttachmentCollectionDescription, 1 },
+            { TemplateUsage.AttachmentCollectionHelp, 1 },
+            { TemplateUsage.AttachmentContentTypeValidatorError, 2 },
+            { TemplateUsage.AttachmentContentTypeValidatorHelp, 1 },
+            { TemplateUsage.AttachmentField, 0 },
+            { TemplateUsage.AttachmentFieldDescription, 2 },
+            { TemplateUsage.AttachmentFieldHelp, 1 },
+            { TemplateUsage.Bool, 0 },
             { TemplateUsage.BoolHelp, 1},
             { TemplateUsage.Clarify, 1},
             { TemplateUsage.Confirmation, 0 },
@@ -320,7 +297,7 @@ namespace Microsoft.Bot.Builder.FormFlow
             internal readonly Fields<T> _fields = new Fields<T>();
             internal readonly List<IStep<T>> _steps = new List<IStep<T>>();
             internal OnCompletionAsyncDelegate<T> _completion = null;
-            internal PromptAsyncDelegate _prompter = null;
+            internal PromptAsyncDelegate<T> _prompter = null;
             internal ILocalizer _resources = new Localizer() { Culture = CultureInfo.CurrentUICulture };
 
             public Form()
@@ -374,9 +351,9 @@ namespace Microsoft.Bot.Builder.FormFlow
                 }
             }
 
-            internal override async Task<FormPrompt> Prompt(IDialogContext context, FormPrompt prompt)
+            internal override async Task<FormPrompt> Prompt(IDialogContext context, FormPrompt prompt, T state, IField<T> field)
             {
-                return prompt == null ? prompt : await _prompter(context, prompt);
+                return prompt == null ? prompt : await _prompter(context, prompt, state, field);
             }
 
             internal override OnCompletionAsyncDelegate<T> Completion
@@ -411,7 +388,7 @@ namespace Microsoft.Bot.Builder.FormFlow
     /// <see cref="PromptAttribute"/>, 
     /// <see cref="TermsAttribute"/> and 
     /// <see cref="TemplateAttribute"/>.   
-    /// For all of the attributes, resonable defaults will be generated.
+    /// For all of the attributes, reasonable defaults will be generated.
     /// </remarks>
     #endregion
     public sealed class FormBuilder<T> : FormBuilderBase<T>
@@ -484,7 +461,7 @@ namespace Microsoft.Bot.Builder.FormFlow
         private void FieldPaths(Type type, string path, List<string> paths)
         {
             var newPath = (path == "" ? path : path + ".");
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => !f.IsDefined(typeof(IgnoreFieldAttribute))))
             {
                 TypePaths(field.FieldType, newPath + field.Name, paths);
             }
@@ -502,7 +479,7 @@ namespace Microsoft.Bot.Builder.FormFlow
         {
             if (type.IsClass)
             {
-                if (type == typeof(string))
+                if (type == typeof(string) || type.IsAttachmentType())
                 {
                     paths.Add(path);
                 }
@@ -522,6 +499,10 @@ namespace Microsoft.Bot.Builder.FormFlow
                 {
                     FieldPaths(type, path, paths);
                 }
+            }
+            else if (type.IsAttachmentCollection())
+            {
+                paths.Add(path);
             }
             else if (type.IsEnum)
             {

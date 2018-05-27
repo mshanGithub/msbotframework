@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -39,16 +39,14 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Autofac;
-using Moq;
-using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Builder.Internals.Fibers;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Action = Microsoft.Bot.Builder.Luis.Models.Action;
 
 namespace Microsoft.Bot.Builder.Tests
@@ -65,16 +63,16 @@ namespace Microsoft.Bot.Builder.Tests
             return intents;
         }
 
-        public static EntityRecommendation EntityFor(string type, string entity, IDictionary<string, string> resolution = null)
+        public static EntityRecommendation EntityFor(string type, string entity, IDictionary<string, object> resolution = null)
         {
             return new EntityRecommendation(type: type) { Entity = entity, Resolution = resolution };
         }
 
         public static EntityRecommendation EntityForDate(string type, DateTime date)
         {
-            return EntityFor(type, 
+            return EntityFor(type,
                 date.ToString("d", DateTimeFormatInfo.InvariantInfo),
-                new Dictionary<string, string>()
+                new Dictionary<string, object>()
                 {
                     { "resolution_type", "builtin.datetime.date" },
                     { "date", date.ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo) }
@@ -85,7 +83,7 @@ namespace Microsoft.Bot.Builder.Tests
         {
             return EntityFor(type,
                 time.ToString("t", DateTimeFormatInfo.InvariantInfo),
-                new Dictionary<string, string>()
+                new Dictionary<string, object>()
                 {
                     { "resolution_type", "builtin.datetime.time" },
                     { "time", time.ToString("THH:mm:ss", DateTimeFormatInfo.InvariantInfo) }
@@ -120,6 +118,9 @@ namespace Microsoft.Bot.Builder.Tests
             luis
                 .Setup(l => l.BuildUri(It.Is<LuisRequest>(r => r.Query == utterance)))
                 .Returns(uri);
+
+            luis.Setup(l => l.ModifyRequest(It.IsAny<LuisRequest>()))
+                .Returns<LuisRequest>(r => r);
 
             luis
                 .Setup(l => l.QueryAsync(uri, It.IsAny<CancellationToken>()))
@@ -299,7 +300,57 @@ namespace Microsoft.Bot.Builder.Tests
                 await AssertScriptAsync(container, "hello", EntityTwo);
             }
         }
-        
+
+        [Serializable]
+        public sealed class NullMessageTextLuisDialog : LuisDialog<object>
+        {
+            public NullMessageTextLuisDialog(params ILuisService[] services)
+                : base(services)
+            {
+            }
+
+            [LuisIntent("")]
+            public async Task NullHandler(IDialogContext context, LuisResult luisResult)
+            {
+                await context.PostAsync("I see null");
+                context.Wait(MessageReceived);
+            }
+        }
+
+        [TestMethod]
+        public async Task NullMessageText_Is_EmptyIntent()
+        {
+            var service = new Mock<ILuisService>();
+
+            var dialog = new NullMessageTextLuisDialog(service.Object);
+
+            using (new FiberTestBase.ResolveMoqAssembly(service.Object))
+            using (var container = Build(Options.ResolveDialogFromContainer, service.Object))
+            {
+                var builder = new ContainerBuilder();
+                builder
+                    .RegisterInstance(dialog)
+                    .As<IDialog<object>>();
+                builder.Update(container);
+
+                await AssertScriptAsync(container, null, "I see null");
+            }
+        }
+
+        [TestMethod]
+        public void NullOrEmptyIntents_DefaultsTo_TopScoringIntent()
+        {
+            var intent = new IntentRecommendation();
+            var result = new LuisResult()
+            {
+                TopScoringIntent = intent
+            };
+
+            LuisService.Fix(result);
+
+            Assert.AreEqual(1, result.Intents.Count);
+            Assert.AreEqual(intent, result.Intents[0]);
+        }
 
         [TestMethod]
         public async Task Service_With_LuisActionDialog()
@@ -309,12 +360,21 @@ namespace Microsoft.Bot.Builder.Tests
             var intent = "IntentOne";
             var prompt = "ParamOne?";
             var action = "IntentOneAction";
+            var model = new LuisModelAttribute("model", "subs", LuisApiVersion.V2);
+
+            service
+                .Setup(l => l.LuisModel)
+                .Returns(model);
 
             service
                 .Setup(l => l.BuildUri(It.IsAny<LuisRequest>()))
                 .Returns<LuisRequest>(request =>
-                        request.BuildUri(new LuisModelAttribute("model", "subs", LuisApiVersion.V2))
+                        request.BuildUri(model)
                 );
+
+            service
+                .Setup(l => l.ModifyRequest(It.IsAny<LuisRequest>()))
+                .Returns<LuisRequest>(r => r);
 
             service
                 .Setup(l => l.QueryAsync(It.Is<Uri>(t => t.AbsoluteUri.Contains($"&contextId={contextId}")), It.IsAny<CancellationToken>()))
@@ -325,7 +385,7 @@ namespace Microsoft.Bot.Builder.Tests
                         new IntentRecommendation()
                         {
                             Intent = intent,
-                            Score =  1.0, 
+                            Score =  1.0,
                             Actions =  new List<Action>
                             {
                                 new Action
@@ -384,7 +444,7 @@ namespace Microsoft.Bot.Builder.Tests
                         Prompt = prompt
                     }
                 });
-            
+
 
             var dialog = new MultiServiceLuisDialog(service.Object);
             using (new FiberTestBase.ResolveMoqAssembly(service.Object))
@@ -426,14 +486,43 @@ namespace Microsoft.Bot.Builder.Tests
         [TestMethod]
         public void UrlEncoding_UTF8_Then_Hex()
         {
-            ILuisService service = new LuisService(new LuisModelAttribute("modelID", "subscriptionID", LuisApiVersion.V1));
+            ILuisService service = new LuisService(new LuisModelAttribute("modelID", "subscriptionID"));
 
             var uri = service.BuildUri("Français");
 
             // https://github.com/Microsoft/BotBuilder/issues/247
             // https://github.com/Microsoft/BotBuilder/pull/76
-            Assert.AreNotEqual("https://api.projectoxford.ai/luis/v1/application?subscription-key=subscriptionID&q=Fran%25u00e7ais&id=modelID", uri.AbsoluteUri);
-            Assert.AreEqual("https://api.projectoxford.ai/luis/v1/application?subscription-key=subscriptionID&q=Fran%C3%A7ais&id=modelID", uri.AbsoluteUri);
+            Assert.AreNotEqual("https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/modelID?subscription-key=subscriptionID&q=Fran%25u00e7ais&log=True", uri.AbsoluteUri);
+            Assert.AreEqual("https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/modelID?subscription-key=subscriptionID&q=Fran%C3%A7ais&log=True", uri.AbsoluteUri);
+        }
+
+        [TestMethod]
+        public void Uri_Building()
+        {
+            const string Model = "model";
+            const string Subscription = "subscription";
+            const string Domain = "domain";
+            const string Text = "text";
+
+            // TODO: xunit theory
+            var tests = new[]
+            {
+#pragma warning disable CS0612
+                new { m = new LuisModelAttribute(Model, Subscription, LuisApiVersion.V1, null) { }, u = new Uri("https://api.projectoxford.ai/luis/v1/application?subscription-key=subscription&q=text&id=model&log=True") },
+                new { m = new LuisModelAttribute(Model, Subscription, LuisApiVersion.V1, null) { Log = false, SpellCheck = false, Staging = false, TimezoneOffset = 1, Verbose = false }, u = new Uri("https://api.projectoxford.ai/luis/v1/application?subscription-key=subscription&q=text&id=model&log=False&spellCheck=False&staging=False&timezoneOffset=1&verbose=False") },
+                new { m = new LuisModelAttribute(Model, Subscription, LuisApiVersion.V1, Domain) { Log = true, SpellCheck = true, Staging = true, TimezoneOffset = 2, Verbose = true }, u = new Uri("https://api.projectoxford.ai/luis/v1/application?subscription-key=subscription&q=text&id=model&log=True&spellCheck=True&staging=True&timezoneOffset=2&verbose=True") },
+#pragma warning restore CS0612
+                new { m = new LuisModelAttribute(Model, Subscription, LuisApiVersion.V2, null) { }, u = new Uri("https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/model?subscription-key=subscription&q=text&log=True") },
+                new { m = new LuisModelAttribute(Model, Subscription, LuisApiVersion.V2, null) { Log = false, SpellCheck = false, Staging = false, TimezoneOffset = 1, Verbose = false }, u = new Uri("https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/model?subscription-key=subscription&q=text&log=False&spellCheck=False&staging=False&timezoneOffset=1&verbose=False") },
+                new { m = new LuisModelAttribute(Model, Subscription, LuisApiVersion.V2, Domain) { Log = true, SpellCheck = true, Staging = true, TimezoneOffset = 2, Verbose = true }, u = new Uri("https://domain/luis/v2.0/apps/model?subscription-key=subscription&q=text&log=True&spellCheck=True&staging=True&timezoneOffset=2&verbose=True") },
+            };
+
+            foreach (var test in tests)
+            {
+                ILuisService service = new LuisService(test.m);
+                var actual = service.BuildUri(Text);
+                Assert.AreEqual(test.u, actual);
+            }
         }
     }
 }

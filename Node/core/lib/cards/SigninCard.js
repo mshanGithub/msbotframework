@@ -1,5 +1,6 @@
 "use strict";
-var Message_1 = require('../Message');
+Object.defineProperty(exports, "__esModule", { value: true });
+var Message_1 = require("../Message");
 var SigninCard = (function () {
     function SigninCard(session) {
         this.session = session;

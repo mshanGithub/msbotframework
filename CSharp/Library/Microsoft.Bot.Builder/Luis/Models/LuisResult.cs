@@ -9,11 +9,9 @@
 namespace Microsoft.Bot.Builder.Luis.Models
 {
     using System;
-    using System.Linq;
     using System.Collections.Generic;
-    using Newtonsoft.Json;
     using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using Newtonsoft.Json;
 
     public partial class LuisResult
     {
@@ -25,7 +23,7 @@ namespace Microsoft.Bot.Builder.Luis.Models
         /// <summary>
         /// Initializes a new instance of the LuisResult class.
         /// </summary>
-        public LuisResult(string query, IList<EntityRecommendation> entities, IntentRecommendation topScoringIntent = default(IntentRecommendation), IList<IntentRecommendation> intents = default(IList<IntentRecommendation>), IList<CompositeEntity> compositeEntities = default(IList<CompositeEntity>), DialogResponse dialog = default(DialogResponse))
+        public LuisResult(string query, IList<EntityRecommendation> entities, IntentRecommendation topScoringIntent = default(IntentRecommendation), IList<IntentRecommendation> intents = default(IList<IntentRecommendation>), IList<CompositeEntity> compositeEntities = default(IList<CompositeEntity>), DialogResponse dialog = default(DialogResponse), string alteredQuery = default(string))
         {
             Query = query;
             TopScoringIntent = topScoringIntent;
@@ -33,6 +31,7 @@ namespace Microsoft.Bot.Builder.Luis.Models
             Entities = entities;
             CompositeEntities = compositeEntities;
             Dialog = dialog;
+            AlteredQuery = alteredQuery;
         }
 
         /// <summary>
@@ -50,23 +49,32 @@ namespace Microsoft.Bot.Builder.Luis.Models
         /// The intents found in the query text.
         /// </summary>
         [JsonProperty(PropertyName = "intents")]
-        public IList<IntentRecommendation> Intents { get; set; }
+        public IList<IntentRecommendation> Intents { get; set; } = Array.Empty<IntentRecommendation>();
 
         /// <summary>
         /// The entities found in the query text.
         /// </summary>
         [JsonProperty(PropertyName = "entities")]
-        public IList<EntityRecommendation> Entities { get; set; }
+        public IList<EntityRecommendation> Entities { get; set; } = Array.Empty<EntityRecommendation>();
 
         /// <summary>
+        /// The composite entities found in the utterance.
         /// </summary>
         [JsonProperty(PropertyName = "compositeEntities")]
-        public IList<CompositeEntity> CompositeEntities { get; set; }
+        public IList<CompositeEntity> CompositeEntities { get; set; } = Array.Empty<CompositeEntity>();
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "dialog")]
         public DialogResponse Dialog { get; set; }
+
+        /// <summary>
+        /// The altered query used by LUIS to extract intent and entities. For
+        /// example, when Bing spell check is enabled for a model, this field
+        /// will contain the spell checked utterance.
+        /// </summary>
+        [JsonProperty(PropertyName = "alteredQuery")]
+        public string AlteredQuery { get; set; }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.

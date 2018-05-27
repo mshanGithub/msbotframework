@@ -1,17 +1,24 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var Dialog_1 = require('../dialogs/Dialog');
-var IntentDialog_1 = require('../dialogs/IntentDialog');
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Dialog_1 = require("../dialogs/Dialog");
+var IntentDialog_1 = require("../dialogs/IntentDialog");
 var CommandDialog = (function (_super) {
     __extends(CommandDialog, _super);
     function CommandDialog(serviceUri) {
-        _super.call(this);
+        var _this = _super.call(this) || this;
         console.warn('CommandDialog class is deprecated. Use IntentDialog class instead.');
-        this.dialog = new IntentDialog_1.IntentDialog();
+        _this.dialog = new IntentDialog_1.IntentDialog();
+        return _this;
     }
     CommandDialog.prototype.begin = function (session, args) {
         this.dialog.begin(session, args);

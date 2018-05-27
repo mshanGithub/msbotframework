@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder SDK GitHub:
 // https://github.com/Microsoft/BotBuilder
 // 
 // Copyright (c) Microsoft Corporation
@@ -69,9 +69,9 @@ namespace Microsoft.Bot.Builder.Scorables.Internals
             var scorables =
                 from spec in specs
                 group spec by new { spec.model, spec.intent } into modelIntents
-                let method = modelIntents.Select(m => scorableByMethod[m.method]).ToArray().Fold(Binding.ResolutionComparer.Instance)
+                let method = modelIntents.Select(m => scorableByMethod[m.method]).ToArray().Fold(BindingComparer.Instance)
                 let service = this.make(modelIntents.Key.model)
-                select new LuisIntentScorable<Binding, Binding>(service, modelIntents.Key.model, modelIntents.Key.intent, method);
+                select new LuisIntentScorable<IBinding, IBinding>(service, modelIntents.Key.model, modelIntents.Key.intent, method);
 
             var all = scorables.ToArray().Fold(IntentComparer.Instance);
 

@@ -1,16 +1,23 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var Message_1 = require('../Message');
-var Keyboard_1 = require('./Keyboard');
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Message_1 = require("../Message");
+var Keyboard_1 = require("./Keyboard");
 var ThumbnailCard = (function (_super) {
     __extends(ThumbnailCard, _super);
     function ThumbnailCard(session) {
-        _super.call(this, session);
-        this.data.contentType = 'application/vnd.microsoft.card.thumbnail';
+        var _this = _super.call(this, session) || this;
+        _this.data.contentType = 'application/vnd.microsoft.card.thumbnail';
+        return _this;
     }
     ThumbnailCard.prototype.title = function (text) {
         var args = [];

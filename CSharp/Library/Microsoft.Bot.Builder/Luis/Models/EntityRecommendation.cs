@@ -14,6 +14,7 @@ namespace Microsoft.Bot.Builder.Luis.Models
     using Newtonsoft.Json;
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Luis entity recommendation. Look at https://www.luis.ai/Help for more
@@ -29,7 +30,7 @@ namespace Microsoft.Bot.Builder.Luis.Models
         /// <summary>
         /// Initializes a new instance of the EntityRecommendation class.
         /// </summary>
-        public EntityRecommendation(string type, string role = default(string), string entity = default(string), int? startIndex = default(int?), int? endIndex = default(int?), double? score = default(double?), IDictionary<string, string> resolution = default(IDictionary<string, string>))
+        public EntityRecommendation(string type, string role = default(string), string entity = default(string), int? startIndex = default(int?), int? endIndex = default(int?), double? score = default(double?), IDictionary<string, object> resolution = default(IDictionary<string, object>))
         {
             Role = role;
             Entity = entity;
@@ -77,12 +78,13 @@ namespace Microsoft.Bot.Builder.Luis.Models
         public double? Score { get; set; }
 
         /// <summary>
-        /// A machine readable dictionary with more information about the
-        /// entity Look at builtin.datetime for an example in the
-        /// https://www.luis.ai/Help#PreBuiltEntities.
+        /// A machine interpretable resolution of the entity.  For example the
+        /// string "one thousand" would have the resolution "1000".  The
+        /// exact form of the resolution is defined by the entity type and is
+        /// documented here: https://www.luis.ai/Help#PreBuiltEntities.
         /// </summary>
-        [JsonProperty(PropertyName = "resolution")]
-        public IDictionary<string, string> Resolution { get; set; }
+        [JsonProperty(PropertyName = "resolution", ItemConverterType = typeof(ResolutionConverter))]
+        public IDictionary<string, object> Resolution { get; set; }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.
@@ -92,6 +94,109 @@ namespace Microsoft.Bot.Builder.Luis.Models
             if (Type == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "Type");
+            }
+        }
+
+        internal class ResolutionConverter : JsonConverter
+        {
+            private const string UnexpectedEndError = "Unexpected end when reading IDictionary<string, object>";
+
+            public override bool CanConvert(Type objectType)
+            {
+                return (objectType == typeof(IDictionary<string, object>));
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                return ReadValue(reader);
+            }
+
+            private static object ReadValue(JsonReader reader)
+            {
+                while (reader.TokenType == JsonToken.Comment)
+                {
+                    if (!reader.Read())
+                    {
+                        throw new JsonSerializationException("Unexpected token when converting IDictionary<string, object>");
+                    }
+                }
+
+                switch (reader.TokenType)
+                {
+                    case JsonToken.StartObject:
+                        return ReadObject(reader);
+                    case JsonToken.StartArray:
+                        return ReadArray(reader);
+                    case JsonToken.Integer:
+                    case JsonToken.Float:
+                    case JsonToken.String:
+                    case JsonToken.Boolean:
+                    case JsonToken.Undefined:
+                    case JsonToken.Null:
+                    case JsonToken.Date:
+                    case JsonToken.Bytes:
+                        return reader.Value;
+                    default:
+                        throw new JsonSerializationException
+                            (string.Format("Unexpected token when converting IDictionary<string, object>: {0}", reader.TokenType));
+                }
+            }
+
+            private static object ReadArray(JsonReader reader)
+            {
+                IList<object> list = new List<object>();
+
+                while (reader.Read())
+                {
+                    switch (reader.TokenType)
+                    {
+                        case JsonToken.Comment:
+                            break;
+                        default:
+                            var value = ReadValue(reader);
+
+                            list.Add(value);
+                            break;
+                        case JsonToken.EndArray:
+                            return list;
+                    }
+                }
+
+                throw new JsonSerializationException(UnexpectedEndError);
+            }
+
+            private static object ReadObject(JsonReader reader)
+            {
+                var dictionary = new Dictionary<string, object>();
+
+                while (reader.Read())
+                {
+                    switch (reader.TokenType)
+                    {
+                        case JsonToken.PropertyName:
+                            var propertyName = reader.Value.ToString();
+
+                            if (!reader.Read())
+                            {
+                                throw new JsonSerializationException(UnexpectedEndError);
+                            }
+
+                            var value = ReadValue(reader);
+
+                            dictionary[propertyName] = value;
+                            break;
+                        case JsonToken.Comment:
+                            break;
+                        case JsonToken.EndObject:
+                            return dictionary;
+                    }
+                }
+
+                throw new JsonSerializationException(UnexpectedEndError);
+            }
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                serializer.Serialize(writer, value);
             }
         }
     }

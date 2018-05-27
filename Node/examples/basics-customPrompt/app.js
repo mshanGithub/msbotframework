@@ -18,6 +18,12 @@ pizza topping and supports answering questions like "which ones are gluten free?
 var builder = require('../../core/');
 var meaningOfLife = require('./meaningOfLife');
 
+// Bot Storage: Here we register the state storage for your bot. 
+// Default store: volatile in-memory store - Only for prototyping!
+// We provide adapters for Azure Table, CosmosDb, SQL Azure, or you can implement your own!
+// For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
+var inMemoryStorage = new builder.MemoryBotStorage();
+
 // Setup bot and define root waterfall
 var connector = new builder.ConsoleConnector().listen();
 var bot = new builder.UniversalBot(connector, [
@@ -33,7 +39,7 @@ var bot = new builder.UniversalBot(connector, [
             session.send("Sorry you couldn't figure it out. Everyone knows that the meaning of life is 42.");
         }
     }
-]);
+]).set('storage', inMemoryStorage); // Register in memory storage
 
 // Create prompts
 meaningOfLife.create(bot);

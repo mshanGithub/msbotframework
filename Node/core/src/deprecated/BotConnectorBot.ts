@@ -34,7 +34,7 @@
 import { UniversalBot, IUniversalBotSettings } from '../bots/UniversalBot';
 import { ChatConnector, IChatConnectorSettings } from '../bots/ChatConnector';
 import { Dialog } from '../dialogs/Dialog';
-import { IDialogWaterfallStep } from '../dialogs/SimpleDialog';
+import { IDialogWaterfallStep } from '../dialogs/WaterfallDialog';
 
 export interface IBotConnectorOptions {
     botId: string;
@@ -108,7 +108,7 @@ export class BotConnectorBot  {
         this.bot = new UniversalBot(this.connector, oBot);
     }
 
-    public on(event: string, listener: Function): this {
+    public on(event: string, listener: (...args: any[]) => void): this {
         this.bot.on(event, listener);
         return this;
     }

@@ -1,3 +1,4 @@
+erase /y nuget\*.*
 pushd Microsoft.Bot.Builder
 call createpackage.cmd
 popd
@@ -10,6 +11,12 @@ popd
 pushd Microsoft.Bot.Builder.History
 call createpackage.cmd
 popd
-pushd Microsoft.Bot.Builder.Azure
+pushd Microsoft.Bot.Connector.NetFramework
+call createpackage.cmd
+popd
+pushd Microsoft.Bot.Connector.AspNetCore
+call createpackage.cmd
+popd
+pushd Microsoft.Bot.Connector.AspNetCore2
 call createpackage.cmd
 popd

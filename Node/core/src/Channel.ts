@@ -32,12 +32,12 @@
 //
 
 import { Session } from './Session';
-import { IRecognizeContext } from './dialogs/IntentRecognizerSet';
+import { IRecognizeContext } from './dialogs/IntentRecognizer';
 
 export var channels = {
     facebook: 'facebook',
     skype: 'skype',
-    skypeteams: 'skypeteams',
+    msteams: 'msteams',
     telegram: 'telegram',
     kik: 'kik',
     email: 'email',
@@ -47,7 +47,8 @@ export var channels = {
     emulator: 'emulator',
     directline: 'directline',
     webchat: 'webchat',
-    console: 'console'
+    console: 'console',
+    cortana: 'cortana'
 };
 
 export function supportsKeyboards(session: Session, buttonCnt = 100) {
@@ -56,6 +57,8 @@ export function supportsKeyboards(session: Session, buttonCnt = 100) {
             return (buttonCnt <= 10);
         case channels.kik:
             return (buttonCnt <= 20);
+        case channels.msteams:
+            return (buttonCnt <= 5);
         case channels.slack:
         case channels.telegram:
             return (buttonCnt <= 100);
@@ -68,16 +71,30 @@ export function supportsCardActions(session: Session, buttonCnt = 100) {
     switch (getChannelId(session)) {
         case channels.facebook:
         case channels.skype:
-        case channels.skypeteams:
+        case channels.msteams:
             return (buttonCnt <= 3);
         case channels.slack:
         case channels.emulator:
         case channels.directline:
         case channels.webchat:
+        case channels.cortana:
             return (buttonCnt <= 100);
         default:
             return false;
     }
+}
+
+export function hasMessageFeed(session: Session) {
+    switch (getChannelId(session)) {
+        case channels.cortana:
+            return false;
+        default:
+            return true;
+    }
+}
+
+export function maxActionTitleLength(session: Session) {
+    return 20;
 }
 
 export function getChannelId(addressable: Session|IRecognizeContext|IMessage|IAddress): string {
