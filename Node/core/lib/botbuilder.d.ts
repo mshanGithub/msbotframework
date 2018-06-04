@@ -2256,100 +2256,100 @@ export class Message implements IIsMessage {
     constructor(session?: Session);
 
     /** Hint for clients letting them know if the bot is expecting further input or not. The built-in prompts will automatically populate this value for outgoing messages. */
-    inputHint(hint: string): Message;
+    inputHint(hint: string): this;
 
     /** Sets the speak field of the message as [Speech Synthesis Markup Language (SSML)](https://msdn.microsoft.com/en-us/library/hh378377(v=office.14).aspx). This will be spoken to the user on supported devices. */
-    speak(ssml: TextType, ...args: any[]): Message;
+    speak(ssml: TextType, ...args: any[]): this;
 
     /** Conditionally set the speak field of the message given a specified count. */
-    nspeak(ssml: TextType, ssml_plural: TextType, count: number): Message;
+    nspeak(ssml: TextType, ssml_plural: TextType, count: number): this;
 
     /** Language of the message. */
-    textLocale(locale: string): Message;
+    textLocale(locale: string): this;
 
     /** Format of text fields. */
-    textFormat(style: string): Message;
+    textFormat(style: string): this;
 
     /** Sets the message text. */
-    text(text: TextType, ...args: any[]): Message;
+    text(text: TextType, ...args: any[]): this;
 
     /** Conditionally set the message text given a specified count. */
-    ntext(msg: TextType, msg_plural: TextType, count: number): Message;
+    ntext(msg: TextType, msg_plural: TextType, count: number): this;
 
     /** Composes a complex and randomized reply to the user.  */
-    compose(prompts: string[][], ...args: any[]): Message;
+    compose(prompts: string[][], ...args: any[]): this;
 
     /** Text to be displayed by as fall-back and as short description of the message content in e.g. list of recent conversations. */
-    summary(text: TextType, ...args: any[]): Message;
+    summary(text: TextType, ...args: any[]): this;
 
     /** Hint for how clients should layout multiple attachments. The default value is 'list'. */
-    attachmentLayout(style: string): Message;
+    attachmentLayout(style: string): this;
 
     /** Cards or images to send to the user. */
-    attachments(list: AttachmentType[]): Message;
+    attachments(list: AttachmentType[]): this;
 
     /**
      * Adds an attachment to the message. See [IAttachment](/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.iattachment.html) for examples.
      * @param attachment The attachment to add.
      */
-    addAttachment(attachment: AttachmentType): Message;
+    addAttachment(attachment: AttachmentType): this;
 
     /** Optional suggested actions to send to the user. Suggested actions will be displayed only on the channels that support suggested actions. */
-    suggestedActions(suggestedActions: ISuggestedActions|IIsSuggestedActions): Message;
+    suggestedActions(suggestedActions: ISuggestedActions|IIsSuggestedActions): this;
 
     /** Structured objects passed to the bot or user. */
-    entities(list: Object[]): Message;
+    entities(list: Object[]): this;
 
     /** Adds an entity to the message. */
-    addEntity(obj: Object): Message;
+    addEntity(obj: Object): this;
 
     /** Address routing information for the message. Save this field to external storage somewhere to later compose a proactive message to the user. */
-    address(adr: IAddress): Message;
+    address(adr: IAddress): this;
 
     /** Set by connectors service. Use [localTimestamp()](#localtimestamp) instead. */
-    timestamp(time?: string): Message;
+    timestamp(time?: string): this;
 
     /**
      * Local time when message was sent (set by client or bot, Ex: 2016-09-23T13:07:49.4714686-07:00.)
      * @param time (Optional) time expressed as an ISO string. Defaults to `new Date().toISOString()`.
      */
-    localTimestamp(time?: string): Message;
+    localTimestamp(time?: string): this;
 
     /** Message in original/native format of the channel for incoming messages. */
-    originalEvent(event: any): Message;
+    originalEvent(event: any): this;
 
     /** For outgoing messages can be used to pass source specific event data like custom attachments. */
-    sourceEvent(map: ISourceEventMap): Message;
+    sourceEvent(map: ISourceEventMap): this;
 
     /** Open-ended value. */
-    value(param: any): Message;
+    value(param: any): this;
 
     /** Name of the operation to invoke or the name of the event. */
-    name(name: string): Message;
+    name(name: string): this;
 
     /** Reference to another conversation or message. */
-    relatesTo(adr: IAddress): Message;
+    relatesTo(adr: IAddress): this;
 
     /** Code indicating why the conversation has ended. */
-    code(value: string): Message;
+    code(value: string): this;
 
     /** Returns the JSON for the message. */
     toMessage(): IMessage;
 
     /** __DEPRECATED__ use [local()](#local) instead. */
-    setLanguage(language: string): Message;
+    setLanguage(language: string): this;
 
     /** __DEPRECATED__ use [text()](#text) instead. */
-    setText(session: Session, prompt: TextType, ...args: any[]): Message;
+    setText(session: Session, prompt: TextType, ...args: any[]): this;
 
     /** __DEPRECATED__ use [ntext()](#ntext) instead. */
-    setNText(session: Session, msg: string, msg_plural: string, count: number): Message;
+    setNText(session: Session, msg: string, msg_plural: string, count: number): this;
 
     /** __DEPRECATED__ use [compose()](#compose) instead. */
-    composePrompt(session: Session, prompts: string[][], ...args: any[]): Message;
+    composePrompt(session: Session, prompts: string[][], ...args: any[]): this;
 
     /** __DEPRECATED__ use [sourceEvent()](#sourceevent) instead. */
-    setChannelData(data: any): Message;
+    setChannelData(data: any): this;
 
     /**
      * Selects a prompt at random.
