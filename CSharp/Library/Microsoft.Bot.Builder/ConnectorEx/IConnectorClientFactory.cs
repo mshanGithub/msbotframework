@@ -32,6 +32,9 @@
 //
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Connector;
 
@@ -53,6 +56,12 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         /// </summary>
         /// <returns>The <see cref="IStateClient"/> implementation.</returns>
         IStateClient MakeStateClient();
+
+        /// <summary>
+        /// Make the <see cref="IOAuthClient"/> implementation.
+        /// </summary>
+        /// <returns>The <see cref="IOAuthClient"/> implementation.</returns>
+        IOAuthClient MakeOAuthClient();
     }
 
     public sealed class ConnectorClientFactory : IConnectorClientFactory
@@ -60,12 +69,100 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         private readonly Uri serviceUri;
         private readonly IAddress address;
         private readonly MicrosoftAppCredentials credentials;
+        private readonly ConnectorClient connectorClient;
+        private readonly StateClient stateClient;
+        private readonly OAuthClient oauthClient;
+
+        // NOTE: These should be moved to autofac registration
+        private static readonly ConcurrentDictionary<string, ConnectorClient> connectorClients = new ConcurrentDictionary<string, ConnectorClient>();
+        private static readonly ConcurrentDictionary<string, StateClient> stateClients = new ConcurrentDictionary<string, StateClient>();
+        private static readonly ConcurrentDictionary<string, OAuthClient> oauthClients = new ConcurrentDictionary<string, OAuthClient>();
+
         public ConnectorClientFactory(IAddress address, MicrosoftAppCredentials credentials)
         {
             SetField.NotNull(out this.address, nameof(address), address);
             SetField.NotNull(out this.credentials, nameof(credentials), credentials);
 
             this.serviceUri = new Uri(address.ServiceUrl);
+            string key = $"{serviceUri}{credentials.MicrosoftAppId}";
+            if (!connectorClients.TryGetValue(key, out connectorClient))
+            {
+                connectorClient = new ConnectorClient(this.serviceUri, this.credentials);
+                connectorClients[key] = connectorClient;
+            }
+
+            if (!stateClients.TryGetValue(key, out stateClient))
+            {
+                if (IsEmulator(this.address))
+                {
+                    // for emulator we should use serviceUri of the emulator for storage
+                    stateClient = new StateClient(this.serviceUri, this.credentials);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(settingsStateApiUrl.Value))
+                    {
+                        stateClient = new StateClient(new Uri(settingsStateApiUrl.Value), this.credentials);
+                    }
+                    else
+                    {
+                        stateClient = new StateClient(this.credentials);
+                    }
+                }
+                stateClients[key] = stateClient;
+            }
+
+            if (!oauthClients.TryGetValue(key, out oauthClient))
+            {
+                bool isEmulatingOAuthCards = false;                             // whether to emulate 
+                MicrosoftAppCredentials msAppCredentials = this.credentials;    // credentials to use for oauth APIs
+                Uri oauthEndpoint = null;                                       // denotes the default endpoint
+
+                if (String.IsNullOrEmpty(credentials?.MicrosoftAppId) || String.IsNullOrEmpty(credentials?.MicrosoftAppPassword))
+                {
+                    // if there is no AppId or Password, do not use credentials with the OAuthClient
+                    msAppCredentials = null;
+                    if (IsEmulator(this.address))
+                    {
+                        // if using the emulator, this forces the mode to be "emulating OAuthCards"
+                        isEmulatingOAuthCards = true;
+                        oauthEndpoint = this.serviceUri;
+                    }
+                }
+                else if (IsEmulator(this.address) && emulateOAuthCards.Value)
+                {
+                    // if the config is asking for the mode of "emulating OAuthCards"
+                    isEmulatingOAuthCards = true;
+                    oauthEndpoint = this.serviceUri;
+                }
+                else if(!string.IsNullOrEmpty(settingsOAuthApiUrl.Value))
+                {
+                    // if there is a custom OAuth API URI
+                    oauthEndpoint = new Uri(settingsOAuthApiUrl.Value);
+                }
+
+                // create the client
+                if (oauthEndpoint != null)
+                {
+                    oauthClient = new OAuthClient(oauthEndpoint, msAppCredentials);
+                }
+                else
+                {
+                    oauthClient = new OAuthClient(msAppCredentials);
+                }
+                
+                // if using the emulator, then tell it whether to emulate OAuthCards or not
+                if(IsEmulator(this.address))
+                {
+                    var emulatorOAuthClient = new OAuthClient(this.serviceUri, msAppCredentials);
+                    Task.Run(async () => await emulatorOAuthClient.OAuthApi.SendEmulateOAuthCardsAsync(isEmulatingOAuthCards).ConfigureAwait(false)).Wait();
+                }
+
+                if (oauthClient != null)
+                {
+                    oauthClients[key] = oauthClient;
+                }
+            }
         }
 
         public static bool IsEmulator(IAddress address)
@@ -75,27 +172,17 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
 
         IConnectorClient IConnectorClientFactory.MakeConnectorClient()
         {
-            return new ConnectorClient(this.serviceUri, this.credentials);
+            return connectorClient;
         }
 
         IStateClient IConnectorClientFactory.MakeStateClient()
         {
-            if (IsEmulator(this.address))
-            {
-                // for emulator we should use serviceUri of the emulator for storage
-                return new StateClient(this.serviceUri, this.credentials);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(settingsStateApiUrl.Value))
-                {
-                    return new StateClient(new Uri(settingsStateApiUrl.Value), this.credentials);
-                }
-                else
-                {
-                    return new StateClient(this.credentials);
-                }
-            }
+            return stateClient;
+        }
+
+        IOAuthClient IConnectorClientFactory.MakeOAuthClient()
+        {
+            return oauthClient;
         }
 
         private readonly static Lazy<string> settingsStateApiUrl = new Lazy<string>(() => GetSettingsStateApiUrl());
@@ -115,5 +202,37 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
             return url;
         }
 
+        private readonly static Lazy<string> settingsOAuthApiUrl = new Lazy<string>(() => GetOAuthApiFromSettingsUrl());
+
+        /// <summary>
+        /// Get the OAuth API endpoint from settings. 
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The OAuth API endpoint from settings.</returns>
+        private static string GetOAuthApiFromSettingsUrl(string key = "OAuthApiEndpoint")
+        {
+            var url = SettingsUtils.GetAppSettings(key);
+            if (!string.IsNullOrEmpty(url))
+            {
+                MicrosoftAppCredentials.TrustServiceUrl(url, DateTime.MaxValue);
+            }
+            return url;
+        }
+
+        private readonly static Lazy<bool> emulateOAuthCards = new Lazy<bool>(() => GetEmulateOAuthCardsSetting());
+
+        private static bool GetEmulateOAuthCardsSetting(string key = "EmulateOAuthCards")
+        {
+            var value = SettingsUtils.GetAppSettings(key);
+
+            bool result = false;
+            if (!string.IsNullOrEmpty(value) && !bool.TryParse(value, out result))
+            {
+                // default back to false
+                result = false;
+            }
+
+            return result;
+        }
     }
 }
