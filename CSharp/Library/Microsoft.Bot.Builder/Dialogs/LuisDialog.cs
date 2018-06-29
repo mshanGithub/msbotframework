@@ -119,7 +119,7 @@ namespace Microsoft.Bot.Builder.Dialogs
     /// </summary>
     public class LuisServiceResult
     {
-        public LuisServiceResult(LuisResult result, IntentRecommendation intent, ILuisService service, ILuisOptions luisRequest)
+        public LuisServiceResult(LuisResult result, IntentRecommendation intent, ILuisService service, ILuisOptions luisRequest = null)
         {
             this.Result = result;
             this.BestIntent = intent;
@@ -145,6 +145,7 @@ namespace Microsoft.Bot.Builder.Dialogs
     {
         public const string LuisTraceType = "https://www.luis.ai/schemas/trace";
         public const string LuisTraceLabel = "Luis Trace";
+        public const string LuisTraceName = "LuisDialog";
         public const string Obfuscated = "****";
 
         protected readonly IReadOnlyList<ILuisService> services;
@@ -222,7 +223,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                 var tasks = this.services.Select(async s =>
                 {
                     var request = ModifyLuisRequest(s.ModifyRequest(new LuisRequest(messageText)));
-                    var result = await s.QueryAsync(request, context.CancellationToken).ConfigureAwait(false);
+                    var result = await s.QueryAsync(request, context.CancellationToken);
 
                     return Tuple.Create(request, result);
                 }).ToArray();
@@ -242,7 +243,7 @@ namespace Microsoft.Bot.Builder.Dialogs
                     throw new InvalidOperationException("No winning intent selected from Luis results.");
                 }
 
-                await EmitTraceInfo(context, winner.Result, winner.LuisRequest, winner.LuisService.LuisModel).ConfigureAwait(false);
+                await EmitTraceInfo(context, winner.Result, winner.LuisRequest, winner.LuisService.LuisModel);
 
                 if (winner.Result.Dialog?.Status == DialogResponse.DialogStatus.Question)
                 {
@@ -327,12 +328,16 @@ namespace Microsoft.Bot.Builder.Dialogs
                 LuisOptions = luisOptions,
                 LuisModel = RemoveSensitiveData(luisModel)
             };
-            var activity = Activity.CreateTraceActivityReply(context.Activity as Activity, "LuisDialog", LuisTraceType, luisTraceInfo, LuisTraceLabel) as IMessageActivity;
-            await context.PostAsync(activity).ConfigureAwait(false);
+            var activity = Activity.CreateTraceActivityReply(context.Activity as Activity, LuisTraceName, LuisTraceType, luisTraceInfo, LuisTraceLabel) as IMessageActivity;
+            await context.PostAsync(activity);
         }
 
         public static ILuisModel RemoveSensitiveData(ILuisModel luisModel)
         {
+            if (luisModel == null)
+            {
+                return null;
+            }
             return new LuisModelAttribute(luisModel.ModelID, Obfuscated,luisModel.ApiVersion, luisModel.UriBase.Host, luisModel.Threshold);
         }
 
