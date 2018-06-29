@@ -99,7 +99,7 @@ namespace Microsoft.Bot.Builder.FormFlow
                     _form.Localize(rs.GetEnumerator(), out missing, out extra);
                     if (missing.Any())
                     {
-                        throw new MissingManifestResourceException($"Missing resources {missing}");
+                        throw new MissingManifestResourceException($"Missing {missing.Count()} resources {string.Join(", ", missing)}");
                     }
                 }
             }
@@ -461,7 +461,7 @@ namespace Microsoft.Bot.Builder.FormFlow
         private void FieldPaths(Type type, string path, List<string> paths)
         {
             var newPath = (path == "" ? path : path + ".");
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => !f.IsDefined(typeof(IgnoreFieldAttribute))))
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => !f.IsDefined(typeof(IgnoreFieldAttribute))).OrderBy(f => f.GetCustomAttributes(typeof(OrderAttribute), true).Cast<OrderAttribute>().Select(a => a.Order).FirstOrDefault()))
             {
                 TypePaths(field.FieldType, newPath + field.Name, paths);
             }
