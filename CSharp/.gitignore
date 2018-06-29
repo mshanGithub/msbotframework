@@ -237,5 +237,3 @@ Documentation/docs/
 # Azure publish profiles
 *.pubxml
 PublishProfiles/
-
-bones/
