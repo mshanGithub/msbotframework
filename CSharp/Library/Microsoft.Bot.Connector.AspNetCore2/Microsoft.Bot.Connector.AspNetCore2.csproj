@@ -4,7 +4,7 @@
     <Version Condition=" '$(NetCore2Version)' != '' ">$(NetCore2Version)</Version>
     <PackageVersion Condition=" '$(NetCore2Version)' != '' ">$(NetCore2Version)</PackageVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Microsoft.Bot.Connector.AspNetCore</AssemblyName>
+    <AssemblyName>Microsoft.Bot.Connector.AspNetCore2</AssemblyName>
     <RootNamespace>Microsoft.Bot.Connector</RootNamespace>
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
