@@ -14,7 +14,7 @@
     <Description>This library implements C# classes for using the Bot Framework Connector REST API, using the ASP.NET Core 2.x</Description>
     <Copyright>Microsoft</Copyright>
     <RepositoryUrl>http://github.com/microsoft/BotBuilder</RepositoryUrl>
-    <AssemblyName>Microsoft.Bot.Connector.AspNetCore</AssemblyName>
+    <AssemblyName>Microsoft.Bot.Connector.AspNetCore2</AssemblyName>
     <RootNamespace>Microsoft.Bot.Connector</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
