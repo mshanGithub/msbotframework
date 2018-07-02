@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("Microsoft.Bot.Connector.AspNetCore2")]
+[assembly: AssemblyTitle("Microsoft.Bot.Connector.AspNetCore")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft Corporation")]

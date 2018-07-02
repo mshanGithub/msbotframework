@@ -4,7 +4,7 @@
     <Version Condition=" '$(NetCore2Version)' != '' ">$(NetCore2Version)</Version>
     <PackageVersion Condition=" '$(NetCore2Version)' != '' ">$(NetCore2Version)</PackageVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Microsoft.Bot.Connector.AspNetCore2</AssemblyName>
+    <AssemblyName>Microsoft.Bot.Connector.AspNetCore</AssemblyName>
     <RootNamespace>Microsoft.Bot.Connector</RootNamespace>
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
@@ -14,8 +14,6 @@
     <Description>This library implements C# classes for using the Bot Framework Connector REST API, using the ASP.NET Core 2.x</Description>
     <Copyright>Microsoft</Copyright>
     <RepositoryUrl>http://github.com/microsoft/BotBuilder</RepositoryUrl>
-    <AssemblyName>Microsoft.Bot.Connector.AspNetCore2</AssemblyName>
-    <RootNamespace>Microsoft.Bot.Connector</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
