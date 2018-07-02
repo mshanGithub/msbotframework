@@ -11,14 +11,17 @@ function UpdateAssemblyInfo()
     {
         $path = $file.FullName
         Write-Host ($path)
+        $isUpdated = $false
 
         $patternAV = '^((?!\/\/).)*\[assembly: AssemblyVersion\("(.*)"\)\]'
         $patternAFV = '^((?!\/\/).)*\[assembly: AssemblyFileVersion\("(.*)"\)\]'
         (Get-Content $path) | ForEach-Object{
             if($_ -match $patternAV){
                 # We have found the matching line
+                $isUpdated = $true
                 '[assembly: AssemblyVersion("{0}")]' -f $version
             } elseif($_ -match $patternAFV){
+                $isUpdated = $true
                 # We have found the matching line
                 '[assembly: AssemblyFileVersion("{0}")]' -f $version
             } else {
@@ -26,6 +29,9 @@ function UpdateAssemblyInfo()
                 $_
             }
         } | Set-Content $path
+        if (!$isUpdated) {
+            Write-Host '    Nothing found to update.'
+        }
     }        
 }
 
