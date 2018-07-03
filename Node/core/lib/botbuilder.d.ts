@@ -4218,6 +4218,13 @@ export class UniversalBot extends Library  {
     loadSession(address: IAddress, callback: (err: Error, session: Session) => void): void;
 
     /**
+     * Loads a session object for an arbitrary address but does not dispatch a conversation.
+     * @param address Address of the user/session to load. This should be saved during a previous conversation with the user.
+     * @param callback Function to invoke with the loaded session.
+     */
+     loadSessionWithoutDispatching(address: IAddress, done: (err: Error, session: Session) => void): void 
+
+    /**
      * Replaces the bots default route disambiguation logic with a custom implementation.
      * @param handler Function that will be invoked with the candidate routes to dispatch an incoming message to.
      */
