@@ -291,13 +291,17 @@ namespace Microsoft.Bot.Builder.FormFlowTest
                         .SetFieldDescription(DynamicPizza.Special)
                         .SetFieldTerms(DynamicPizza.SpecialTerms.SplitList())
                         .RemoveValues();
-                        if (state.NumberOfPizzas > 1)
+                        if (state.NumberOfPizzas >= 1)
                         {
                             specials
                                 .SetAllowsMultiple(true)
                                 .AddDescription("special1", DynamicPizza.Special1)
                                 .AddTerms("special1", DynamicPizza.Special1Terms.SplitList());
                         }
+						else
+						{
+							console.writeLine("Choose at least 1 pizza");
+						}
                         specials
                             .AddDescription("special2", DynamicPizza.Special2)
                             .AddTerms("special2", DynamicPizza.Special2Terms.SplitList());
