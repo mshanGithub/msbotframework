@@ -400,7 +400,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Json
                 TypePaths(field.FieldType, newPath + field.Name, paths);
             }
 
-            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(f => !f.IsDefined(typeof(IgnoreFieldAttribute))).OrderBy(f => f.GetCustomAttributes(typeof(OrderAttribute), true).Cast<OrderAttribute>().Select(a => a.Order).FirstOrDefault()))
             {
                 if (property.CanRead && property.CanWrite)
                 {
