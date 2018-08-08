@@ -17,15 +17,26 @@ namespace Microsoft.Bot.Sample.AlarmBot
         {
             var config = GlobalConfiguration.Configuration;
 
-            Conversation.UpdateContainer(
-                builder =>
-                {
+             Conversation.UpdateContainer(
+                 builder =>
+                 {
                     // Register the Bot Builder module
                     builder.RegisterModule(new DialogModule());
                     // Register the alarm dependencies
                     builder.RegisterModule(new AlarmModule());
 
                     builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
+
+                    //re-register Func<IDialog<object>> to resolve from the container
+                    builder.Register(c =>
+                    {
+                        var cc = c.Resolve<IComponentContext>();
+                        Func<IDialog<object>> make = () => cc.Resolve<IDialog<object>>();
+                        return make;
+                    })
+                    .AsSelf()
+                    .InstancePerMatchingLifetimeScope(DialogModule.LifetimeScopeTag);
+
 
                     // Bot Storage: Here we register the state storage for your bot. 
                     // Default store: volatile in-memory store - Only for prototyping!
@@ -45,7 +56,7 @@ namespace Microsoft.Bot.Sample.AlarmBot
                     // Register your Web API controllers.
                     builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
                     builder.RegisterWebApiFilterProvider(config);
-                });
+            });
 
             // Set the dependency resolver to be Autofac.
             config.DependencyResolver = new AutofacWebApiDependencyResolver(Conversation.Container);
