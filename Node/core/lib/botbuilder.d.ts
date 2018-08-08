@@ -4294,6 +4294,7 @@ export class ChatConnector implements IConnector, IBotStorage {
      * @param conversationId The conversationId
      * @param pageSize The number of results to get (default is 20)
      * @param continuationToken The continuation token for the next page of results to fetch.  This should be `undefined` for the first page requested.
+     * @param done Callback to recieve the next page of results.
      */
     getConversationPagedMembers(serviceUrl: string, conversationId: string, pageSize: number | undefined, continuationToken: string | undefined, done: (err: Error, result?: IPagedMembersResult) => void): void;
 

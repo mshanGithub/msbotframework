@@ -294,16 +294,16 @@ var ChatConnector = (function () {
         };
         this.authenticatedRequest(options, function (err, response, body) { return done(err, body); });
     };
-    ChatConnector.prototype.getConversationPagedMembers = function (serviceUrl, conversationId, pageSize, continuationToken) {
+    ChatConnector.prototype.getConversationPagedMembers = function (serviceUrl, conversationId, pageSize, continuationToken, done) {
         pageSize = pageSize || 20;
-        var path = '/v3/conversations/' + encodeURIComponent(conversationId) + `/pagedmembers`;
-        let connector = '?';
+        var path = '/v3/conversations/' + encodeURIComponent(conversationId) + "/pagedmembers";
+        var connector = '?';
         if (pageSize) {
-            path += `?pageSize=${pageSize}`;
+            path += "?pageSize=" + pageSize;
             connector = '&';
         }
         if (continuationToken) {
-            path += `${connector}continuationToken=` + encodeURIComponent(continuationToken);
+            path += connector + "continuationToken=" + encodeURIComponent(continuationToken);
         }
         var options = {
             method: 'GET',
@@ -311,7 +311,7 @@ var ChatConnector = (function () {
             json: true
         };
         this.authenticatedRequest(options, function (err, response, body) { return done(err, body); });
-    }
+    };
     ChatConnector.prototype.deleteConversationMember = function (serviceUrl, conversationId, memberId, done) {
         var path = '/v3/conversations/' + encodeURIComponent(conversationId) +
             '/members/' + encodeURIComponent(memberId);
