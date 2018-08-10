@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
+    <value>Liite '{0}' on virheellinen! Sisältötyypin kuuluisi olla '{1}'.</value>
+  </data>
+  <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
+    <value>Sinun pitäisi lähettää liite, jonka sisältötyypillä on '{0}'.</value>
+  </data>
+  <data name="CommandBack" xml:space="preserve">
+    <value>Takaisin</value>
+  </data>
+  <data name="CommandBackHelp" xml:space="preserve">
+    <value>Takaisin: mene takaisin edelliseen kysymykseen</value>
+  </data>
+  <data name="CommandHelp" xml:space="preserve">
+    <value>Apua</value>
+  </data>
+  <data name="CommandHelpHelp" xml:space="preserve">
+    <value>Apua: Näytä vastausvaihtoehdot</value>
+  </data>
+  <data name="CommandHelpTerms" xml:space="preserve">
+    <value>apua;valinnat;\?</value>
+  </data>
+  <data name="CommandQuit" xml:space="preserve">
+    <value>Lopeta</value>
+  </data>
+  <data name="CommandQuitHelp" xml:space="preserve">
+    <value>Lopeta: Lopeta täyttämättä lomaketta</value>
+  </data>
+  <data name="CommandQuitTerms" xml:space="preserve">
+    <value>lopeta;stop;keskeytä;seis</value>
+  </data>
+  <data name="CommandReset" xml:space="preserve">
+    <value>Aloita uudelleen</value>
+  </data>
+  <data name="CommandResetHelp" xml:space="preserve">
+    <value>Aloita uudelleen: Aloita lomakkeen täyttäminen uudestaan.  (Oletusarvot edellisistä vastauksista)</value>
+  </data>
+  <data name="CommandResetTerms" xml:space="preserve">
+    <value>aloita uudestaan;uudestaan;tyhjennä;uudelleen</value>
+  </data>
+  <data name="CommandStatus" xml:space="preserve">
+    <value>Tilanne</value>
+  </data>
+  <data name="CommandStatusHelp" xml:space="preserve">
+    <value>Tilanne: Näytä edistymisesi tähän asti.</value>
+  </data>
+  <data name="CommandStatusTerms" xml:space="preserve">
+    <value>tilanne;asema;tilanne tähän asti</value>
+  </data>
+  <data name="ConfirmChoiceFormat" xml:space="preserve">
+    <value>{1}</value>
+    <comment>0-number, 1-description</comment>
+  </data>
+  <data name="DefaultChoiceFormat" xml:space="preserve">
+    <value>{0}. {1}</value>
+    <comment>0-number, 1-description</comment>
+  </data>
+  <data name="DefaultChoiceLastSeparator" xml:space="preserve">
+    <value>, tai </value>
+  </data>
+  <data name="DefaultChoiceSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="DefaultLastSeparator" xml:space="preserve">
+    <value>, ja </value>
+  </data>
+  <data name="DefaultSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="LanguageArticles" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="LanguageStopWords" xml:space="preserve">
+    <value>aiemmin;aika;aikaa;aikaan;aikaisemmin;aikaisin;aikajen;aikana;aikoina;aikoo;aikovat;aina;ainakaan;ainakin;ainoa;ainoat;aiomme;aion;aiotte;aist;aivan;ajan;alas;alemmas;alkuisin;alkuun;alla;alle;aloitamme;aloitan;aloitat;aloitatte;aloitattivat;aloitettava;aloitettevaksi;aloitettu;aloitimme;aloitin;aloitit;aloititte;aloittaa;aloittamatta;aloitti;aloittivat;alta;aluksi;alussa;alusta;annettavaksi;annetteva;annettu;ansiosta;antaa;antamatta;antoi;aoua;apu;asia;asiaa;asian;asiasta;asiat;asioiden;asioihin;asioita;asti;avuksi;avulla;avun;avutta;edelle;edelleen;edellä;edeltä;edemmäs;edes;edessä;edestä;ehkä;ei;eikä;eilen;eivät;eli;ellei;elleivät;ellemme;ellen;ellet;ellette;emme;en;enemmän;eniten;ennen;ensi;ensimmäinen;ensimmäiseksi;ensimmäisen;ensimmäisenä;ensimmäiset;ensimmäisiksi;ensimmäisinä;ensimmäisiä;ensimmäistä;ensin;entinen;entisen;entisiä;entisten;entistä;enää;eri;erittäin;erityisesti;eräiden;eräs;eräät;esi;esiin;esillä;esimerkiksi;et;eteen;etenkin;etessa;ette;ettei;että;haikki;halua;haluaa;haluamatta;haluamme;haluan;haluat;haluatte;haluavat;halunnut;halusi;halusimme;halusin;halusit;halusitte;halusivat;halutessa;haluton;he;hei;heidän;heihin;heille;heiltä;heissä;heistä;heitä;helposti;heti;hetkellä;hieman;hitaasti;hoikein;huolimatta;huomenna;hyvien;hyviin;hyviksi;hyville;hyviltä;hyvin;hyvinä;hyvissä;hyvistä;hyviä;hyvä;hyvät;hyvää;hän;häneen;hänelle;hänellä;häneltä;hänen;hänessä;hänestä;hänet;ihan;ilman;ilmeisesti;itse;itsensä;itseään;ja;jo;johon;joiden;joihin;joiksi;joilla;joille;joilta;joissa;joista;joita;joka;jokainen;jokin;joko;joku;jolla;jolle;jolloin;jolta;jompikumpi;jonka;jonkin;jonne;joo;jopa;jos;joskus;jossa;josta;jota;jotain;joten;jotenkin;jotenkuten;jotka;jotta;jouduimme;jouduin;jouduit;jouduitte;joudumme;joudun;joudutte;joukkoon;joukossa;joukosta;joutua;joutui;joutuivat;joutumaan;joutuu;joutuvat;juuri;jälkeen;jälleen;jää;kahdeksan;kahdeksannen;kahdella;kahdelle;kahdelta;kahden;kahdessa;kahdesta;kahta;kahteen;kai;kaiken;kaikille;kaikilta;kaikkea;kaikki;kaikkia;kaikkiaan;kaikkialla;kaikkialle;kaikkialta;kaikkien;kaikkin;kaksi;kannalta;kannattaa;kanssa;kanssaan;kanssamme;kanssani;kanssanne;kanssasi;kauan;kauemmas;kaukana;kautta;kehen;keiden;keihin;keiksi;keille;keillä;keiltä;keinä;keissä;keistä;keitten;keittä;keitä;keneen;keneksi;kenelle;kenellä;keneltä;kenen;kenenä;kenessä;kenestä;kenet;kenettä;kennessästä;kenties;kerran;kerta;kertaa;keskellä;kesken;keskimäärin;ketkä;ketä;kiitos;kohti;koko;kokonaan;kolmas;kolme;kolmen;kolmesti;koska;koskaan;kovin;kuin;kuinka;kuinkan;kuitenkaan;kuitenkin;kuka;kukaan;kukin;kukka;kumpainen;kumpainenkaan;kumpi;kumpikaan;kumpikin;kun;kuten;kuuden;kuusi;kuutta;kylliksi;kyllä;kymmenen;kyse;liian;liki;lisäksi;lisää;lla;luo;luona;lähekkäin;lähelle;lähellä;läheltä;lähemmäs;lähes;lähinnä;lähtien;läpi;mahdollisimman;mahdollista;me;meidän;meille;meillä;melkein;melko;menee;meneet;menemme;menen;menet;menette;menevät;meni;menimme;menin;menit;menivät;mennessä;mennyt;menossa;mihin;mikin;miksi;mikä;mikäli;mikään;milloin;milloinkan;minne;minun;minut;minä;missä;mistä;miten;mitä;mitään;moi;
+          molemmat;mones;monesti;monet;moni;moniaalla;moniaalle;moniaalta;monta;muassa;muiden;muita;muka;mukaan;mukaansa;mukana;mutta;muu;muualla;muualle;muualta;muuanne;muulloin;muun;muut;muuta;muutama;muutaman;muuten;myöhemmin;myös;myöskin;myöskään;myötä;ne;neljä;neljän;neljää;niiden;niin;niistä;niitä;noin;nopeammin;nopeasti;nopeiten;nro;nuo;nyt;näiden;näin;näissä;näissähin;näissälle;näissältä;näissästä;näitä;nämä;ohi;oikea;oikealla;oikein;ole;olemme;olen;olet;olette;oleva;olevan;olevat;oli;olimme;olin;olisi;olisimme;olisin;olisit;olisitte;olisivat;olit;olitte;olivat;olla;olleet;olli;ollut;oma;omaa;omaan;omaksi;omalle;omalta;oman;omassa;omat;omia;omien;omiin;omiksi;omille;omilta;omissa;omista;on;onkin;onko;ovat;paikoittain;paitsi;pakosti;paljon;paremmin;parempi;parhaillaan;parhaiten;perusteella;peräti;pian;pieneen;pieneksi;pienelle;pienellä;pieneltä;pienempi;pienestä;pieni;pienin;puolesta;puolestaan;päälle;runsaasti;saakka;sadam;sama;samaa;samaan;samalla;samallalta;samallassa;samallasta;saman;samat;samoin;sata;sataa;satojen;se;seitsemän;sekä;sen;seuraavat;siellä;sieltä;siihen;siinä;siis;siitä;sijaan;siksi;silloin;sillä;silti;sinne;sinua;sinulle;sinulta;sinun;sinussa;sinusta;sinut;sinä;sisäkkäin;sisällä;siten;sitten;sitä;ssa;sta;suoraan;suuntaan;suuren;suuret;suuri;suuria;suurin;suurten;taa;taas;taemmas;tahansa;tai;takaa;takaisin;takana;takia;tapauksessa;tarpeeksi;tavalla;tavoitteena;te;tietysti;todella;toinen;toisaalla;toisaalle;toisaalta;toiseen;toiseksi;toisella;toiselle;toiselta;toisemme;toisen;toisensa;toisessa;toisesta;toista;toistaiseksi;toki;tosin;tuhannen;tuhat;tule;tulee;tulemme;tulen;tulet;tulette;tulevat;tulimme;tulin;tulisi;tulisimme;tulisin;tulisit;tulisitte;tulisivat;tulit;tulitte;tulivat;tulla;tulleet;tullut;tuntuu;tuo;tuolla;tuolloin;tuolta;tuonne;tuskin;tykö;tähän;tällä;tällöin;tämä;tämän;tänne;tänä;tänään;tässä;tästä;täten;tätä;täysin;täytyvät;täytyy;täällä;täältä;ulkopuolella;usea;useasti;useimmiten;usein;useita;uudeksi;uudelleen;uuden;uudet;uusi;uusia;uusien;uusinta;uuteen;uutta;vaan;vahemmän;vai;vaiheessa;vaikea;vaikean;vaikeat;vaikeilla;vaikeille;vaikeilta;vaikeissa;vaikeista;vaikka;vain;varmasti;varsin;varsinkin;varten;vasen;vasenmalla;vasta;vastaan;vastakkain;vastan;verran;vielä;vierekkäin;vieressä;vieri;viiden;viime;viimeinen;viimeisen;viimeksi;viisi;voi;voidaan;voimme;voin;voisi;voit;voitte;voivat;vuoden;vuoksi;vuosi;vuosien;vuosina;vuotta;vähemmän;vähintään;vähiten;vähän;välillä;yhdeksän;yhden;yhdessä;yhteen;yhteensä;yhteydessä;yhteyteen;yhtä;yhtäälle;yhtäällä;yhtäältä;yhtään;yhä;yksi;yksin;yksittäin;yleensä;ylemmäs;yli;ylös;ympäri;älköön;älä</value>
+  </data>
+  <data name="MatchCurrentChoice" xml:space="preserve">
+    <value>Nykyinen valinta('c');nykyinen;c;nykyinen valinta;ei muutosta</value>
+  </data>
+  <data name="MatchNo" xml:space="preserve">
+    <value>Ei;e;ei ole;2</value>
+  </data>
+  <data name="MatchNoPreference" xml:space="preserve">
+    <value>Ei väliä;ei;ei ole;aivan sama</value>
+  </data>
+  <data name="MatchYes" xml:space="preserve">
+    <value>Kyllä;k;toki;ok;jep;1</value>
+  </data>
+  <data name="PromptRetry" xml:space="preserve">
+    <value>En ymmärtänyt. Sano jotain vastaukseksi.</value>
+  </data>
+  <data name="TemplateAttachment" xml:space="preserve">
+    <value>Lähetä liite {&amp;} varten, kiitos</value>
+  </data>
+  <data name="TemplateAttachmentCollection" xml:space="preserve">
+    <value>Lähetä kokoelma liitteitä {&amp;} varten, kiitos</value>
+  </data>
+  <data name="TemplateAttachmentCollectionDescription" xml:space="preserve">
+    <value>{0} Liite/ttä linkitetty.</value>
+  </data>
+  <data name="TemplateAttachmentCollectionHelp" xml:space="preserve">
+    <value>Voit lisätä yhden tai usean liitteen.{0}</value>
+  </data>
+  <data name="TemplateAttachmentDescription" xml:space="preserve">
+    <value>Liite nimetty nimellä '{0}' sisältötyyppi '{1}'.</value>
+  </data>
+  <data name="TemplateAttachmentHelp" xml:space="preserve">
+    <value>Voit liittää yhden liitteen.{0}</value>
+  </data>
+  <data name="TemplateBool" xml:space="preserve">
+    <value>Haluaisitko {&amp;}? {||}</value>
+  </data>
+  <data name="TemplateBoolHelp" xml:space="preserve">
+    <value>Kirjoita/valitse 'kyllä' tai 'ei'{?, {0}}.</value>
+    <comment>0-current choice, 1-no preference</comment>
+  </data>
+  <data name="TemplateClarify" xml:space="preserve">
+    <value>Tarkoititko tällä "{0}" {&amp;} tätä {||}</value>
+    <comment>0-term being clarified</comment>
+  </data>
+  <data name="TemplateCurrentChoice" xml:space="preserve">
+    <value>(nykyinen valinta: {})</value>
+  </data>
+  <data name="TemplateDateTime" xml:space="preserve">
+    <value>Lisää päivä ja aika {&amp;} {||} varten</value>
+  </data>
+  <data name="TemplateDateTimeHelp" xml:space="preserve">
+    <value>Lisää päivän ja ajan ilmaisu {?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference</comment>
+  </data>
+  <data name="TemplateDouble" xml:space="preserve">
+    <value>Syötä numero {?välillä {0:F1} ja {1:F1}} {&amp;} varten {||}</value>
+    <comment>0-min, 1-max</comment>
+  </data>
+  <data name="TemplateDoubleChoiceFormat" xml:space="preserve">
+    <value>{1}</value>
+    <comment>0-number, 1-description</comment>
+  </data>
+  <data name="TemplateDoubleHelp" xml:space="preserve">
+    <value>Syötä numero{? välillä {2:F1} ja {3:F1}}{?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference, 2-min, 3-max</comment>
+  </data>
+  <data name="TemplateEnumManyNumberHelp" xml:space="preserve">
+    <value>Voit syöttää yhden tai useamman numeron {0}-{1} tai sanoja kuvauksista. ({2})</value>
+    <comment>0-min, 1-max and 2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumManyWordHelp" xml:space="preserve">
+    <value>Voit valita yhden tai monta vaihtoehtoa kuvauksista ({2})</value>
+    <comment>2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumOneNumberHelp" xml:space="preserve">
+    <value>Voit syöttää numeron {0}-{1} tai sanoja kuvauksista. ({2})</value>
+    <comment>0-min, 1-max and 2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumOneWordHelp" xml:space="preserve">
+    <value>Voit syöttää minkä sanan tahansa kuvauksista. ({2})</value>
+    <comment>2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumSelectMany" xml:space="preserve">
+    <value>Valitse yksi tai enemmän {&amp;} {||}</value>
+  </data>
+  <data name="TemplateEnumSelectOne" xml:space="preserve">
+    <value>Valitse {&amp;} kiitos {||}</value>
+  </data>
+  <data name="TemplateFeedback" xml:space="preserve">
+    <value>Kohteelle {&amp;} ymmärsin {}. {?"{0}" ei ole vaihtoehto.}</value>
+    <comment>0-not understood term</comment>
+  </data>
+  <data name="TemplateHelp" xml:space="preserve">
+    <value>Täytät kenttää {&amp;}.  Vastausvaihtoehdot:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateHelpClarify" xml:space="preserve">
+    <value>Selvennät {&amp;} arvoa.  Mahdolliset vastaukset:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateHelpConfirm" xml:space="preserve">
+    <value>Vastaa kysymykseen kiitos.  Vastausvaihtoehdot:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateHelpNavigation" xml:space="preserve">
+    <value>Valitse kenttä, jota haluat muokata.  Vastausvaihtoehdot:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateInteger" xml:space="preserve">
+    <value>Syötä numero{? välillä {0} ja {1}} {&amp;} varten {||}</value>
+    <comment>0-min, 1-max</comment>
+  </data>
+  <data name="TemplateIntegerChoiceFormat" xml:space="preserve">
+    <value>{1}</value>
+    <comment>0-number, 1-description</comment>
+  </data>
+  <data name="TemplateIntegerHelp" xml:space="preserve">
+    <value>Voit syöttää numeron{? välillä {2} ja {3}}{?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference, 2-min, 3-max</comment>
+  </data>
+  <data name="TemplateNavigation" xml:space="preserve">
+    <value>Mitä haluat muuttaa? {||}</value>
+  </data>
+  <data name="TemplateNavigationCommandHelp" xml:space="preserve">
+    <value>Voit vaihtaa kenttää syöttämällä sen nimen ({0}).</value>
+    <comment>0-list of field names</comment>
+  </data>
+  <data name="TemplateNavigationFormat" xml:space="preserve">
+    <value>{&amp;}({})</value>
+    <comment>0-list of field names</comment>
+  </data>
+  <data name="TemplateNavigationHelp" xml:space="preserve">
+    <value>Valitse {? numero välillä {0}-{1}, tai} kentän nimi.</value>
+    <comment>0-min, 1-max</comment>
+  </data>
+  <data name="TemplateNoPreference" xml:space="preserve">
+    <value>Ei väliä</value>
+  </data>
+  <data name="TemplateNotUnderstood" xml:space="preserve">
+    <value>"{0}" ei ole {&amp;} vaihtoehto.</value>
+    <comment>0-is not understood term</comment>
+  </data>
+  <data name="TemplateStatusFormat" xml:space="preserve">
+    <value>{&amp;}: {}</value>
+  </data>
+  <data name="TemplateString" xml:space="preserve">
+    <value>Syötä {&amp;} kiitos {||}</value>
+  </data>
+  <data name="TemplateStringChoiceFormat" xml:space="preserve">
+    <value>{1}</value>
+    <comment>0-number, 1-description</comment>
+  </data>
+  <data name="TemplateStringHelp" xml:space="preserve">
+    <value>Voit syöttää mitä vain (käytä lainausmerkkejä " käyttääksesi merkkijonoa){?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference</comment>
+  </data>
+  <data name="TemplateUnspecified" xml:space="preserve">
+    <value>Määrittelemätön</value>
+  </data>
+</root>
