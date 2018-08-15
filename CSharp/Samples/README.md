@@ -1,3 +1,14 @@
+***
+
+**NOTE**
+
+These samples are now **deprecated** and will no longer be maintained.
+
+If you are looking for the most updated Bot Builder SDK V3 samples for both C# and JavaScript (node), 
+go to [BotBuilder-Samples](https://github.com/Microsoft/botbuilder-samples)
+
+***
+
 # Microsoft Bot Builder Overview
 
 Microsoft Bot Builder is a powerful framework for constructing bots that can handle both freeform interactions and more guided ones where the possibilities are explicitly shown to the user. It is easy to use and leverages C# to provide a natural way to write Bots.
@@ -19,9 +30,12 @@ There are several samples in this directory.
 * [Microsoft.Bot.Sample.SimpleAlarmBot](SimpleAlarmBot/) -- Integration of http://luis.ai with the dialog system to set alarms.
 * [Microsoft.Bot.Sample.AlarmBot](AlarmBot/) -- Add alarm logic to previous bot and send alarms proactively
 * [Microsoft.Bot.Sample.PizzaBot](PizzaBot/) -- Integration of http://luis.ai with FormFlow.
-* [Microsoft.Bot.Sample.GraphBot](GraphBot/Microsoft.Bot.Sample.GraphBot) -- Integration of [Microsoft Graph Api](https://graph.microsoft.io) with dialog system.
 * [Microsoft.Bot.Sample.SimpleFacebookAuthBot](SimpleFacebookAuthBot/) -- A bot showcasing OAuth authentication using Facebook graph API.
 * [Microsoft.Bot.Sample.SimpleIVRBot](SimpleIVRBot/) -- A sample IVR bot using Skype calling API.
+* [Microsoft.Bot.Sample.AadV1Bot](AadV1Bot/) -- Bot example that uses an OAuthCard to log a user into an AAD v1 application and uses the  [Microsoft Graph Api](https://graph.microsoft.io)
+* [Microsoft.Bot.Sample.AadV2Bot](AadV2Bot/) -- Bot example that uses an OAuthCard to log a user into an AAD v2 application and uses the  [Microsoft Graph Api](https://graph.microsoft.io)
+* [Microsoft.Bot.Sample.GitHubBot](GitHubBot/) -- Bot example that uses an OAuthCard to log a user into GitHub
+* [Microsoft.Bot.Sample.BasicOAuth](Microsoft.Bot.Sample.BasicOAuth/) -- Bot example that uses an OAuthCard to sign-in using the OAuthClient
 * [Stock_Bot](Stock_Bot/) -- Samples that show calling a web service, LUIS, and LUIS Dialog.
 * [SearchPoweredBots](SearchPoweredBots) -- Samples that show integration of [Azure Search](https://azure.microsoft.com/en-us/services/search/) with dialogs.
 

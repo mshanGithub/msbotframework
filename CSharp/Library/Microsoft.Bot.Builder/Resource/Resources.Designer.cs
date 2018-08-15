@@ -19,7 +19,7 @@ namespace Microsoft.Bot.Builder.Resource {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -57,6 +57,24 @@ namespace Microsoft.Bot.Builder.Resource {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attachment &apos;{0}&apos; is invalid! The content-type should contain {1}..
+        /// </summary>
+        public static string AttachmentContentTypeValidatorError {
+            get {
+                return ResourceManager.GetString("AttachmentContentTypeValidatorError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You should provide an attachment where content-type has {0}..
+        /// </summary>
+        public static string AttachmentContentTypeValidatorHelp {
+            get {
+                return ResourceManager.GetString("AttachmentContentTypeValidatorHelp", resourceCulture);
             }
         }
         
@@ -250,6 +268,15 @@ namespace Microsoft.Bot.Builder.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to or.
+        /// </summary>
+        public static string DefaultContentTypesSeparator {
+            get {
+                return ResourceManager.GetString("DefaultContentTypesSeparator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to , and .
         /// </summary>
         public static string DefaultLastSeparator {
@@ -372,6 +399,60 @@ namespace Microsoft.Bot.Builder.Resource {
         public static string PromptRetry {
             get {
                 return ResourceManager.GetString("PromptRetry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please submit an attachment for {&amp;}.
+        /// </summary>
+        public static string TemplateAttachment {
+            get {
+                return ResourceManager.GetString("TemplateAttachment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please submit a collection of attachments for {&amp;}.
+        /// </summary>
+        public static string TemplateAttachmentCollection {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} attachment/s linked..
+        /// </summary>
+        public static string TemplateAttachmentCollectionDescription {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentCollectionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can submit one or more attachments.{0}.
+        /// </summary>
+        public static string TemplateAttachmentCollectionHelp {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentCollectionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attachment named &apos;{0}&apos; with content-type &apos;{1}&apos;..
+        /// </summary>
+        public static string TemplateAttachmentDescription {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can submit one attachment.{0}.
+        /// </summary>
+        public static string TemplateAttachmentHelp {
+            get {
+                return ResourceManager.GetString("TemplateAttachmentHelp", resourceCulture);
             }
         }
         

@@ -34,9 +34,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -87,6 +89,9 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
     /// <summary>
     /// Volitile in-memory implementation of <see cref="IBotDataStore{BotData}"/>
     /// </summary>
+    /// <remarks>
+    /// NOTE: This uses an internal dictionary with no culling so it should not be used for production code at all, as it will eventually just use all of your memory.
+    /// </remarks>
     public class InMemoryDataStore : IBotDataStore<BotData>
     {
         internal readonly ConcurrentDictionary<string, string> store = new ConcurrentDictionary<string, string>();
@@ -167,27 +172,12 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
 
         private static string Serialize(BotData data)
         {
-            using (var cmpStream = new MemoryStream())
-            using (var stream = new GZipStream(cmpStream, CompressionMode.Compress))
-            using (var streamWriter = new StreamWriter(stream))
-            {
-                var serializedJSon = JsonConvert.SerializeObject(data);
-                streamWriter.Write(serializedJSon);
-                streamWriter.Close();
-                stream.Close();
-                return Convert.ToBase64String(cmpStream.ToArray());
-            }
+            return JsonConvert.SerializeObject(data);
         }
 
         private static BotData Deserialize(string str)
         {
-            byte[] bytes = Convert.FromBase64String(str);
-            using (var stream = new MemoryStream(bytes))
-            using (var gz = new GZipStream(stream, CompressionMode.Decompress))
-            using (var streamReader = new StreamReader(gz))
-            {
-                return JsonConvert.DeserializeObject<BotData>(streamReader.ReadToEnd());
-            }
+            return JsonConvert.DeserializeObject<BotData>(str);
         }
     }
 
@@ -266,7 +256,9 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
     }
 
     /// <summary>
-    /// Caches data for <see cref="BotDataBase{T}"/> and wraps the data in <see cref="BotData"/> to be stored in <see cref="CachingBotDataStore.inner"/>
+    /// Caches changes until FlushAsync() is called 
+    /// NOTE: Despite the name, this is NOT a cache of access of the inner store, but is a change cache of changes that will be pushed to 
+    /// inner store.
     /// </summary>
     public class CachingBotDataStore : IBotDataStore<BotData>
     {
@@ -464,6 +456,7 @@ namespace Microsoft.Bot.Builder.Dialogs.Internals
         public IBotDataBag UserData { get { return inner.UserData; } }
         public IBotDataBag ConversationData { get { return inner.ConversationData; } }
         public IBotDataBag PrivateConversationData { get { return inner.PrivateConversationData; } }
+  
         public async Task LoadAsync(CancellationToken token)
         {
             await this.inner.LoadAsync(token);

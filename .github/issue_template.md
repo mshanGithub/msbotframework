@@ -1,13 +1,14 @@
-## Bot Info <!-- As registered in the Bot Developer Portal at https://dev.botframework.com -->
-* Bot handle: 
-* App ID: 
+## The Microsoft Bot Framework team prefers that ["How To"](https://stackoverflow.com/help/how-to-ask) questions be submitted on [Stack Overflow](https://stackoverflow.com/questions/tagged/botframework). The official [Bot Framework GitHub](https://github.com/Microsoft/BotBuilder/issues) repository  is the preferred platform for submitting **bug fixes and feature requests**.
+
+
+## Bot Info
 * SDK Platform: <!-- .NET or Node.js -->
 * SDK Version: <!-- SDK version -->
 * Active Channels: <!-- Skype, MS Teams, Slack, Direct Line, etc. -->
-* Deployment Environment: <!-- ngrok, Auzure Bot Service, Azure App Service, other -->
+* Deployment Environment: <!-- Azure Bot Service, Azure App Service, local development with Emulator? -->
 
 ## Issue Description
-<!-- Describe your issue, question, or feature request -->
+<!-- Describe your issue or feature request -->
 
 ## Code Example
 <!-- The bot code that reproduces the issue -->

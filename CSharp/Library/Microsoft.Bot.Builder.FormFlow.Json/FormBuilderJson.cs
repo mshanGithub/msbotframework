@@ -115,6 +115,10 @@ namespace Microsoft.Bot.Builder.FormFlow.Json
         public FormBuilderJson(JObject schema)
         {
             _schema = schema;
+            lock (_scripts)
+            {
+                _scripts.Clear();
+            }
             ProcessOptions();
             ProcessOnCompletion();
         }
@@ -391,7 +395,7 @@ namespace Microsoft.Bot.Builder.FormFlow.Json
         private void FieldPaths(Type type, string path, List<string> paths)
         {
             var newPath = (path == "" ? path : path + ".");
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => !f.IsDefined(typeof(IgnoreFieldAttribute))).OrderBy(f => f.GetCustomAttributes(typeof(OrderAttribute), true).Cast<OrderAttribute>().Select(a => a.Order).FirstOrDefault()))
             {
                 TypePaths(field.FieldType, newPath + field.Name, paths);
             }

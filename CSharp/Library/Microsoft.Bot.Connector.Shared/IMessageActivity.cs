@@ -1,6 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Bot.Connector
 {
@@ -60,12 +62,26 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// Collection of Entity objects, each of which contains metadata about this activity. Each Entity object is typed.
         /// </summary>
-        IList<Entity> Entities { get; set; }
-        
+        new IList<Entity> Entities { get; set; }
+
         /// <summary>
-        /// True if this activity has text, attachments, or channelData
+        /// Importance of the activity 
+        /// Valid values are "low", "normal", and "high". Default value is "normal."
         /// </summary>
-        bool HasContent();
+        string Importance { get; set; }
+
+        /// <summary>
+        /// Hint to describe how this activity should be delivered.  
+        /// null or "default" = default delivery
+        /// "notification" = notification semantics
+        /// See DeliveryModes for current constants
+        /// </summary>
+        string DeliveryMode { get; set; }
+
+        /// <summary>
+        /// DateTime to expire the activity as ISO 8601 encoded datetime
+        /// </summary>
+        DateTimeOffset? Expiration { get; set; }
 
         /// <summary>
         /// Get mentions
@@ -76,5 +92,10 @@ namespace Microsoft.Bot.Connector
         /// Value provided with CardAction
         /// </summary>
         object Value { get; set; }
+
+        /// <summary>
+        /// True if this activity has text, attachments, or channelData
+        /// </summary>
+        bool HasContent();
     }
 }

@@ -79,6 +79,11 @@ namespace Microsoft.Bot.Builder.Luis
         public bool? Verbose { get; set; }
 
         /// <summary>
+        /// The Bing Spell Check subscription key.
+        /// </summary>
+        public string BingSpellCheckSubscriptionKey { get; set; }
+
+        /// <summary>
         /// Any extra query parameters for the URL.
         /// </summary>
         public string ExtraParameters { get; set; }
@@ -163,6 +168,10 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 queryParameters.Add($"verbose={Uri.EscapeDataString(Convert.ToString(Verbose))}");
             }
+            if (!string.IsNullOrWhiteSpace(BingSpellCheckSubscriptionKey))
+            {
+                queryParameters.Add($"bing-spell-check-subscription-key={Uri.EscapeDataString(BingSpellCheckSubscriptionKey)}");
+            }
 #pragma warning disable CS0618
             if (ContextId != null)
             {
@@ -187,6 +196,8 @@ namespace Microsoft.Bot.Builder.Luis
     /// </summary>
     public interface ILuisService
     {
+        ILuisModel LuisModel { get; }
+
         /// <summary>
         /// Modify the incoming LUIS request.
         /// </summary>
@@ -217,6 +228,8 @@ namespace Microsoft.Bot.Builder.Luis
     public sealed class LuisService : ILuisService
     {
         private readonly ILuisModel model;
+
+        public ILuisModel LuisModel => model;
 
         /// <summary>
         /// Construct the LUIS service using the model information.
@@ -252,6 +265,16 @@ namespace Microsoft.Bot.Builder.Luis
             }
         }
 
+        public void ApplyThreshold(LuisResult result)
+        {
+            if (result.TopScoringIntent.Score > model.Threshold)
+            {
+                return;
+            }
+            result.TopScoringIntent.Intent = "None";
+            result.TopScoringIntent.Score = 1.0d;
+        }
+
         async Task<LuisResult> ILuisService.QueryAsync(Uri uri, CancellationToken token)
         {
             string json;
@@ -266,6 +289,7 @@ namespace Microsoft.Bot.Builder.Luis
             {
                 var result = JsonConvert.DeserializeObject<LuisResult>(json);
                 Fix(result);
+                ApplyThreshold(result);
                 return result;
             }
             catch (JsonException ex)
@@ -289,7 +313,8 @@ namespace Microsoft.Bot.Builder.Luis
         /// <returns>The LUIS result.</returns>
         public static async Task<LuisResult> QueryAsync(this ILuisService service, string text, CancellationToken token)
         {
-            return await service.QueryAsync(new LuisRequest(query: text), token);
+            var luisRequest = service.ModifyRequest(new LuisRequest(query: text));
+            return await service.QueryAsync(luisRequest, token);
         }
 
         /// <summary>
@@ -301,6 +326,7 @@ namespace Microsoft.Bot.Builder.Luis
         /// <returns>LUIS result.</returns>
         public static async Task<LuisResult> QueryAsync(this ILuisService service, LuisRequest request, CancellationToken token)
         {
+            service.ModifyRequest(request);
             var uri = service.BuildUri(request);
             return await service.QueryAsync(uri, token);
         }

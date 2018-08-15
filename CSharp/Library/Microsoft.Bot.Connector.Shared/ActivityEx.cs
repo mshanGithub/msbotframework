@@ -1,9 +1,15 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Text.RegularExpressions;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Microsoft.Bot.Connector
 {
@@ -20,6 +26,11 @@ namespace Microsoft.Bot.Connector
         IContactRelationUpdateActivity,
         IInstallationUpdateActivity,
         IMessageActivity,
+        IMessageUpdateActivity,
+        IMessageDeleteActivity,
+        IMessageReactionActivity,
+        ISuggestionActivity,
+        ITraceActivity,
         ITypingActivity,
         IEndOfConversationActivity,
         IEventActivity,
@@ -29,6 +40,12 @@ namespace Microsoft.Bot.Connector
         /// Content-type for an Activity
         /// </summary>
         public const string ContentType = "application/vnd.microsoft.activity";
+
+        partial void CustomInit()
+        {
+            Attachments = Attachments ?? new List<Attachment>();
+            Entities = Entities ?? new List<Entity>();
+        }
 
         /// <summary>
         /// Take a message and create a reply message for it with the routing information 
@@ -59,7 +76,6 @@ namespace Microsoft.Bot.Connector
         [JsonExtensionData(ReadData = true, WriteData = true)]
         public JObject Properties { get; set; } = new JObject();
 
-
         /// <summary>
         /// Create an instance of the Activity class with IMessageActivity masking
         /// </summary>
@@ -73,7 +89,14 @@ namespace Microsoft.Bot.Connector
         /// <summary>
         /// Create an instance of the Activity class with IConversationUpdateActivity masking
         /// </summary>
-        public static IConversationUpdateActivity CreateConversationUpdateActivity() { return new Activity(ActivityTypes.ConversationUpdate); }
+        public static IConversationUpdateActivity CreateConversationUpdateActivity()
+        {
+            return new Activity(ActivityTypes.ConversationUpdate)
+            {
+                MembersAdded = new List<ChannelAccount>(),
+                MembersRemoved = new List<ChannelAccount>()
+            };
+        }
 
         /// <summary>
         /// Create an instance of the Activity class with ITypingActivity masking
@@ -101,6 +124,30 @@ namespace Microsoft.Bot.Connector
         public static IInvokeActivity CreateInvokeActivity() { return new Activity(ActivityTypes.Invoke); }
 
         /// <summary>
+        /// Create an instance of the TraceActivity 
+        /// </summary>
+        /// <param name="activity">Activity to reply to</param>
+        /// <param name="name">Name of the operation</param>
+        /// <param name="value">value of the operation</param>
+        /// <param name="valueType">valueType if helpful to identify the value schema (default is value.GetType().Name)</param>
+        /// <param name="label">descritive label of context. (Default is calling function name)</param>
+        public static ITraceActivity CreateTraceActivityReply(
+            Activity activity, 
+            string name, 
+            string valueType = null, 
+            object value = null, 
+            [CallerMemberName] string label = null)
+        {
+            ITraceActivity traceActivity = activity == null ? new Activity() : activity.CreateReply();
+            traceActivity.Name = name;
+            traceActivity.Label = label;
+            traceActivity.ValueType = valueType ?? value?.GetType().Name;
+            traceActivity.Value = value;
+            traceActivity.Type = "trace";
+            return traceActivity;
+        }
+
+        /// <summary>
         /// True if the Activity is of the specified activity type
         /// </summary>
         protected bool IsActivity(string activity) { return string.Compare(this.Type?.Split('/').First(), activity, true) == 0; }
@@ -126,6 +173,11 @@ namespace Microsoft.Bot.Connector
         public IConversationUpdateActivity AsConversationUpdateActivity() { return IsActivity(ActivityTypes.ConversationUpdate) ? this : null; }
 
         /// <summary>
+        /// Returns ITraceActivity if this is a trace activity, null otherwise
+        /// </summary>
+        public ITraceActivity AsTraceActivity() { return IsActivity(ActivityTypes.Trace) ? this : null; }
+
+        /// <summary>
         /// Return an ITypingActivity mask if this is a typing activity
         /// </summary>
         public ITypingActivity AsTypingActivity() { return IsActivity(ActivityTypes.Typing) ? this : null; }
@@ -146,7 +198,31 @@ namespace Microsoft.Bot.Connector
         public IInvokeActivity AsInvokeActivity() { return IsActivity(ActivityTypes.Invoke) ? this : null; }
 
         /// <summary>
-        /// Maps type to activity types 
+        /// Return an IMessageUpdateAcitvity if this is a MessageUpdate activity
+        /// </summary>
+        /// <returns></returns>
+        public IMessageUpdateActivity AsMessageUpdateActivity() { return IsActivity(ActivityTypes.MessageUpdate) ? this : null; }
+
+        /// <summary>
+        /// Return an IMessageDeleteActivity if this is a MessageDelete activity
+        /// </summary>
+        /// <returns></returns>
+        public IMessageDeleteActivity AsMessageDeleteActivity() { return IsActivity(ActivityTypes.MessageDelete) ? this : null; }
+
+        /// <summary>
+        /// Return an IMessageReactionActivity if this is a MessageReaction activity
+        /// </summary>
+        /// <returns></returns>
+        public IMessageReactionActivity AsMessageReactionActivity() { return IsActivity(ActivityTypes.MessageReaction) ? this : null; }
+
+        /// <summary>
+        /// Return an ISuggestionActivity if this is a Suggestion activity
+        /// </summary>
+        /// <returns></returns>
+        public ISuggestionActivity AsSuggestionActivity() { return IsActivity(ActivityTypes.Suggestion) ? this : null; }
+
+        /// <summary>
+        /// Normalize activity type 
         /// </summary>
         /// <param name="type"> The type.</param>
         /// <returns> The activity type.</returns>
@@ -169,6 +245,30 @@ namespace Microsoft.Bot.Connector
 
             if (String.Equals(type, ActivityTypes.Ping, StringComparison.OrdinalIgnoreCase))
                 return ActivityTypes.Ping;
+
+            if (String.Equals(type, ActivityTypes.EndOfConversation, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.EndOfConversation;
+
+            if (String.Equals(type, ActivityTypes.Event, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Event;
+
+            if (String.Equals(type, ActivityTypes.InstallationUpdate, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.InstallationUpdate;
+
+            if (String.Equals(type, ActivityTypes.Invoke, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Invoke;
+
+            if (String.Equals(type, ActivityTypes.MessageDelete, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.MessageDelete;
+
+            if (String.Equals(type, ActivityTypes.MessageReaction, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.MessageReaction;
+
+            if (String.Equals(type, ActivityTypes.MessageUpdate, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.MessageUpdate;
+
+            if (String.Equals(type, ActivityTypes.Suggestion, StringComparison.OrdinalIgnoreCase))
+                return ActivityTypes.Suggestion;
 
             return $"{Char.ToLower(type[0])}{type.Substring(1)}";
         }
@@ -203,6 +303,49 @@ namespace Microsoft.Bot.Connector
             return this.Entities?.Where(entity => String.Compare(entity.Type, "mention", ignoreCase: true) == 0)
                 .Select(e => e.Properties.ToObject<Mention>()).ToArray() ?? new Mention[0];
         }
+
+        /// <summary>
+        /// Get channeldata as typed structure
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <typeparam name="TypeT">type to use</typeparam>
+        /// <returns>typed object or default(TypeT)</returns>
+        public TypeT GetChannelData<TypeT>()
+        {
+            if (this.ChannelData == null)
+                return default(TypeT);
+            if (this.ChannelData.GetType() == typeof(TypeT))
+                return (TypeT)this.ChannelData;
+            return ((JObject)this.ChannelData).ToObject<TypeT>();
+        }
+
+        /// <summary>
+        /// Get channeldata as typed structure
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <typeparam name="TypeT">type to use</typeparam>
+        /// <param name="instance">The resulting instance, if possible</param>
+        /// <returns>
+        /// <c>true</c> if value of <seealso cref="IActivity.ChannelData"/> was coerceable to <typeparamref name="TypeT"/>, <c>false</c> otherwise.
+        /// </returns>
+        public bool TryGetChannelData<TypeT>(out TypeT instance)
+        {
+            instance = default(TypeT);
+
+            try
+            {
+                if (this.ChannelData == null)
+                    return false;
+
+                instance = this.GetChannelData<TypeT>();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 
     public static class ActivityExtensions
@@ -215,6 +358,7 @@ namespace Microsoft.Bot.Connector
         /// <param name="handlers"></param>
         /// <param name="activity"></param>
         /// <returns></returns>
+        [System.Obsolete("Deprecated: This method will only get the default state client, if you have implemented a custom state client it will not retrieve it")]
         public static StateClient GetStateClient(this IActivity activity, MicrosoftAppCredentials credentials, string serviceUrl = null, params DelegatingHandler[] handlers)
         {
             bool useServiceUrl = (activity.ChannelId == "emulator");
@@ -337,6 +481,112 @@ namespace Microsoft.Bot.Connector
                 activity.Text = Regex.Replace(activity.Text, mention.Text, "", RegexOptions.IgnoreCase);
             }
             return activity.Text;
+        }
+
+        /// <summary>
+        /// Get OAuthClient appropriate for this activity
+        /// </summary>
+        /// <param name="credentials">credentials for bot to access OAuth api</param>
+        /// <param name="serviceUrl">alternate serviceurl to use for OAuth service</param>
+        /// <param name="handlers"></param>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        public static OAuthClient GetOAuthClient(this IActivity activity, MicrosoftAppCredentials credentials, string serviceUrl = null, params DelegatingHandler[] handlers)
+        {
+            if (serviceUrl != null)
+                return new OAuthClient(new Uri(serviceUrl), credentials: credentials, handlers: handlers);
+
+            return new OAuthClient(credentials, true, handlers);
+        }
+
+        /// <summary>
+        /// Get OAuthClient appropriate for this activity
+        /// </summary>
+        /// <param name="microsoftAppId"></param>
+        /// <param name="microsoftAppPassword"></param>
+        /// <param name="serviceUrl">alternate serviceurl to use for state service</param>
+        /// <param name="handlers"></param>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        public static OAuthClient GetOAuthClient(this IActivity activity, string microsoftAppId = null, string microsoftAppPassword = null, string serviceUrl = null, params DelegatingHandler[] handlers) => GetOAuthClient(activity, new MicrosoftAppCredentials(microsoftAppId, microsoftAppPassword), serviceUrl, handlers);
+
+        public static bool IsTokenResponseEvent(this IActivity activity)
+        {
+            return activity.Type == ActivityTypes.Event && ((IEventActivity)activity).Name == TokenOperations.TokenResponseOperationName;
+        }
+
+        public static bool IsTeamsVerificationInvoke(this IActivity activity)
+        {
+            return activity.Type == ActivityTypes.Invoke && ((IInvokeActivity)activity).Name == TokenOperations.TeamsVerificationCode;
+        }
+
+        public static TokenResponse ReadTokenResponseContent(this IActivity activity)
+        {
+            if (IsTokenResponseEvent(activity))
+            {
+                var content = ((IEventActivity)activity).Value as JObject;
+                if (content != null)
+                {
+                    var tokenResponse = content.ToObject<TokenResponse>();
+                    return tokenResponse;
+                }
+            }
+            return null;
+        }
+
+        public static async Task<Activity> CreateOAuthReplyAsync(this IActivity activity, string connectionName, string text, string buttonLabel, bool asSignInCard = false)
+        {
+            var reply = ((Activity)activity).CreateReply();
+
+            switch (activity.ChannelId)
+            {
+                case "msteams":
+                case "cortana":
+                case "skype":
+                case "skypeforbusiness":
+                    asSignInCard = true;
+                    break;
+            }
+
+            if (asSignInCard)
+            {
+                var client = GetOAuthClient(activity);
+                var link = await client.OAuthApi.GetSignInLinkAsync(activity, connectionName);
+                reply.Attachments = new List<Attachment>() {
+                    new Attachment()
+                    {
+                        ContentType = SigninCard.ContentType,
+                        Content = new SigninCard()
+                        {
+                            Text = text,
+                            Buttons = new CardAction[]
+                            {
+                                new CardAction() { Title = buttonLabel, Value = link, Type = ActionTypes.Signin }
+                            },
+                        }
+                    }
+                };
+            }
+            else
+            {
+                reply.Attachments = new List<Attachment>() {
+                    new Attachment()
+                    {
+                        ContentType = OAuthCard.ContentType,
+                        Content = new OAuthCard()
+                        {
+                            Text = text,
+                            ConnectionName = connectionName,
+                            Buttons = new CardAction[]
+                            {
+                                new CardAction() { Title = buttonLabel, Type = ActionTypes.Signin }
+                            },
+                        }
+                    }
+                };
+            }
+
+            return reply;
         }
     }
 }

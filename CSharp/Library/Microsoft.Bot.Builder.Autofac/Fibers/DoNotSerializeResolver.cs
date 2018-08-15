@@ -82,6 +82,10 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
 
         public static readonly ConcurrentDictionary<Type, IReadOnlyList<Type>> ServicesByType = new ConcurrentDictionary<Type, IReadOnlyList<Type>>();
 
+        // cache KeyedService to avoid Autofac memory leak
+        private static readonly ConcurrentDictionary<Type, KeyedService> ItemKeyedServiceByType = new ConcurrentDictionary<Type, KeyedService>();
+        private static readonly ConcurrentDictionary<Type, KeyedService> NullKeyedServiceByType = new ConcurrentDictionary<Type, KeyedService>();
+
         bool IResolver.TryResolve(Type type, object tag, out object value)
         {
             if (tag == null)
@@ -90,7 +94,7 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
                 for (int index = 0; index < services.Count; ++index)
                 {
                     var serviceType = services[index];
-                    var service = new KeyedService(FiberModule.Key_DoNotSerialize, serviceType);
+                    var service = ItemKeyedServiceByType.GetOrAdd(serviceType, t => new KeyedService(FiberModule.Key_DoNotSerialize, t));
 
                     var registry = this.context.ComponentRegistry;
 
@@ -99,17 +103,71 @@ namespace Microsoft.Bot.Builder.Internals.Fibers
                     {
                         // Autofac will still generate "implicit relationship types" (e.g. Func or IEnumerable)
                         // and ignore the key in KeyedService
-                        bool generated = registry.IsRegistered(new KeyedService(new object(), serviceType));
-                        if (!generated)
+                        if (IsFunc(serviceType))
                         {
-                            value = this.context.ResolveComponent(registration, this.parameters);
-                            return true;
+                            var keyedService = NullKeyedServiceByType.GetOrAdd(serviceType, t => new KeyedService(new object(), t));
+                            bool generated = registry.IsRegistered(keyedService);
+                            if (generated)
+                            {
+                                continue;
+                            }
                         }
+                        else if (IsAutoFacImplicit(serviceType))
+                        {
+                            continue;
+                        }
+
+                        value = this.context.ResolveComponent(registration, this.parameters);
+                        return true;
                     }
                 }
             }
 
             value = null;
+            return false;
+        }
+
+        private static bool IsFunc(Type serviceType)
+        {
+            if (typeof(Delegate).IsAssignableFrom(serviceType))
+            {
+                if (serviceType.IsGenericType)
+                {
+                    var definition = serviceType.GetGenericTypeDefinition();
+                    if (definition.Namespace == typeof(Func<>).Namespace && definition.Name.StartsWith("Func"))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
+        private static bool IsAutoFacImplicit(Type serviceType)
+        {
+            if (IsFunc(serviceType))
+            {
+                return true;
+            }
+            if (serviceType.IsArray)
+            {
+                return true;
+            }
+            if (serviceType.IsGenericType)
+            {
+                var genericType = serviceType.GetGenericTypeDefinition();
+                if (genericType == typeof(IEnumerable<>) ||
+                    genericType == typeof(ICollection<>) ||
+                    genericType == typeof(IList<>) ||
+                    genericType == typeof(IReadOnlyCollection<>) ||
+                    genericType == typeof(IReadOnlyList<>))
+                {
+                    // always serialize collections
+                    return true;
+                }
+            }
             return false;
         }
     }

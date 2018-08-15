@@ -176,7 +176,7 @@ export class ActionSet {
             }
             callback(null, results);
         } else {
-            async.forEachOf(this.actions, (entry: IActionHandlerEntry, action: string, cb: ErrorCallback) => {
+            async.forEachOf(this.actions, (entry: IActionHandlerEntry, action: string, cb: async.ErrorCallback<any>) => {
                 if (entry.options.onFindAction) {
                     entry.options.onFindAction(context, (err, score, routeData) => {
                         if (!err) {
@@ -344,7 +344,7 @@ export class ActionSet {
 
     private action(name: string, handler: IActionHandler, options: IDialogActionOptions = {}): this {
         var key = this.uniqueActionName(name);
-        this.actions[name] = { handler: handler, options: options };
+        this.actions[key] = { handler: handler, options: options };
         return this;
     }
 

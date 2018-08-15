@@ -33,8 +33,11 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Microsoft.Bot.Builder.FormFlow.Advanced;
+using Microsoft.Bot.Builder.Resource;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.FormFlow
 {
@@ -322,6 +325,46 @@ namespace Microsoft.Bot.Builder.FormFlow
     {
         /// <summary>   An enum constant representing the none option. </summary>
         None,
+
+        /// <summary>
+        /// How to ask for an attachment collection. 
+        /// </summary>
+        AttachmentCollection,
+
+        /// <summary>
+        /// How to display attachment collection status.
+        /// </summary>
+        AttachmentCollectionDescription,
+
+        /// <summary>
+        /// What you can enter when entering an attachment collection.
+        /// </summary>
+        AttachmentCollectionHelp,
+
+        /// <summary>
+        /// How to display attachment content-type validator errors.
+        /// </summary>
+        AttachmentContentTypeValidatorError,
+
+        /// <summary>
+        /// How to display attachment content-type validator help.
+        /// </summary>
+        AttachmentContentTypeValidatorHelp,
+
+        /// <summary>
+        /// How to ask for an attachment collection. 
+        /// </summary>
+        AttachmentField,
+
+        /// <summary>
+        /// How to display an attachment status.
+        /// </summary>
+        AttachmentFieldDescription,
+
+        /// <summary>
+        /// What you can enter when entering an attachment collection.
+        /// </summary>
+        AttachmentFieldHelp,
 
         /// <summary>
         /// How to ask for a boolean.
@@ -667,6 +710,47 @@ namespace Microsoft.Bot.Builder.FormFlow
             Pattern = pattern;
         }
     }
+
+    /// <summary>
+    /// Define a field or property as excluded.
+    /// </summary>
+    /// <remarks>
+    /// The ignored field is a field that is excluded from the list of fields.
+    /// </remarks>
+    [Serializable]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class IgnoreFieldAttribute : Attribute
+    {
+        /// <summary>
+        /// Mark a field or property as excluded.
+        /// </summary>
+        public IgnoreFieldAttribute()
+        { }
+    }
+
+    /// <summary>
+    /// Define a order weight of the field or property.
+    /// </summary>
+    /// <remarks>
+    /// By default the order weight is 0.
+    /// </remarks>
+    [Serializable]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class OrderAttribute : Attribute
+    {
+        private readonly int _order;
+
+        /// <summary>
+        /// Sets the order weight of the field or property
+        /// </summary>
+        /// <param name="order">The order weight</param>
+        public OrderAttribute(int order = 0)
+        {
+            _order = order;
+        }
+
+        public int Order => _order;
+    }
 }
 
 namespace Microsoft.Bot.Builder.FormFlow.Advanced
@@ -837,6 +921,81 @@ namespace Microsoft.Bot.Builder.FormFlow.Advanced
             LastSeparator = null;
             Separator = null;
             ValueCase = CaseNormalization.Default;
+        }
+    }
+
+    /// <summary>
+    /// Abstract base class used for attachment validation.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    public abstract class AttachmentValidatorAttribute : Attribute
+    {
+        public string ErrorMessage { get; set; }
+
+        public FormConfiguration Configuration { get; internal set; }
+
+        public abstract Task<bool> IsValidAsync(Attachment attachment, out string errorMessage);
+
+        public abstract string ProvideHelp();
+    }
+
+    /// <summary>
+    /// Attachment content-type validator attribute.
+    /// </summary>
+    public class AttachmentContentTypeValidatorAttribute : AttachmentValidatorAttribute
+    {
+        public AttachmentContentTypeValidatorAttribute() { }
+
+        public string ContentType { get; set; }
+
+        public override Task<bool> IsValidAsync(Attachment attachment, out string errorMessage)
+        {
+            errorMessage = default(string);
+
+            string[] contentTypes = GetAllowedTypes(this.ContentType);
+
+            var result = contentTypes != null && contentTypes.Any() ? contentTypes.FirstOrDefault(t=> attachment.ContentType.ToLowerInvariant().Contains(t)) != null 
+                                                                              : attachment.ContentType.ToLowerInvariant().Contains(this.ContentType.ToLowerInvariant());
+
+            if (!result)
+            {
+                var template = this.Configuration.Template(TemplateUsage.AttachmentContentTypeValidatorError);
+
+                errorMessage = !string.IsNullOrWhiteSpace(this.ErrorMessage)
+                    ? this.ErrorMessage
+                    : string.Format(
+                        template.Pattern(),
+                        attachment.Name,
+                        contentTypes != null ? GetAllowedTypesString(contentTypes) : string.IsNullOrWhiteSpace(this.ContentType) ? string.Empty : $"'{this.ContentType.ToLowerInvariant()}'");
+            }
+
+            return Task.FromResult(result);
+        }
+
+        public override string ProvideHelp()
+        {
+            var template = this.Configuration.Template(TemplateUsage.AttachmentContentTypeValidatorHelp);
+
+            string[] contentTypes = GetAllowedTypes(this.ContentType);
+
+            var contentType = contentTypes != null ? GetAllowedTypesString(contentTypes) : string.IsNullOrWhiteSpace(this.ContentType) ? string.Empty : $"'{this.ContentType.ToLowerInvariant()}'";
+
+            return string.Format(template.Pattern(), contentType);
+        }
+
+        private string GetAllowedTypesString(string[] contentTypes)
+        {
+            return string.Join($" {Resources.DefaultContentTypesSeparator} ", contentTypes.Select(t => t.ToLowerInvariant()).Select(t=> $"'{t}'"));
+        }
+
+        private string[] GetAllowedTypes(string contentTypes)
+        {
+            if (this.ContentType.Contains("|"))
+            {
+                return contentTypes.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            return null;
         }
     }
 }
