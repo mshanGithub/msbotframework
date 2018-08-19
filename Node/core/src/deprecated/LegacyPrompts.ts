@@ -120,7 +120,8 @@ export class SimplePromptRecognizer implements IPromptRecognizer {
                 }
                 break;
             case PromptType.time:
-                var entity = EntityRecognizer.recognizeTime(text, args.refDate ? new Date(args.refDate) : null);
+                // I deleted the refDate arg
+                var entity = EntityRecognizer.recognizeTime(text);
                 if (entity) {
                     score = entity.entity.length / text.length;
                     response = entity;

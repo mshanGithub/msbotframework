@@ -31,9 +31,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 import { IRecognizeContext } from './IntentRecognizer';
+import { IPromptRecognizeTimesOptions } from './PromptRecognizers';
 import * as utils from '../utils';
-import * as sprintf from 'sprintf-js';
-import * as chrono from 'chrono-node';
+// didn't work
+// import * as chrono from 'chrono-node';
+const chrono = require('chrono-node');
 import * as consts from '../consts';
 
 interface ILuisDateTimeEntity extends IEntity<string> {
@@ -144,10 +146,21 @@ export class EntityRecognizer {
         return resolvedDate;
     }
 
-    static recognizeTime(utterance: string, refDate?: Date): IChronoDuration {
+    static recognizeTime(utterance: string, options?: IPromptRecognizeTimesOptions): IChronoDuration {
         var response: IChronoDuration;
         try {
-            var results = chrono.parse(utterance, refDate);
+            const refDate = options.refDate ? new Date(options.refDate) : null;
+            const forwardDate = options.forwardDate || null;
+            const locale = options.locale || null;
+            // I am thinking of adding a function to chrono-node
+            // that returns its supported locales
+            const chronoSupportedLocales = ["de", "en", "es", "fr", "ja", "zh"];
+            var results;
+            if (!locale || chronoSupportedLocales.indexOf(locale) === -1) {
+                results = chrono.parse(utterance, refDate, { forwardDate });
+            } else {
+                results = chrono[locale].parse(utterance, refDate, { forwardDate });
+            }
             if (results && results.length > 0) {
                 var duration = results[0];
                 response = {

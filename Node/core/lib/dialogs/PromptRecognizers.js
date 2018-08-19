@@ -137,10 +137,9 @@ var PromptRecognizers = (function () {
     };
     PromptRecognizers.recognizeTimes = function (context, options) {
         options = options || {};
-        var refData = options.refDate ? new Date(options.refDate) : null;
         var entities = [];
         var utterance = context.message.text ? context.message.text.trim() : '';
-        var entity = EntityRecognizer_1.EntityRecognizer.recognizeTime(utterance, refData);
+        var entity = EntityRecognizer_1.EntityRecognizer.recognizeTime(utterance, options);
         if (entity) {
             entity.score = PromptRecognizers.calculateScore(utterance, entity.entity);
             entities.push(entity);

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils = require("../utils");
-var chrono = require("chrono-node");
+var chrono = require('chrono-node');
 var consts = require("../consts");
 var EntityRecognizer = (function () {
     function EntityRecognizer() {
@@ -78,10 +78,20 @@ var EntityRecognizer = (function () {
         }
         return resolvedDate;
     };
-    EntityRecognizer.recognizeTime = function (utterance, refDate) {
+    EntityRecognizer.recognizeTime = function (utterance, options) {
         var response;
         try {
-            var results = chrono.parse(utterance, refDate);
+            var refDate = options.refDate ? new Date(options.refDate) : null;
+            var forwardDate = options.forwardDate || null;
+            var locale = options.locale || null;
+            var chronoSupportedLocales = ["de", "en", "es", "fr", "ja", "zh"];
+            var results;
+            if (!locale || chronoSupportedLocales.indexOf(locale) === -1) {
+                results = chrono.parse(utterance, refDate, { forwardDate: forwardDate });
+            }
+            else {
+                results = chrono[locale].parse(utterance, refDate, { forwardDate: forwardDate });
+            }
             if (results && results.length > 0) {
                 var duration = results[0];
                 response = {

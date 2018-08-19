@@ -54,6 +54,12 @@ export interface IPromptRecognizeNumbersOptions {
 export interface IPromptRecognizeTimesOptions {
     /** (Optional) Reference date for releative times. */
     refDate?: number;
+
+    /** (Optional) To assume the results should happen after the reference date. */
+    forwardDate?: boolean;
+
+    /** (Optional) Predefined locale to increase parsing accuracy. */
+    locale?: string;
 }
 
 export interface IPromptRecognizeValuesOptions {
@@ -270,10 +276,9 @@ export class PromptRecognizers {
     /** Recognizes a time or duration mentioned in an utterance. */
     static recognizeTimes(context: IRecognizeContext, options?: IPromptRecognizeTimesOptions): IEntity<string>[]  {
         options = options || {};
-        let refData = options.refDate ? new Date(options.refDate) : null;
         let entities: IEntity<string>[] = [];
         const utterance = context.message.text ? context.message.text.trim() : '';
-        let entity = EntityRecognizer.recognizeTime(utterance, refData);
+        let entity = EntityRecognizer.recognizeTime(utterance, options);
         if (entity) {
             entity.score = PromptRecognizers.calculateScore(utterance, entity.entity);
             entities.push(entity);
