@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+?<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -13,11 +13,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
-    <value>L'allegato '{0}' non è valido! Il tipo di contenuto deve contenere '{1}'.</value>
+    <value>L'allegato '{0}' non è valido! Il tipo di contenuto accettato è '{1}'.</value>
     <comment>0-attachmnet name, 1-expected content-type</comment>
   </data>
   <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
-    <value>Dovresti fornire un allegato dove il tipo di contenuto ha '{0}'.</value>
+    <value>Dovresti fornire un allegatodi tipo '{0}'.</value>
     <comment>0-attachment content type</comment>
   </data>
   <data name="CommandBack" xml:space="preserve">
@@ -36,7 +36,7 @@
     <value>Aiuto: mostra i tipi di risposte che puoi inserire.</value>
   </data>
   <data name="CommandHelpTerms" xml:space="preserve">
-    <value>aiuto;help;scelte;\?</value>
+    <value>aiuto;help;opzioni;\?</value>
   </data>
   <data name="CommandQuit" xml:space="preserve">
     <value>Esci</value>
@@ -45,16 +45,16 @@
     <value>Esci: esci senza completare il modulo.</value>
   </data>
   <data name="CommandQuitTerms" xml:space="preserve">
-    <value>esci;stop;ferma;blocca;finisci;fine;ciao;addio</value>
+    <value>esci;stop;ferma;blocca;finisci;fine;annulla;blocca;termina</value>
   </data>
   <data name="CommandReset" xml:space="preserve">
     <value>Riparti da capo</value>
   </data>
   <data name="CommandResetHelp" xml:space="preserve">
-    <value>Riparti: Ricomincia con la compilazione del modulo. (Usando come predefiniti i valori inseriti fino ad ora.)</value>
+    <value>Riparti: ricomincia con la compilazione del modulo. (Usando come predefiniti i valori inseriti fino ad ora.)</value>
   </data>
   <data name="CommandResetTerms" xml:space="preserve">
-    <value>riparti;riavvia;resetta;azzera;pulisci</value>
+    <value>riparti;riavvia;resetta;azzera;pulisci;reset</value>
   </data>
   <data name="CommandStatus" xml:space="preserve">
     <value>Stato</value>
@@ -63,7 +63,7 @@
     <value>Stato: mostra i tuoi progressi nel riempimento del modulo fino ad ora.</value>
   </data>
   <data name="CommandStatusTerms" xml:space="preserve">
-    <value>stato;progresso;finora;risultati</value>
+    <value>stato;progresso</value>
   </data>
   <data name="ConfirmChoiceFormat" xml:space="preserve">
     <value>{1}</value>
@@ -77,16 +77,16 @@
     <value> o </value>
   </data>
   <data name="DefaultContentTypesSeparator" xml:space="preserve">
-    <value>o</value>
+    <value> o </value>
   </data>
   <data name="DefaultChoiceSeparator" xml:space="preserve">
-    <value>,</value>
+    <value>, </value>
   </data>
   <data name="DefaultLastSeparator" xml:space="preserve">
     <value> e </value>
   </data>
   <data name="DefaultSeparator" xml:space="preserve">
-    <value>,</value>
+    <value>, </value>
   </data>
   <data name="LanguageArticles" xml:space="preserve">
     <value>un;uno;un';una;il;lo;la;i;gli;le</value>
@@ -98,16 +98,16 @@
     <value>Scelta Corrente ("s");corrente;s;scelta corrente;non cambiare;nessun cambio</value>
   </data>
   <data name="MatchNo" xml:space="preserve">
-    <value>No;n;2</value>
+    <value>no;n;2</value>
   </data>
   <data name="MatchNoPreference" xml:space="preserve">
     <value>Nessuna preferenza;no;nessuna;non importa</value>
   </data>
   <data name="MatchYes" xml:space="preserve">
-    <value>Sì;si;yes;y;s;sicuro;ok;1</value>
+    <value>sì;si;yes;y;s;ok;1</value>
   </data>
   <data name="PromptRetry" xml:space="preserve">
-    <value>Non ho capito. Rispondi qualcosa.</value>
+    <value>Non ho capito. Puoi ripetere?</value>
   </data>
   <data name="TemplateAttachment" xml:space="preserve">
     <value>Inserisci un allegato per {&amp;}</value>
@@ -116,15 +116,15 @@
     <value>Inserisci una raccolta di allegati per {&amp;}</value>
   </data>
   <data name="TemplateAttachmentCollectionDescription" xml:space="preserve">
-    <value>{0} allegati collegati.</value>
+    <value>{0} allegati sono stati collegati.</value>
     <comment>0-attachments count</comment>
   </data>
   <data name="TemplateAttachmentCollectionHelp" xml:space="preserve">
-    <value>Puoi presentare uno o più allegati.{0}</value>
+    <value>Puoi inserire uno o più allegati.{0}</value>
     <comment>0-dynamic help from attachment class</comment>
   </data>
   <data name="TemplateAttachmentDescription" xml:space="preserve">
-    <value>Allegato denominato '{0}' con il tipo di contenuto '{1}'.</value>
+    <value>Allegato '{0}' di tipo '{1}'.</value>
     <comment>0-attachment name, 1-attachment content-type</comment>
   </data>
   <data name="TemplateAttachmentHelp" xml:space="preserve">
@@ -132,14 +132,14 @@
     <comment>0-dynamic help from attachment class</comment>
   </data>
   <data name="TemplateBool" xml:space="preserve">
-    <value>Desideri {&amp;}? {||}</value>
+    <value>Vuoi {&amp;}? {||}</value>
   </data>
   <data name="TemplateBoolHelp" xml:space="preserve">
-    <value>Inserisci "si" oppure "no"{?,{0}}.</value>
+    <value>Rispondi "si" o "no"{?,{0}}.</value>
     <comment>0-current choice, 1-no preference</comment>
   </data>
   <data name="TemplateClarify" xml:space="preserve">
-    <value>Cosa intendevi con "{0}",come valore per il campo "{&amp;}"? {||}</value>
+    <value>Cosa intendevi con "{0}", come valore per il campo "{&amp;}"? {||}</value>
     <comment>0-term being clarified</comment>
   </data>
   <data name="TemplateCurrentChoice" xml:space="preserve">
@@ -197,7 +197,7 @@
     <comment>0-recognizer help, 1-command help</comment>
   </data>
   <data name="TemplateHelpClarify" xml:space="preserve">
-    <value>Stai chiarendo un valore per il campo "{&amp;}". Risposte possibili:
+    <value>Stai specificando un valore per il campo "{&amp;}". Risposte possibili:
 {0}
 {1}</value>
     <comment>0-recognizer help, 1-command help</comment>
@@ -266,37 +266,37 @@
     <value>Non specificato</value>
   </data>
   <data name="TemplateConfirmation" xml:space="preserve">
-    <value>Questa è la vostra scelta? 
+    <value>Confermi questa scelta? 
 {*}</value>
   </data>
   <data name="Navigation" xml:space="preserve">
-    <value>Nome campo</value>
+    <value>Nome del campo</value>
   </data>
   <data name="TooManyAttempts" xml:space="preserve">
-    <value>troppi tentativi</value>
+    <value>Troppi tentativi</value>
   </data>
   <data name="UserProfileDeleted" xml:space="preserve">
-    <value>Profilo di utente cancellato!</value>
+    <value>Profilo utente cancellato!</value>
   </data>
   <data name="Confirmation" xml:space="preserve">
     <value>Conferma</value>
   </data>
   <data name="UnhandledExceptionToUser" xml:space="preserve">
-    <value>Ci dispiace,il mio codice di bot sta riscontrando un problema.</value>
+    <value>Mi spiace, ma il mio codice ha avuto un problema.</value>
   </data>
   <data name="NumberExpression" xml:space="preserve">
     <value>[+-]?(?:\d+\.?\d*|\d*\.?\d+)</value>
   </data>
   <data name="NumberOrdinals" xml:space="preserve">
-    <value>1=1,in primo luogo,prima una|2=2a,secondo,secondo uno|3=3,in terzo luogo,terzo|4=4 °,quarto,quarto|5=5,quinto,quinto|6=6,sesto,Sesto|7=7th,settimo,settimo|8=8,l'ottavo,ottavo uno|9=9,nono,Nona|10=10,decimo,decimo uno</value>
+    <value>1=1,primo,prima|2=2a,secondo,seconda|3=3a,terzo,terza|4=4a,quarto,quarta|5=5a,quinto,quinta|6=6a,sesto,sesta|7=7a,settimo,settima|8=8a,ottavo,ottava|9=9a,nono,nona|10=10,decimo,decima</value>
   </data>
   <data name="NumberReverseOrdinals" xml:space="preserve">
-    <value>-1=ultimo,ultimo|-2=vicino all'ultimo secondo per ultimo,secondo da ultimo|-3=terzo terzo all'ultimo,da ultimo|-4=quarto quarto all'ultimo,da ultimo|-5=fith quinto all'ultimo,da ultimo</value>
+    <value>-1=ultimo,ultima|-2=penultimo,penumultima|-3=terzultimo,terzultima|-4=quartultimo,quartultima|-5=quintultimo,quintultima</value>
   </data>
   <data name="BooleanChoices" xml:space="preserve">
-    <value>true=y,sì,sì,certo,ok,\u1f44d,\u1f44c|false=n,no,no,\u1f44e,\\u270b,\\u1f590</value>
+    <value>true=y,sì,si,certo,ok,confermo,\u1f44d,\u1f44c|false=n,no,\u1f44e,\u270b,\u1f590</value>
   </data>
   <data name="NumberTerms" xml:space="preserve">
-    <value>0=zero|1=uno|2=due|3=tre|4=quattro|5=cinque|6=six|7=sette|8=otto|9=nove|10=dieci|11=undici|12=dodici|13=tredici|14=quattordici|15=quindici|16=sedici|17=diciassette|18=diciotto|19=diciannove|20=venti</value>
+    <value>0=zero|1=uno|2=due|3=tre|4=quattro|5=cinque|6=sei|7=sette|8=otto|9=nove|10=dieci|11=undici|12=dodici|13=tredici|14=quattordici|15=quindici|16=sedici|17=diciassette|18=diciotto|19=diciannove|20=venti|100=cento|1000=mille|10000=diecimila</value>
   </data>
 </root>
