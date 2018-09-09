@@ -53,7 +53,7 @@ export class WaterfallDialog extends Dialog {
     constructor(steps: IDialogWaterfallStep|IDialogWaterfallStep[]) {
         super();
         if (steps) {
-            this.steps = Array.isArray(steps) ? steps : [steps];
+            this.steps = steps instanceof Array ? steps : [steps];
         } else {
             this.steps = [];
         }
