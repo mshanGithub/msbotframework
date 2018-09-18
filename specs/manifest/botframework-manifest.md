@@ -120,7 +120,7 @@ The most common use for manifest APIs is as a way to accept manifests as part of
 
 `M3002`: Registries SHOULD allow raw manifests to be downloaded, even if upload is not supported.
 
-`M3003`: Unless otherwise noted, registries SHOULD accept the entire manifest or reject it entirely. Registries SHOULD NOT omit fields that are understood but fail to meet syntax or policy requirements. Registries MAY ignore fields they do not understand.
+`M3003`: Unless otherwise noted, registries SHOULD accept the entire manifest or reject it entirely. Registries SHOULD NOT ignore fields that are understood but fail to meet syntax or policy requirements. Registries SHOULD ignore fields they do not understand.
 
 Frequently, registries accept manifests in order to list bots for a directory or repository. In these cases, the assignment of IDs is sometimes allowed only by the registry itself.
 
@@ -357,6 +357,9 @@ The `properties` field contains additional properties to be supplied to the serv
 7. [RFC 2397](https://tools.ietf.org/html/rfc2397)
 
 # Appendix I - Changes
+
+## 2018-09-18 - dandris@microsoft.com
+* Revise `M3003` to improve parsing behavior
 
 ## 2018-09-06 - dandris@microsoft.com
 * Rearranged triggers into own section
