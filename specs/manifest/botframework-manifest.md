@@ -182,9 +182,29 @@ An action advertisement is not a guarantee that the bot can successfully service
 
 ### Publishing fields
 
-The publishing section contains information about how the bot is published into a registry, typically for discovery by users. The name, structure, and meaning of the fields are established by the registry.
+The publishing section contains information about how the bot is published into a registry, typically for discovery by users. The name, structure, and meaning of the fields are established by the registry. See [Appendix II](#Appendix-II---Bot-Framework-registry) for details on the central Bot Framework registry.
+
+This section refers to *publishing fields*. *Publishing fields* are the set of fields defined by a particular registry. These fields are disjoint from the [identity fields](#Identity-fields) and [action fields](#Action-fields) defined in separate sections of this specification.
 
 `M4800`: Writers SHOULD only include publishing fields applicable to the registry where the manifest is intended to be consumed. If the manifest is not intended for consumption within a registry, writers SHOULD NOT include any publishing fields.
+
+Regsitries accept extended registration data published as extra fields in the manifest root.
+
+`M4801`: Registries MAY define zero or more top-level field names with corresponding type and meaning.
+
+`M4802`: Registries SHOULD NOT extend fields within non-publishing fields.
+
+Some registries accept a monolithic manifest payload containing all registration data for a bot. Others apply the data in pieces. The decision of which fields appear in which part is made by the registry, and that decision typically takes into consideration grouping of related fields, the ability to commit fields in a single atomic operation, the size of fields, etc. Additional requirements for manifest division appear below.
+
+`M4810`: Registries MAY require manifests to be submitted as a single document.
+
+`M4811`: Registries MAY require manifests to be submitted in pieces. If so, the manifest SHOULD keep [identity fields](#Identity-fields) and [action fields](#Action-fields) in one part and separate only publishing fields into one or more additional parts.
+
+`M4812`: Registries SHOULD produce simple rules for dividing manifests, such as separating publishing fields into distinct documents.
+
+`M4813`: Manifest part definitions MAY all include the [`id`](#Id) field. Manifest part definitions SHOULD NOT duplicate fields other than `id` in multiple parts.
+
+`M4814`: Manifest part definitions MUST provide clear guidance on how to divide a manifest into parts and how to reconstitute the original manifest.
 
 ## Complex types
 
@@ -360,6 +380,7 @@ The `properties` field contains additional properties to be supplied to the serv
 
 ## 2018-09-18 - dandris@microsoft.com
 * Revise `M3003` to improve parsing behavior
+* Expand registry section and add [Appendix II](#Appendix-II---Bot-Framework-registry)
 
 ## 2018-09-06 - dandris@microsoft.com
 * Rearranged triggers into own section
@@ -384,3 +405,41 @@ The `properties` field contains additional properties to be supplied to the serv
 ## 2018-07-25 - dandris@microsoft.com
 
 * Initial draft
+
+## Appendix II - Bot Framework registry
+
+The manifest format provides a generic mechanism for describing a bot. Sometimes bots are submitted to a central registry, such as the [Bot Framework portal](https://dev.botframework.com), and sometimes they are combined together as skills as part of an agent developed in source code. The registry is different in these two cases; for the former, the registry accepts data about Bot Framework channels such as Skype and Cortana; in the latter, it accepts data used to compose bots/skills together as an agent (which can later be published as a bot on its own).
+
+This section describes characteristics specific to the [Bot Framework registry](https://botframework.com).
+
+### Structure
+
+Manifests intended for the [Bot Framework registry](https://botframework.com) have one or more parts:
+* A mandatory *core part* comprising of [identity fields](#Identity-fields) and [action fields](#Action-fields) defined in this specification
+* One or more *channel parts* defined below
+
+The total number of parts for a Bot Framework manifest is `N+1`, where `N` is the number of channels included.
+
+A convention for storing these files on disks is to use the bot's ID as a core filename and the channel ID for each associated manifest part. For example:
+`bot.man` contains core properties for the manifest for ID `bot`
+`bot-skype.man` contains Skype properties
+`bot-cortana.man` contains Cortana properties
+
+### Channels
+
+Bot Framework defines 13 channels. The list of channels may change over time. Each channel is expressed in a top-level field whose name is the channel ID, in accordance with `M4801`. The schema for each channel is defined in corresponding JSON schema files.
+* `cortana`
+* `directline`
+* `email`
+* `facebook`
+* `groupme`
+* `kik`
+* `slack`
+* `teams`
+* `telegram`
+* `skype`
+* `skypeforbusiness`
+* `sms`
+* `webchat`
+
+Tooling used to interact with the Bot Framework service, such as the [Bot Service Azure CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/AzureCli), expect manifests in this format.
