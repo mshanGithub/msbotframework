@@ -1,36 +1,42 @@
-# Bot Builder SDK 
+# Bot Builder 
 
-The Bot Builder SDK enables you to build bots that support different types of interactions with users. You can design conversations in your bot to be freeform. Your bot can also have more guided interactions where it provides the user choices or actions. The conversation can use simple text or more complex rich cards that contain text, images, and action buttons. You can add natural language interactions and questions and answers, which let your users interact with your bots in a natural way.
+The Bot Builder comprises of SDK and tools that enables you to build and connect intelligent bots that interact naturally wherever your users are talking, from text/sms to Skype, Slack, Office 365 mail and other popular services. You can build bots that converse free form or your bot can also have more guided interactions where it provides the user choices or possible actions. The conversation can use simple text or more complex rich cards that contain text, images, and action buttons. You can add natural language interactions and questions and answers, which let your users interact with your bots in a natural way.
 
-![Bot Framework](https://botframework.blob.core.windows.net/web/images/bot-framework.png)
+Bot Builder provides the most comprehensive experience for building conversation applications and includes the following SDKs and tools:
 
-The Bot Builder includes a set of [command line tools](https://github.com/microsoft/botbuilder-tools) to streamline end-to-end conversation centric development experience, and an [emulator](https://github.com/microsoft/botframework-emulator) for debugging your bot locally or in the cloud. 
+- Bot Builder V4 SDK
+    - [**C#** (stable release)](https://github.com/microsoft/botbuilder-dotnet)
+    - [**JS** (stable release)](https://github.com/microsoft/botbuilder-js)
+    - [**Java** (preview release)](https://github.com/microsoft/botbuilder-java)
+    - [**Python** (preview release)](https://github.com/microsoft/botbuilder-python).
+- Bot Builder V3 SDK 
+    - Has been migrated to the [BotBuilder-V3](https://github.com/microsoft/botbuilder-v3) repository.
+- Bot Framework Emulator 
+    - [Bot Framework **V4 Emulator** (preview release)](https://github.com/microsoft/botframework-emulator).
+    - [Bot Frameowrk **V3 Emulator** (stable release)](https://github.com/Microsoft/BotFramework-Emulator/releases/tag/v3.5.36)
+- Bot Builder CLI tools (**stable release**)
+    - [Chatdown CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/Chatdown)
+    - [MSBot CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/MSBot)
+    - [Ludown CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/Ludown)
+    - [LUIS CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/LUIS)
+    - [QnAMaker CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/QnAMaker)
+    - [Dispatch CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/Dispatch)
+    - [LuisGen CLI](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/LUISGen)
+- Bot Framework webchat
+    - [Available here](https://github.com/microsoft/botframework-webchat)
 
-## Get started with Bot Builder v4 (Preview) 
 
-*Bot Builder SDK v4 is the latest SDK for building bot applications. It is in **Preview** state. Production bots should continue to be developed using the **v3 SDK** - [csharp](CSharp), [node](Node).*
-
-It is easy to build your first Bot. You can create a bot with [Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart?view=azure-bot-service-4.0). Click [here](https://account.azure.com/signup) if you need a trial Azure subscription. 
-
-You can create a bot with Bot Builder SDK using your favorite language: 
-- [.NET](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-sdk-quickstart?view=azure-bot-service-4.0)
-- [JavaScript](https://docs.microsoft.com/en-us/azure/bot-service/javascript/bot-builder-javascript-quickstart?view=azure-bot-service-4.0)
-- [Python](https://docs.microsoft.com/en-us/azure/bot-service/python/bot-builder-python-quickstart?view=azure-bot-service-4.0)
-- [Java](https://docs.microsoft.com/en-us/azure/bot-service/java/bot-builder-java-quickstart?view=azure-bot-service-4.0)
+Please see [here](https://aka.ms/BotBuilderOverview) for an overview of the end-to-end bot development workflow. To get started, you can create a bot with [Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart?view=azure-bot-service-4.0). Click [here](https://account.azure.com/signup) if you need a trial Azure subscription. 
 
 ## Documentation
-Visit azure.com for the primary [Azure Bot Service documentation page](https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0) to learn about building bots using Bot Builder. There is additional documentation on the SDK, oriented towards contributors. The SDK currently supports four programing language: 
+Visit azure.com for the primary [Azure Bot Service documentation page](https://docs.microsoft.com/en-us/azure/bot-service/) to learn about building bots using Bot Builder. There is additional documentation on the SDK, oriented towards contributors. The SDK currently supports four programing language: 
 - [.NET](https://github.com/Microsoft/botbuilder-dotnet/wiki)
 - [JavaScript](https://github.com/microsoft/botbuilder-js/wiki)
-- [Python](https://github.com/Microsoft/botbuilder-python/wiki/Overview)
+- [Python](https://github.com/Microsoft/botbuilder-python/wiki)
 - [Java](https://github.com/Microsoft/botbuilder-java/wiki)
 
 ## Samples
-Bot builder SDK v4 (preview) includes samples for all supported languages:
--  [.NET](https://github.com/Microsoft/botbuilder-dotnet/tree/master/samples-final)
--  [JavaScript](https://github.com/Microsoft/botbuilder-js/tree/master/samples)
- - [Python](https://github.com/Microsoft/botbuilder-python/tree/master/samples)
-- [Java](https://github.com/Microsoft/botbuilder-java/tree/master/samples)
+A rich set of samples are available at the [BotBuilder-Samples](https://github.com/microsoft/botbuilder-samples) repository.
 
 ## Questions and Help 
 If you have questions about Bot Builder SDK v3 or v4 Preview or using Azure Bot Service, we encourage you to reach out to the community and Azure Bot Service dev team for help.
@@ -44,49 +50,47 @@ We track functional issues and features asks for and Bot Builder and Azure Bot S
 
 |Item|Description|Link|
 |----|-----|-----|
-|SDK v3 (.NET and JS)| core bot runtime, abstractions, prompts, dialogs, FormFlow, etc. | [File an issue](https://github.com/Microsoft/BotBuilder/issues) |
-|SDK v4 .net| core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA| [File an issue](https://github.com/Microsoft/botbuilder-dotnet/tree/master/libraries) |
+|SDK v3 (.NET and JS)| core bot runtime, abstractions, prompts, dialogs, FormFlow, etc. | [File an issue](https://github.com/Microsoft/BotBuilder-v3/issues) |
+|SDK v4 .net| core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA| [File an issue](https://github.com/Microsoft/botbuilder-dotnet/issues) |
 |SDK v4 JavaScript| core bot runtime for JavaScript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-js/issues) |
 |SDK v4 Python| core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-python/issues) |
 |SDK v4 Java| core bot runtime for Java, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue]( https://github.com/Microsoft/botbuilder-java/issues)|
-|Documentation | Docs for Bot Builder and Azure Bot Service | [File an issue](https://github.com/Microsoft/BotBuilder/issues)|
 |CLI tools| MSBot, chatdown, ludown, LUIS, LUISGen, QnA Maker, dispatch  | [File an issue](https://github.com/microsoft/botbuilder-tools/issues)|
-|Emulator| view transcripts, connect to services, debug your bot | [File an issue](https://github.com/Microsoft/BotFramework-Emulator/issues)| 
-
-## Helpful links
-### GitHub repositories 
-- [SDK v3 (.NET and node)](https://github.com/Microsoft/BotBuilder/tree/master/CSharp)
-- [SDK v4 - .NET](https://github.com/Microsoft/botbuilder-dotnet)
-- [SDK v4 - JavaScript](https://github.com/Microsoft/botbuilder-js)
-- [SDK v4 - Python](https://github.com/Microsoft/botbuilder-python)
-- [SDK v4 - Java](https://github.com/Microsoft/botbuilder-java)
-- [Bot Builder tools](https://github.com/Microsoft/botbuilder-tools)
-- [Bot Builder Emulator](https://github.com/Microsoft/BotFramework-Emulator) 
-
-### Documentation 
-- [SDK v3](https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-3.0)
-- [SDK v4](https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0)
+|Emulator| Test and debug bots running locally or remote. | [File an issue](https://github.com/Microsoft/BotFramework-Emulator/issues)| 
+|Webchat | Embeddable web chat control for the Microsoft Bot Framework | [File an issue](https://github.com/Microsoft/BotBuilder/issues)|
 
 ## Adding intelligence to your bot
-Your bot can provide a great conversational experience without using any Azure Cognitive Services. You can increase your customers' delight with adding a more natural interaction using one or multiple Azure Cognitive Services.  The following are common services integrated to bots: 
+With the power of [Azure Cognitive Services](https://azure.microsoft.com/services/cognitive-services/), your bots can interact with your customers in more human ways. The following are common services that bots utilize: 
 - [LUIS](https://www.luis.ai)
 - [QnA Maker](https://www.qnamaker.ai/)
 - [Speech](https://azure.microsoft.com/services/cognitive-services/directory/speech/)
-- [Personality Chat](https://github.com/Microsoft/BotBuilder-PersonalityChat) - Handles Small-Talk/Chitchat for any bot, in line with a distinct personality.
-- all [Azure Cognitive Services](https://azure.microsoft.com/services/cognitive-services/)
-
-## Bot Builder SDK v3
-Production bots should continue to be developed using the [v3 SDK](https://github.com/Microsoft/BotBuilder/tree/master/CSharp).
-
-**[Review the documentation](http://docs.microsoft.com/en-us/bot-framework)** to get started with the Bot Builder SDK!
-
-Get started quickly with our samples:
-
-* Bot Builder samples [GitHub repo](https://github.com/Microsoft/BotBuilder-Samples)
-* More samples are available within the SDK [C#](https://github.com/Microsoft/BotBuilder/tree/master/CSharp/Samples), [Node.js](https://github.com/Microsoft/BotBuilder/tree/master/Node/examples)
 
 Join the conversation on **[Gitter](https://gitter.im/Microsoft/BotBuilder)**.
 
 See all the support options **[here](https://docs.microsoft.com/en-us/bot-framework/resources-support)**.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.microsoft.com.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Reporting Security Issues
+Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the [MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
+
+## License
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the [MIT](https://github.com/Microsoft/vscode/blob/master/LICENSE.txt) License.
+
