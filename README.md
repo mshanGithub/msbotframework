@@ -1,6 +1,6 @@
 # Bot Builder 
 
-The Bot Builder comprises of SDK and tools that enables you to build and connect intelligent bots that interact naturally wherever your users are talking, from text/sms to Skype, Slack, Office 365 mail and other popular services. You can build bots that converse free form or your bot can also have more guided interactions where it provides the user choices or possible actions. The conversation can use simple text or more complex rich cards that contain text, images, and action buttons. You can add natural language interactions and questions and answers, which let your users interact with your bots in a natural way.
+Bot Builder is comprised of SDK and tools that enable you to build and connect intelligent bots that interact naturally wherever your users are talking, from text/sms to Skype, Slack, Office 365 mail and other popular services. You can build bots that converse free-form or your bot can also have more guided interactions where it provides the user choices or possible actions. The conversation can use simple text or more complex rich cards that contain text, images, and action buttons. You can add natural language interactions and questions and answers, which let your users interact with your bots in a natural way.
 
 Bot Builder provides the most comprehensive experience for building conversation applications and includes the following SDKs and tools:
 
@@ -9,8 +9,6 @@ Bot Builder provides the most comprehensive experience for building conversation
     - [**JS** (stable release)](https://github.com/microsoft/botbuilder-js)
     - [**Java** (preview release)](https://github.com/microsoft/botbuilder-java)
     - [**Python** (preview release)](https://github.com/microsoft/botbuilder-python).
-- Bot Builder V3 SDK 
-    - Has been migrated to the [BotBuilder-V3](https://github.com/microsoft/botbuilder-v3) repository.
 - Bot Framework Emulator 
     - [Bot Framework **V4 Emulator** (preview release)](https://github.com/microsoft/botframework-emulator).
     - [Bot Frameowrk **V3 Emulator** (stable release)](https://github.com/Microsoft/BotFramework-Emulator/releases/tag/v3.5.36)
@@ -70,6 +68,12 @@ Join the conversation on **[Gitter](https://gitter.im/Microsoft/BotBuilder)**.
 See all the support options **[here](https://docs.microsoft.com/en-us/bot-framework/resources-support)**.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Prior releases
+- Bot Builder V3 SDK 
+    - Has been migrated to the [BotBuilder-V3](https://github.com/microsoft/botbuilder-v3) repository.
+- Bot Framework Emulator 
+    - [Bot Frameowrk **V3 Emulator** (stable release)](https://github.com/Microsoft/BotFramework-Emulator/releases/tag/v3.5.36)
 
 ## Contributing
 
