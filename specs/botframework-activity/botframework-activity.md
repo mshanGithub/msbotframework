@@ -41,9 +41,9 @@ This document provides meanings for each type of activity, and describes the req
 
 There are three roles of consequence in this specification: clients, which send and receive activities on behalf of users; bots, which send and receive activities and are typically automated; and the channel, which stores and forwards activities between clients and bots.
 
-Although this specification requires activities to be transmitted between roles, the exact nature of that transmission is not described here. This may be found instead in the companion [Bot Framework Protocol](BotFramework-Protocol.md) specification [[1](#References)].
+Although this specification requires activities to be transmitted between roles, the exact nature of that transmission is not described here. This may be found instead in the companion [Bot Framework Protocol](../botframework-protocol/botframework-protocol.md) specification [[1](#References)].
 
-For compactness, visual interactive cards are not defined in this specification. Instead, these are defined within the [Bot Framework Cards](BotFramework-Cards.md) [[10](#References)] and [Adaptive Cards](https://adaptivecards.io) [[11](#References)] specifications. These cards, and other undefined card types, may be included as attachments within Bot Framework activities.
+For compactness, visual interactive cards are not defined in this specification. Instead, these are defined within the [Bot Framework Cards](botframework-cards.md) [[10](#References)] and [Adaptive Cards](https://adaptivecards.io) [[11](#References)] specifications. These cards, and other undefined card types, may be included as attachments within Bot Framework activities.
 
 ### Requirements
 
@@ -110,17 +110,21 @@ This section defines the requirements for the basic structure of the activity ob
 
 Activity objects include a flat list of name/value pairs, called fields. Fields may be primitive types. JSON is used as the common interchange format and although not all activities must be serialized to JSON at all times, they must be serializable to it. This allows implementations to rely on a simple set of conventions for handling known and unknown activity fields.
 
-`A2001`: Activities MUST be serializable to the JSON format, including adherence to e.g. field uniqueness constraints.
+`A2001`: Activities MUST be serializable to the JSON format defined in [RFC 4627](http://www.ietf.org/rfc/rfc4627.txt) [[15](#References)], including adherence to e.g. field uniqueness constraints.
 
 `A2002`: Receivers MAY allow improperly-cased field names, although this is not required. Receivers MAY reject activities that do not include fields with the proper casing.
-
-`A2003`: Receivers MAY reject activities that contain field values whose types do not match the value types described in this specification.
 
 `A2004`: Unless otherwise noted, senders SHOULD NOT include empty string values for string fields.
 
 `A2005`: Unless otherwise noted, senders MAY include additional fields within the activity or any nested complex objects. Receivers MUST accept fields they do not understand.
 
 `A2006`: Receivers SHOULD accept events of types they do not understand.
+
+This document defines data types for fields used within the Activity object. These type definitions include a syntactic type (e.g. `string` or `complex type`) and in the case of strings, an optional format (e.g. [ISO 8601 date time format]((https://www.iso.org/iso-8601-date-and-time-format.html) [[3](#References)]).
+
+`A2007`: Senders MUST adhere to data type definitions contained in this document.
+
+`A2003`: Receivers SHOULD reject activities that contain field values whose types do not match the data types described in this specification.
 
 ### Type
 
@@ -1016,13 +1020,11 @@ The `name` field is an optional, friendly name within the channel. The value of 
 
 The `aadObjectId` field is an optional ID corresponding to the account's object ID within Azure Active Directory (AAD). The value of the `aadObjectId` field is a string.
 
-#### Channel account Role
+#### Channel account role
 
-The `role` field indicates whether entity behind the account is a user or bot. 
+The `role` field indicates whether entity behind the account is a user or bot. This field is intended for use in the [Transcript format](../transcript/transcript.md) [[16](#References)] to distinguish between activities sent by users and activities sent by bots. The value of the `role` field is a string.
 
-`A7511`: Channels and Receivers SHOULD ignore this field.  It's metadata intended for transcripts to distinguish if a message is from the user or bot.
-
-
+`A7511`: Senders SHOULD NOT include this field. Receivers SHOULD ignore this field.
 
 ### Conversation account
 
@@ -1050,11 +1052,11 @@ The `isGroup` field indicates whether the conversation contains more than two pa
 
 If the channel distinguishes between types of conversations (e.g. group vs. personal), the `conversationType` field indicates the type of the conversation. This field augments the lower-fidelity [`isGroup`](#Conversation-account-is-group) field. The value of the `conversationType` field is a string and its meaning is defined by the channel in which the type occurs.
 
-#### Conversation account Role
+#### Conversation account role
 
-The `role` field indicates whether entity behind the account is a user or bot.
+The `role` field indicates whether entity behind the account is a user or bot. This field is intended for use in the [Transcript format](../transcript/transcript.md) [[16](#References)] to distinguish between activities sent by users and activities sent by bots. The value of the `role` field is a string.
 
-`A7512`: Channels and Receivers SHOULD ignore this field.  It's metadata intended for transcripts to distinguish if a message is from the user or bot.
+`A7512`:Senders SHOULD NOT include this field. Receivers SHOULD ignore this field.
 
 ### 
 
@@ -1151,26 +1153,33 @@ The `entities` field contains entities associated with this action. The value of
 ## References
 
 1. [Bot Framework Protocol](../botframework-protocol/botframework-protocol.md)
-2. [RFC 2119](https://tools.ietf.org/html/rfc2119)
-3. [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)
-4. [RFC 3987](https://tools.ietf.org/html/rfc3987)
+2. [RFC 2119](https://tools.ietf.org/html/rfc2119) -- *Key words for use in RFCs to Indicate Requirement Levels*
+3. [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) -- *Date and time format*
+4. [RFC 3987](https://tools.ietf.org/html/rfc3987) -- *Internationalized Resource Identifiers (IRIs)*
 5. [Markdown](https://daringfireball.net/projects/markdown/)
-6. [ISO 639](https://www.iso.org/iso-639-language-codes.html)
-7. [SSML](https://www.w3.org/TR/speech-synthesis/)
-8. [XML](https://www.w3.org/TR/xml/)
+6. [ISO 639](https://www.iso.org/iso-639-language-codes.html) -- *Language codes*
+7. [SSML](https://www.w3.org/TR/speech-synthesis/) -- *Speech Synthesis Markup Language*
+8. [XML](https://www.w3.org/TR/xml/) -- *Extensible Markup Language*
 9. [MIME media types](https://www.iana.org/assignments/media-types/media-types.xhtml)
-10. [RFC 2397](https://tools.ietf.org/html/rfc2397)
-11. [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html)
+10. [RFC 2397](https://tools.ietf.org/html/rfc2397) -- *The "data" URL scheme*
+11. [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) -- *Country codes*
 12. [Bot Framework Cards](botframework-cards.md)
 13. [Adaptive Cards](https://adaptivecards.io)
 14. [Bot Framework Manifest](../botframework-manifest/botframework-manifest.md)
+15. [RFC 4627](http://www.ietf.org/rfc/rfc4627.txt) -- *The application/json Media Type for JavaScript Object Notation (JSON)*
+16. [Transcript](../transcript/transcript.md)
 
 # Appendix I - Changes
 
+## 2018-09-23 - dandris@microsoft.com
+
+* Revised reference descriptions and links
+* Clarified syntatic rules, revised `A2003`, added `A2007`
+
 ## 2018-08-27 - daveta@microsoft.com
 
-* Added Channel Account Role property
-* Added Conversation Account Role property
+* Added [Channel account role](#Channel-account-role) property
+* Added [Conversation account role](#Conversation-account-role) property
 
 ## 2018-07-17 - dandris@microsoft.com
 
