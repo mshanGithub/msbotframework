@@ -262,13 +262,19 @@ The `name` field uniquely defines the slot within this action. The value of the 
 
 `M5212`: Writers MUST NOT emit entities for two slots with the same name.
 
-#### Desired type
+#### Types
 
-The `desiredType` field defines the slot's desired type. The value of the `desiredType` field is a URI [[5](#References)] within a string.
+The `types` field defines types of entities this action accepts for this slot. The action prefers entities of types in the order specified; the most-desired entity type is expressed first, followed by fallback types that the action can consume. The value of the `types` field is an array of strings containing IRIs [[5](#References)].
 
-`M5220`: Writers MUST include a `desiredType` for each slot definition.
+`M5220`: Writers MUST include at least one element within the `types` field for each slot definition.
 
-`M5221`: Readers SHOULD use ordinal comparison to establish equivalency of the value of the `desiredType` field. Readers SHOULD NOT use URI ladder comparisons.
+`M5221`: Readers SHOULD use ordinal comparison to establish equivalency of each value of the `types` field. Readers SHOULD NOT use URI ladder comparisons.
+
+`M5222`: Readers and writers MUST preserve the order of contents within the `types` field.
+
+Slot and entity types are typically expressed as [schema.org](https://schema.org) [[8](#References)] types, private entity types defined as URIs/IRIs, or a short list of primitives defined here. Currently the only primitive types are `string` and `number`.
+
+`M5223`: Writers MAY use short names to refer to primitive types: `string` and `number`. Writers MUST use absolute IRIs for all other types.
 
 ### Trigger set
 
@@ -314,19 +320,19 @@ The `name` field identifies the referenced entity. The value of the `name` field
 
 #### Start position
 
-The `startPosition` field identifies the position within the [`text`](#Text) field where the first character of the entity is found. The value of the `startPosition` field is of type number.
+The `startIndex` field identifies the position within the [`text`](#Text) field where the first character of the entity is found. The value of the `startIndex` field is of type number.
 
 #### End position
 
-The `endPosition` field identifies the position within the [`text`](#Text) field where the last character of the entity is found. The value of the `endPosition` field is of type number.
+The `endIndex` field identifies the position within the [`text`](#Text) field after the last character of the entity is found. The value of the `endIndex` field is of type number.
 
-`M5430`: Writers MUST include `name`, `startPosition`, and `endPosition` in all `entityReference` objects.
+`M5430`: Writers MUST include `name`, `startIndex`, and `endIndex` in all `entityReference` objects.
 
-`M5431`: Writers MUST only use non-negative integer numbers for the value of `startPosition` and `endPosition`.
+`M5431`: Writers MUST only use non-negative integer numbers for the value of `startIndex` and positive integer numbers for the value of `endIndex`.
 
-`M5432`: Writers MUST include `startPosition` and `endPosition` values between 0 and the length of the [`text`](#Text) field.
+`M5432`: Writers MUST include `startIndex` values between 0 (inclusive) and the length of the [`text`](#Text) field (exclusive) and `endIndex` values between 0 (exclusive) and the length of the [`text`](#Text) field (inclusive).
 
-`M5433`: Writers MUST NOT include `endPosition` values that are less than or equal to `startPosition` values.
+`M5433`: Writers MUST NOT include `endIndex` values that are less than or equal to `startIndex` values.
 
 `M5434`: Readers SHOULD reject any `entityReference` objects that do not meet the above criteria.
 
@@ -375,8 +381,13 @@ The `properties` field contains additional properties to be supplied to the serv
 5. [RFC 3987](https://tools.ietf.org/html/rfc3987)
 6. [ISO 639](https://www.iso.org/iso-639-language-codes.html)
 7. [RFC 2397](https://tools.ietf.org/html/rfc2397)
+8. [schema.org](https://schema.org)
 
 # Appendix I - Changes
+
+## 2018-09-23 - dandris@microsoft.com
+* Change slot type definition from `desiredType` to list of types
+* Convert `startPosition` and `endPosition` to `startIndex` and `endIndex`
 
 ## 2018-09-18 - dandris@microsoft.com
 * Revise `M3003` to improve parsing behavior
@@ -389,21 +400,17 @@ The `properties` field contains additional properties to be supplied to the serv
 * Renamed action entities to action slots
 
 ## 2018-08-13 - dandris@microsoft.com
-
 * Add omitted text in overview descriptions
 * Revise `M5431` to allow zero
 
 ## 2018-07-31 - dandris@microsoft.com
-
 * Move identity/actions/publishing into distinct sections
 
-## 2018-07-29 - dandris@microsoft.com
-
+# 2018-07-29 - dandris@microsoft.com
 * Added icons back into format
 * Added authentication connections
 
 ## 2018-07-25 - dandris@microsoft.com
-
 * Initial draft
 
 ## Appendix II - Bot Framework registry

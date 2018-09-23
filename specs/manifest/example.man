@@ -26,7 +26,7 @@
                 "description": "Resolve a bug",
                 "slots": [{
                     "name": "bugId",
-                    "desiredType": "number"
+                    "types": [ "http://example.org/bug/id", "number" ]
                 }],
                 "triggers":{
                     "utterances": [{
@@ -37,8 +37,8 @@
                         "text": "resolve bug number 1234",
                         "entities": [{
                             "name": "bugId",
-                            "startPosition": 19,
-                            "endPosition": 22
+                            "startIndex": 19,
+                            "endIndex": 23
                         }]
                     }]
                 }

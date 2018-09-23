@@ -7,7 +7,7 @@
         "msaAppId": { "type": "string" },
         "endpoint": { "type": "string", "format": "uri" },
         "iconUrl": { "type": "string", "format": "uri" },
-        "authenticationConnections": { "type": "array", "items:": { "$ref": "https://botframework.com/schemas/manifest/authenticationConnectionDefinition" } },
+        "authenticationConnections": { "type": "array", "items": { "$ref": "https://botframework.com/schemas/manifest/authenticationConnectionDefinition" } },
         "actions": { "type": "array", "items": { "$ref": "https://botframework.com/schemas/manifest/action" } }
     },
     "definitions": {
@@ -38,7 +38,7 @@
         "slotDefinition": {
             "properties": {
                 "name": { "type": "string" },
-                "desiredType": { "type": "string" }
+                "types": { "type": "array", "items": { "$ref": "string" } }
             }
         },
         "triggerSet": {
