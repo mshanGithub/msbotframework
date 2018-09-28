@@ -1085,9 +1085,9 @@ Some non-Bot-Framework entities may have a preexisting field called `type`. Part
 
 Frequently, entities used within Bot Framework are also expressed elsewhere using [JSON-LD](https://www.w3.org/TR/json-ld/) [[18](#References)]. The entity format is designed to be compatible with JSON-LD contexts, but does not require senders or receivers to implement JSON-LD to successfully process an entity.
 
-`A7603`: Senders MAY include [JSON-LD](https://www.w3.org/TR/json-ld/) [[18](#References)] fields as parts of entities.
+`A7603`: Senders MAY include [JSON-LD](https://www.w3.org/TR/json-ld/) [[18](#References)] fields within entities.
 
-`A7604`: Senders MUST NOT require [JSON-LD](https://www.w3.org/TR/json-ld/) [[18](#References)] processing to parse an entity. This restriction MAY be ignorned if the type definition for the entity explicitly requires support for JSON-LD. In this situation, senders MUST still adhere to `A7613`.
+`A7604`: Senders MUST NOT expect or require [JSON-LD](https://www.w3.org/TR/json-ld/) [[18](#References)] processing to parse an entity.
 
 #### Entity type
 
