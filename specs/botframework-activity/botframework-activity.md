@@ -1101,18 +1101,6 @@ The `type` field is required, and defines the meaning and shape of the entity. `
 
 `A7613`: Senders MUST NOT use relative IRIs within the `type` field, nor require JSON-LD IRI resolution to understand a type identifier.
 
-### Entity instance
-
-The `entityInstance` type references to source information about where the entity was mentioned. This specification includes source data to refer to the `text` field although others may be added in the future. The value of the `$instance` field is a complex object with fields `text`, `startIndex`, and `endIndex`. The `text` field is a string containing a copy of the text within the [`text`](#Text) field in the activity root; `startIndex` is a number containing the index of the first character where `text` is found (inclusive); `endIndex` is a number containing the index after the last character where `text` is found (exclusive).
-
-`A7620`: Senders MUST NOT include the `$instance` field if its `text` field is empty or null or the contents of its `text` field cannot be found within the `text` field in the activity root.
-
-`A7621`: The `startIndex` field MUST be an integer greater than or equal to zero and less than the length of the `text` field in the activity root.
-
-`A7622`: The `endIndex` field MUST be an integer greater than zero and less than or equal to the length of the `text` field in the activity root. Its value MUST be greater than the `startIndex` value.
-
-`A7623`: The contents of the `text` field within `$instance` MUST contain characters ordinally identical to the value of the `text` field in the activity root starting at `startIndex` characters from the beginning and ending immediately before `endIndex` characters from the beginning.
-
 ### Suggested actions
 
 Suggested actions may be sent within message content to create interactive action elements within a client UI.
@@ -1187,7 +1175,7 @@ Entities sent within the semantic action have a specific meaning, defined by the
 
 `A7745`: Senders MAY send entities not listed in the action definition in the [`entities`](#Entities) array in the activity root. Senders SHOULD NOT send these entities in the semnatic action.
 
-The `$instance` field carries metadata about the source of each entity. The keys of this object are identical to the entity names as peers. The values of each key is the corresponding instance metadata of type [entity instance](#Entity-instance).
+The `$instance` field carries metadata about the source of each entity. The keys of this object are identical to the entity names as peers. The values of each key is the corresponding instance metadata of type [`semanticEntityInstance`](#Semantic-entity-instance).
 
 `A7746`: Senders SHOULD include properties within `$instance` for any entities bearing instance metadata.
 
@@ -1226,6 +1214,18 @@ Example of semantic action entities
     }
 }
 ```
+
+### Semantic entity instance
+
+The `semanticEntityInstance` type references to source information about where the entity was mentioned. This specification includes source data to refer to the `text` field although others may be added in the future. The value of the `$instance` field is a complex object with fields `text`, `startIndex`, and `endIndex`. The `text` field is a string containing a copy of the text within the [`text`](#Text) field in the activity root; `startIndex` is a number containing the index of the first character where `text` is found (inclusive); `endIndex` is a number containing the index after the last character where `text` is found (exclusive).
+
+`A7750`: Senders MUST NOT include the `$instance` field if its `text` field is empty or null or the contents of its `text` field cannot be found within the `text` field in the activity root.
+
+`A7751`: The `startIndex` field MUST be an integer greater than or equal to zero and less than the length of the `text` field in the activity root.
+
+`A7752`: The `endIndex` field MUST be an integer greater than zero and less than or equal to the length of the `text` field in the activity root. Its value MUST be greater than the `startIndex` value.
+
+`A7753`: The contents of the `text` field within `$instance` MUST contain characters ordinally identical to the value of the `text` field in the activity root starting at `startIndex` characters from the beginning and ending immediately before `endIndex` characters from the beginning.
 
 ## References
 
