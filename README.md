@@ -97,7 +97,7 @@ Security issues and bugs should be reported privately, via email, to the Microso
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-Licensed under the [MIT](https://github.com/Microsoft/vscode/blob/master/LICENSE.txt) License.
+Licensed under the [MIT](LICENSE) License.
 
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
