@@ -49,7 +49,6 @@ We track functional issues and features asks for and Bot Builder and Azure Bot S
 
 |Item|Description|Link|
 |----|-----|-----|
-|SDK v3 (.NET and JS)| core bot runtime, abstractions, prompts, dialogs, FormFlow, etc. | [File an issue](https://github.com/Microsoft/BotBuilder-v3/issues) |
 |SDK v4 .net| core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA| [File an issue](https://github.com/Microsoft/botbuilder-dotnet/issues) |
 |SDK v4 JavaScript| core bot runtime for JavaScript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-js/issues) |
 |SDK v4 Python| core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-python/issues) |
@@ -57,6 +56,7 @@ We track functional issues and features asks for and Bot Builder and Azure Bot S
 |CLI tools| MSBot, chatdown, ludown, LUIS, LUISGen, QnA Maker, dispatch  | [File an issue](https://github.com/microsoft/botbuilder-tools/issues)|
 |Emulator| Test and debug bots running locally or remote. | [File an issue](https://github.com/Microsoft/BotFramework-Emulator/issues)| 
 |Webchat | Embeddable web chat control for the Microsoft Bot Framework | [File an issue](https://github.com/Microsoft/BotBuilder/issues)|
+|SDK v3 (.NET and JS)| core bot runtime, abstractions, prompts, dialogs, FormFlow, etc. | [File an issue](https://github.com/Microsoft/BotBuilder-v3/issues) |
 
 Join the conversation on **[Gitter](https://gitter.im/Microsoft/BotBuilder)**.
 
