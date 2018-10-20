@@ -1173,7 +1173,7 @@ Actions support dynamic typing. An implementer of an action expresses a list of 
 
 Entities sent within the semantic action have a specific meaning, defined by their name. For example, an action may be named `findRoute` with entities named `source` and `destination`. Sometimes, additional entities are available that do not fit a specific meaning within the action. The root [`entities`](#Entities) array is a suitable location to transmit these entities.
 
-`A7745`: Senders MAY send entities not listed in the action definition in the [`entities`](#Entities) array in the activity root. Senders SHOULD NOT send these entities in the semnatic action.
+`A7745`: Senders MAY send entities not listed in the action definition in the [`entities`](#Entities) array in the activity root. Senders SHOULD NOT send these entities in the semantic action.
 
 The `$instance` field carries metadata about the source of each entity. The keys of this object are identical to the entity names as peers. The values of each key is the corresponding instance metadata of type [`semanticEntityInstance`](#Semantic-entity-instance).
 
@@ -1253,7 +1253,7 @@ The `semanticEntityInstance` type references to source information about where t
 ## 2018-09-27 - dandris@microsoft.com
 
 * Revised reference descriptions and links
-* Clarified syntatic rules, revised `A2003`, added `A2007`
+* Clarified syntactic rules, revised `A2003`, added `A2007`
 * Removed `A7743` as redundant
 * Removed ordering requirement for semantic action entities (`A7741`)
 * Added `$instance` to semantic action entities

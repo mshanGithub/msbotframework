@@ -104,7 +104,7 @@ Cards are identified by a MIME-compatible [[5](#References)] content-type. These
 
 ### Transformations and display
 
-Displaying a card within a client user interface frequently requires the implementer to make specific decisions about how to order and constrain content to match the visual style of the enclosing design. Further, this specification anticipates that these limitations are largely unavoidable and aims to assist implementers in choosing a path that makes graceful degredation of functionality possible.
+Displaying a card within a client user interface frequently requires the implementer to make specific decisions about how to order and constrain content to match the visual style of the enclosing design. Further, this specification anticipates that these limitations are largely unavoidable and aims to assist implementers in choosing a path that makes graceful degradation of functionality possible.
 
 This section provides guidance on which transformations best achieve the goal of preserving the intent of the card.
 

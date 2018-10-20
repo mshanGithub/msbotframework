@@ -100,11 +100,11 @@ Manifests are valid in the ".man" file format described in this section.
 
 ### .man file format
 
-`M2100`: Valid .man files MUST be a serialized JSON enitity.
+`M2100`: Valid .man files MUST be a serialized JSON entity.
 
 `M2101`: Writers SHOULD use UTF-8 encoding for all .man files. Writers SHOULD NOT include byte-order marks (BOM) in .man files. Readers MAY reject .man files that include BOM or encoding other than UTF-8.
 
-`M2102`: For legibilty, writers SHOULD pretty-format JSON so it includes newlines and whitespace.
+`M2102`: For legibility, writers SHOULD pretty-format JSON so it includes newlines and whitespace.
 
 ## Use in APIs
 
@@ -156,13 +156,13 @@ The value of the `endpoint` field is a URL [[5](#References)] within a string.
 
 The `iconUrl` field contains the URL of the bot's icon. The value of the `iconUrl` is a URI [[5](#References)] within a string.
 
-Registries typically expect icon URLs with HTTP or HTTPS schemes, and some registries require HTTPS. For this reason, HTTPS is the most interoperable way to deliver icons. However, alternative delivery mechanisms, such as local files or Data URIs (as defined in [RFC 2397](https://tools.ietf.org/html/rfc2397) [[7](#References)]) may be supported by some regsitries.
+Registries typically expect icon URLs with HTTP or HTTPS schemes, and some registries require HTTPS. For this reason, HTTPS is the most interoperable way to deliver icons. However, alternative delivery mechanisms, such as local files or Data URIs (as defined in [RFC 2397](https://tools.ietf.org/html/rfc2397) [[7](#References)]) may be supported by some registries.
 
 `M4100`: Registries SHOULD accept `iconUrl` values of HTTPS scheme.
 
 ### Authentication connections
 
-Some registars accept definitions for authentication providers that bots can use at runtime to collect sign-in and access consent from users. The configuration for this information is stored in the `authenticationConnections` field. The `authenticationConnections` field is an array of type [`authenticationConnection`](#Authentication-connection)
+Some registrars accept definitions for authentication providers that bots can use at runtime to collect sign-in and access consent from users. The configuration for this information is stored in the `authenticationConnections` field. The `authenticationConnections` field is an array of type [`authenticationConnection`](#Authentication-connection)
 
 ## Action fields
 
@@ -188,7 +188,7 @@ This section refers to *publishing fields*. *Publishing fields* are the set of f
 
 `M4800`: Writers SHOULD only include publishing fields applicable to the registry where the manifest is intended to be consumed. If the manifest is not intended for consumption within a registry, writers SHOULD NOT include any publishing fields.
 
-Regsitries accept extended registration data published as extra fields in the manifest root.
+Registries accept extended registration data published as extra fields in the manifest root.
 
 `M4801`: Registries MAY define zero or more top-level field names with corresponding type and meaning.
 
@@ -352,13 +352,13 @@ The `name` field contains a name used to identify the authentication connection 
 
 #### Authentication connection service provider ID
 
-The `serviceProviderId` field identifies the authentication service providing sign-in functionality. The value of the `serviceProviderId` is of type string and the valid values (and their meanings) are definde by the registry accepting the manifest.
+The `serviceProviderId` field identifies the authentication service providing sign-in functionality. The value of the `serviceProviderId` is of type string and the valid values (and their meanings) are defined by the registry accepting the manifest.
 
 #### Authentication connection client ID
 
 The `clientId` field contains the identifier sent to the authentication service when requesting sign-in. The value of the `clientId` field is of type string.
 
-#### Authnetication connection client secret
+#### Authentication connection client secret
 
 The `clientSecret` field contains the client secret sent to the authentication service when requesting sign-in. The value of the `clientSecret` field is of type string.
 

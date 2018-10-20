@@ -28,7 +28,7 @@ Bot Builder provides the most comprehensive experience for building conversation
 Please see [here](https://aka.ms/BotBuilderOverview) for an overview of the end-to-end bot development workflow. To get started, you can create a bot with [Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart?view=azure-bot-service-4.0). Click [here](https://account.azure.com/signup) if you need a trial Azure subscription. 
 
 ## Documentation
-Visit azure.com for the primary [Azure Bot Service documentation page](https://docs.microsoft.com/en-us/azure/bot-service/) to learn about building bots using Bot Builder. There is additional documentation on the SDK, oriented towards contributors. The SDK currently supports four programing language: 
+Visit azure.com for the primary [Azure Bot Service documentation page](https://docs.microsoft.com/en-us/azure/bot-service/) to learn about building bots using Bot Builder. There is additional documentation on the SDK, oriented towards contributors. The SDK currently supports four programming language: 
 - [.NET](https://github.com/Microsoft/botbuilder-dotnet/wiki)
 - [JavaScript](https://github.com/microsoft/botbuilder-js/wiki)
 - [Python](https://github.com/Microsoft/botbuilder-python/wiki)
@@ -102,4 +102,3 @@ Licensed under the [MIT](LICENSE) License.
 
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-

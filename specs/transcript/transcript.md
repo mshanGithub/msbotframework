@@ -112,7 +112,7 @@ Transcripts are valid either in a well-defined ".transcript" file format, define
 
 The .transcript format is JSON and allows emitters to choose whether to generate a flat array of activities or a complex object containing a flat array. This choice allows for both efficiency and extensibility.
 
-`T2100`: Valid .transcript files MUST be a serialized JSON entity. That entity MUST be either a flat array of activies or a complex object containing a `transcript` field.
+`T2100`: Valid .transcript files MUST be a serialized JSON entity. That entity MUST be either a flat array of activities or a complex object containing a `transcript` field.
 
 `T2101`: Processors MUST support both the array- and the object-based serialization described in `T2100`.
 
