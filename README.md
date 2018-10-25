@@ -56,6 +56,7 @@ We track functional issues and features asks for and Bot Builder and Azure Bot S
 |CLI tools| MSBot, chatdown, ludown, LUIS, LUISGen, QnA Maker, dispatch  | [File an issue](https://github.com/microsoft/botbuilder-tools/issues)|
 |Emulator| Test and debug bots running locally or remote. | [File an issue](https://github.com/Microsoft/BotFramework-Emulator/issues)| 
 |Webchat | Embeddable web chat control for the Microsoft Bot Framework | [File an issue](https://github.com/Microsoft/BotBuilder/issues)|
+|Azure Bot Service & Channels| Bot Framework portal within Microsoft Azure, and the connectivity channels GroupMe, Facebook Messenger, Kik, Skype, Slack, Microsoft Teams, Telegram, text/SMS, Twilio, Cortana, etc. | [File an issue](https://github.com/Microsoft/BotFramework-Services/issues) |
 |SDK v3 (.NET and JS)| core bot runtime, abstractions, prompts, dialogs, FormFlow, etc. | [File an issue](https://github.com/Microsoft/BotBuilder-v3/issues) |
 
 Join the conversation on **[Gitter](https://gitter.im/Microsoft/BotBuilder)**.
