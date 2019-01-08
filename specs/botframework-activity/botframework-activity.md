@@ -549,7 +549,7 @@ The `relatesTo` field references another conversation, and optionally a specific
 
 ## Invoke activity
 
-Invoke activities communicate programmatic information from a client or channel to a bot, and have a corresponding return payload for use within the channel. The meaning of an invoke activity is defined by the `name` field, which is meaningful within the scope of a channel. 
+Invoke activities communicate programmatic information from a client or channel to a bot, and have a corresponding return payload for use within the channel. The meaning of an invoke activity is defined by the `name` field, which is meaningful within the scope of a channel.
 
 Invoke activities are the synchronous counterpart to [event activities](#Event-activity). Event activities are designed to be extensible. Invoke activities differ only in their ability to return response payloads back to the channel; because the channel must decide where and how to process these response payloads, Invoke is useful only in cases where explicit support for each invoke name has been added to the channel. Thus, Invoke is not designed to be a generic application extensibility mechanism.
 
@@ -663,7 +663,7 @@ The `textHighlights` field contains a list of text to highlight in the `text` fi
 
 ## Trace activity
 
-The Trace activity is an activity which the developer inserts in to the stream of activities to represent a point in the developers bot logic. The trace activity typically is logged by transcript history components to become part of a transcript  history.  In remote debugging scenarios the Trace activity can be sent to the client so that the activity can be inspected as part of the debug flow. 
+The Trace activity is an activity which the developer inserts in to the stream of activities to represent a point in the developers bot logic. The trace activity typically is logged by transcript history components to become part of a transcript  history.  In remote debugging scenarios the Trace activity can be sent to the client so that the activity can be inspected as part of the debug flow.
 
 Trace activities are normally not shown to the user, and are internal to transcript logging and developer debugging.
 
@@ -865,11 +865,13 @@ A `messageBack` action represents a text response to be sent via the chat system
 
 `A7353`: If the channel supports storing and transmitting text, the contents of the `text` field of the action MUST be preserved and transmitted in the `text` field of the generated message activity.
 
-`A7352`: If the channel supports storing and transmitting additional programmatic values, the contents of the `value` field MUST be preserved and transmitted in the `value` field of the generated message activity.
+`A7354`: If the channel supports storing and transmitting additional programmatic values, the contents of the `value` field MUST be preserved and transmitted in the `value` field of the generated message activity.
 
-`A7353`: If the channel supports preserving a different value in the chat feed than is sent to bots, it MUST include the `displayText` field in the chat history.
+`A7355`: If the channel supports preserving a different value in the chat feed than is sent to bots, it MUST include the `displayText` field in the chat history.
 
-`A7354`: If the channel does not support `A7353` but does support recording text within the chat feed, it MUST include the `text` field in the chat history.
+`A7356`: If the channel does not support `A7355` but does support recording text within the chat feed, it MUST include the `text` field in the chat history.
+
+`A7357`: The UI control is displayed with `title` and / or `image`. While both of them are optional, at least one of them MUST be specified.
 
 #### IM Back
 
@@ -1075,7 +1077,7 @@ The `role` field indicates whether entity behind the account is a user or bot. T
 
 `A7512`:Senders SHOULD NOT include this field. Receivers SHOULD ignore this field.
 
-### 
+###
 
 ### Entity
 
