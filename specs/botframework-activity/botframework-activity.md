@@ -871,7 +871,9 @@ A `messageBack` action represents a text response to be sent via the chat system
 
 `A7356`: If the channel does not support `A7355` but does support recording text within the chat feed, it MUST include the `text` field in the chat history.
 
-`A7357`: The UI control is displayed with `title` and / or `image`. While both of them are optional, at least one of them MUST be specified.
+`A7357`: The UI control is displayed with `title` and/or `image`. While both of them are optional, at least one of them MUST be specified.
+
+`A7358`: If `text` and `value` are both unspecified, the message SHOULD be sent without content.
 
 #### IM Back
 
