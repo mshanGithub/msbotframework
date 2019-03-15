@@ -1,0 +1,12 @@
+Bot*gmright.bot*
+Bot.<home>
+Bot.@gmright.bot
+Bot.files 
+Bot.point.
+Bot.b.h
+Classname<gmright
+Flag[files_8.9.2]
+Flagname: "gmright.bot"
+Flagpoint: " gmright.bot"
+Open[c:\program ]if .close [c:\program]if 
+Debugging tools 
