@@ -78,7 +78,7 @@ This section outlines the requirements for testing bots using the format "As a *
 
 ### Health checks
 
-- As a DevOps engineering, I'd like to be able to execute tests that would alert me if any of the services used by bot are not working or they are degraded
+- As a DevOps engineer, I'd like to be able to execute tests that would alert me if any of the services used by bot are not working or they are degraded
 
 ### Documentation
 
