@@ -1,7 +1,7 @@
 
-# Testing bots (DRAFT)
+# Testing bots (DRAFT) <!-- omit in toc -->
 
-## Abstract
+# Abstract <!-- omit in toc -->
 
 Testing a conversational application is often complex and it involves several different layers. The guidance, samples and tools required to test bots are diverse and scattered in different projects, documents and samples.  
 
@@ -11,11 +11,6 @@ This document describes the different types of tests that can be used in a conve
 
 ## Table of Contents
 
-<!-- TOC -->
-
-- [Testing bots (DRAFT)](#testing-bots-draft)
-  - [Abstract](#abstract)
-  - [Table of Contents](#table-of-contents)
 - [Tenets](#tenets)
 - [Test types](#test-types)
 - [Testing requirements](#testing-requirements)
@@ -26,16 +21,15 @@ This document describes the different types of tests that can be used in a conve
   - [Health checks](#health-checks)
   - [Documentation](#documentation)
 
-<!-- /TOC -->
-
 # Tenets
 
-- It should be easy and intuitive to create coded unit tests.
-- It should be possible to write unit tests that don't rely on actual cognitive services calls.
-- It should be possible to validate the language models for a bot using tests.
-- Test should take a relative short time to run.
-- Product owners should be able to write functional and language tests without having to write code.
-- Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or Azure DevOps.
+1. It should be easy and intuitive to create coded unit tests.
+2. It should be possible to write unit tests that don't rely on actual cognitive services calls.
+3. It should be possible to validate the language models for a bot using tests.
+4. Test should take a relative short time to run.
+5. Product owners should be able to write functional and language tests without having to write code.
+6. Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or Azure DevOps.
+7. Whenever a test fails, it should be easy to understand the cause of the failure and the test output should be clean of stack traces and tech jargon (although those may still be available on demand).
 
 # Test types
 
@@ -43,19 +37,25 @@ There are several test types involved in bot development and operations:
 
 - **Unit Tests**
   
-  Are written by the developers and normally executed as part of the Continuous Integration build pipeline. Their main purpose is to ensure that the coded logic for a bot executes as expected.
+  Are written by developers and normally executed as part of the Continuous Integration build pipeline. 
+  
+  Their main purpose is to ensure that the coded logic for a bot executes as expected.
 
 - **Natural Language Understanding Tests**
 
-    Are written by developers or business owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified. Typically, these tests target LUIS and QnAMaker.
+    Can be written by developers, NLP engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
+
+    Typically, these tests target LUIS and QnAMaker.
 
 - **Functional tests**
 
-    Alse refered as End to End tests, these tests target the entire bot and its dependent services.
+    Also refered to as End to End tests, these tests target the entire bot and its dependent services. Non-technical audiences should be able to write and execute these type of tests.
 
 - **Load Tests**
 
-    TODO (write description).
+    These tests are targeted that the solution will work under the targetted user load. They are typically written by testers and developers and the execute end to end scenarios under a variable set load conditions.
+
+    **Note**: VS 2019 will be the last version of Visual Studio that will provide load testing tools, for customers requiring load testing tools, Microsoft is recommending using alternate load testing tools such as Apache JMeter, Akamai CloudTest, Blazemeter (see [Changes to load test functionality in Visual Studio](https://docs.microsoft.com/en-us/azure/devops/test/load-test/overview?view=azure-devops)).
 
 - **Health checks**
 
@@ -71,13 +71,16 @@ This section outlines the requirements for testing bots using the format "As a *
 2. As a developer, I would like to be able use a FakeQnaMaker service so I can programmatically set the QnA responses that will be returned by my bot.
 3. As a developer, I would like to see a transcript of my test so I can analyze how the bot responded.
 
-    **Note**: test transcripts should be logged as .transcript files so they can be analyzed in Bot Emulator and executed using "transcript tests" at a later date if needed.
+    **Note**: test transcripts should be logged as .transcript files so they can be analyzed in Bot Emulator and executed using "transcript tests" at a later time if needed.
 4. As a developer, I would like to have a test template project so I can quickly get started with writing tests for my bot conversations.
 5. As a developer, I would like to see a good example that shows me how to write effective tests for conversations.
-    BotBuilder Samples doesn't include any examples on how to test a bot, it would be nice to write a Test Project for one of the non trivial bots in Builder Samples 'TBD' so developers and see a test project in action for reference.
-6. As a developer, I would like to be able to assert bot responses independently if the Text or Speak properties being returned
 
-    In many cases, the bot responses are randomized or contain dynamic data, it those cases, I would like to assert that response is if type XYZ independently of the actual text being returned. It would be also good to be able to assert the InputHint property of the response.
+    BotBuilder Samples doesn't include any examples on how to test a bot, it would be nice to write a Test Project for one of the non trivial bots in Builder Samples 'TBD' so developers and see a test project in action for reference.
+6. As a developer, I would like to be able to assert bot responses independently if the Text or Speak properties being returned.
+
+    In many cases, the bot responses are randomized or contain dynamic data, in those cases, I would like to assert that the response is of type *XYZ* independently of the actual text being returned.
+
+    It would be also good to be able to assert the InputHint property of the response.
 
 ## Natural Language Processing
 
