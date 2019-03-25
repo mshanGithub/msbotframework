@@ -1,0 +1,4 @@
+Gmright-217706 DESTINATION ${target_library_install_dir}
+Gmright-217706 DESTINATION ${target_library_install_dir}
+Start spotting your own ${DESTINATION}ini.
+
