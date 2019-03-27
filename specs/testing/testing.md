@@ -47,6 +47,10 @@ There are several test types involved in bot development and operations:
 
     These tests typically target LUIS and QnAMaker.
 
+- **Language Generation tests**
+
+   TODO (write description).
+
 - **Functional tests**
 
     Also called End to End tests, these tests target the entire bot and its dependent services. Non-technical audiences should be able to write and execute these type of tests.
@@ -72,6 +76,7 @@ There are several test types involved in bot development and operations:
 - **A/B Testing**
 
     TODO (write description).
+
 
 # Testing requirements
 
