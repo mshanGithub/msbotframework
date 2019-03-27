@@ -12,19 +12,14 @@ This document describes the different types of tests that can be used in a conve
 ## Table of Contents
 
 - [Tenets](#tenets)
-- [Core Scenarios](#core-scenarios)
-- [Advanced Scenarios](#advanced-scenarios)
-  - [Dev Scenarios](#dev-scenarios)
-  - [DevOps scenarios](#devops-scenarios)
-  - [Release engineer scenarios](#release-engineer-scenarios)
-  - [Support engineer scenarios](#support-engineer-scenarios)
-  - [Advanced Scenarios](#advanced-scenarios-1)
-- [Testing requirements](#testing-requirements)
-  - [Unit testing](#unit-testing)
-  - [Natural Language Processing](#natural-language-processing)
-  - [Functional Tests](#functional-tests)
-  - [Load Tests](#load-tests)
-  - [Health checks](#health-checks)
+- [Testing scenarios](#testing-scenarios)
+  - [Core Scenarios](#core-scenarios)
+    - [Dev Scenarios](#dev-scenarios)
+    - [Language models scenarios](#language-models-scenarios)
+    - [DevOps scenarios](#devops-scenarios)
+    - [Release engineer scenarios](#release-engineer-scenarios)
+    - [Support engineer scenarios](#support-engineer-scenarios)
+  - [Advanced Scenarios](#advanced-scenarios)
   - [Documentation](#documentation)
 - [Test types](#test-types)
 
@@ -38,33 +33,18 @@ This document describes the different types of tests that can be used in a conve
 6. Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or Azure DevOps.
 7. Whenever a test fails, it should be easy to understand the cause of the failure and the test output should be clean of stack traces and tech jargon (although those may still be available on demand).
 
-# Core Scenarios
-
-1. As a dev, I should be able to write unit tests for my bot that are run as part of builds. 
-2. As a DevOps engineer, I run Functional E2E tests against my bot. 
-3. As a Release Engineer, I run continous tests against my live bot to measure health. 
-4. As a Support Engineer, I have the tools and data needed to diagnose my bot when problems arise. 
-
-# Advanced Scenarios
-
-1. I need to A/B test and Flight my bot in production. This includes language and releated models. 
-2. Stress / Load testing. 
-
-## Dev Scenarios
-
-## DevOps scenarios
-
-## Release engineer scenarios
-
-## Support engineer scenarios
-
-## Advanced Scenarios
-
-# Testing requirements
+# Testing scenarios
 
 This section outlines the requirements for testing bots using the format "As a ***role*** I would like to ***requirement*** so I can ***benefit***".
 
-## Unit testing
+## Core Scenarios
+
+1. As a dev, I should be able to write unit tests for my bot that are run as part of builds. 
+2. As a DevOps engineer, I run Functional E2E tests against my bot. 
+3. As a Release Engineer, I run continuous tests against my live bot to measure health. 
+4. As a Support Engineer, I have the tools and data needed to diagnose my bot when problems arise. 
+
+### Dev Scenarios
 
 1. As a developer, I would like to be able to use a FakeLuisRecognizer so I can programmatically set the intents understood by my bots without having to invoke the LUIS service.
 2. As a developer, I would like to be able use a FakeQnaMaker service so I can programmatically set the QnA responses that will be returned by my bot.
@@ -89,30 +69,33 @@ This section outlines the requirements for testing bots using the format "As a *
 
     It would be also good to be able to assert the InputHint property of the response.
 
-## Natural Language Processing
+### Language models scenarios
 
-1. As an NLP engineer, I would like to be able to run batch tests programmatically against my language models to validate the utterances and entities my bot expects get resolved as expected.
+1. As an NLU engineer, I would like to be able to run batch tests scripts against my language models to validate the utterances and entities my bot expects get resolved as expected.
 
     TestAdapter and FakeLuisRecognizer should help developers write tests that validate the bot functionality works without using LUIS, the natural language understanding models used by a bot evolve independently of the underlying code, the LUIS portal provides a batch testing UI but it is not scriptable and can't be used in continuous integration or continuous delivery. We need a batch testing API that can be invoked and asserted from the CLI to ensure the key utterances and entities are still resolved after the model changes.
-2. As an NLP engineer, I would like to have a way of running a batch test against my updated LUIS model before it gets published to ensure I don't break the bot.
+2. As an NLU engineer, I would like to have a way of running a batch test against my updated LUIS model before it gets published to ensure I don't break the bot.
 3. As a DevOps engineer, I would like to have a tools in the Azure Marketplace that will allow me to configure and run NLU tests from the Ci/CD pipeline.
 4. As a DevOps engineer, I want to publish the live/latest NLU test results per-model and per-bot shared in a way so that I can point non-developers to a central location at any time for active status.
 5. As a DevOps engineer, I want to run NLU tests in any language against any bot at any time I want so that I can see how the model performs against different bots without disrupting deployments or live bots.
-6. As an NLP engineer, I want an easy to use website to create, read, update, and delete test transcript files so that I can collaborate with other non-developers on these transcripts in a managed/source-controlled way without having to download an IDE or know a language framework.
-7. As a DevOps engineer, I want to have clear hinting when test failures occur so that I can notify the right team member to resolve the problem in the right way (should I get a developer involved, an NLP engineer, or a sys-admin?).
+6. As an NLU engineer, I want an easy to use website to create, read, update, and delete test transcript files so that I can collaborate with other non-developers on these transcripts in a managed/source-controlled way without having to download an IDE or know a language framework.
+7. As a DevOps engineer, I want to have clear hinting when test failures occur so that I can notify the right team member to resolve the problem in the right way (should I get a developer involved, an NLU engineer, or a sys-admin?).
 
-## Functional Tests
+### DevOps scenarios
+
+### Release engineer scenarios
 
 1. As a tester, I would like to be able to create transcript files and execute them against a deployed bot to ensure the conversation goes as expected.
 2. As a tester, I would like to be able to record an exploratory test session and be able to submit a bug with a transcript of that session so the developers can run the repro and fix the error.
 
-## Load Tests
-
-1. As a tester, I would like to be able to load test my bot to ensure it can handle the expected number of users without overloading the Bot Service infrastructure.
-
-## Health checks
+### Support engineer scenarios
 
 1. As a DevOps engineer, I'd like to be able to execute tests that would alert me if any of the services used by bot are not working or they are degraded
+
+## Advanced Scenarios
+
+1. I need to A/B test and Flight my bot in production. This includes language and related models.
+2. As a tester, I would like to be able to load test my bot to ensure it can handle the expected number of users without overloading the Bot Service infrastructure.
 
 ## Documentation
 
@@ -133,7 +116,7 @@ There are several test types involved in bot development and operations:
 
 - **Natural Language Understanding Tests**
 
-    Can be written by developers, NLP engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
+    Can be written by developers, NLU engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
 
     These tests typically target LUIS and QnAMaker.
 
