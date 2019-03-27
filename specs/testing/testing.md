@@ -12,7 +12,13 @@ This document describes the different types of tests that can be used in a conve
 ## Table of Contents
 
 - [Tenets](#tenets)
-- [Test types](#test-types)
+- [Core Scenarios](#core-scenarios)
+- [Advanced Scenarios](#advanced-scenarios)
+  - [Dev Scenarios](#dev-scenarios)
+  - [DevOps scenarios](#devops-scenarios)
+  - [Release engineer scenarios](#release-engineer-scenarios)
+  - [Support engineer scenarios](#support-engineer-scenarios)
+  - [Advanced Scenarios](#advanced-scenarios-1)
 - [Testing requirements](#testing-requirements)
   - [Unit testing](#unit-testing)
   - [Natural Language Processing](#natural-language-processing)
@@ -20,26 +26,7 @@ This document describes the different types of tests that can be used in a conve
   - [Load Tests](#load-tests)
   - [Health checks](#health-checks)
   - [Documentation](#documentation)
-
-# Core Scenarios
-1. As a dev, I should be able to write unit tests for my bot that are run as part of builds. 
-2. As a DevOps engineer, I run Functional E2E tests against my bot. 
-3. As a Release Engineer, I run continous tests against my live bot to measure health. 
-4. As a Support Engineer, I have the tools and data needed to diagnose my bot when problems arise. 
-
-# Advanced Scenarios
-1. I need to A/B test and Flight my bot in production. This includes language and releated models. 
-2. Stress / Load testing. 
-
-## Dev Scenarios
-
-## Devops scenarios
-
-## Release engineer scenarios
-
-## Support engineer scenarios
-
-## Advanced Scenarios
+- [Test types](#test-types)
 
 # Tenets
 
@@ -51,52 +38,27 @@ This document describes the different types of tests that can be used in a conve
 6. Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or Azure DevOps.
 7. Whenever a test fails, it should be easy to understand the cause of the failure and the test output should be clean of stack traces and tech jargon (although those may still be available on demand).
 
-# Test types
+# Core Scenarios
 
-There are several test types involved in bot development and operations:
+1. As a dev, I should be able to write unit tests for my bot that are run as part of builds. 
+2. As a DevOps engineer, I run Functional E2E tests against my bot. 
+3. As a Release Engineer, I run continous tests against my live bot to measure health. 
+4. As a Support Engineer, I have the tools and data needed to diagnose my bot when problems arise. 
 
-- **Unit Tests**
-  
-  Are written by developers and normally executed as part of the Continuous Integration build pipeline. 
-  
-  Their main purpose is to ensure that the coded logic for a bot executes as expected.
+# Advanced Scenarios
 
-- **Natural Language Understanding Tests**
+1. I need to A/B test and Flight my bot in production. This includes language and releated models. 
+2. Stress / Load testing. 
 
-    Can be written by developers, NLP engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
+## Dev Scenarios
 
-    These tests typically target LUIS and QnAMaker.
+## DevOps scenarios
 
-- **Language Generation tests**
+## Release engineer scenarios
 
-   TODO (write description).
+## Support engineer scenarios
 
-- **Functional tests**
-
-    Also called End to End tests, these tests target the entire bot and its dependent services. Non-technical audiences should be able to write and execute these type of tests.
-
-- **Load Tests**
-
-    These tests validate that the solution will work under the expected user load. They are typically written by testers and developers and cover end to end scenarios under a variable set of load conditions.
-
-    **Note**: VS 2019 will be the last version of Visual Studio that will provide load testing tools. For customers requiring load testing tools, Microsoft is recommending using alternate load testing tools such as Apache JMeter, Akamai CloudTest, Blazemeter (see [Changes to load test functionality in Visual Studio](https://docs.microsoft.com/en-us/azure/devops/test/load-test/overview?view=azure-devops)).
-
-- **Health checks**
-
-    TODO (write description).
-
-- **UI Testing**
-
-    TODO (write description and include considerations for channels).
-
-- **Flighting**
-
-    TODO (write description).
-
-- **A/B Testing**
-
-    TODO (write description).
-
+## Advanced Scenarios
 
 # Testing requirements
 
@@ -158,3 +120,49 @@ This section outlines the requirements for testing bots using the format "As a *
 
     The TestAdapter is used in the bot builder code to test the different functionality in the SDK but it is not thoroughly documented. It would be nice to have additional documentation on how to use TestAdapter, Fakes and DI to create and use a bot test.
 2. As a DevOps engineer, I would like to see some documentation on how to integrate tests in the Azure DevOps CI and CD pipelines so I can ensure the bot doesn't break before I publish it.
+
+# Test types
+
+There are several test types involved in bot development and operations:
+
+- **Unit Tests**
+  
+  Are written by developers and normally executed as part of the Continuous Integration build pipeline. 
+  
+  Their main purpose is to ensure that the coded logic for a bot executes as expected.
+
+- **Natural Language Understanding Tests**
+
+    Can be written by developers, NLP engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
+
+    These tests typically target LUIS and QnAMaker.
+
+- **Language Generation tests**
+
+   TODO (write description).
+
+- **Functional tests**
+
+    Also called End to End tests, these tests target the entire bot and its dependent services. Non-technical audiences should be able to write and execute these type of tests.
+
+- **Load Tests**
+
+    These tests validate that the solution will work under the expected user load. They are typically written by testers and developers and cover end to end scenarios under a variable set of load conditions.
+
+    **Note**: VS 2019 will be the last version of Visual Studio that will provide load testing tools. For customers requiring load testing tools, Microsoft is recommending using alternate load testing tools such as Apache JMeter, Akamai CloudTest, Blazemeter (see [Changes to load test functionality in Visual Studio](https://docs.microsoft.com/en-us/azure/devops/test/load-test/overview?view=azure-devops)).
+
+- **Health checks**
+
+    TODO (write description).
+
+- **UI Testing**
+
+    TODO (write description and include considerations for channels).
+
+- **Flighting**
+
+    TODO (write description).
+
+- **A/B Testing**
+
+    TODO (write description).
