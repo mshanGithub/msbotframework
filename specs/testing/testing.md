@@ -61,6 +61,18 @@ There are several test types involved in bot development and operations:
 
     TODO (write description).
 
+- **UI Testing**
+
+    TODO (write description).
+
+- **Flighting**
+
+    TODO (write description).
+
+- **A/B Testing**
+
+    TODO (write description).
+
 # Testing requirements
 
 This section outlines the requirements for testing bots using the format "As a ***role*** I would like to ***requirement*** so I can ***benefit***".
