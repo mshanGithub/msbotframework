@@ -113,10 +113,14 @@ This section outlines the requirements for testing bots using the format "As a *
 
     TestAdapter and FakeLuisRecognizer should help developers write tests that validate the bot functionality works without using LUIS, the natural language understanding models used by a bot evolve independently of the underlying code, the LUIS portal provides a batch testing UI but it is not scriptable and can't be used in continuous integration or continuous delivery. We need a batch testing API that can be invoked and asserted from the CLI to ensure the key utterances and entities are still resolved after the model changes.
 2. As an NLP engineer, I would like to have a way of running a batch test against my updated LUIS model before it gets published to ensure I don't break the bot.
+3. As a DevOps engineer, I would like to have a tools in the Azure Marketplace that will allow me to configure and run NLU tests from the Ci/CD pipeline.
+4. As a DevOps engineer, I want to publish the live/latest NLU test results per-model and per-bot shared in a way so that I can point non-developers to a central location at any time for active status.
+5. As a DevOps engineer, I want to run NLU tests in any language against any bot at any time I want so that I can see how the model performs against different bots without disrupting deployments or live bots.
 
 ## Functional Tests
 
-1. As a tester, I would like to be able to create transcript files and execute them against a deployed bot to ensure the conversation goes as expected
+1. As a tester, I would like to be able to create transcript files and execute them against a deployed bot to ensure the conversation goes as expected.
+2. As a tester, I would like to be able to record an exploratory test session and be able to submit a bug with a transcript of that session so the developers can run the repro and fix the error.
 
 ## Load Tests
 
