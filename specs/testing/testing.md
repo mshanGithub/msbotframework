@@ -21,6 +21,26 @@ This document describes the different types of tests that can be used in a conve
   - [Health checks](#health-checks)
   - [Documentation](#documentation)
 
+# Core Scenarios
+1. As a dev, I should be able to write unit tests for my bot that are run as part of builds. 
+2. As a DevOps engineer, I run Functional E2E tests against my bot. 
+3. As a Release Engineer, I run continous tests against my live bot to measure health. 
+4. As a Support Engineer, I have the tools and data needed to diagnose my bot when problems arise. 
+
+# Advanced Scenarios
+1. I need to A/B test and Flight my bot in production. This includes language and releated models. 
+2. Stress / Load testing. 
+
+## Dev Scenarios
+
+## Devops scenarios
+
+## Release engineer scenarios
+
+## Support engineer scenarios
+
+## Advanced Scenarios
+
 # Tenets
 
 1. It should be easy and intuitive to create coded unit tests.
