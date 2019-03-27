@@ -67,7 +67,7 @@ There are several test types involved in bot development and operations:
 
 - **UI Testing**
 
-    TODO (write description).
+    TODO (write description and include considerations for channels).
 
 - **Flighting**
 
@@ -90,7 +90,7 @@ This section outlines the requirements for testing bots using the format "As a *
 
     **Note**: test transcripts should be logged as .transcript files so they can be analyzed in Bot Emulator and executed using "transcript tests" at a later time if needed.
 4. As a developer, I would like to have a test template project so I can quickly get started with writing tests for my bot conversations.
-   
+
    The initial test project template should provide base code and stubs for:
 
    - A TestBot that gets initialized with the required fake services, make middlewares, etc.
@@ -116,6 +116,8 @@ This section outlines the requirements for testing bots using the format "As a *
 3. As a DevOps engineer, I would like to have a tools in the Azure Marketplace that will allow me to configure and run NLU tests from the Ci/CD pipeline.
 4. As a DevOps engineer, I want to publish the live/latest NLU test results per-model and per-bot shared in a way so that I can point non-developers to a central location at any time for active status.
 5. As a DevOps engineer, I want to run NLU tests in any language against any bot at any time I want so that I can see how the model performs against different bots without disrupting deployments or live bots.
+6. As an NLP engineer, I want an easy to use website to create, read, update, and delete test transcript files so that I can collaborate with other non-developers on these transcripts in a managed/source-controlled way without having to download an IDE or know a language framework.
+7. As a DevOps engineer, I want to have clear hinting when test failures occur so that I can notify the right team member to resolve the problem in the right way (should I get a developer involved, an NLP engineer, or a sys-admin?).
 
 ## Functional Tests
 
