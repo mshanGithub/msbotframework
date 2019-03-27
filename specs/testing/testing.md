@@ -69,6 +69,8 @@ This section outlines the requirements for testing bots using the format "As a *
 
     It would be also good to be able to assert the InputHint property of the response.
 
+7. As a Security engineer, I would like to use [Microsoft Security Risk Detection](https://www.microsoft.com/en-us/security-risk-detection/) to find security bugs in my bot
+
 ### Language models scenarios
 
 1. As an NLU engineer, I would like to be able to run batch tests scripts against my language models to validate the utterances and entities my bot expects get resolved as expected.
@@ -83,6 +85,10 @@ This section outlines the requirements for testing bots using the format "As a *
 
 ### DevOps scenarios
 
+1. As a tester, I would like to be able to create a work item in Azure DevOps from the Bot Framework emulator when I run a test that fails.
+
+   The emulator should create a work item and attach the transcript for the session so the developer can repro the issue.
+
 ### Release engineer scenarios
 
 1. As a tester, I would like to be able to create transcript files and execute them against a deployed bot to ensure the conversation goes as expected.
@@ -90,7 +96,10 @@ This section outlines the requirements for testing bots using the format "As a *
 
 ### Support engineer scenarios
 
-1. As a DevOps engineer, I'd like to be able to execute tests that would alert me if any of the services used by bot are not working or they are degraded
+1. As a Support engineer, I'd like to be able to execute tests that would alert me if any of the services used by bot are not working or they are degraded.
+2. As a Support engineer, I'd like to be able to create a work item in Azure DevOps when a production bot throws an alert.
+   
+   The work item should contain a transcript of the conversation that triggered the failure (if available) and other technical information like stack traces and error messages.
 
 ## Advanced Scenarios
 
