@@ -9,6 +9,8 @@ A conversational application is made of of code, cognitive models, one or many t
 
 This document describes the different types of tests that can be used in a conversational solution and outlines the requirements that we should address to make easier to test bots throughout their life cycle.
 
+![Bot SDLC]("images/bot-service-overview.png")
+
 ## Table of Contents
 
 - [Tenets](#tenets)
