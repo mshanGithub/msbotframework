@@ -32,6 +32,8 @@ This document describes the different types of tests that can be used in a conve
 5. Product owners should be able to write functional and language tests without having to write code.
 6. Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or as part of the Continuous Integration/Continuous Delivery pipelines from Azure DevOps pipelines from [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/).
 7. Whenever a test fails, it should be easy to understand the cause of the failure and the test output should be clean of stack traces and tech jargon (although those may still be available on demand).
+8. It should be possible to possible to run tests throughout the entire bot development life cycle: Build, Test, Deployment and Operations.
+9. It should be possible to test bots using different languages and locales.
 
 # Testing scenarios
 
@@ -51,11 +53,11 @@ This section outlines the requirements for testing bots using the format "As a *
 3. As a developer, I would like to see a transcript of my tests so I can analyze how the bot responded.
 
     **Note**: test transcripts should be logged as .transcript files so they can be analyzed in Bot Emulator and executed using "transcript tests" at a later time if needed.
-4. As a developer, I would like to have a test template project so I can quickly get started with writing tests for my bot conversations.
+4. As a developer, I would like to have a test project template so I can quickly get started with writing unit tests for my bot conversations.
 
    The initial test project template should provide base code and stubs for:
 
-   - A TestBot that gets initialized with the required fake services, make middlewares, etc.
+   - A TestBot that gets initialized with the required fake services, fake middlewares, etc.
    - The base classes required to add other services for my test bot using the same dependency injection framework as the one used by my target language.
    - A base TestFlow that I can use to create unit test for bot dialogs.
    - A base configuration file that I can use to configure my tests.
@@ -69,23 +71,28 @@ This section outlines the requirements for testing bots using the format "As a *
 
     It would be also good to be able to assert the InputHint property of the response.
 
-7. As a Security engineer, I would like to use [Microsoft Security Risk Detection](https://www.microsoft.com/en-us/security-risk-detection/) to find security bugs in my bot
+7. As a developer, I would like to have any easy way of validating that complex responses that use cards and attachments are returned correctly.
+8. As a developer, I would like to be able to run tests that emulate the target channels for my bot so I can make sure it will work once it is deployed.
+9. As a Security engineer, I would like to use [Microsoft Security Risk Detection](https://www.microsoft.com/en-us/security-risk-detection/) to find security bugs in my bot
 
 ### Language models scenarios
 
-1. As an NLU engineer, I would like to be able to run batch tests scripts against my language models to validate the utterances and entities my bot expects get resolved as expected.
+1. As an NLU engineer, I would like to be able to run batch tests scripts against my language models to validate the utterances and entities my bot needs to work get resolved as expected.
 
     TestAdapter and FakeLuisRecognizer should help developers write tests that validate the bot functionality works without using LUIS, the natural language understanding models used by a bot evolve independently of the underlying code, the LUIS portal provides a batch testing UI but it is not scriptable and can't be used in continuous integration or continuous delivery. We need a batch testing API that can be invoked and asserted from the CLI to ensure the key utterances and entities are still resolved after the model changes.
 2. As an NLU engineer, I would like to have a way of running a batch test against my updated LUIS model before it gets published to ensure I don't break the bot.
-3. As a DevOps engineer, I would like to have a tools in the Azure Marketplace that will allow me to configure and run NLU tests from the Ci/CD pipeline.
-4. As a DevOps engineer, I want to publish the live/latest NLU test results per-model and per-bot shared in a way so that I can point non-developers to a central location at any time for active status.
-5. As a DevOps engineer, I want to run NLU tests in any language against any bot at any time I want so that I can see how the model performs against different bots without disrupting deployments or live bots.
-6. As an NLU engineer, I want an easy to use website to create, read, update, and delete test transcript files so that I can collaborate with other non-developers on these transcripts in a managed/source-controlled way without having to download an IDE or know a language framework.
-7. As a DevOps engineer, I want to have clear hinting when test failures occur so that I can notify the right team member to resolve the problem in the right way (should I get a developer involved, an NLU engineer, or a sys-admin?).
+3. As an NLU engineer, I would like to be able to run batch tests against my QnAMaker models to ensure the bot is returning the correct answers.
+4. As an NLU engineer, I would like to run tests in different languages so I can ensure that my bot will work as expected in the targeted locales.
+5. As a DevOps engineer, I would like to have a tools in the Azure Marketplace that will allow me to configure and run NLU tests from the CI/CD pipeline.
+6. As a DevOps engineer, I want to publish the live/latest NLU test results per-model and per-bot shared in a way so that I can point non-developers to a central location at any time for active status.
+7. As a DevOps engineer, I want to run NLU tests in any language against any bot at any time I want so that I can see how the model performs against different bots without disrupting deployments or live bots.
+8. As an NLU engineer, I want an easy to use website to create, read, update, and delete test transcript files so that I can collaborate with other non-developers on these transcripts in a managed/source-controlled way without having to download an IDE or know a language framework.
+9. As an NLU engineer, I would like to be able to test a bot using speech to ensure my custom speech models (if any) are working correctly for the targeted locales.
 
 ### DevOps scenarios
 
-1. As a tester, I would like to be able to create a work item in Azure DevOps from the Bot Framework emulator when I run a test that fails.
+1. As a DevOps engineer, I want to have clear hinting when test failures occur so that I can notify the right team member to resolve the problem in the right way (should I get a developer involved, an NLU engineer, or a sys-admin?).
+2. As a tester, I would like to be able to create a work item in Azure DevOps from the Bot Framework emulator when I run a test that fails.
 
    The emulator should create a work item and attach the transcript for the session so the developer can repro the issue.
 
@@ -96,7 +103,7 @@ This section outlines the requirements for testing bots using the format "As a *
 
 ### Support engineer scenarios
 
-1. As a Support engineer, I'd like to be able to execute tests that would alert me if any of the services used by bot are not working or they are degraded.
+1. As a Support engineer, I'd like to be able to execute periodic tests that would alert me if the bot or related services services are not working or they are degraded.
 2. As a Support engineer, I'd like to be able to create a work item in Azure DevOps when a production bot throws an alert.
    
    The work item should contain a transcript of the conversation that triggered the failure (if available) and other technical information like stack traces and error messages.
