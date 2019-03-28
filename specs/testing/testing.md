@@ -5,7 +5,7 @@
 
 Testing a conversational application is often complex and it involves several different layers. The guidance, samples and tools required to test bots are diverse and scattered in different projects, documents and samples.  
 
-A conversational application is made of of code, cognitive models and several other external services.
+A conversational application is made of of code, cognitive models, one or many taget channels and several other external services.
 
 This document describes the different types of tests that can be used in a conversational solution and outlines the requirements that we should address to make easier to test bots throughout their life cycle.
 
@@ -28,9 +28,9 @@ This document describes the different types of tests that can be used in a conve
 1. It should be easy and intuitive to create coded unit tests.
 2. It should be possible to write unit tests that don't rely on actual cognitive services calls.
 3. It should be possible to validate the language models for a bot using tests.
-4. Test should take a relative short time to run.
+4. Tests should take a relative short time to run.
 5. Product owners should be able to write functional and language tests without having to write code.
-6. Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or Azure DevOps.
+6. Tests should be "scriptable" and it should be possible to execute them from the command line, the IDE of choice and/or as part of the Continuous Integration/Continuous Delivery pipelines from Azure DevOps pipelines from [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/).
 7. Whenever a test fails, it should be easy to understand the cause of the failure and the test output should be clean of stack traces and tech jargon (although those may still be available on demand).
 
 # Testing scenarios
