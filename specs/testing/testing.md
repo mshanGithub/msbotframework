@@ -17,8 +17,8 @@ This document describes the different types of tests that can be used in a conve
     - [Dev Scenarios](#dev-scenarios)
     - [Language models scenarios](#language-models-scenarios)
     - [DevOps scenarios](#devops-scenarios)
-    - [Release engineer scenarios](#release-engineer-scenarios)
-    - [Support engineer scenarios](#support-engineer-scenarios)
+    - [Release scenarios](#release-scenarios)
+    - [Support scenarios](#support-scenarios)
   - [Advanced Scenarios](#advanced-scenarios)
   - [Documentation](#documentation)
 - [Test types](#test-types)
@@ -96,12 +96,12 @@ This section outlines the requirements for testing bots using the format "As a *
 
    The emulator should create a work item and attach the transcript for the session so the developer can repro the issue.
 
-### Release engineer scenarios
+### Release scenarios
 
 1. As a tester, I would like to be able to create transcript files and execute them against a deployed bot to ensure the conversation goes as expected.
 2. As a tester, I would like to be able to record an exploratory test session and be able to submit a bug with a transcript of that session so the developers can run the repro and fix the error.
 
-### Support engineer scenarios
+### Support scenarios
 
 1. As a Support engineer, I'd like to be able to execute periodic tests that would alert me if the bot or related services services are not working or they are degraded.
 2. As a Support engineer, I'd like to be able to create a work item in Azure DevOps when a production bot throws an alert.
