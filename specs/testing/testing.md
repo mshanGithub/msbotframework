@@ -39,6 +39,12 @@ This document describes the different types of tests that can be used in a conve
 
 # Testing scenarios
 
+- For a list of the main scnarios for testing see the [Bot Testing](https://github.com/Microsoft/BotBuilder/projects/11?fullscreen=true) project.
+- For a list of the bot tesing scenarios targeted to v4.5 see the DCRs posted under [4.5 Preview](https://github.com/Microsoft/BotBuilder/milestone/1)
+
+
+# TODO (All the scenarios below will be moved to issues in the Bot testing project)
+
 This section outlines the requirements for testing bots using the format "As a ***role*** I would like to ***requirement*** so I can ***benefit***".
 
 ## Core Scenarios
