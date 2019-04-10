@@ -11,7 +11,7 @@ This document describes the different types of tests that can be used in a conve
 
 ![Bot SDLC](images/bot-service-overview.png)
 
-## Table of Contents
+# Table of Contents <!-- omit in toc -->
 
 - [Tenets](#tenets)
 - [Testing scenarios](#testing-scenarios)
