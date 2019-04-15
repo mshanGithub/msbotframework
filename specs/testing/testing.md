@@ -15,6 +15,7 @@ This document describes the different types of tests that can be used in a conve
 
 - [Tenets](#tenets)
 - [Testing scenarios](#testing-scenarios)
+- [Roadmap](#roadmap)
 - [Test types](#test-types)
 
 # Tenets
@@ -34,33 +35,60 @@ This document describes the different types of tests that can be used in a conve
 
 - For a list of the bot testing scenarios targeted to v4.5 see the DCRs posted under [4.5 Preview](https://github.com/Microsoft/BotBuilder/milestone/1).
 - For a complete list of testing scenarios see [Bot Testing Issues](https://github.com/Microsoft/BotBuilder/issues?q=is%3Aopen+is%3Aissue+project%3AMicrosoft%2FBotBuilder%2F11).
-- To track the main scenarios for testing see the [Bot Testing](https://github.com/Microsoft/BotBuilder/projects/11?fullscreen=true) project.
 
 **Note:** The testing DCRs use the format "As a ***role*** I would like to ***requirement*** so I can ***benefit***".
 
+# Roadmap
+
+Our approach is to enhance our samples, documentation and tools to provide clear guidance on how to test bots. We will also extend the SDK with new features where needed to make things easier.
+
+You can see our roadmap and work in progress stories in the [Bot Testing](https://github.com/Microsoft/BotBuilder/projects/11?fullscreen=true) project.
+
+The **4.5 Candidates** column enumerates a prioritized list of the scenarios targeted for the 4.5 release.
+
+Note that anything on here is subject to change, and is not a guarantee of shipping.
+
 # Test types
 
-There are several test types involved in bot development and operations:
+There are several test types involved in bot development and operations and different authors and communities use different terminology and naming to refer to them.
+
+This section describes the types we use for testing bots. It doesn't try to provide a formal definition for each type, it is intended to serve as a broad categorization that we use to classify the different scenarios that we are supporting.
 
 - **Unit Tests**
   
-  Are written by developers and normally executed as part of the Continuous Integration build pipeline. 
+  Are written by developers and normally executed as part of the Continuous Integration build pipeline.
   
   Their main purpose is to ensure that the coded logic for a bot executes as expected.
 
 - **Natural Language Understanding Tests**
 
-    Can be written by developers, NLU engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes. Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
+    Can be written by developers, NLU engineers or Product owners and can be executed as part of the CI pipeline or when the language model for the bot changes.
+
+    Their main purpose is to ensure that the bot understands what the user is asking and that there are no regressions in the language models when they are extended or modified.
 
     These tests typically target LUIS and QnAMaker.
 
 - **Language Generation tests**
 
-   TODO (write description).
+   They are written by NLU engineers or Product owners and are executed as part of the CI pipeline of the underlying Language Generation files (.lg files) for the bot change.
+
+   Their main goal is to ensure the bot constructs meaningful, variable and grammatically correct responses to the user.
+
+   See [this page](https://github.com/Microsoft/botbuilder-dotnet/tree/ComposableDialog/doc/LanguageGeneration) for an overview of LG files.
 
 - **Functional tests**
 
-    Also called End to End tests, these tests target the entire bot and its dependent services. Non-technical audiences should be able to write and execute these type of tests.
+    Also called End to End tests, these tests target the entire bot and its dependent services.
+
+    Non-technical audiences should be able to write and execute these type of tests.
+
+- **UI Testing**
+
+    Coded UI tests are used for UI-driven functional automation of bots deployed to different channels.
+
+    These tests use open source frameworks like [Selenium](https://docs.seleniumhq.org/) or [Appium](http://appium.io/) to automate UI execution of the client app and playback pre-created scripts.
+
+    These tests are written by developers in conjuntion with product owners.
 
 - **Load Tests**
 
@@ -70,16 +98,6 @@ There are several test types involved in bot development and operations:
 
 - **Health checks**
 
-    TODO (write description).
+    Helth checks are executed on deployed bots and ensure that all the bot and its related services are working as expected in production.
 
-- **UI Testing**
-
-    TODO (write description and include considerations for channels).
-
-- **Flighting**
-
-    TODO (write description).
-
-- **A/B Testing**
-
-    TODO (write description).
+    These tests can be integrated with operation dashboard and trigger alerts if something in the bot is broken.
