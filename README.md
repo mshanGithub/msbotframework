@@ -56,12 +56,12 @@ Adapters and plugins from the open source community are available to extend your
 | Name | Description
 |--- |---
 | [botbuilder-community](https://github.com/botbuildercommunity) | A collection of community-powered plugins and extensions
-| [Botkit](https://github.com/howdyai/botkit#readme) | A Javascript extension to Bot Framework SDK with new syntax for creating triggers and managing dialogs
-| [botbuilder-adapter-slack](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-slack) | A platform adapter for Slack
-| [botbuilder-adapter-webex](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-webex) | A platform adapter for Webex Teams
-| [botbuilder-adapter-hangouts](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-hangouts) | A platform adapter for Google
-| [botbuilder-adapter-twilio-sms](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-twilio-sms) | A platform adapter for Twilio SMS
-| [botbuilder-adapter-facebook](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-facebook) | A platform adapter for Facebook Messenger
+| [Botkit](https://github.com/howdyai/botkit#readme) | An extension to Bot Framework SDK with new syntax for creating triggers and managing dialogs (Javascript only)
+| [botbuilder-adapter-slack](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-slack#readme) | A platform adapter for Slack
+| [botbuilder-adapter-webex](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-webex#readme) | A platform adapter for Webex Teams
+| [botbuilder-adapter-hangouts](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-hangouts#readme) | A platform adapter for Google
+| [botbuilder-adapter-twilio-sms](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-twilio-sms#readme) | A platform adapter for Twilio SMS
+| [botbuilder-adapter-facebook](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-facebook#readme) | A platform adapter for Facebook Messenger
 
 ## Questions and Help 
 If you have questions about Bot Framework SDK or using Azure Bot Service, we encourage you to reach out to the community and Azure Bot Service dev team for help.
