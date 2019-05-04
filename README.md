@@ -53,15 +53,10 @@ The Bot Framework SDK v4 - Version 4.5 new capabilites in preview.
 ## Community Extensions
 Adapters and plugins from the open source community are available to extend your bot application.
 
-| Name | Description
-|--- |---
-| [botbuilder-community](https://github.com/botbuildercommunity) | A collection of community-powered plugins and extensions
-| [Botkit](https://github.com/howdyai/botkit#readme) | An extension to Bot Framework SDK with new syntax for creating triggers and managing dialogs (Javascript only)
-| [botbuilder-adapter-slack](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-slack#readme) | A platform adapter for Slack
-| [botbuilder-adapter-webex](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-webex#readme) | A platform adapter for Webex Teams
-| [botbuilder-adapter-hangouts](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-hangouts#readme) | A platform adapter for Google
-| [botbuilder-adapter-twilio-sms](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-twilio-sms#readme) | A platform adapter for Twilio SMS
-| [botbuilder-adapter-facebook](https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-facebook#readme) | A platform adapter for Facebook Messenger
+|   | C#  | JS  | Python |  Java | 
+|---|:---:|:---:|:------:|:-----:|
+| [botbuilder-community](https://github.com/botbuildercommunity) | [C#](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet#readme) | [JS](https://github.com/BotBuilderCommunity/botbuilder-community-js#readme) | [Python](https://github.com/BotBuilderCommunity/botbuilder-community-python#readme)| [Java](https://github.com/BotBuilderCommunity/botbuilder-community-java#readme)
+| [Botkit](https://github.com/howdyai/botkit#readme)  | | [JS](https://github.com/howdyai/botkit#readme)  | |
 
 ## Questions and Help 
 If you have questions about Bot Framework SDK or using Azure Bot Service, we encourage you to reach out to the community and Azure Bot Service dev team for help.
