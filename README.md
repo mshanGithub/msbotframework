@@ -1,16 +1,16 @@
-# ![Bot Framework SDK](./docs/media/FrameWorkSDK.png)
+# ![Bot Framework SDK](./docs/media/BotFrameworkSDK.png)
 
 ### [Click here to find out what's new for //build2019!](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
 
-# Bot Framework SDK 
+# Bot Framework SDK
 
 The Bot Framework SDK v4, part of the [Bot Framework](https://github.com/microsoft/botframework), provides the most comprehensive experience for building conversation applications. With the Bot Framework SDK, developers can easily model and build sophisticated conversation using their favorite programming languages. With the Bot Framework SDK, you can build bots that converse free-form or your bot can also have more guided interactions where it provides the user choices or possible actions. The conversation can use simple text or more complex rich cards that contain text, images, and action buttons. You can add natural language interactions and questions and answers, which let your users interact with your bots in a natural way.
 
-## Bot Framework SDK v4
+## Overview
 The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to model and build sophisticated conversation using their favorite programming language.
 
 
-| C#             |              JS              |                  Python                  |          Java          |                         |
+|              |              C#              |                  JavaScript              |          Python          | Java                    |
 |----------------|:----------------------------:|:----------------------------------------:|:----------------------:|:-----------------------:|
 | Stable Release |          [4.4.3][1]          |                [4.4.0][2]                | [4.4.0b1 (preview)][3] | [4.0.0a6 (preview)][3a] |
 | Docs           |           [docs][5]          |                 [docs][5]                |                        |                         |
@@ -32,9 +32,9 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 
 <a name="V4-whats-new"></a>
 ### Bot Framework SDK v4 - (New! - version 4.5 preview)
-The Bot Framework SDK v4 - Version 4.5 new capabilites in preview. 
+The Bot Framework SDK v4 - Version 4.5 new capabilites in preview.
 
-- [Adaptive Dialog][47] | [docs][48] | [C# samples][49] :: Adaptive Dialogs enable developers to build conversations that can be dynamically changed as the conversation progresses.  Traditionally developers have mapped out the entire flow of a conversation up front, which limits the flexibility of the conversation.  Adaptive dialogs allow them to be more flexible, to respond to changes in context and insert new steps or entire sub-dialogs into the conversation as it progresses. Additionally as with other SDK V4 concepts, we have defined adaptive dialogs such that they can be defined via [declarative][50] that are interpreted at runtime; which allows us to have tooling on top of this and integrate with services. 
+- [Adaptive Dialog][47] | [docs][48] | [C# samples][49] :: Adaptive Dialogs enable developers to build conversations that can be dynamically changed as the conversation progresses.  Traditionally developers have mapped out the entire flow of a conversation up front, which limits the flexibility of the conversation.  Adaptive dialogs allow them to be more flexible, to respond to changes in context and insert new steps or entire sub-dialogs into the conversation as it progresses. Additionally as with other SDK V4 concepts, we have defined adaptive dialogs such that they can be defined via [declarative][50] that are interpreted at runtime; which allows us to have tooling on top of this and integrate with services.
 
 - [Language Generation][43] | [docs][44] | [C# samples][45] :: Learning from our customers experiences and bringing together capabilities first implemented by Cortana and Cognition teams, we are introducing Language Generation; which allows the developer to extract the embedded strings from their code and resource files and manage them through a Language Generation runtime and file format.  Language Generation enable customers to define multiple variations on a phrase, execute simple expressions based on context, refer to conversational memory, and over time will enable us to bring additional capabilities all leading to a more natural conversational experience.
 
@@ -56,7 +56,7 @@ The Bot Framework SDK v4 - Version 4.5 new capabilites in preview.
 ## Channels and Adapters
 There are two ways to connect your bot to a client experience:
 * **Azure Bot Service Channel** - Language and SDK independent support via Azure Bot Service
-* **Bot Framework SDK Adapter** -  A per language Adapter component written by community   
+* **Bot Framework SDK Adapter** -  A per language Adapter component written by community
 
 | Client          | Azure Channel  | C# Adapter        | JS Adapter        |
 |-----------------|:--------------:|:-----------------:|:-----------------:|
@@ -87,10 +87,10 @@ There are two ways to connect your bot to a client experience:
 ## Community Extensions
 Adapters and plugins from the open source community are available to extend your bot application.
 
-|                            |       C#       |   JS       |    Python      |    Java      |
+|                            |       C#       | JavaScript |    Python      |    Java      |
 |----------------------------|:--------------:|:----------:|:--------------:|:------------:|
-| [botbuilder-community][56] | [C#][56dotnet] | [JS][56js] | [Python][56py] | [Java][56ja] |
-| [Botkit][56bk]             |                | [JS][56bk] |                |              |
+| [botbuilder-community][56] | [C#][56dotnet] | [JavaScript][56js] | [Python][56py] | [Java][56ja] |
+| [Botkit][56bk]             |                | [JavaScript][56bk] |                |              |
 
 [56]:https://github.com/botbuildercommunity#readme
 [56dotnet]:https://github.com/botbuildercommunity/botbuilder-community-dotnet#readme
@@ -99,23 +99,23 @@ Adapters and plugins from the open source community are available to extend your
 [56ja]:https://github.com/botbuildercommunity/botbuilder-community-java#readme
 [56bk]:https://github.com/howdyai/botkit#readme
 
-## Questions and Help 
+## Questions and Help
 If you have questions about Bot Framework SDK or using Azure Bot Service, we encourage you to reach out to the community and Azure Bot Service dev team for help.
 - For questions which fit the Stack Overflow format ("how does this work?"), we monitor the both [Azure Bot Service](https://stackoverflow.com/questions/tagged/azure-bot-service) and [Bot Framework](https://stackoverflow.com/questions/tagged/botframework) tags (search [both](https://stackoverflow.com/questions/tagged/azure-bot-service+or+botframework))
-- You can also tweet/follow [@msbotframework](https://twitter.com/msbotframework) 
+- You can also tweet/follow [@msbotframework](https://twitter.com/msbotframework)
 
 Join the conversation on **[Gitter](https://gitter.im/Microsoft/BotBuilder)**.
 
 See all the support options **[here](https://docs.microsoft.com/en-us/bot-framework/resources-support)**.
 
 
-## Issues and feature requests 
+## Issues and feature requests
 We track functional issues and features asks for and Bot Builder and Azure Bot Service in a variety of locations. If you have found an issue or have a feature request, please submit an issue to the below repositories.
 
 | Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                        | Link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 |------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
 | SDK v4 .NET                                                                                                            | core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue](https://github.com/Microsoft/botbuilder-dotnet/issues)                         |
-| SDK v4 JS                                                                                                              | core bot runtime for Typescript/Javascript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-js/issues)                             |
+| SDK v4 JavaScript                                                                                                      | core bot runtime for Typescript/Javascript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-js/issues)                             |
 | SDK v4 Python                                                                                                          | core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA                | [File an issue](https://github.com/Microsoft/botbuilder-python/issues)                         |
 | SDK v4 Java                                                                                                            | core bot runtime for Java, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue]( https://github.com/Microsoft/botbuilder-java/issues)                          |
 
