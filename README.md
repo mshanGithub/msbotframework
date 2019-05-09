@@ -10,11 +10,14 @@ The Bot Framework SDK v4, part of the [Bot Framework](https://github.com/microso
 The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to model and build sophisticated conversation using their favorite programming language.
 
 
-|              |              C#              |                  JavaScript              |          Python          | Java                    |
+|                |              C#              |                JavaScript                |         Python         | Java                    |
 |----------------|:----------------------------:|:----------------------------------------:|:----------------------:|:-----------------------:|
 | Stable Release |          [4.4.3][1]          |                [4.4.0][2]                | [4.4.0b1 (preview)][3] | [4.0.0a6 (preview)][3a] |
-| Docs           |           [docs][5]          |                 [docs][5]                |                        |                         |
 | Samples        | [.NET Core][6], [WebAPI][10] | [Node.js][7] , [TypeScript][8], [es6][9] |      [Python][111]     |                         |
+| Docs           | [C# SDK Docs][5]             | [JavaScript SDK Docs][5]                 |                        |                         |
+| Samples        | [.NET Core][6], [WebAPI][10] | [Node.js][7] , [TypeScript][8], [es6][9] |      [Python][111]     |                         |
+| Solutions      | [.NET Core][20]              | [Node.js][20]                            |                        |                         |
+| Skills         | [.NET Core][21]              |                                          |                        |                         |
 
 [1a]:https://github.com/microsoft/botframework-sdk
 [1]:https://github.com/Microsoft/botbuilder-dotnet/#packages
@@ -28,6 +31,8 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 [8]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/typescript_nodejs
 [9]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/javascript_es6
 [10]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/csharp_webapi
+[20]:https://github.com/Microsoft/AI
+[21]:https://github.com/Microsoft/AI/blob/master/docs/readme.md#skills-1
 [111]:https://github.com/Microsoft/botbuilder-python/tree/master/samples
 
 <a name="V4-whats-new"></a>
@@ -114,7 +119,7 @@ We track functional issues and features asks for and Bot Builder and Azure Bot S
 
 | Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description                                                                                        | Link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 |------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| SDK v4 .NET                                                                                                            | core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue](https://github.com/Microsoft/botbuilder-dotnet/issues)                         |
+| SDK v4 .NET                                                                                                            | core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File&nbsp;an&nbsp;issue](https://github.com/Microsoft/botbuilder-dotnet/issues)                         |
 | SDK v4 JavaScript                                                                                                      | core bot runtime for Typescript/Javascript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue](https://github.com/Microsoft/botbuilder-js/issues)                             |
 | SDK v4 Python                                                                                                          | core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA                | [File an issue](https://github.com/Microsoft/botbuilder-python/issues)                         |
 | SDK v4 Java                                                                                                            | core bot runtime for Java, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue]( https://github.com/Microsoft/botbuilder-java/issues)                          |
