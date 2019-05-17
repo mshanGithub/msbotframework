@@ -128,7 +128,7 @@ Channels are recommended to make these rules simple.
 
 All cards include content (in the form of one or more fields) and an array of buttons, each of which is represented by an action. Some cards include an additional card action, the "tap action," describing the behavior when the user taps the card but not any of the buttons.
 
-All Bot Framework card types except Adaptive Cards include a `buttons` field, which contains zero or more buttons to be presented to a user. The type of the `buttons` field is an array of type [`cardAction`](BotFramework-Activity.md#Card-action), defined in the [Bot Framework Activity](BotFramework-Activity.md) schema [[1](#References)].
+All Bot Framework card types except Adaptive Cards include a `buttons` field, which contains zero or more buttons to be presented to a user. The type of the `buttons` field is an array of type [`cardAction`](botframework-activity.md#card-action), defined in the [Bot Framework Activity](botframework-activity.md) schema [[1](#References)].
 
 `C4000`: Channels MAY define a minimum and maximum number of buttons to allow on each card type.
 
