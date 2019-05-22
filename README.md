@@ -70,7 +70,7 @@ There are two ways to connect your bot to a client experience:
 | Exchange        | [Azure][55abs] |                   |                   |
 | Direct Line     | [Azure][55abs] |                   |                   |
 | Web Chat        | [Azure][55abs] |                   | [Botkit][55bk]    |
-| Cortona         | [Azure][55abs] |                   |                   |
+| Cortana         | [Azure][55abs] |                   |                   |
 | Facebook        | [Azure][55abs] |                   | [Botkit][55bk]    |
 | Slack           | [Azure][55abs] |                   | [Botkit][55bk]    |
 | Kik             | [Azure][55abs] |                   |                   |
