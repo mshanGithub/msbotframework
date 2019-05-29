@@ -543,7 +543,7 @@ The `value` field contains parameters specific to this event, as defined by the 
 
 ### Relates to
 
-The `relatesTo` field references another conversation, and optionally a specific activity within that activity. The value of the `relatesTo` field is a complex object of the [Conversation reference](#Conversation-reference) type.
+The `relatesTo` field references another conversation, and optionally a specific activity within that conversation. The value of the `relatesTo` field is a complex object of the [Conversation reference](#Conversation-reference) type.
 
 `A5200`: `relatesTo` SHOULD NOT reference an activity within the conversation identified by the `conversation` field.
 
@@ -577,7 +577,7 @@ The `value` field contains parameters specific to this event, as defined by the 
 
 ### Relates to
 
-The `relatesTo` field references another conversation, and optionally a specific activity within that activity. The value of the `relatesTo` field is a complex object of the [Conversation reference](#Conversation-reference) type.
+The `relatesTo` field references another conversation, and optionally a specific activity within that conversation. The value of the `relatesTo` field is a complex object of the [Conversation reference](#Conversation-reference) type.
 
 `A5600`: `relatesTo` SHOULD NOT reference an activity within the conversation identified by the `conversation` field.
 
@@ -701,7 +701,7 @@ The `value` field contains an object for this trace, as defined by the `valueTyp
 
 ### Relates to
 
-The `relatesTo` field references another conversation, and optionally a specific activity within that activity. The value of the `relatesTo` field is a complex object of the [Conversation reference](#Conversation-reference) type.
+The `relatesTo` field references another conversation, and optionally a specific activity within that conversation. The value of the `relatesTo` field is a complex object of the [Conversation reference](#Conversation-reference) type.
 
 `A6107`: `relatesTo` MAY reference an activity within the conversation identified by the `conversation` field.
 
