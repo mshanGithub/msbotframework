@@ -877,7 +877,7 @@ A `messageBack` action represents a text response to be sent via the chat system
 
 #### IM Back
 
-An `imBack` action represents a text response that is added to the chat feed. Message Back uses the following fields:
+An `imBack` action represents a text response that is added to the chat feed. IM Back uses the following fields:
 * `type` ("`imBack`")
 * `title`
 * `image`
