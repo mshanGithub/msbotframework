@@ -9,17 +9,13 @@ The Bot Framework SDK v4, part of the [Bot Framework](https://github.com/microso
 ## Overview
 The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to model and build sophisticated conversation using their favorite programming language.
 
+|   | C#  | JS  | Python |  Java | 
+|---|:---:|:---:|:------:|:-----:|
+|Stable Release |[4.5.0][1] | [4.5.0][2] | [4.5.0b2 (preview)][3] | [4.0.0a6 (preview)][3a]|
+|Docs | [docs][5] |[docs][5] |  | |
+|Samples |[.NET Core][6], [WebAPI][10] |[Node.js][7] , [TypeScript][8], [es6][9]  | [Python][111] | | 
 
-|                |              C#              |                JavaScript                |         Python         | Java                    |
-|----------------|:----------------------------:|:----------------------------------------:|:----------------------:|:-----------------------:|
-| Stable Release |          [4.4.3][1]          |                [4.4.0][2]                | [4.4.0b1 (preview)][3] | [4.0.0a6 (preview)][3a] |
-| Samples        | [.NET Core][6], [WebAPI][10] | [Node.js][7] , [TypeScript][8], [es6][9] |      [Python][111]     |                         |
-| Docs           | [C# SDK Docs][5]             | [JavaScript SDK Docs][5]                 |                        |                         |
-| Samples        | [.NET Core][6], [WebAPI][10] | [Node.js][7] , [TypeScript][8], [es6][9] |      [Python][111]     |                         |
-| Solutions      | [.NET Core][20]              | [Node.js][20]                            |                        |                         |
-| Skills         | [.NET Core][21]              |                                          |                        |                         |
-
-[1a]:https://github.com/microsoft/botframework-sdk
+[1a]:https://github.com/microsoft/botframework-sdk/#readme
 [1]:https://github.com/Microsoft/botbuilder-dotnet/#packages
 [2]:https://github.com/Microsoft/botbuilder-js#packages
 [3]:https://github.com/Microsoft/botbuilder-python#packages
@@ -31,31 +27,30 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 [8]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/typescript_nodejs
 [9]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/javascript_es6
 [10]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/csharp_webapi
-[20]:https://github.com/Microsoft/AI
-[21]:https://github.com/Microsoft/AI/blob/master/docs/readme.md#skills-1
 [111]:https://github.com/Microsoft/botbuilder-python/tree/master/samples
 
 <a name="V4-whats-new"></a>
-### Bot Framework SDK v4 - (New! - version 4.5 preview)
-The Bot Framework SDK v4 - Version 4.5 new capabilities in preview.
+### Bot Framework SDK v4 - (New! - version 4.6 preview)
+The Bot Framework SDK v4 - Version 4.6 new capabilites in preview. 
 
-- [Adaptive Dialog][47] | [docs][48] | [C# samples][49] :: Adaptive Dialogs enable developers to build conversations that can be dynamically changed as the conversation progresses.  Traditionally developers have mapped out the entire flow of a conversation up front, which limits the flexibility of the conversation.  Adaptive dialogs allow them to be more flexible, to respond to changes in context and insert new steps or entire sub-dialogs into the conversation as it progresses. Additionally as with other SDK V4 concepts, we have defined adaptive dialogs such that they can be defined via [declarative][50] that are interpreted at runtime; which allows us to have tooling on top of this and integrate with services.
+- [Adaptive Dialog][47] | [docs][48] | [C# samples][49] :: Adaptive Dialogs enable developers to build conversations that can be dynamically changed as the conversation progresses.  Traditionally developers have mapped out the entire flow of a conversation up front, which limits the flexibility of the conversation.  Adaptive dialogs allow them to be more flexible, to respond to changes in context and insert new steps or entire sub-dialogs into the conversation as it progresses. Additionally as with other SDK V4 concepts, we have defined adaptive dialogs such that they can be defined via [declarative][50] that are interpreted at runtime; which allows us to have tooling on top of this and integrate with services. 
 
 - [Language Generation][43] | [docs][44] | [C# samples][45] :: Learning from our customers experiences and bringing together capabilities first implemented by Cortana and Cognition teams, we are introducing Language Generation; which allows the developer to extract the embedded strings from their code and resource files and manage them through a Language Generation runtime and file format.  Language Generation enable customers to define multiple variations on a phrase, execute simple expressions based on context, refer to conversational memory, and over time will enable us to bring additional capabilities all leading to a more natural conversational experience.
 
 - [Common Expression Language][40] | [api][41] :: Both Adaptive dialogs and Language Generation rely on and use a common expression language to power bot conversations.
 
 
-[40]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/common-expression-language
+[40]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/common-expression-language#readme
 [41]:https://github.com/Microsoft/BotBuilder-Samples/blob/master/experimental/common-expression-language/api-reference.md
-[43]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/language-generation
+[43]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/language-generation#readme
 [44]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/language-generation/docs
 [45]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/language-generation/csharp_dotnetcore
 [46]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/language-generation/javascript_nodejs/13.core-bot
-[47]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/adaptive-dialog
+[47]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/adaptive-dialog#readme
 [48]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/adaptive-dialog/docs
 [49]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/adaptive-dialog/csharp_dotnetcore
 [50]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/experimental/adaptive-dialog/declarative
+
 
 
 ## Channels and Adapters
