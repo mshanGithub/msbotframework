@@ -18,7 +18,7 @@ Currently performs the following (for repos managed by the Bot Framework):
 Install dependent package.
 
 ```bash
-pip install PyGithub
+pip install -r requirements.txt
 ```
 ### Set your Git Credentials
 This tool uses a personal access token to authenticate with Github.
@@ -41,7 +41,7 @@ python report.py
 
 Sample Output:
 ```bash
-PS D:\python\github\PyGithub\bot_report> python report.py
+PS D:\python\github\botframework-sdk\dri> python report.py
 Bot Framework SDK Github Report
 ===============================
 Repo: microsoft/BotFramework-DirectLine-DotNet:
