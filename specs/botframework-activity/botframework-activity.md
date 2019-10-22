@@ -1246,7 +1246,7 @@ The `semanticEntityInstance` type references to source information about where t
 11. [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) -- *Country codes*
 12. [Bot Framework Cards](botframework-cards.md)
 13. [Adaptive Cards](https://adaptivecards.io)
-14. [Bot Framework Manifest](../botframework-manifest/botframework-manifest.md)
+14. [Bot Framework Manifest](../manifest/botframework-manifest.md)
 15. [RFC 4627](http://www.ietf.org/rfc/rfc4627.txt) -- *The application/json Media Type for JavaScript Object Notation (JSON)*
 16. [Transcript](../transcript/transcript.md)
 17. [RFC 6557](https://tools.ietf.org/html/rfc6557)
