@@ -68,6 +68,7 @@ MICROSFT_EMPLOYEES=[
     'jonathanfingold',
     'automationteamva',
     'gasparacevedozainsouthworks',
+    'gasper-az',
     'batta32',
 ]
 
