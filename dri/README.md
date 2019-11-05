@@ -66,5 +66,10 @@ Repo: microsoft/BotFramework-Composer:
 ```
 
 
+### Care and feeding
+
+To filter out people (ie, consultants) which aren't subject to monitoring, edit the `report.py` and add the github alias (all lowercase) to the `MICROSOFT_EMPLOYEES` list.
+
+To add new milestones labels (issues with milestone labels are filtered out), edit the `helpers.py` file and add the milestone label to `MILESTONE_LABELS` list.
 
 Enjoy!
