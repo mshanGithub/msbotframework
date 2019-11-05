@@ -70,6 +70,7 @@ MICROSFT_EMPLOYEES=[
     'gasparacevedozainsouthworks',
     'gasper-az',
     'batta32',
+    'shikhamishra11',
 ]
 
 BOT_SERVICES_LABEL = 'Bot Services'
