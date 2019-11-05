@@ -30,9 +30,14 @@ This tool uses a personal access token to authenticate with Github.
   - Copy the token value (don't worry you can regen if you forget it)
  - On command line:
           Windows: `set GIT_PERSONAL_TOKEN=<your token>`
+
           Powershell: `$env:GIT_PERSONAL_TOKEN="<your token>"` (Note the quotes)
+
           Linux: `export GIT_PERSONAL_TOKEN=<your token>`
- - To permanently set into your environment variables in Windows: `setx GIT_PERSONAL_TOKEN <your token>`
+
+ - To permanently set into your environment variables in Windows:
+
+          `setx GIT_PERSONAL_TOKEN <your token>`
 
 ### Run
 ```bash

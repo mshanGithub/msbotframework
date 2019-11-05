@@ -10,12 +10,11 @@ See README.md for details on installing/using.
 """
 import os
 import sys
-import jsonpickle
 from datetime import datetime
-from github import Github, Label, GithubObject
+from github import Github
 from colorama import Fore, Style
 from output import print_status, print_issue, print_stale_issue, \
-output_file, file_name, OutputRepository, OuputIssuesJson, OutputIssue, \
+OUTPUT_FILE, FILE_NAME, OutputRepository, OuputIssuesJson, OutputIssue, \
 setup_html
 from helpers import get_msorg_members, last_touched_by_microsoft, filter_azure, \
 filter_bot_service_label, filter_adaptive_label, filter_customer_replied_label, \
@@ -44,6 +43,7 @@ if not GIT_PERSONAL_TOKEN:
     print(HOW_TO_SET_CREDS)
     sys.exit(2)
 
+# Github Repos being monitored
 REPOS = [
     'BotFramework-DirectLine-DotNet',
     'BotFramework-Composer',
@@ -63,11 +63,13 @@ REPOS = [
     'azure/azure-cli',
 ]
 
+# Do not apply user filters to these repos.
 BYPASS_USERFILTER_REPOS = [
     'botbuilder-tools',
 ]
 
-MICROSFT_EMPLOYEES=[
+# Github people filtered out (must be lowercase!)
+MICROSFT_EMPLOYEES = [
     'awalia13',
     'kumar2608',
     'bill7zz',
@@ -77,28 +79,30 @@ MICROSFT_EMPLOYEES=[
     'gasparacevedozainsouthworks',
     'gasper-az',
     'batta32',
+    'shikhamishra11',
 ]
 
-
-
-
+# When to begin searching for issues.
 START_DATE = datetime(2019, 7, 1, 0, 0)
 
-
+# pylint: disable=line-too-long
 def main():
     setup_html()
     print_status('Bot Framework SDK Github Report')
     print_status('===============================')
     g = Github(GIT_PERSONAL_TOKEN)
+
+    # Filter out people associated with Microsoft
     microsoft_members = get_msorg_members(g) + MICROSFT_EMPLOYEES  
 
+    # Output for UI 
     OUTPUT = OuputIssuesJson()
 
     for repo in REPOS:
         repo_name = repo if '/' in repo else f'microsoft/{repo}'
         repo = g.get_repo(repo_name)
 
-        # Output element
+        # Output for UI
         repository_output_element = OutputRepository(repo_name)
         OUTPUT.repositories.append(repository_output_element)
 
@@ -113,20 +117,22 @@ def main():
 
         # Filter out adaptive issues
         open_issues = [issue for issue in open_issues if not filter_adaptive_label(issue)]
-        userFiltered = True
-        if (repo.name in BYPASS_USERFILTER_REPOS):
+        user_filtered = True
+        if repo.name in BYPASS_USERFILTER_REPOS:
             user_filtered_issues = [issue for issue in open_issues if not issue.pull_request]
-            userFiltered = False
+            user_filtered = False
         else:
-            user_filtered_issues = [issue for issue in open_issues if (not issue.user.login.strip().lower() in microsoft_members and not issue.pull_request)]
+            user_filtered_issues = [issue for issue in open_issues if (not issue.user.login.strip().lower() in \
+                microsoft_members and not issue.pull_request)]
 
         if repo_name.lower() != 'azure/azure-cli':
-            no_bs_cr_label = [issue for issue in user_filtered_issues if not filter_bot_service_label(issue) or not filter_customer_reported_label(issue)]
-            
+            no_bs_cr_label = [issue for issue in user_filtered_issues if not filter_bot_service_label(issue) or \
+                not filter_customer_reported_label(issue)]
+
             if no_bs_cr_label:
                 print_status(f'   No "Bot Services/Customer Reported": Count: {len(no_bs_cr_label)}', 'tab1')
                 for issue in no_bs_cr_label:
-                    if userFiltered or not filter_milestone_label(issue):
+                    if user_filtered or not filter_milestone_label(issue):
                         print_issue(issue)
                         repository_output_element.issues.append(OutputIssue("no_bot_services", issue))
 
@@ -134,12 +140,14 @@ def main():
             if no_crt_label:
                 print_status(f'   No "Customer Replied": Count: {len(no_crt_label)}', 'tab1')
                 for issue in no_crt_label:
-                    if userFiltered in microsoft_members or not filter_milestone_label(issue):
+                    if user_filtered in microsoft_members or not filter_milestone_label(issue):
                         print_issue(issue)
                         repository_output_element.issues.append(OutputIssue("no_customer_reply", issue))
 
+            # Start looking at stale (untouched with no comments) issues
             stale_days = 10
-            stale_customer_issues = [add_last_comment(issue, stale_days) for issue in user_filtered_issues if not filter_stale_customer_issues(issue, days_old=stale_days)]
+            stale_customer_issues = [add_last_comment(issue, stale_days) \
+                for issue in user_filtered_issues if not filter_stale_customer_issues(issue, days_old=stale_days)]
             stale_no_nones = [i for i in stale_customer_issues if i]
             stale_descending = sorted(stale_no_nones, key=lambda issue: issue.last_comment, reverse=False)
             if stale_descending:
@@ -160,13 +168,12 @@ def main():
                 print_issue(issue)
                 repository_output_element.issues.append(OutputIssue("azure_cli", issue))
 
-    # Write JSON output
+    # Write JSON output for UI
     OUTPUT.write_output()
-    
-    output_file.write("</body></html>")
-    output_file.close()
-    os.system('start "" "' + file_name + '"')
-    
+    OUTPUT_FILE.write("</body></html>")
+    OUTPUT_FILE.close()
+    os.system('start "" "' + FILE_NAME + '"')
+
 
 if __name__ == "__main__":
     main()
