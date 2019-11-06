@@ -169,7 +169,7 @@ def main():
                 repository_output_element.issues.append(OutputIssue("azure_cli", issue))
 
     # Write JSON output for UI
-    OUTPUT.write_output()
+    # OUTPUT.write_output()
     OUTPUT_FILE.write("</body></html>")
     OUTPUT_FILE.close()
     os.system('start "" "' + FILE_NAME + '"')
