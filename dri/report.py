@@ -47,7 +47,6 @@ if not GIT_PERSONAL_TOKEN:
 REPOS = [
     'BotFramework-DirectLine-DotNet',
     'BotFramework-Composer',
-    'BotFramework-Services',
     'BotBuilder-V3',
     'BotFramework-sdk',
     'botbuilder-dotnet',
