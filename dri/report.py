@@ -172,7 +172,11 @@ def main():
     # OUTPUT.write_output()
     OUTPUT_FILE.write("</body></html>")
     OUTPUT_FILE.close()
-    os.system('start "" "' + FILE_NAME + '"')
+
+    if sys.platform == 'win32':
+        os.system('start "" "' + FILE_NAME + '"')
+    else:
+        os.system('open ' + FILE_NAME)
 
 
 if __name__ == "__main__":
