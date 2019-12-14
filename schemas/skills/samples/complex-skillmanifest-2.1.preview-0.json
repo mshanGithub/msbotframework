@@ -56,7 +56,7 @@
     },
     "activities": {
         "bookFlight": {
-            "description": "Books a light",
+            "description": "Books a flight",
             "type": "event",
             "name": "BookFlight",
             "value": {
@@ -144,9 +144,10 @@
         "flightUpdated": {
             "type": "event",
             "name": "FlightUpdated",
+            "description": "Event which is sent by the skill when there is an update in flight info",
             "value": {
                 "type": "object",
-                "description": "Event which is sent by the skill when there is an update in flight info",
+                "description": "Flight update information",
                 "properties": {
                     "flightNumber": {
                         "type": "string"
@@ -155,7 +156,7 @@
                         "type": "date"
                     },
                     "departureTime": {
-                        "time": "string"
+                        "type": "time"
                     }
                 }
             }
