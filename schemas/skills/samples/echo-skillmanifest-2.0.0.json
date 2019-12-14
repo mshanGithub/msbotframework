@@ -18,12 +18,12 @@
             "name": "default",
             "protocol": "BotFrameworkV3",
             "description": "Production  endpoint for SkillBot.",
-            "endpointUrl": "http://contoso.com/api/messages",
+            "endpointUrl": "http://myskill.contoso.com/api/messages",
             "msAppId": "a0000f00-Ad00-a000-a000-a0000aaaAaa0"
         }
     ],
     "activities": {
-        "passthroughMessage": {
+        "message": {
             "type": "message",
             "description": "A message activity containing the utterance that the skill will echo back to the user"
         }
