@@ -47,7 +47,6 @@ if not GIT_PERSONAL_TOKEN:
 REPOS = [
     'BotFramework-DirectLine-DotNet',
     'BotFramework-Composer',
-    'BotFramework-Services',
     'BotBuilder-V3',
     'BotFramework-sdk',
     'botbuilder-dotnet',
@@ -70,16 +69,17 @@ BYPASS_USERFILTER_REPOS = [
 
 # Github people filtered out (must be lowercase!)
 MICROSFT_EMPLOYEES = [
-    'awalia13',
-    'kumar2608',
-    'bill7zz',
-    'washingtonkayaker',
-    'jonathanfingold',
     'automationteamva',
+    'awalia13',
+    'batta32',
+    'bill7zz',
+    'clearab',
     'gasparacevedozainsouthworks',
     'gasper-az',
-    'batta32',
+    'jonathanfingold',
+    'kumar2608',
     'shikhamishra11',
+    'washingtonkayaker',
 ]
 
 # When to begin searching for issues.
@@ -93,9 +93,9 @@ def main():
     g = Github(GIT_PERSONAL_TOKEN)
 
     # Filter out people associated with Microsoft
-    microsoft_members = get_msorg_members(g) + MICROSFT_EMPLOYEES  
+    microsoft_members = get_msorg_members(g) + MICROSFT_EMPLOYEES
 
-    # Output for UI 
+    # Output for UI
     OUTPUT = OuputIssuesJson()
 
     for repo in REPOS:
@@ -172,7 +172,11 @@ def main():
     # OUTPUT.write_output()
     OUTPUT_FILE.write("</body></html>")
     OUTPUT_FILE.close()
-    os.system('start "" "' + FILE_NAME + '"')
+
+    if sys.platform == 'win32':
+        os.system('start "" "' + FILE_NAME + '"')
+    else:
+        os.system('open ' + FILE_NAME)
 
 
 if __name__ == "__main__":
