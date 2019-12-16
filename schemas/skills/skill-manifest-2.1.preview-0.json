@@ -75,12 +75,18 @@
             "properties": {
                 "languages": {
                     "type": "object",
-                    "description": "List of language models supported by the skill",
+                    "description": "List of languages supported by the skill",
                     "minProperties": 1,
                     "additionalProperties": {
                         "oneOf": [
                             {
-                                "$ref": "#/definitions/languageModel"
+                                "type": "array",
+                                "minItems": 1,
+                                "uniqueItems": true,
+                                "description": "List of language models supported by the skill",
+                                "items": {
+                                    "$ref": "#/definitions/languageModel"
+                                }                               
                             }
                         ]
                     }
@@ -308,10 +314,20 @@
             "type": "object",
             "description": "A language model for a given culture. The name is a combination of an ISO 639 two-letter lowercase culture code associated with a language and an ISO 3166 two-letter uppercase subculture code associated with a country or region",
             "required": [
+                "id",
+                "name",
                 "contentType",
                 "url"
             ],
             "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the language model"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name for the language model"
+                },
                 "contentType": {
                     "type": "string",
                     "description": "Type of the language model"

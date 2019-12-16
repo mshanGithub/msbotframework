@@ -32,21 +32,40 @@
     ],
     "dispatchModels": {
         "languages": {
-            "en": {
-                "contentType": "application/lu",
-                "url": "http://sample.com/SkillBot-en.lu",
-                "description": "English language model for the skill"
-            },
-            "es-ES": {
-                "contentType": "application/lu",
-                "url": "http://sample.com/SkillBot-es-ES.lu",
-                "description": "Spanish (Spain) language model for the skill"
-            },
-            "es-MX": {
-                "contentType": "application/lu",
-                "url": "http://sample.com/SkillBot-es-MX.lu",
-                "description": "Spanish (Mexico) language model for the skill"
-            }
+            "en": [
+                {
+                    "id": "SkillLuModel-en",
+                    "name": "SkillBot LU (English)",
+                    "contentType": "application/lu",
+                    "url": "http://sample.com/SkillBot-en.lu",
+                    "description": "English language model for the skill"
+                },
+                {
+                    "id": "SkillQnAModel-en",
+                    "name": "SkillBot QnA LU (English)",
+                    "contentType": "application/lu",
+                    "url": "http://sample.com/SkillBot-QnA-en.lu",
+                    "description": "English language model for the skill (QnAMaker"
+                }
+            ],
+            "es-ES": [
+                {
+                    "id": "SkillLuModel-es-ES",
+                    "name": "SkillBot LU (Spanish-Spain)",
+                    "contentType": "application/lu",
+                    "url": "http://sample.com/SkillBot-es-ES.lu",
+                    "description": "Spanish (Spain) language model for the skill"
+                }
+            ],
+            "es-MX": [
+                {
+                    "id": "SkillLuModel-es-MX",
+                    "name": "SkillBot LU (Spanish-Mexico)",
+                    "contentType": "application/lu",
+                    "url": "http://sample.com/SkillBot-es-MX.lu",
+                    "description": "Spanish (Mexico) language model for the skill"
+                }
+            ]
         },
         "intents": {
             "bookFlight": "#/activities/bookFlight",
