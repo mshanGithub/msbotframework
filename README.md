@@ -11,8 +11,8 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 
 |   | C#  | JS  | Python |  Java | 
 |---|:---:|:---:|:------:|:-----:|
-|Stable Release |[4.5.0][1] | [4.5.0][2] | [4.5.0b2 (preview)][3] | [4.0.0a6 (preview)][3a]|
-|Docs | [docs][5] |[docs][5] |  | |
+|Stable Release |[4.7][1] | [4.7][2] | [4.7][3] | [4.0.0a6 (preview)][3a]|
+|Docs | [docs][5] |[docs][5] |[docs][5]  | |
 |Samples |[.NET Core][6], [WebAPI][10] |[Node.js][7] , [TypeScript][8], [es6][9]  | [Python][111] | | 
 
 [1a]:https://github.com/microsoft/botframework-sdk/#readme
@@ -30,7 +30,7 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 [111]:https://github.com/Microsoft/botbuilder-python/tree/master/samples
 
 <a name="V4-whats-new"></a>
-### Bot Framework SDK v4 - (New! - version 4.6 preview)
+### Bot Framework SDK v4 preview features
 
 - [Adaptive Dialog][47] | [docs][48] | [C# samples][49] :: Adaptive Dialogs enable developers to build conversations that can be dynamically changed as the conversation progresses.  Traditionally developers have mapped out the entire flow of a conversation up front, which limits the flexibility of the conversation.  Adaptive dialogs allow them to be more flexible, to respond to changes in context and insert new steps or entire sub-dialogs into the conversation as it progresses. Additionally as with other SDK V4 concepts, we have defined adaptive dialogs such that they can be defined via [declarative][50] that are interpreted at runtime; which allows us to have tooling on top of this and integrate with services. 
 
