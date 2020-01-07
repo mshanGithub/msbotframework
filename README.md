@@ -1,10 +1,12 @@
 # ![Bot Framework SDK](./docs/media/BotFrameworkSDK.png)
 
-### [Click here to find out what's new with Bot Framework](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
+### [Click here to find out what's new with Bot Framework](https://docs.microsoft.com/en-us/azure/bot-service/what-is-new?view=azure-bot-service-4.0)
 
 # Bot Framework SDK
 
 The Bot Framework SDK v4, part of the [Bot Framework](https://github.com/microsoft/botframework), provides the most comprehensive experience for building conversation applications. With the Bot Framework SDK, developers can easily model and build sophisticated conversation using their favorite programming languages. With the Bot Framework SDK, you can build bots that converse free-form or your bot can also have more guided interactions where it provides the user choices or possible actions. The conversation can use simple text or more complex rich cards that contain text, images, and action buttons. You can add natural language interactions and questions and answers, which let your users interact with your bots in a natural way.
+
+Checkout the [Bot Framework ecosystem](#bot-framework-ecosystem) section to learn more about other tooling and services related to the Bot Framework SDK.
 
 ## Overview
 The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to model and build sophisticated conversation using their favorite programming language.
@@ -123,6 +125,119 @@ We track functional issues and features asks for and Bot Builder and Azure Bot S
 
 - Bot Builder v3 SDK has been migrated to the [Bot Framework SDK V3](https://github.com/microsoft/botbuilder-v3) repository.
 - [Botkit SDK](https://botkit.ai) is a popular SDK which joined the Microsoft Bot Framework family and is built on top of the Bot Framework SDK V4.
+
+## Bot Framework ecosystem
+
+- [Bot Framework Composer](#Bot-Framework-Composer)
+- [Bot Framework Solutions](#Bot-Framework-Solutions)
+- [Botkit](#Botkit)
+- [Azure Bot Service](#Azure-Bot-Service)
+- [Bot Framework Emulator](#Bot-Framework-Emulator)
+- [Bot Framework Web Chat](#Bot-Framework-Web-Chat)
+- [Bot Framework Tools](#Bot-Framework-CLI-Tools)
+- [Language Understanding](#Language-Understanding)
+- [QnA Maker](#QnA-Maker)
+- [Dispatch](#Dispatch)
+- [Speech Services](#Speech-Services)  
+- [Adaptive cards](#Adaptive-Cards)
+- [Analytics](#Analytics)
+
+### Bot Framework Composer
+[Bot Framework Composer (Preview)](https://github.com/microsoft/BotFramework-Composer/blob/stable/README.md) is an integrated development tool for developers and multi-disciplinary teams to build bots and conversational experiences with the Microsoft Bot Framework. Within this tool, you'll find everything you need to build a sophisticated conversational experience.
+
+### Botkit
+[Botkit][100] is a developer tool and SDK for building chat bots, apps and custom integrations for major messaging platforms. Botkit bots `hear()` triggers, `ask()` questions and `say()` replies. Developers can use this syntax to build dialogs - now cross compatible with the latest version of Bot Framework SDK. 
+
+In addition, Botkit brings with it 6 platform adapters allowing Javascript bot applications to communicate directly with messaging platforms: [Slack][102], [Webex Teams][103], [Google Hangouts][104], [Facebook Messenger][105], [Twilio][106], and [Web chat][107].
+
+Botkit is part of Microsoft Bot Framework and is released under the [MIT Open Source license][101]
+
+[100]:https://github.com/howdyai/botkit#readme
+[101]:https://github.com/howdyai/botkit/blob/master/LICENSE.md
+[102]:https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-slack#readme
+[103]:https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-webex#readme
+[104]:https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-hangouts#readme
+[105]:https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-facebook#readme
+[106]:https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-twilio-sms#readme
+[107]:https://github.com/howdyai/botkit/tree/master/packages/botbuilder-adapter-web#readme
+
+### Bot Framework Solutions (Preview)
+
+The [Bot Framework Solutions repository](https://github.com/Microsoft/botframework-solutions#readme) provides a set of templates, solution accelerators and skills to help build sophisticated conversational experiences.
+
+<a name="Solutions-whats-new"></a>
+
+- [**Virtual Assistant.**](https://aka.ms/bfvadocs) Customers and partners have a significant need to deliver a conversational assistant tailored to their brand, personalized to their users, and made available across a broad range of canvases and devices. <br/><br/>  This brings together all of the supporting components and greatly simplifies the creation of a new bot project including: basic conversational intents, Dispatch integration, QnA Maker, Application Insights and an automated deployment.
+
+- [**Skills.**](https://aka.ms/bfskillsdocs) A library of re-usable conversational skill building-blocks enabling you to add functionality to a Bot. We currently provide: Calendar, Email, Task, Point of Interest, Automotive, Weather and News skills. Skills include LUIS models, Dialogs, and integration code delivered in source code form to customize and extend as required.
+
+- [**Analytics.**](https://github.com/Microsoft/AI/blob/master/docs/readme.md#analytics) Gain key insights into your bot’s health and behavior with the Bot Framework Analytics solutions, which includes: sample Application Insights queries, and Power BI dashboards to understand the full breadth of your bot’s conversations with users.
+
+### Azure Bot Service
+Azure Bot Service enables you to host intelligent, enterprise-grade bots with complete ownership and control of your data. Developers can register and connect their bots to users on Skype, Microsoft Teams, Cortana, Web Chat, and more. [[Docs][28]]
+
+* **Direct Line JS Client**: If you want to use the Direct Line channel in Azure Bot Service and are not using the WebChat client, the Direct Line JS client can be used in your custom application. [[Readme][30]]
+
+<a name="ABS-whats-new"></a>
+
+* **Direct Line Speech Channel**: We are bringing together the Bot Framework and Microsoft's Speech Services to provide a channel that enables streamed speech and text bi-directionally from the client to the bot application.  To sign up, add the 'Direct Line Speech' channel to your Azure Bot Service.
+
+[27]:https://azure.microsoft.com/en-us/services/bot-service/
+[28]:https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0
+[29]:https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-channels?view=azure-bot-service-4.0
+[30]:https://github.com/Microsoft/BotFramework-DirectLineJS/blob/master/README.md
+
+* **Better isolation for your Bot - Direct Line App Service Extension** : The Direct Line App Service Extension can be deployed as part of a VNET, allowing IT administrators to have more control over conversation traffic and improved latency in conversations due to reduction in the number of hops. Get started with Direct Line App Service Extension here. A VNET lets you create your own private space in Azure and is crucial to your cloud network as it offers isolation, segmentation, and other key benefits. 
+
+### Bot Framework Emulator
+The [Bot Framework Emulator][60] is a  cross-platform desktop application that allows bot developers to test and debug bots built using the Bot Framework SDK. You can use the Bot Framework Emulator to test bots running locally on your machine or to connect to bots running remotely. [[Download latest][61] | [Docs][62]]
+
+[60]:https://github.com/Microsoft/BotFramework-Emulator#readme
+[61]:https://github.com/Microsoft/BotFramework-Emulator/releases/latest
+[62]:https://docs.microsoft.com/en-us/azure/bot-service/bot-service-debug-emulator?view=azure-bot-service-4.0
+
+### Bot Framework Web Chat
+The Bot Framework [Web Chat][23] is a highly customizable web-based client chat control for Azure Bot Service that provides the ability for users to interact with your bot directly in a web page. [[Stable release][24] | [Docs][25]  | [Samples][26]]
+
+[23]:https://github.com/Microsoft/BotFramework-WebChat#readme
+[24]:https://www.npmjs.com/package/botframework-webchat
+[25]:https://github.com/Microsoft/BotFramework-WebChat/tree/master/doc
+[26]:https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples
+
+
+### Bot Framework CLI Tools
+The Bot Framework CLI Tools is an [open source](https://github.com/microsoft/botframework-cli) collection of cross-platform command line tools designed to support building robust end-to-end development workflows. The new Bot Framework CLI tool replaces legacy standalone tools used to manage bots and related services. We've ported most of the tools and are in the process of porting the rest of them. BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface. For the 4.6 release, we've ported Chatdown, QnAMaker, LuDown, and LuisGen. We plan to deprecate older versions of the tool in the future. [Docs]
+
+## Related Services
+
+### Language Understanding 
+A machine learning-based service to build natural language experiences. Quickly create enterprise-ready, custom models that continuously improve. Language Understanding Service(LUIS) allows your application to understand what a person wants in their own words. [[Docs][31] | [Add language understanding to your bot][32]]
+
+[18]:https://github.com/Microsoft/botbuilder-tools/tree/master/packages/LUIS#readme
+[19]:https://github.com/Microsoft/botbuilder-tools/tree/master/packages/QnAMaker#readme
+[30]:https://www.luis.ai
+[31]:https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/Home
+[32]:https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&branch=pr-en-us-1325&tabs=csharp
+
+### QnA Maker
+[QnA Maker][33] is a cloud-based API service that creates a conversational, question-and-answer layer over your data. With QnA Maker, you can build, train and publish a simple question and answer bot based on FAQ URLs, structured documents, product manuals or editorial content in minutes. [[Docs][34]  | [Add qnamaker to your bot][35]]
+
+[33]:https://www.qnamaker.ai/
+[34]:https://aka.ms/qnamaker-docs-home
+[35]:https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-qna?view=azure-bot-service-4.0&branch=pr-en-us-1325&tabs=cs
+
+### Dispatch
+Dispatch tool lets you build language models that allow you to dispatch between disparate components (such as QnA, LUIS and custom code). [[Readme](https://github.com/Microsoft/botbuilder-tools/blob/master/packages/Dispatch#readme)]
+
+### Speech Services
+Speech Services convert audio to text, perform speech translation and text-to-speech with the unified Speech services. With the speech services, you can integrate speech into your bot, create custom wake words, and author in multiple languages. [[Docs](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)]
+
+### Adaptive Cards
+[Adaptive Cards](https://adaptivecards.io) are an open standard for developers to exchange card content in a common and consistent way, 
+and are used by Bot Framework developers to create great cross-channel conversatational experiences.
+
+* **Open framework, native performance** - A simple open card format enables an ecosystem of shared tooling, seamless integration between apps, and native cross-platform performance on any device.
+* **Speech enabled from day one** - We live in an exciting era where users can talk to their devices. Adaptive Cards embrace this new world and were designed from the ground up to support these new experiences.
 
 ## Contributing
 
