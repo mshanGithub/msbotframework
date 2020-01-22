@@ -1,7 +1,13 @@
 # Bot Framework Build Pipelines Overview
-Most pipelines for building and releasing Bot Framework products are in the [Azure FuseLabs web site](https://fuselabs.visualstudio.com/).
+Most pipelines for building and releasing Bot Framework products are on the [Azure FuseLabs web site](https://fuselabs.visualstudio.com/).
 
-## Build pipeline descriptions
+Building and testing packages is normally done using Azure Pipelines, for example [here](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders).
+
+Deploying or releasing packages is normally done using Azure Release Pipelines, for example [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C).
+
+## AI pipelines
+
+The AI continuous integration (CI) build is [here]()
 
 |  Product | Pipeline | Description |
 |:--------:|-------------|------|
