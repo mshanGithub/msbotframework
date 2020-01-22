@@ -7,7 +7,13 @@ Deploying and releasing packages is done using Azure Release Pipelines. [Example
 
 ## AI
 
-The AI continuous integration (CI) builds [for DotNet](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=499&_a=summary) and [for JS](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=499&_a=summary)is triggered when a pull request is created.
+AI has no continuous integration or pull request validation builds.
 
-The [AI daily build]() 
+[AI daily builds for DotNet and for JS](https://fuselabs.visualstudio.com/SDK_v4/_build?_a=allDefinitions&path=%5CAI%5C&treeState=XEFJ) are scheduled to run once every night.
+
+
+## DotNet
+
+The DotNet continuous integration (CI) builds [for DotNet](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=499&_a=summary) and [for JS](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=499&_a=summary) are triggered when a pull request is created and when a PR is merged to the main branch.
+
 
