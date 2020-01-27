@@ -85,6 +85,7 @@ MICROSFT_EMPLOYEES = [
     'zerryth',
     'stevekan',
     'diberry',
+    'anusharavindrar',
 ]
 
 # When to begin searching for issues.
