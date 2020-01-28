@@ -46,7 +46,6 @@ if not GIT_PERSONAL_TOKEN:
 # Github Repos being monitored
 REPOS = [
     'BotFramework-DirectLine-DotNet',
-    'BotFramework-Composer',
     'BotBuilder-V3',
     'BotFramework-sdk',
     'botbuilder-dotnet',
