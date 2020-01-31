@@ -18,7 +18,7 @@ Those builds run unit tests. The Windows pipeline additionally runs API compatib
 
 **Functional test pipelines** deploy a test bot to Azure, then run tests against the bot. A [nightly signed build](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=739&_a=summary) triggers functional test builds [on a Windows platform](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&definitionId=88) and [on a Linux platform](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&definitionId=87). A non-signed [test setup build](https://fuselabs.visualstudio.com/SDK_v4/_build/index?definitionId=740&_a=completed) runs whenever code changes are merged to master, and also nightly. It too triggers functional tests [on a Windows platform](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&definitionId=91) and [on a Linux platform](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&definitionId=92).
 
-A **[Nightly signed build](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=739&_a=summary)** produces preview versions which are automatically published to MyGet. It can optionally create release versions if queued by hand, which are also automatically pushed to MyGet. 
+A **[Nightly signed build](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=739&_a=summary)** produces preview versions which are automatically published to MyGet. It can optionally create release versions if queued by hand, which are also automatically pushed to MyGet. Releases may be pushed to Nuget.org by manually queuing [this release pipeline]().
 
 ## Java
 
