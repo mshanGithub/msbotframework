@@ -11,12 +11,12 @@ Automate the testing matrix for Bot/Skill interactions. The full testing matrix 
 
 # Testing Matrix
 The following testing matrix needs to be fully tested
-|   |        |    **Skill**        |        |   |
+|   |        |    | **Skill**    |        |   |
 |---|--------|----|------------|--------|---|
 |   |        | C# | Javascript | Python |   |
-|   | C#     |  1  |     2       | 3       |   |
-| **HOST**  | JS     |  4  |5            | 6       |   |
-|   | Python | 7   |   8         |  9      |   |
+|   | C#     | 1  |     2      | 3      |   |
+|   | JS     | 4  |5           | 6      |   |
+|   | Python | 7  |8           | 9      |   |
 
 1. C# Bot acting as consumer, calling a C# Skill
 2. C# Bot acting as consumer, calling a JS Skill
