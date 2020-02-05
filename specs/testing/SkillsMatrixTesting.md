@@ -74,6 +74,11 @@ Automate the testing matrix for Bot/Skill interactions. The full testing matrix 
 # Bots we need
 3 Bots (1 in C#, one in JS, one in Python). The Bot picks up "Skill" or "Consumer" from the ENV variables, which are set as part of the bot's deployment. 
 
+The bots that may server as a starting point for development are here:
+[C#](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/csharp_dotnetcore/80.skills-simple-bot-to-bot)
+[JS](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/javascript_nodejs/80.skills-simple-bot-to-bot)
+[Python] (https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/python/80.skills-simple-bot-to-bot)
+
 OPEN ITEM: Unclear if we should have 3 bots or 6. 
 
 # Repo
