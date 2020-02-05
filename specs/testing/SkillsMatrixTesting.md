@@ -10,13 +10,14 @@ Automate the testing matrix for Bot/Skill interactions. The full testing matrix 
 2. Alternatly, a specific version of the BotBuilder SDK could be specified via an Azure Devops variable. 
 
 # Testing Matrix
-The following testing matrix needs to be fully tested
-|   |        |    | **Skill**    |        |   |
-|---|--------|----|------------|--------|---|
-|   |        | C# | Javascript | Python |   |
-|   | C#     | 1  |     2      | 3      |   |
-|   | JS     | 4  |5           | 6      |   |
-|   | Python | 7  |8           | 9      |   |
+
+## Phase 0, "Crawl"
+|        |    |            |        | 
+|--------|----|------------|--------|
+|        | C# | Javascript | Python | 
+| C#     |   1 |2            |3        | 
+| JS     | 4   |5            |6       | 
+| Python |7    |8            |9        | 
 
 1. C# Bot acting as consumer, calling a C# Skill
 2. C# Bot acting as consumer, calling a JS Skill
@@ -28,12 +29,52 @@ The following testing matrix needs to be fully tested
 8. Python Bot acting as consumer, calling a JS Skill
 9. Python Bot acting as consumer, calling a Python Skill
 
+## Phase 1 
+1. The test matrix runs in the Gov cloud.
+
+## Phase 2, "Run"
+|                 | C# Net Core 3 | Javascript | Python | C# Net Core 2.1 | v3 Javascript | v3 C# |
+|-----------------|---------------|------------|--------|-----------------|---------------|-------|
+| C# Net Core 3   |     1         |    2        |  3      |    13             |    14           |  15     |
+| JS              |      4         |   5         |   6     |        16         |     17          |    18   |
+| Python          |     7          |   8         |   9     |       19          |       20        |    21   |
+| C# Net Core 2.1 |      10         |    11        |  12      |      22           |      23         |  24     |
+
+1. [Unchanged] C# Bot acting as consumer, calling a C# Skill
+2. [Unchanged] C# Bot acting as consumer, calling a JS Skill
+3. [Unchanged] C# Bot acting as consumer, calling a Pyton Skill
+4. [Unchanged] JS Bot acting as consumer, calling a C# Skill
+5. [Unchanged] JS Bot acting as consumer, calling a JS Skill
+6. [Unchanged] JS Bot acting as consumer, calling a Python Skill
+7. [Unchanged] Python Bot acting as consumer, calling a C# Skill
+8. [Unchanged] Python Bot acting as consumer, calling a JS Skill
+9. [Unchanged] Python Bot acting as consumer, calling a Python Skill
+10. [New] C# Net Core 2.1 Bot acting as a consumer, calling a C# .Net core 3.1 Skill 
+11. [New] C# Net Core 2.1 Bot acting as a consumer, calling a JS Skill 
+12. [New] C# Net Core 2.1 Bot acting as a consumer, calling a Python Skill 
+13. [New] C# Net Core 3.1 Bot acting as a consumer, calling a .Net Core 2.1 Skill 
+14. [New] C# Net Core 3.1 Bot acting as a consumer, calling a v3 JS Skill 
+15. [New] C# Net Core 3.1 Bot acting as a consumer, calling a v3 C# Skill
+16. [New] JS Bot acting as consumer, calling a C# .Net Core 2.1 Skill
+17. [New] JS Bot acting as consumer, calling a v3 JS Skill
+18. [New] JS Bot acting as consumer, calling a v3 C# Skill
+19. [New] Python Bot acting as consumer, calling a C# Net Core 2.1 Skill
+20. [New] Python Bot acting as consumer, calling a v3 JS  Skill
+21. [New] Python Bot acting as consumer, calling a v3 C#  Skill
+22. [New] C# Net Core 2.1 acting as consumer, calling a C# .NEt Core 2.1 Skill
+23. [New] C# Net Core 2.1 acting as consumer, calling a v3 JS Skill
+24. [New] C# Net Core 2.1 acting as consumer, calling a v4 C# Skill
+
+
 # Tests
-V0 of the tests is an Echo. The Consumer bot will send a Message containing a GUID to the skill, and the skill encho that back. 
+* **Crawl** The only test run is an Echo + end utterance to trigger an EndOfConversation Activity. The Consumer sends a Message containing a GUID to the skill, and the skill encho that back. The skill then sends end the conversation. 
+* **Walk** Scenario for Events and Invoke + InvokeResponse are added. 
+* **Run** the test matrix grows to include C# .Net Core 2.1 (as a Skill Host and Skill), and v3 JS (as a Skill) and v3 C# (as as Skill)
 
 # Bots we need
-
 3 Bots (1 in C#, one in JS, one in Python). The Bot picks up "Skill" or "Consumer" from the ENV variables, which are set as part of the bot's deployment. 
+
+OPEN ITEM: Unclear if we should have 3 bots or 6. 
 
 # Repo
 All bots are stored in the same git repo. The repo is hosted on Azure Devops, at the following location:
