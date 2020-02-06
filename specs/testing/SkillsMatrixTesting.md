@@ -32,6 +32,8 @@ Automate the testing matrix for Bot/Skill interactions. The full testing matrix 
 ## Phase 1 
 1. The test matrix runs in the Gov cloud.
 
+Note: Python is not currently supported in Gov Cloud, so that portion of the matrix won't be moved over (yet). 
+
 ## Phase 2, "Run"
 |                 | C# Net Core 3 | Javascript | Python | C# Net Core 2.1 | v3 Javascript | v3 C# |
 |-----------------|---------------|------------|--------|-----------------|---------------|-------|
@@ -77,7 +79,7 @@ Automate the testing matrix for Bot/Skill interactions. The full testing matrix 
 The bots that may server as a starting point for development are here:
 [C#](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/csharp_dotnetcore/80.skills-simple-bot-to-bot)
 [JS](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/javascript_nodejs/80.skills-simple-bot-to-bot)
-[Python] (https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/python/80.skills-simple-bot-to-bot)
+[Python](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/python/80.skills-simple-bot-to-bot)
 
 OPEN ITEM: Unclear if we should have 3 bots or 6. 
 
