@@ -39,6 +39,8 @@ Below is a list of significant pipelines for building and deploying the SDK prod
         * BotBuilder-DotNet-master-CI-PR-(MacLinux)
         * BotBuilder-DotNet-master-Functional-Tests-Setup
         * BotBuilder-DotNet-Signed-daily
+    * -BuildUtilities
+      * Publish-Build-Utilities
     * AI
       * BotBuilder-AI-JS-generator-next-daily
       * BotBuilder-AI-JS-libs-next-daily
@@ -48,8 +50,6 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * BotBuilder-DotNet-AI-Signed-master
       * BotBuilder-DotNet-AI-Signed-next
       * BotBuilder-NetCoreTemplate-VASkills-daily
-    * -BuildUtilities
-      * Publish-Build-Utilities
     * DotNet
       * BotBuilder-DotNet-oauthcardsso
       * BotBuilder-DotNet-Signed-yaml
