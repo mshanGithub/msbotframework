@@ -2,7 +2,6 @@
 Below is a list of significant pipelines for building and deploying the SDK products.
 
 ## Project: SDK_Public
-* SDK_Public
   * builds
     * cli
       * botframework-cli
@@ -27,7 +26,7 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Push-Botframework-CLI-to-MyGet-daily
     * wechat
       * Push-BotFramework-WeChat-to-MyGet
-* SDK_v4
+## Project: SDK_v4
   * builds
     * AI
       * BotBuilder-AI-JS-generator-next-daily
