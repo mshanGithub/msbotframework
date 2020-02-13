@@ -3,7 +3,7 @@ Below is a list of pipelines and their .yml files for building and deploying the
 
 For an overview, see the [Bot Framework SDK Product Pipelines Overview](https://github.com/microsoft/botframework-sdk/blob/v-bruhal/pipelinedoc/specs/BotrameworkSdkPipelinesOverview.md) document.
 
-## Project: [SDK_Public](https://fuselabs.visualstudio.com/SDK_Public/_build?treeState=XGRvdG5ldCRcd2VjaGF0JFxjbGk%3D&view=folders)
+### Project: [SDK_Public](https://fuselabs.visualstudio.com/SDK_Public/_build?treeState=XGRvdG5ldCRcd2VjaGF0JFxjbGk%3D&view=folders)
   * builds
     * cli
       * botframework-cli
@@ -28,7 +28,7 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](https://
       * Push-Botframework-CLI-to-MyGet-daily
     * wechat
       * Push-BotFramework-WeChat-to-MyGet
-## Project: [SDK_v4](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders)
+### Project: [SDK_v4](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders)
   * builds
     * -archived
       * [Archived]BotBuilder-JS-4.0-4.3-Branch-Builds
