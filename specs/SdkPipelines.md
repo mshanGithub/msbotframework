@@ -28,15 +28,6 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Push-BotFramework-WeChat-to-MyGet
 ## Project: SDK_v4
   * builds
-    * AI
-      * BotBuilder-AI-JS-generator-next-daily
-      * BotBuilder-AI-JS-libs-next-daily
-      * BotBuilder-AI-JS-SkillsCli-next-daily
-      * BotBuilder-DotNet-AI-Signed-4.6-daily-paused
-      * BotBuilder-DotNet-AI-Signed-future-daily-paused
-      * BotBuilder-DotNet-AI-Signed-master
-      * BotBuilder-DotNet-AI-Signed-next
-      * BotBuilder-NetCoreTemplate-VASkills-daily
     * -archived
       * [Archived]BotBuilder-JS-4.0-4.3-Branch-Builds
       * BotBuilder-JS-master-daily-45
@@ -48,6 +39,15 @@ Below is a list of significant pipelines for building and deploying the SDK prod
         * BotBuilder-DotNet-master-CI-PR-(MacLinux)
         * BotBuilder-DotNet-master-Functional-Tests-Setup
         * BotBuilder-DotNet-Signed-daily
+    * AI
+      * BotBuilder-AI-JS-generator-next-daily
+      * BotBuilder-AI-JS-libs-next-daily
+      * BotBuilder-AI-JS-SkillsCli-next-daily
+      * BotBuilder-DotNet-AI-Signed-4.6-daily-paused
+      * BotBuilder-DotNet-AI-Signed-future-daily-paused
+      * BotBuilder-DotNet-AI-Signed-master
+      * BotBuilder-DotNet-AI-Signed-next
+      * BotBuilder-NetCoreTemplate-VASkills-daily
     * -BuildUtilities
       * Publish-Build-Utilities
     * DotNet
@@ -134,6 +134,13 @@ Below is a list of significant pipelines for building and deploying the SDK prod
     * WeChat
       * BotFramework-WeChat-daily
   * releases
+    * -archived
+      * DotNet-Functional-Tests-Linux-from-signed
+      * DotNet-Functional-Tests-Windows-from-signed
+      * Push-BotBuilder-DotNet-Signed-to-MyGet-daily
+      * Push-BotBuilder-JS-4.0-4.3-Branch-Builds-to-MyGet
+      * Run-DotNet-Functional-Tests-Linux
+      * Run-DotNet-Functional-Tests-Windows
     * AI
       * [[PROD]] Push-BotBuilder-DotNet-AI-Signed-to-Nuget.org
       * [[PROD]] Push-BotBuilder-JS-Libs-AI-master-to-NPM
@@ -144,13 +151,6 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Push-BotBuilder-JS-AI-SkillsCli-master-to-MyGet-daily
       * Push-BotBuilder-JS-AI-VAGenerator-master-to-MyGet-daily
       * Push-BotBuilder-NetCoreTemplates-AI-Signed-to-MyGet-daily
-    * -archived
-      * DotNet-Functional-Tests-Linux-from-signed
-      * DotNet-Functional-Tests-Windows-from-signed
-      * Push-BotBuilder-DotNet-Signed-to-MyGet-daily
-      * Push-BotBuilder-JS-4.0-4.3-Branch-Builds-to-MyGet
-      * Run-DotNet-Functional-Tests-Linux
-      * Run-DotNet-Functional-Tests-Windows
     * CLI
       * [[PROD]]Push-Botframework-CLI-to-npmjs
       * Push-Botframework-CLI-to-MyGet-daily
