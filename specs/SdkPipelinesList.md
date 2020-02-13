@@ -1,6 +1,8 @@
 # Bot Framework SDK Pipelines List
 Below is a list of pipelines and their .yml files for building and deploying the SDK products.
 
+For an overview, see the [Bot Framework SDK Product Pipelines Overview](https://github.com/microsoft/botframework-sdk/blob/v-bruhal/pipelinedoc/specs/BotrameworkSdkPipelinesOverview.md) document.
+
 ## Project: SDK_Public
   * builds
     * cli
