@@ -1,7 +1,7 @@
 # Bot Framework SDK Pipelines List
 Below is a list of significant pipelines for building and deploying the SDK products.
 
-Project: SDK_Public
+## Project: SDK_Public
   * builds
     * cli
       * botframework-cli
@@ -28,7 +28,7 @@ Project: SDK_Public
     * wechat
 	  * Push-BotFramework-WeChat-to-MyGet
 	  
-Project: SDK_v4
+## Project: SDK_v4
   * builds
     * AI
 	  * BotBuilder-AI-JS-generator-next-daily
