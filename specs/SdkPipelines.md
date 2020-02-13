@@ -2,15 +2,15 @@
 Below is a list of significant pipelines for building and deploying the SDK products.
 
 ## Project: SDK_Public
+* SDK_Public
   * builds
     * cli
       * botframework-cli
         * botframework-cli.yml
-    * cli
       * botframework-cli-mac
         * botframework-cli-mac.yml
     * dotnet
-	  * BotBuilder-DotNet-CI-PR-(MacLinux)-yaml
+      * BotBuilder-DotNet-CI-PR-(MacLinux)-yaml
         * botbuilder-dotnet-ci-mac.yml
       * BotBuilder-DotNet-CI-PR-yaml
         * botbuilder-dotnet-ci.yml
@@ -19,19 +19,18 @@ Below is a list of significant pipelines for building and deploying the SDK prod
           * ci-api-validation-steps.yml
           * ci-post-to-github-steps.yml
     * wechat
-	  * BotFramework-WeChat-JS-CI
+      * BotFramework-WeChat-JS-CI
         * botframework-wechat-js.yml*
   * releases
     * cli
-	  * [[PROD]]Push-Botframework-CLI-to-npmjs
+      * [[PROD]]Push-Botframework-CLI-to-npmjs
       * Push-Botframework-CLI-to-MyGet-daily
     * wechat
-	  * Push-BotFramework-WeChat-to-MyGet
-	  
-## Project: SDK_v4
+      * Push-BotFramework-WeChat-to-MyGet
+* SDK_v4
   * builds
     * AI
-	  * BotBuilder-AI-JS-generator-next-daily
+      * BotBuilder-AI-JS-generator-next-daily
       * BotBuilder-AI-JS-libs-next-daily
       * BotBuilder-AI-JS-SkillsCli-next-daily
       * BotBuilder-DotNet-AI-Signed-4.6-daily-paused
@@ -40,20 +39,20 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * BotBuilder-DotNet-AI-Signed-next
       * BotBuilder-NetCoreTemplate-VASkills-daily
     * -archived
-	  * [Archived]BotBuilder-JS-4.0-4.3-Branch-Builds
+      * [Archived]BotBuilder-JS-4.0-4.3-Branch-Builds
       * BotBuilder-JS-master-daily-45
       * CLI
-	    * Botframework-CLI-CI-PR
+        * Botframework-CLI-CI-PR
         * Botframework-CLI-daily
       * DotNet
-	    * BotBuilder-DotNet-master-CI-PR
+        * BotBuilder-DotNet-master-CI-PR
         * BotBuilder-DotNet-master-CI-PR-(MacLinux)
         * BotBuilder-DotNet-master-Functional-Tests-Setup
         * BotBuilder-DotNet-Signed-daily
     * -BuildUtilities
-	  * Publish-Build-Utilities
+      * Publish-Build-Utilities
     * DotNet
-	  * BotBuilder-DotNet-oauthcardsso
+      * BotBuilder-DotNet-oauthcardsso
       * BotBuilder-DotNet-Signed-yaml
         * botbuilder-dotnet-sign.yml
           * ci-build-steps.yml
@@ -63,34 +62,30 @@ Below is a list of significant pipelines for building and deploying the SDK prod
         * BotBuilder-DotNet-Functional-Tests-Linux-yaml
           * botbuilder-dotnet-functional-test-linux.yml
             * ci-build-steps.yml
-      * FunctionalTests
         * BotBuilder-DotNet-Functional-Tests-Setup-yaml
           * botbuilder-dotnet-functional-tests-setup.yml
             * ci-build-steps.yml
             * functional-test-setup-steps.yml
-      * FunctionalTests
         * BotBuilder-DotNet-Functional-Tests-Windows-yaml
           * botbuilder-dotnet-functional-test-windows.yml*
-      * FunctionalTests
         * BotBuilder-Dotnet-Slack-Functional-Tests-yaml
           * botbuilder-dotnet-ci-slacktest.yml
             * ci-build-steps.yml
-      * FunctionalTests
         * Botbuilder-Facebook-Functional-Tests-yaml
           * botbuilder-dotnet-ci-facebook-test.yml
             * ci-build-steps.yml
       * LegacyVersions
-	    * BotBuilder-DotNet-4.0-CI-PR
+        * BotBuilder-DotNet-4.0-CI-PR
         * BotBuilder-DotNet-4.1-CI-PR
         * BotBuilder-DotNet-4.2-CI-PR
         * BotBuilder-DotNet-4.5-CI-PR
         * BotBuilder-DotNet-4.5-Signed
         * BotBuilder-DotNet-4.7-Signed
     * Java
-	  * BotBuilder-Java-4.0-CI-PR
+      * BotBuilder-Java-4.0-CI-PR
       * BotBuilder-Java-4.0-daily
     * JS
-	  * BotBuilder-JS-4.6-CI
+      * BotBuilder-JS-4.6-CI
       * BotBuilder-JS-4.6-daily
       * BotBuilder-JS-master-CI
       * BotBuilder-JS-master-daily
@@ -103,7 +98,7 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Run-JS-Functional-Tests-Linux
       * Run-JS-Functional-Tests-Windows
     * Python
-	  * microsoft.botbuilder-python
+      * microsoft.botbuilder-python
         * azure-pipelines.yml
       * Python-CI-PR
         * ci-pr-pipeline.yml
@@ -111,19 +106,19 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * SDK_v4-Python-CI-PR
       * SDK_v4-Python-daily-build
     * Samples
-	  * BotBuilder-Generator-JS-daily
+      * BotBuilder-Generator-JS-daily
       * BotBuilder-Generators-DotNet-daily
       * BotBuilder-Samples-DotNet-CI-PR
       * BotBuilder-Samples-JS-ESLint
       * BotBuilder-Samples-Python-zip
       * Handoff Daily Build
     * Tools
-	  * BotBuilder-Tools-DotNet-CI-PR
+      * BotBuilder-Tools-DotNet-CI-PR
       * BotBuilder-Tools-DotNet-Sign-daily
       * Botbuilder-tools-js-CI-PR
       * Botbuilder-tools-js-daily
     * V3
-	  * BotBuilder-v3-Azure
+      * BotBuilder-v3-Azure
       * BotBuilder-v3-Cognitive-Services-daily
       * BotBuilder-v3-DotNet-master
       * BotBuilder-v3-JS-Azure-daily
@@ -141,7 +136,7 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * BotFramework-WeChat-daily
   * releases
     * AI
-	  * [[PROD]] Push-BotBuilder-DotNet-AI-Signed-to-Nuget.org
+      * [[PROD]] Push-BotBuilder-DotNet-AI-Signed-to-Nuget.org
       * [[PROD]] Push-BotBuilder-JS-Libs-AI-master-to-NPM
       * [[PROD]] Push-BotBuilder-JS-SkillsCli-AI-master-to-NPM
       * [[PROD]] Push-BotBuilder-JS-VAGenerator-AI-master-to-NPM
@@ -151,17 +146,17 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Push-BotBuilder-JS-AI-VAGenerator-master-to-MyGet-daily
       * Push-BotBuilder-NetCoreTemplates-AI-Signed-to-MyGet-daily
     * -archived
-	  * DotNet-Functional-Tests-Linux-from-signed
+      * DotNet-Functional-Tests-Linux-from-signed
       * DotNet-Functional-Tests-Windows-from-signed
       * Push-BotBuilder-DotNet-Signed-to-MyGet-daily
       * Push-BotBuilder-JS-4.0-4.3-Branch-Builds-to-MyGet
       * Run-DotNet-Functional-Tests-Linux
       * Run-DotNet-Functional-Tests-Windows
     * CLI
-	  * [[PROD]]Push-Botframework-CLI-to-npmjs
+      * [[PROD]]Push-Botframework-CLI-to-npmjs
       * Push-Botframework-CLI-to-MyGet-daily
     * DotNet
-	  * [[PROD]]Push-BotBuilder-DotNet-4.7-Signed-to-Nuget
+      * [[PROD]]Push-BotBuilder-DotNet-4.7-Signed-to-Nuget
       * [[PROD]]Push-BotBuilder-DotNet-Signed-to-Nuget-from-yaml
       * FunctionalTests
         * [deprecated]DotNet-Functional-Tests-Linux-from-yaml
@@ -177,16 +172,16 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Push-BotBuilder-Java-to-MyGet
       * Push-BotBuilder-Java-to-MyGet-Scratch
     * JS
-	  * [[PROD]]Push-BotBuilder-JS-4.6-to-npmjs
+      * [[PROD]]Push-BotBuilder-JS-4.6-to-npmjs
       * [[PROD]]Push-BotBuilder-JS-master-to-npmjs
       * Push-BotBuilder-JS-4.6-to-MyGet-daily
       * Push-BotBuilder-JS-master-to-MyGet-daily
       * Push-BotBuilder-JS-Preview-to-MyGet-Manual
     * Python
-	  * [[PROD]]Push-BotBuilder-Python-to-PyPI
+      * [[PROD]]Push-BotBuilder-Python-to-PyPI
       * Push-BotBuilder-Python-master-to-AzureArtifacts-daily
     * Samples
-	  * [[PROD]]Push-BotBuilder-Generator-JS-to-npmjs
+      * [[PROD]]Push-BotBuilder-Generator-JS-to-npmjs
       * [[PROD]]Push-BotBuilder-Generators-DotNet-to-Nuget
       * [[PROD]]Push-Samples-DotNet-to-Nuget
       * [[PROD]]Push-Samples-Python-to-Github
@@ -195,12 +190,12 @@ Below is a list of significant pipelines for building and deploying the SDK prod
       * Push-Handoff-DotNet-Signed-to-MyGet-daily
       * Push-Samples-DotNet-to-MyGet-daily
     * Tools
-	  * [[PROD]]Push-Tools-DotNet-Sign-to-Nuget
+      * [[PROD]]Push-Tools-DotNet-Sign-to-Nuget
       * [[PROD]]Push-Tools-JS-to-npmjs
       * Push-Tools-DotNet-Sign-to-MyGet-daily
       * Push-Tools-JS-to-MyGet-daily
     * V3
-	  * Push-BB-v3-Cognitive-Services-to-MyGet-daily
+      * Push-BB-v3-Cognitive-Services-to-MyGet-daily
       * Push-BB-v3-Cognitive-Services-to-MyGet-Scratch
       * Push-BotBuilder-v3-JS-Azure-to-MyGet-daily
       * Push-BotBuilder-v3-JS-to-MyGet-daily
