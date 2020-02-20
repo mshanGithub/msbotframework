@@ -24,7 +24,13 @@ A **[Nightly signed build](https://fuselabs.visualstudio.com/SDK_v4/_build?defin
 
 ## Java
 
+Java has a CI pipeline and a daily pipeline [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CJava).
+
+A publishing pipeline for MyGet is [here](https://fuselabs.visualstudio.com/SDK_v4/_release?view=all&path=%5CJava&_a=releases). One for the Maven Central Repository is not yet available.
+
 ## JS
+
+JS has CI, daily, and functional test pipeplines [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CJS).
 
 ## Python
 
