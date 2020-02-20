@@ -7,6 +7,8 @@ Packages are built and tested using Build pipelines [here](https://fuselabs.visu
 
 Packages are published and released using Release pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C) and [here](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C)
 
+Preview versions from the nightly builds are automatically published to [MyGet](https://botbuilder.myget.org/gallery).
+
 ## AI
 
 **[AI daily pipelines for DotNet and for JS](https://fuselabs.visualstudio.com/SDK_v4/_build?_a=allDefinitions&path=%5CAI%5C&treeState=XEFJ)** are scheduled to run once a night.
