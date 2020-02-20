@@ -38,12 +38,28 @@ Publishing pipelines for MyGet and npmjs are [here](https://fuselabs.visualstudi
 
 Python has CI and daily pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CPython).
 
-Publishing pipelines for the [botbuilder-python-daily Azure Artifacts feed](https://fuselabs.visualstudio.com/SDK_v4/_packaging?_a=feed&feed=botbuilder-python-daily) and the Python Package Index are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?view=all&path=%5CPython&_a=releases).
+Publishing pipelines for the [botbuilder-python-daily Artifacts feed](https://fuselabs.visualstudio.com/SDK_v4/_packaging?_a=feed&feed=botbuilder-python-daily) and the Python Package Index are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?view=all&path=%5CPython&_a=releases).
 
 ## Samples
 
+Daily and CI builds for DotNet, JS, and Python Samples are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CSamples).
+
+Pipelines for pushing to MyGet, NuGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CSamples).
+
 ## Tools
+
+Daily and CI builds for DotNetand JS Tools are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CTools).
+
+Pipelines for pushing to MyGet, NuGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CTools).
 
 ## VSIX
 
+VSIX templates for Visual Studio are built [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CVSIX).
+
+Pipelines for pushing to MyGet are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CVSIX).
+
 ## WeChat
+
+Daily and CI builds for WeChat are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CWeChat).
+
+Pipelines for pushing to MyGet are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CWeChat).
