@@ -4,7 +4,7 @@ Below is a list of pipelines and their .yml files for building and publishing th
 For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrameworkSdkPipelinesOverview.md) document.
 
 ### Project: [SDK_Public](https://fuselabs.visualstudio.com/SDK_Public/_build?treeState=XGRvdG5ldCRcd2VjaGF0JFxjbGk%3D&view=folders)
-  * builds
+  * [builds](https://fuselabs.visualstudio.com/SDK_Public/_build?treeState=XGRvdG5ldCRcd2VjaGF0JFxjbGk%3D&view=folders)
     * cli
       * botframework-cli
         * botframework-cli.yml
@@ -22,14 +22,14 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
     * wechat
       * BotFramework-WeChat-JS-CI
         * botframework-wechat-js.yml*
-  * releases
+  * [releases](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C)
     * cli
       * [[PROD]]Push-Botframework-CLI-to-npmjs
       * Push-Botframework-CLI-to-MyGet-daily
     * wechat
       * Push-BotFramework-WeChat-to-MyGet
 ### Project: [SDK_v4](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders)
-  * builds
+  * [builds](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders)
     * -archived
       * [Archived]BotBuilder-JS-4.0-4.3-Branch-Builds
       * BotBuilder-JS-master-daily-45
@@ -135,7 +135,7 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
       * BotFramework-WeChat-CI-PR
     * WeChat
       * BotFramework-WeChat-daily
-  * releases
+  * [releases](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C)
     * -archived
       * DotNet-Functional-Tests-Linux-from-signed
       * DotNet-Functional-Tests-Windows-from-signed
