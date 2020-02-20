@@ -32,6 +32,8 @@ A publishing pipeline for MyGet is [here](https://fuselabs.visualstudio.com/SDK_
 
 JS has CI, daily, and functional test pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CJS).
 
+Publishing pipelines for MyGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CJS).
+
 ## Python
 
 ## Samples
