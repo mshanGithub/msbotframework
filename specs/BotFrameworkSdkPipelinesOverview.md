@@ -5,7 +5,7 @@ For a list of pipelines see the [Bot Framework SDK Pipelines List](SdkPipelinesL
 
 Packages are built and tested using Build pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) and [here](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders).
 
-Packages are deployed and released using Release pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C) and [here](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C)
+Packages are published and released using Release pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C) and [here](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C)
 
 ## AI
 
