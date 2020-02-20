@@ -13,6 +13,8 @@ Packages are published and released using Release pipelines [here](https://fusel
 
 AI does not have continuous integration or pull request validation pipelines.
 
+Pipelines for pushing to MyGet, NuGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CAI).
+
 Source repo: [https://github.com/microsoft/botframework-solutions](https://github.com/microsoft/botframework-solutions)
 
 ## DotNet (C#)
