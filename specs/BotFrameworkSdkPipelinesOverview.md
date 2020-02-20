@@ -82,7 +82,7 @@ Source repos:
 
 ## WeChat
 
-Daily and CI builds for WeChat are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CWeChat).
+Daily and CI builds for WeChat are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CWeChat). Public CI builds are [here](https://fuselabs.visualstudio.com/SDK_Public/_build?definitionScope=%5Cwechat).
 
 Pipelines for pushing to MyGet are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CWeChat).
 
