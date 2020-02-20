@@ -13,6 +13,8 @@ Packages are published and released using Release pipelines [here](https://fusel
 
 AI does not have continuous integration or pull request validation pipelines.
 
+Source repo: [https://github.com/microsoft/botframework-solutions](https://github.com/microsoft/botframework-solutions)
+
 ## DotNet (C#)
 
 **DotNet continuous integration pull request (CI-PR) pipelines [for Windows](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=499&_a=summary)** and **[for Linux](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=660&_a=summary)** are triggered when a pull request is created or when changes are merged to the master branch. 
@@ -22,11 +24,15 @@ Those builds run unit tests. The Windows pipeline additionally runs API compatib
 
 A **[Nightly signed build](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionId=739&_a=summary)** produces preview versions which are automatically published to MyGet. It can optionally create release versions if queued by hand, which are also automatically pushed to MyGet. Releases may be pushed to Nuget.org by manually queuing [this release pipeline]().
 
+Source repo: [https://github.com/Microsoft/botbuilder-dotnet](https://github.com/Microsoft/botbuilder-dotnet)
+
 ## Java
 
 Java has a CI pipeline and a daily pipeline [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CJava).
 
 A publishing pipeline for MyGet is [here](https://fuselabs.visualstudio.com/SDK_v4/_release?view=all&path=%5CJava&_a=releases). One for the Maven Central Repository is not yet available.
+
+Source repo: [https://github.com/Microsoft/botbuilder-java](https://github.com/Microsoft/botbuilder-java)
 
 ## JS
 
@@ -34,11 +40,15 @@ JS has CI, daily, and functional test pipelines [here](https://fuselabs.visualst
 
 Publishing pipelines for MyGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CJS).
 
+Source repo: [https://github.com/Microsoft/botbuilder-js](https://github.com/Microsoft/botbuilder-js)
+
 ## Python
 
 Python has CI and daily pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CPython).
 
 Publishing pipelines for the [botbuilder-python-daily Artifacts feed](https://fuselabs.visualstudio.com/SDK_v4/_packaging?_a=feed&feed=botbuilder-python-daily) and the Python Package Index are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?view=all&path=%5CPython&_a=releases).
+
+Source repo: [https://github.com/Microsoft/botbuilder-python](https://github.com/Microsoft/botbuilder-python)
 
 ## Samples
 
@@ -46,11 +56,15 @@ Daily and CI builds for DotNet, JS, and Python Samples are [here](https://fusela
 
 Pipelines for pushing to MyGet, NuGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CSamples).
 
+Source repo: [https://github.com/microsoft/BotBuilder-Samples/tree/master/samples](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples)
+
 ## Tools
 
 Daily and CI builds for DotNetand JS Tools are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CTools).
 
 Pipelines for pushing to MyGet, NuGet and npmjs are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CTools).
+
+Source repo: [https://github.com/microsoft/botbuilder-tools](https://github.com/microsoft/botbuilder-tools)
 
 ## VSIX
 
@@ -58,8 +72,14 @@ VSIX templates for Visual Studio are built [here](https://fuselabs.visualstudio.
 
 Pipelines for pushing to MyGet are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CVSIX).
 
+Source repos: 
+<br/>&nbsp;&nbsp;[https://github.com/microsoft/botframework-solutions/tree/master/templates/csharp](https://github.com/microsoft/botframework-solutions/tree/master/templates/csharp)
+<br/>&nbsp;&nbsp;[https://github.com/microsoft/BotBuilder-Samples/tree/master/generators/vsix-vs-win/BotBuilderVSIX-V4](https://github.com/microsoft/BotBuilder-Samples/tree/master/generators/vsix-vs-win/BotBuilderVSIX-V4)
+
 ## WeChat
 
 Daily and CI builds for WeChat are [here](https://fuselabs.visualstudio.com/SDK_v4/_build?definitionScope=%5CWeChat).
 
 Pipelines for pushing to MyGet are [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5CWeChat).
+
+Source repo: [https://github.com/microsoft/BotFramework-WeChat](https://github.com/microsoft/BotFramework-WeChat)
