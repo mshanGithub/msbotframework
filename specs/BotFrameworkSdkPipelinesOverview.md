@@ -1,5 +1,5 @@
 # Bot Framework SDK Product Pipelines Overview
-Pipelines for building and releasing Bot Framework SDK products are found in the [SDK_v4 project](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) (which is Microsoft internal viewable only) or the [SDK_Public project](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders) (which is public facing) on the [Azure FuseLabs web site](https://fuselabs.visualstudio.com/).
+Pipelines for building and releasing Bot Framework SDK products are found on the [Azure FuseLabs web site](https://fuselabs.visualstudio.com/) in two projects: in the [SDK_v4 project](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) which is Microsoft internal viewable only, and in the [SDK_Public project](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders) which is public facing.
 
 For a list of pipelines see the [Bot Framework SDK Pipelines List](SdkPipelinesList.md) document.
 
