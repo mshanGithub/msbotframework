@@ -46,7 +46,6 @@ if not GIT_PERSONAL_TOKEN:
 # Github Repos being monitored
 REPOS = [
     'BotFramework-DirectLine-DotNet',
-    'BotFramework-Composer',
     'BotBuilder-V3',
     'BotFramework-sdk',
     'botbuilder-dotnet',
@@ -82,7 +81,10 @@ MICROSFT_EMPLOYEES = [
     'washingtonkayaker',
     'yochay', # Not a MSFT employee anymore, but still owner of lots of issues. Adding here until they are cleaned up.
     'ryanlengel',
-	'zerryth'  #Ashley Finafrock is in our team 
+    'zerryth',
+    'stevkan',
+    'diberry',
+    'anusharavindrar',
 ]
 
 # When to begin searching for issues.

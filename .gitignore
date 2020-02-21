@@ -15,3 +15,5 @@
 
 bones/
 .vs/
+.vscode/
+.config/

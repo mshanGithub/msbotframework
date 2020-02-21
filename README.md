@@ -8,6 +8,10 @@ The Bot Framework SDK v4, part of the [Bot Framework](https://github.com/microso
 
 Checkout the [Bot Framework ecosystem](#bot-framework-ecosystem) section to learn more about other tooling and services related to the Bot Framework SDK.
 
+## Quicklinks
+| [C# Repo](https://github.com/Microsoft/botbuilder-dotnet)  | [JS Repo](https://github.com/Microsoft/botbuilder-js)  | [Python Repo](https://github.com/Microsoft/botbuilder-python) |  [Java Repo](https://github.com/Microsoft/botbuilder-java) | [BF CLI](https://github.com/Microsoft/botframework-cli) | 
+
+
 ## Overview
 The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to model and build sophisticated conversation using their favorite programming language.
 
@@ -29,7 +33,7 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 [8]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/typescript_nodejs
 [9]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/javascript_es6
 [10]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/csharp_webapi
-[111]:https://github.com/Microsoft/botbuilder-python/tree/master/samples
+[111]:https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/python
 
 <a name="V4-whats-new"></a>
 ### Bot Framework SDK v4 preview features
