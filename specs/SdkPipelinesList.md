@@ -1,5 +1,5 @@
 # Bot Framework SDK Pipelines List
-Below is a list of pipelines and their .yml files for building and publishing the SDK products. They are grouped by project, builds/releases, product, and build name.
+Below is a list of pipelines and their .yml files for building and publishing the SDK products. They are grouped by project, builds/releases, product, and build name. This shows the builds as of 2/20/2020. Some may have changed since. For the most up-to-date representation, please use the links below.
 
 For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrameworkSdkPipelinesOverview.md) document.
 
