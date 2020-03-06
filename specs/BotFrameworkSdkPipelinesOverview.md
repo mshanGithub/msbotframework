@@ -1,13 +1,15 @@
 # Bot Framework SDK Product Pipelines Overview
-Pipelines for building and releasing Bot Framework SDK products are found on the [Azure FuseLabs web site](https://fuselabs.visualstudio.com/) in two projects: in the [SDK_v4 project](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) which is Microsoft internal viewable only, and in the [SDK_Public project](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders) which is public facing.
+Pipelines for building and releasing Bot Framework SDK products are found on the [Azure FuseLabs web site](https://fuselabs.visualstudio.com/) in two projects: 
+ * The [SDK_v4 project](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) is Microsoft internal viewable only. It contains most pipelines.
+ * The [SDK_Public project](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders) is public facing. It contains continuous integration (CI) and pull request (PR) pipelines.
 
 For a list of pipelines see the [Bot Framework SDK Pipelines List](SdkPipelinesList.md) document.
 
-Packages are built and tested using Build pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) and [here](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders).
+Packages are built and tested using _Build_ pipelines in the [SDK_v4](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders) and [SDK_Public](https://fuselabs.visualstudio.com/SDK_Public/_build?view=folders) projects.
 
-Packages are published and released using Release pipelines [here](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C) and [here](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C)
+Packages are published using _Release_ pipelines in the [SDK_v4](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C) and [SDK_Public](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C) projects.
 
-Preview versions from the nightly builds are automatically published to [MyGet](https://botbuilder.myget.org/gallery).
+Signing builds run nightly and automatically publish preview versions of packages to [MyGet](https://botbuilder.myget.org/gallery).
 
 ## AI
 
