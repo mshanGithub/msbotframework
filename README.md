@@ -71,23 +71,27 @@ There are two ways to connect your bot to a client experience:
 | Direct Line     | [Azure][55abs] |                   |                   |
 | Web Chat        | [Azure][55abs] |                   | [Botkit][55bk]    |
 | Cortana         | [Azure][55abs] |                   |                   |
-| Facebook        | [Azure][55abs] |                   | [Botkit][55bk]    |
-| Slack           | [Azure][55abs] |                   | [Botkit][55bk]    |
+| Facebook        | [Azure][55abs] |  [SDK][55sdkfb]  | [Botkit][55bk]    |
+| Slack           | [Azure][55abs] |  [SDK][55sdkslack]| [Botkit][55bk]    |
 | Kik             | [Azure][55abs] |                   |                   |
 | Telegram        | [Azure][55abs] |                   |                   |
 | Line            | [Azure][55abs] |                   |                   |
 | GroupMe         | [Azure][55abs] |                   |                   |
-| Twilio (SMS)    | [Azure][55abs] |                   | [Botkit][55bk]    |
+| Twilio (SMS)    | [Azure][55abs] | [SDK][55sdktwilio] | [Botkit][55bk]    |
 | Alexa           |                | [Community][55cs] | [Community][55js] |
 | Google Home     |                | [Community][55cs] | [Community][55js] |
 | Google Hangouts |                | [Community][55cs] | [Botkit][55bk]    |
-| WebEx           |                |                   | [Botkit][55bk]    |
+| WebEx           |                | [SDK][55sdkwebex]     | [Botkit][55bk]    |
 | Console         |                |                   | [Community][55js] |
 
 [55abs]:https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-channels?view=azure-bot-service-4.0
 [55cs]:https://github.com/BotBuilderCommunity/botbuilder-community-dotnet#adapters
 [55js]:https://github.com/BotBuilderCommunity/botbuilder-community-js#adapters
 [55bk]:https://github.com/howdyai/botkit#readme
+[55sdkfb]:https://github.com/microsoft/botbuilder-dotnet/tree/master/libraries/Adapters/Microsoft.Bot.Builder.Adapters.Facebook
+[55sdkslack]:https://github.com/microsoft/botbuilder-dotnet/tree/master/libraries/Adapters/Microsoft.Bot.Builder.Adapters.Slack
+[55sdktwilio]:https://github.com/microsoft/botbuilder-dotnet/tree/master/libraries/Adapters/Microsoft.Bot.Builder.Adapters.Twilio
+[55sdkwebex]:https://github.com/microsoft/botbuilder-dotnet/tree/master/libraries/Adapters/Microsoft.Bot.Builder.Adapters.Webex
 
 ## Community Extensions
 Adapters and plugins from the open source community are available to extend your bot application.
