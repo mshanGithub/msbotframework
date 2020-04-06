@@ -20,29 +20,23 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
           * ci-api-validation-steps.yml
           * ci-post-to-github-steps.yml
     * wechat
-      * BotFramework-WeChat-JS-CI
-        * botframework-wechat-js.yml*
+      * BotFramework-WeChat-DotNet-CI-PR
+        * botframework-wechat-dotnet.yml
+      * BotFramework-WeChat-DotNet-Daily
+        * botframework-wechat-dotnet-daily.yml
+          * dotnet-build-steps.yml
+          * dotnet-sign-steps.yml
+      * BotFramework-WeChat-JS
+        * botframework-wechat-js.yml
   * [releases](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=all&path=%5C)
     * cli
       * [[PROD]]Push-Botframework-CLI-to-npmjs
       * Push-Botframework-CLI-to-MyGet-daily
     * wechat
       * Push-BotFramework-WeChat-to-MyGet
+      * Push-BotFramework-WeChat-JS-to-MyGet
 ### Project: [SDK_v4](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders)
   * [builds](https://fuselabs.visualstudio.com/SDK_v4/_build?view=folders)
-    * -archived
-      * [Archived]BotBuilder-JS-4.0-4.3-Branch-Builds
-      * BotBuilder-JS-master-daily-45
-      * CLI
-        * Botframework-CLI-CI-PR
-        * Botframework-CLI-daily
-      * DotNet
-        * BotBuilder-DotNet-master-CI-PR
-        * BotBuilder-DotNet-master-CI-PR-(MacLinux)
-        * BotBuilder-DotNet-master-Functional-Tests-Setup
-        * BotBuilder-DotNet-Signed-daily
-    * -BuildUtilities
-      * Publish-Build-Utilities
     * AI
       * BotBuilder-AI-JS-generator-next-daily
       * BotBuilder-AI-JS-libs-next-daily
@@ -60,20 +54,20 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
           * sign-steps.yml
           * functional-test-setup-steps.yml
       * FunctionalTests
+        * Botbuilder-DotNet-Facebook-Functional-Tests-yaml
+          * botbuilder-dotnet-ci-facebook-test.yml
+            * ci-build-steps.yml
         * BotBuilder-DotNet-Functional-Tests-Linux-yaml
           * botbuilder-dotnet-functional-test-linux.yml
             * ci-build-steps.yml
-        * BotBuilder-DotNet-Functional-Tests-Setup-yaml
-          * botbuilder-dotnet-functional-tests-setup.yml
-            * ci-build-steps.yml
-            * functional-test-setup-steps.yml
         * BotBuilder-DotNet-Functional-Tests-Windows-yaml
-          * botbuilder-dotnet-functional-test-windows.yml*
+          * botbuilder-dotnet-functional-test-windows.yml
+            * ci-build-steps.yml
         * BotBuilder-Dotnet-Slack-Functional-Tests-yaml
           * botbuilder-dotnet-ci-slacktest.yml
             * ci-build-steps.yml
-        * Botbuilder-Facebook-Functional-Tests-yaml
-          * botbuilder-dotnet-ci-facebook-test.yml
+        * BotBuilder-DotNet-Webex-Functional-Test-yaml
+          * botbuilder-dotnet-ci-webex-test.yml
             * ci-build-steps.yml
       * LegacyVersions
         * BotBuilder-DotNet-4.0-CI-PR
@@ -90,14 +84,13 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
       * BotBuilder-JS-4.6-daily
       * BotBuilder-JS-master-CI
       * BotBuilder-JS-master-daily
-      * Preview
-        * BotBuilder-JS-Preview-Manual
-      * Preview
-        * BotBuilder-JS-R7-streaming-CI
-      * Run-JS-Functional-Tests-BrowserBot-yaml
-        * browser-tests-build-ci.yml
-      * Run-JS-Functional-Tests-Linux
-      * Run-JS-Functional-Tests-Windows
+      * FunctionalTests
+	       * Run-JS-Functional-Tests-BrowserBot-yaml
+          * browser-tests-build-ci.yml
+        * Run-JS-Functional-Tests-Linux
+        * Run-JS-Functional-Tests-Linux-Gov
+        * Run-JS-Functional-Tests-Windows
+        * Run-JS-Functional-Tests-Windows-Gov
     * Python
       * microsoft.botbuilder-python
         * azure-pipelines.yml
@@ -113,6 +106,25 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
       * BotBuilder-Samples-JS-ESLint
       * BotBuilder-Samples-Python-zip
       * Handoff Daily Build
+    * SkillBots
+	     * DotNetDotNetSkillBotFunctionalTest
+        * dotnetHost2dotnetSkill.yml
+      * DotNetJsSkillBotFunctionalTest
+        * dotnetHost2JavascriptSkill.yml 
+      * DotNetPySkillBotFunctionalTest
+        * dotnetHost2PythonSkill.yml 
+      * JsDotNetSkillBotFunctionalTest
+        * javascriptHost2DotnetSkill.yml 
+      * JsJsSkillBotFunctionalTest
+        * javascriptHost2JavascriptSkill.yml
+      * JsPySkillBotFunctionalTest
+        * javascriptHost2PythonSkill.yml 
+      * PyDotNetSkillBotFunctionalTest
+        * pythonHost2DotnetSkill.yml
+      * PyJsSkillBotFunctionalTest
+        * pythonHost2JavascriptSkill.yml 
+      * PythonPythonSkillBotFunctionalTest
+        * pythonHost2PythonSkill.yml
     * Tools
       * BotBuilder-Tools-DotNet-CI-PR
       * BotBuilder-Tools-DotNet-Sign-daily
@@ -131,18 +143,7 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
       * Virtual-Assistant-Template-VSIX
     * VSIX
       * VSIX-From-botbuilder-samples-repo
-    * WeChat
-      * BotFramework-WeChat-CI-PR
-    * WeChat
-      * BotFramework-WeChat-daily
   * [releases](https://fuselabs.visualstudio.com/SDK_v4/_release?_a=releases&view=all&path=%5C)
-    * -archived
-      * DotNet-Functional-Tests-Linux-from-signed
-      * DotNet-Functional-Tests-Windows-from-signed
-      * Push-BotBuilder-DotNet-Signed-to-MyGet-daily
-      * Push-BotBuilder-JS-4.0-4.3-Branch-Builds-to-MyGet
-      * Run-DotNet-Functional-Tests-Linux
-      * Run-DotNet-Functional-Tests-Windows
     * AI
       * [[PROD]] Push-BotBuilder-DotNet-AI-Signed-to-Nuget.org
       * [[PROD]] Push-BotBuilder-JS-Libs-AI-master-to-NPM
@@ -196,9 +197,11 @@ For an overview, see the [Bot Framework SDK Product Pipelines Overview](BotFrame
       * Push-Tools-DotNet-Sign-to-MyGet-daily
       * Push-Tools-JS-to-MyGet-daily
     * V3
+      * [[PROD]]Push-BotBuilder-v3-DotNet-Master-to-Nuget
+      * [[PROD]]Push-BotBuilder-v3-JS-daily-to-npmjs
       * Push-BB-v3-Cognitive-Services-to-MyGet-daily
       * Push-BB-v3-Cognitive-Services-to-MyGet-Scratch
-      * Push-BotBuilder-v3-JS-Azure-to-MyGet-daily
+      * Push-BotBuilder-v3-DotNet-Master-to-MyGet
       * Push-BotBuilder-v3-JS-to-MyGet-daily
     * VSIX
       * Push-BotBuilder-Samples-VSIX-to-MyGet-AI
