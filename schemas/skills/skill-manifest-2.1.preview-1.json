@@ -230,7 +230,7 @@
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             },
-            "additionalProperties": true
+            "additionalProperties": false
         },
         "invokeActivity": {
             "type": "object",
@@ -269,7 +269,7 @@
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             },
-            "additionalProperties": true
+            "additionalProperties": false
         },
         "messageActivity": {
             "type": "object",
@@ -301,7 +301,7 @@
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             },
-            "additionalProperties": true
+            "additionalProperties": false
         },
         "otherActivities": {
             "type": "object",
@@ -331,11 +331,6 @@
                                 "messageUpdate",
                                 "messageDelete"
                             ]
-                        },
-                        {
-                            "type":"string",
-                            "title":"Other Activity",
-                            "pattern":"$(?!(message|event|invoke|typing|contactRelationUpdate|conversationUpdate|endOfConversation|deleteUserData|messageUpdate|messageDelete|installationUpdate|messageReaction|suggestion|trace|handoff)).*$"
                         }
                     ]
                 }
