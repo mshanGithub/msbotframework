@@ -309,19 +309,18 @@
             "required": [
                 "type"
             ],
-            "additionalProperties": true,
             "properties": {
                 "type": {
                     "oneOf": [
                         {
-                            "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity/properties/type",
                             "type": "string",
-                            "title":"Activity",
+                            "title": "Activity Type",
+                            "description": "Contains the activity type",
                             "enum": [
                                 "messageReaction",
                                 "endOfConversation",
                                 "handoff",
-                                "typing", 
+                                "typing",
                                 "conversationUpdate",
                                 "trace",
                                 "installationUpdate",
@@ -334,7 +333,8 @@
                         }
                     ]
                 }
-            }
+            },
+            "additionalProperties": true
         },
         "languageModel": {
             "type": "object",
