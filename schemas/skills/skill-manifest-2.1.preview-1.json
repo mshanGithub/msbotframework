@@ -312,21 +312,31 @@
             "additionalProperties": true,
             "properties": {
                 "type": {
-                    "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity/properties/type",
-                    "type": "string",
-                    "enum": [
-                        "typing",
-                        "contactRelationUpdate",
-                        "conversationUpdate",
-                        "endOfConversation",
-                        "deleteUserData",
-                        "messageUpdate",
-                        "messageDelete",
-                        "installationUpdate",
-                        "messageReaction",
-                        "suggestion",
-                        "trace",
-                        "handoff"
+                    "oneOf": [
+                        {
+                            "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity/properties/type",
+                            "type": "string",
+                            "title":"Activity",
+                            "enum": [
+                                "messageReaction",
+                                "endOfConversation",
+                                "handoff",
+                                "typing", 
+                                "conversationUpdate",
+                                "trace",
+                                "installationUpdate",
+                                "contactRelationUpdate",
+                                "suggestion",
+                                "deleteUserData",
+                                "messageUpdate",
+                                "messageDelete"
+                            ]
+                        },
+                        {
+                            "type":"string",
+                            "title":"Other Activity",
+                            "pattern":"$(?!(message|event|invoke|typing|contactRelationUpdate|conversationUpdate|endOfConversation|deleteUserData|messageUpdate|messageDelete|installationUpdate|messageReaction|suggestion|trace|handoff)).*$"
+                        }
                     ]
                 }
             }
