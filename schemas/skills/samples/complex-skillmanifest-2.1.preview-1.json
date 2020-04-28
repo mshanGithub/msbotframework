@@ -1,193 +1,206 @@
 {
-    "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.1.preview-1.json",
-    "$id": "SkillBot",
-    "name": "Sample skill definition that can handle multiple types of activities",
-    "version": "1.0",
-    "description": "This is a sample skill definition for multiple activity types",
-    "publisherName": "Microsoft",
-    "privacyUrl": "https://myskill.contoso.com/privacy.html",
-    "copyright": "Copyright (c) Microsoft Corporation. All rights reserved.",
-    "license": "",
-    "iconUrl": "https://myskill.contoso.com/icon.png",
-    "tags": [
-        "sample",
-        "travel",
-        "weather"
+    "$id": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.1.preview-1.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Skill Manifest Schema (v2.1.preview-1)",
+    "description": "A schema for Bot Framework skill manifests",
+    "type": "object",
+    "required": [
+        "$id",
+        "name",
+        "version",
+        "publisherName",
+        "endpoints"
     ],
-    "endpoints": [
-        {
-            "name": "americas",
-            "protocol": "BotFrameworkV3",
-            "description": "Production  endpoint for SkillBot in the Americas",
-            "endpointUrl": "http://myskill.contoso.com/api/messages",
-            "msAppId": "00000000-0000-0000-0000-000000000000"
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "format": "uri",
+            "description": "The schema to verify this skill manifest against"
         },
-        {
-            "name": "eu",
-            "protocol": "BotFrameworkV3",
-            "description": "Production  endpoint for SkillBot in Europe",
-            "endpointUrl": "http://myskill.contoso.com/api/messages",
-            "msAppId": "11111111-0000-0000-0000-000000000000"
-        }
-    ],
-    "dispatchModels": {
-        "languages": {
-            "en": [
-                {
-                    "name": "SkillBot LU (English)",
-                    "contentType": "application/lu",
-                    "url": "http://sample.com/SkillBot-en.lu",
-                    "description": "English language model for the skill"
-                },
-                {
-                    "name": "SkillBot QnA LU (English)",
-                    "contentType": "application/qna",
-                    "url": "http://sample.com/SkillBot-QnA-en.qna",
-                    "description": "English language model for the skill (QnAMaker)"
-                }
-            ],
-            "es-ES": [
-                {
-                    "name": "SkillBot LU (Spanish-Spain)",
-                    "contentType": "application/lu",
-                    "url": "http://sample.com/SkillBot-es-ES.lu",
-                    "description": "Spanish (Spain) language model for the skill"
-                },
-                {
-                    "name": "SkillBot QnA LU (Spanish-Spain)",
-                    "contentType": "application/qna",
-                    "url": "http://sample.com/SkillBot-QnA-es-ES.qna",
-                    "description": "Spanish (Spain) language model for the skill (QnAMaker)"
-                }
-            ],
-            "es-MX": [
-                {
-                    "name": "SkillBot LU (Spanish-Mexico)",
-                    "contentType": "application/lu",
-                    "url": "http://sample.com/SkillBot-es-MX.lu",
-                    "description": "Spanish (Mexico) language model for the skill"
-                },
-                {
-                    "name": "SkillBot QnA LU (Spanish-Mexico)",
-                    "contentType": "application/qna",
-                    "url": "http://sample.com/SkillBot-QnA-es-MX.qna",
-                    "description": "Spanish (Mexico) language model for the skill (QnAMaker)"
-                }
-            ]
+        "$id": {
+            "type": "string",
+            "description": "The identifier for the skill manifest"
         },
-        "intents": [
-            "bookFlight",
-            "getWeather"
-        ]
-    },
-    "activities": {
-        "bookFlight": {
-            "description": "Books a flight",
-            "type": "event",
-            "name": "BookFlight",
-            "value": {
-                "$ref": "#/definitions/bookingInfo"
-            },
-            "resultValue": {
-                "$ref": "#/definitions/bookingInfo"
-            }
+        "name": {
+            "type": "string",
+            "description": "Name of the skill"
         },
-        "getWeather": {
-            "description": "Retrieves and returns the weather for the user's location",
-            "type": "invoke",
-            "name": "GetWeather",
-            "value": {
-                "$ref": "#/definitions/location"
-            },
-            "resultValue": {
-                "$ref": "#/definitions/weatherReport"
-            }
+        "version": {
+            "type": "string",
+            "description": "Skill version"
         },
-        "message": {
-            "type": "message",
-            "description": "Receives the user's' utterance and attempts to resolve it using the skill's LU models"
-        }
-    },
-    "definitions": {
-        "localeValue": {
-            "type": "object",
-            "properties": {
-                "locale": {
-                    "type": "string",
-                    "description": "The current user's locale ISO code"
-                }
-            }
+        "description": {
+            "type": "string",
+            "description": "A human readable description for the skill"
         },
-        "bookingInfo": {
-            "type": "object",
-            "required": [
-                "origin"
-            ],
-            "properties": {
-                "origin": {
-                    "type": "string",
-                    "description": "this is the origin city for the flight"
-                },
-                "destination": {
-                    "type": "string",
-                    "description": "this is the destination city for the flight"
-                },
-                "date": {
-                    "type": "string",
-                    "description": "The date for the flight in YYYY-MM-DD format"
-                }
-            }
+        "publisherName": {
+            "type": "string",
+            "description": "The name of the skill publisher"
         },
-        "weatherReport": {
+        "privacyUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL with the privacy description for the skill"
+        },
+        "copyright": {
+            "type": "string",
+            "description": "The copyright for the skill"
+        },
+        "license": {
+            "type": "string",
+            "description": "The license agreement for the skill"
+        },
+        "iconUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional icon to be shown for the skill"
+        },
+        "tags": {
             "type": "array",
-            "description": "Array of forecasts for the next week.",
-            "items": [
-                {
-                    "type": "string"
-                }
-            ]
-        },
-        "location": {
-            "type": "object",
-            "description": "Location metadata",
-            "properties": {
-                "latitude": {
-                    "type": "number",
-                    "title": "Latitude"
-                },
-                "longitude": {
-                    "type": "number",
-                    "title": "Longitude"
-                },
-                "postalCode": {
-                    "type": "string",
-                    "title": "Postal code"
-                }
+            "uniqueItems": true,
+            "description": "An array of strings with tags for the skill",
+            "items": {
+                "type": "string"
             }
-        }
-    },
-    "activitiesSent": {
-        "flightUpdated": {
-            "type": "event",
-            "name": "FlightUpdated",
-            "description": "Event which is sent by the skill when there is an update in flight info",
-            "value": {
-                "type": "object",
-                "description": "Flight update information",
-                "properties": {
-                    "flightNumber": {
+        },
+        "endpoints": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "List of endpoints supported by the skill",
+            "items": {
+                "$ref": "#/definitions/endpoint"
+            }
+        },
+        "dispatchModels": {
+            "type": "object",
+            "description": "Language models and top level intents for the skill",
+            "properties": {
+                "languages": {
+                    "type": "object",
+                    "description": "List of languages supported by the skill",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "description": "List of language models supported by the skill",
+                        "items": {
+                            "$ref": "#/definitions/languageModel"
+                        }
+                    }
+                },
+                "intents": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "description": "A list of the skill's top level intents that can be used by the consumer to filter out language files.",
+                    "items": {
                         "type": "string"
-                    },
-                    "departureDate": {
-                        "type": "string",
-                        "description": "The departure date for the flight in YYYY-MM-DD format"
-                    },
-                    "departureTime": {
-                        "type": "string",
-                        "description": "The departure time for the flight in HH-MM format"
                     }
                 }
+            },
+            "additionalProperties": false
+        },
+        "activities": {
+            "type": "object",
+            "description": "Definition of activities that are useful to enable skill host tooling to progmatically interact with the skill.",
+            "additionalProperties": {
+                "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity"
             }
+        },
+        "activitiesSent": {
+            "type": "object",
+            "description": "Definitions of activities which may be sent by the skill that are useful for skill host tooling.",
+            "additionalProperties": {
+                "additionalProperties": {
+                    "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity"
+                }
+            }
+        },
+        "definitions": {
+            "type": "object",
+            "description": "Definitions of the structure of object payloads",
+            "additionalProperties": {
+                "$ref": "http://json-schema.org/draft-07/schema#"
+            }
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "endpoint": {
+            "type": "object",
+            "description": "Skill endpoint definition",
+            "required": [
+                "name",
+                "endpointUrl",
+                "msAppId"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Unique name for the endpoint",
+                    "default": "default"
+                },
+                "protocol": {
+                    "type": "string",
+                    "description": "Supported protocol",
+                    "default": "BotFrameworkV3"
+                },
+                "description": {
+                    "type": "string",
+                    "title": "Description",
+                    "description": "Description of the endpoint",
+                    "examples": [
+                        "Production bot"
+                    ]
+                },
+                "endpointUrl": {
+                    "type": "string",
+                    "title": "Endpoint Url",
+                    "format": "uri",
+                    "description": "Endpoint for the skill",
+                    "examples": [
+                        "http://contoso.com/api/messaages"
+                    ]
+                },
+                "msAppId": {
+                    "type": "string",
+                    "title": "Microsoft App Id",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "description": "The Microsoft AppId for the skill. This app ID is used to authenticate requests"
+                }
+            },
+            "additionalProperties": false
+        },
+        "languageModel": {
+            "type": "object",
+            "description": "A language model for a given culture. The name is a combination of an ISO 639 two-letter lowercase culture code associated with a language and an ISO 3166 two-letter uppercase subculture code associated with a country or region",
+            "required": [
+                "name",
+                "contentType",
+                "url"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name for the language model"
+                },
+                "contentType": {
+                    "type": "string",
+                    "description": "Type of the language model"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "A URL for the location of the language model file"
+                },
+                "description": {
+                    "type": "string",
+                    "title": "Description",
+                    "description": "Description for the language model"
+                }
+            },
+            "additionalProperties": false
         }
     }
 }
