@@ -220,14 +220,14 @@
                     "description": "Description for the activity"
                 },
                 "value": {
+                    "$ref": "http://json-schema.org/draft-07/schema#",
                     "type": "object",
-                    "description": "The JsonSchema definition of the shape of the value property that this event expects",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
+                    "description": "The JsonSchema definition of the shape of the value property that this event expects"
                 },
                 "resultValue": {
+                    "$ref": "http://json-schema.org/draft-07/schema#",
                     "type": "object",
-                    "description": "The JsonSchema definition of the shape of the resultValue that this event may produce",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
+                    "description": "The JsonSchema definition of the shape of the resultValue that this event may produce"
                 }
             },
             "additionalProperties": false
@@ -313,7 +313,7 @@
                 "type": {
                     "type": "string",
                     "title": "Activity Type",
-                    "description": "Contains the activity type",
+                    "description": "Contains the activity type (message, event, invoke, etc.)",
                     "enum": [
                         "message",
                         "event",
@@ -330,7 +330,8 @@
                         "deleteUserData",
                         "messageUpdate",
                         "messageDelete"
-                    ]
+                    ],
+                    "pattern":"^(?!(message|event|invoke)$)((messageReaction|endOfConversation|handoff|typing|conversationUpdate|trace|installationUpdate|contactRelationUpdate|suggestion|deleteUserData|messageUpdate|messageDelete)$)"
                 }
             },
             "additionalProperties": true
