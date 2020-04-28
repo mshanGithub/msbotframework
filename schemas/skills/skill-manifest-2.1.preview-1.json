@@ -311,26 +311,22 @@
             ],
             "properties": {
                 "type": {
-                    "oneOf": [
-                        {
-                            "type": "string",
-                            "title": "Activity Type",
-                            "description": "Contains the activity type",
-                            "enum": [
-                                "messageReaction",
-                                "endOfConversation",
-                                "handoff",
-                                "typing",
-                                "conversationUpdate",
-                                "trace",
-                                "installationUpdate",
-                                "contactRelationUpdate",
-                                "suggestion",
-                                "deleteUserData",
-                                "messageUpdate",
-                                "messageDelete"
-                            ]
-                        }
+                    "type": "string",
+                    "title": "Activity Type",
+                    "description": "Contains the activity type",
+                    "enum": [
+                        "messageReaction",
+                        "endOfConversation",
+                        "handoff",
+                        "typing",
+                        "conversationUpdate",
+                        "trace",
+                        "installationUpdate",
+                        "contactRelationUpdate",
+                        "suggestion",
+                        "deleteUserData",
+                        "messageUpdate",
+                        "messageDelete"
                     ]
                 }
             },
