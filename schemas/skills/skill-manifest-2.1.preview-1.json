@@ -116,10 +116,7 @@
                         "$ref": "#/definitions/messageActivity"
                     },
                     {
-                        "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity",
-                        "required": [
-                            "type"
-                        ]
+                        "$ref": "#/definitions/otherActivities"
                     }
                 ]
             }
@@ -136,10 +133,7 @@
                         "$ref": "#/definitions/messageActivity"
                     },
                     {
-                        "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity",
-                        "required": [
-                            "type"
-                        ]
+                        "$ref": "#/definitions/otherActivities"
                     }
                 ]
             }
@@ -201,6 +195,7 @@
         },
         "eventActivity": {
             "type": "object",
+            "title": "Event Activity",
             "description": "An activity with Type=Event where the Name property indicates the task that the skill will execute",
             "required": [
                 "type",
@@ -235,10 +230,11 @@
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             },
-            "additionalProperties": false
+            "additionalProperties": true
         },
         "invokeActivity": {
             "type": "object",
+            "title": "Invoke Activity",
             "description": "An activity with Type=Invoke where the Name property indicates the task that the skill will execute",
             "required": [
                 "type",
@@ -273,10 +269,11 @@
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             },
-            "additionalProperties": false
+            "additionalProperties": true
         },
         "messageActivity": {
             "type": "object",
+            "title": "Message Activity",
             "description": "An activity with Type=Message where the utterance is passed to the skill in the Text property",
             "required": [
                 "type"
@@ -304,7 +301,35 @@
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             },
-            "additionalProperties": false
+            "additionalProperties": true
+        },
+        "otherActivities": {
+            "type": "object",
+            "title": "Activity",
+            "required": [
+                "type"
+            ],
+            "additionalProperties": true,
+            "properties": {
+                "type": {
+                    "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity/properties/type",
+                    "type": "string",
+                    "enum": [
+                        "typing",
+                        "contactRelationUpdate",
+                        "conversationUpdate",
+                        "endOfConversation",
+                        "deleteUserData",
+                        "messageUpdate",
+                        "messageDelete",
+                        "installationUpdate",
+                        "messageReaction",
+                        "suggestion",
+                        "trace",
+                        "handoff"
+                    ]
+                }
+            }
         },
         "languageModel": {
             "type": "object",
