@@ -315,6 +315,9 @@
                     "title": "Activity Type",
                     "description": "Contains the activity type",
                     "enum": [
+                        "message",
+                        "event",
+                        "invoke",
                         "messageReaction",
                         "endOfConversation",
                         "handoff",
