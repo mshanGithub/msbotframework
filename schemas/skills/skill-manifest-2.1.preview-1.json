@@ -87,11 +87,10 @@
                         "description": "List of language models supported by the skill",
                         "items": {
                             "$ref": "#/definitions/languageModel"
-                        }                               
+                        }
                     }
                 },
-                "intents": 
-                {
+                "intents": {
                     "type": "array",
                     "uniqueItems": true,
                     "description": "A list of the skill's top level intents that can be used by the consumer to filter out language files.",
@@ -104,35 +103,21 @@
         },
         "activities": {
             "type": "object",
-            "description": "Definition for the activities accepted by the skill",
+            "description": "Definition of activities that are useful to enable skill host tooling to progmatically interact with the skill.",
             "additionalProperties": {
-                "oneOf": [
-                    {
-                        "$ref": "#/definitions/eventActivity"
-                    },
-                    {
-                        "$ref": "#/definitions/invokeActivity"
-                    },
-                    {
-                        "$ref": "#/definitions/messageActivity"
-                    }
+                "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity",
+                "required": [
+                    "type"
                 ]
             }
         },
         "activitiesSent": {
             "type": "object",
-            "description": "Definition for the activities sent proactively by the skill",
+            "description": "Definitions of activities which may be sent by the skill that are useful for skill host tooling.",
             "additionalProperties": {
-                "oneOf": [
-                    {
-                        "$ref": "#/definitions/eventActivity"
-                    },
-                    {
-                        "$ref": "#/definitions/invokeActivity"
-                    },
-                    {
-                        "$ref": "#/definitions/messageActivity"
-                    }
+                "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/protocol/botframework.json#/definitions/Activity",
+                "required": [
+                    "type"
                 ]
             }
         },
@@ -191,113 +176,6 @@
             },
             "additionalProperties": false
         },
-        "eventActivity": {
-            "type": "object",
-            "description": "An activity with Type=Event where the Name property indicates the task that the skill will execute",
-            "required": [
-                "type",
-                "name"
-            ],
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "description": "The activity type",
-                    "const": "event"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "The name for the event",
-                    "examples": [
-                        "BookFlight"
-                    ]
-                },
-                "description": {
-                    "type": "string",
-                    "title": "Description",
-                    "description": "Description for the activity"
-                },
-                "value": {
-                    "type": "object",
-                    "description": "The JsonSchema definition of the shape of the value property that this event expects",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
-                },
-                "resultValue": {
-                    "type": "object",
-                    "description": "The JsonSchema definition of the shape of the resultValue that this event may produce",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
-                }
-            },
-            "additionalProperties": false
-        },
-        "invokeActivity": {
-            "type": "object",
-            "description": "An activity with Type=Invoke where the Name property indicates the task that the skill will execute",
-            "required": [
-                "type",
-                "name"
-            ],
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "description": "The activity type",
-                    "const": "invoke"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "The name property for the invoke activity",
-                    "examples": [
-                        "GetWeather"
-                    ]
-                },
-                "description": {
-                    "type": "string",
-                    "title": "Description",
-                    "description": "Description for the activity"
-                },
-                "value": {
-                    "type": "object",
-                    "description": "The JsonSchema definition of the shape of the value property that this event expects",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
-                },
-                "resultValue": {
-                    "type": "object",
-                    "description": "The JsonSchema definition of the shape of the resultValue that this event may produce",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
-                }
-            },
-            "additionalProperties": false
-        },
-        "messageActivity": {
-            "type": "object",
-            "description": "An activity with Type=Message where the utterance is passed to the skill in the Text property",
-            "required": [
-                "type"
-            ],
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "description": "The activity type",
-                    "const": "message",
-                    "default": "message"
-                },
-                "description": {
-                    "type": "string",
-                    "title": "Description",
-                    "description": "Description for the activity"
-                },
-                "value": {
-                    "type": "object",
-                    "description": "The JsonSchema definition of the shape of the value property that this message would like to have",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
-                },
-                "resultValue": {
-                    "type": "object",
-                    "description": "The JsonSchema definition of the shape of the resultValue that this message may produce",
-                    "$ref": "http://json-schema.org/draft-07/schema#"
-                }
-            },
-            "additionalProperties": false
-        },
         "languageModel": {
             "type": "object",
             "description": "A language model for a given culture. The name is a combination of an ISO 639 two-letter lowercase culture code associated with a language and an ISO 3166 two-letter uppercase subculture code associated with a country or region",
@@ -327,6 +205,6 @@
                 }
             },
             "additionalProperties": false
-        }        
+        }
     }
 }
