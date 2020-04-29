@@ -6,14 +6,36 @@
     "allOf": [
         {
             "$ref": "http://json-schema.org/draft-07/schema#"
+        },
+        {
+            "properties": {
+                "$role": {
+                    "title": "$role",
+                    "description": "Defines the roles played in the dialog schema one of [expression|interface|implements($kind)|extends($kind)].",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/role"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/role"
+                            }
+                        }
+                    ]
+                },
+                "$kind": {
+                    "$ref": "#/definitions/kind"
+                }
+            }
         }
     ],
     "definitions": {
         "role": {
             "title": "$role",
-            "description": "Defines the role played in the dialog schema one of [expression|interface|implements($kind)].",
+            "description": "Defines the role played in the dialog schema from [expression|interface|implements($kind)|extends($kind)].",
             "type": "string",
-            "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
+            "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
         },
         "kind": {
             "title": "$kind",
@@ -21,20 +43,25 @@
             "type": "string",
             "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
         },
+        "patternProperties": {
+            "^\\$": {
+                "type": [
+                    "array",
+                    "boolean",
+                    "integer",
+                    "null",
+                    "number",
+                    "object",
+                    "string"
+                ]
+            }
+        },
         "component": {
-            "$comment": "This is the base dialog component definition.",
             "properties": {
-                "$id": {
-                    "title": "Unique id for inline definition",
-                    "description": "Inline id for reuse of an inline definition",
-                    "type": "string",
-                    "pattern": "^([a-zA-Z][a-zA-Z0-9.]*)$"
-                },
-                "$copy": {
-                    "title": "Component to use for default properties",
-                    "description": "Copy the definition by id from a .dialog file.",
-                    "type": "string",
-                    "pattern": "^(([a-zA-Z][a-zA-Z0-9.]*)?(#[a-zA-Z][a-zA-Z0-9.]*)?)$"
+                "$schema": {
+                    "title": "Runtime schema",
+                    "description": "Schema to use to validate declarative assets for a runtime.",
+                    "type": "string"
                 },
                 "$kind": {
                     "title": "Kind of dialog object",
@@ -46,6 +73,16 @@
                     "title": "Designer information",
                     "type": "object",
                     "description": "Extra information for the Bot Framework Composer."
+                }
+            },
+            "required": [
+                "$kind"
+            ],
+            "additionalProperties": false,
+            "patternProperties": {
+                "^\\$": {
+                    "title": "Tooling property",
+                    "description": "Open ended property for tooling."
                 }
             }
         },
@@ -148,24 +185,6 @@
                     "type": "integer"
                 }
             ]
-        }
-    },
-    "properties": {
-        "$role": {
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/role"
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/role"
-                    }
-                }
-            ]
-        },
-        "$kind": {
-            "$ref": "#/definitions/kind"
         }
     }
 }
