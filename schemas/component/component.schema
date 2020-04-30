@@ -25,7 +25,10 @@
                     ]
                 },
                 "$kind": {
-                    "$ref": "#/definitions/kind"
+                    "title": "$kind",
+                    "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+                    "type": "string",
+                    "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
                 }
             }
         }
@@ -37,32 +40,8 @@
             "type": "string",
             "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
         },
-        "kind": {
-            "title": "$kind",
-            "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
-            "type": "string",
-            "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
-        },
-        "patternProperties": {
-            "^\\$": {
-                "type": [
-                    "array",
-                    "boolean",
-                    "integer",
-                    "null",
-                    "number",
-                    "object",
-                    "string"
-                ]
-            }
-        },
         "component": {
             "properties": {
-                "$schema": {
-                    "title": "Runtime schema",
-                    "description": "Schema to use to validate declarative assets for a runtime.",
-                    "type": "string"
-                },
                 "$kind": {
                     "title": "Kind of dialog object",
                     "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
