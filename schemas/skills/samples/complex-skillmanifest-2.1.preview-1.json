@@ -111,13 +111,7 @@
             "type": "typing"
         },
         "conversationUpdate": {
-            "type": "conversationUpdate",
-            "name": "memberAdded",
-            "value": {
-                "type": "object",
-                "description": "The channel account for the member that was added to the conversation.",
-                "$ref": "#/definitions/channelAccount"
-            }
+            "type": "conversationUpdate"
         }
     },
     "definitions": {
@@ -176,37 +170,6 @@
                     "title": "Postal code"
                 }
             }
-        },
-        "channelAccount": {
-            "description": "Channel account information needed to route a message",
-            "title": "ChannelAccount",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "Channel id for the user or bot on this channel (Example: joe@smith.com, or @joesmith or\n123456)",
-                    "type": "string",
-                    "title": "id"
-                },
-                "name": {
-                    "description": "Display friendly name",
-                    "type": "string",
-                    "title": "name"
-                },
-                "aadObjectId": {
-                    "description": "This account's object ID within Azure Active Directory (AAD)",
-                    "type": "string",
-                    "title": "aadObjectId"
-                },
-                "role": {
-                    "description": "Role of the entity behind the account (Example: User, Bot, etc.). Possible values include:\n'user', 'bot'",
-                    "type": "string",
-                    "title": "role"
-                }
-            },
-            "required": [
-                "id",
-                "name"
-            ]
         }
     },
     "activitiesSent": {
