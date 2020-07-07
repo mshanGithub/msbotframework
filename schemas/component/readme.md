@@ -9,15 +9,14 @@ merge baseComponent.schema + json.schema => component.schema
 
 The component JSON schemas are published at:
 
-`https://schemas.botframework.com/schemas/component/v{version}/{schema file}`
+`https://schemas.botframework.com/schemas/component/v{version}/component.schema`
 
-Examples:
+Example:
 
 `https://schemas.botframework.com/schemas/component/v1.0/component.schema`
-`https://schemas.botframework.com/schemas/component/v1.0/definitions.schema`
 
 You should use the published version when referencing this schema.
 
 ## Legacy versions
 
-The `component.schema` and `definitions.schema` files are left in the root folder  for backwards compatibility purposes, and should not be used. Use the `\v{version}\definitions.schema` or `\v{version}\component.schema` versions instead.
+The `component.schema` and `definitions.schema` files are left in the root folder  for backwards compatibility purposes, and should not be used. Use the `\v{version}\component.schema` version instead.
