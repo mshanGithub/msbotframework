@@ -72,6 +72,21 @@
                   "title": "Subtitle",
                   "description": "Subtitle rendered in form title, defaults to schema.$kind",
                   "type": "string"
+              },
+              "widget": {
+                "title": "Field Widget",
+                "description": "Override default field widget.",
+                "type": "string",
+                "enum": [
+                  "checkbox",
+                  "date",
+                  "datetime",
+                  "input",
+                  "number",
+                  "radio",
+                  "select",
+                  "textarea"
+                ]
               }
           }
       },
