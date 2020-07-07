@@ -64,10 +64,12 @@
                   "examples": [["*"]]
               },
               "placeholder": {
-                  "description": "Placeholder Override",
+                  "title": "Placeholder",
+                  "description": "Placeholder override. Default is `examples` property in the schema.",
                   "type": "string"
               },
               "subtitle": {
+                  "title": "Subtitle",
                   "description": "Subtitle rendered in form title, defaults to schema.$kind",
                   "type": "string"
               }
