@@ -19,4 +19,4 @@ You should use the published version when referencing this schema.
 
 ## Legacy versions
 
-The `component.schema` and `definitions.schema` files are left in the root folder  for backwards compatibility purposes, and should not be used. Use the `\v{version}\component.schema` version instead.
+The `component.schema` and `definitions.schema` files are left in the root folder for backwards compatibility purposes, and should not be used. Use the `\v{version}\component.schema` version instead.
