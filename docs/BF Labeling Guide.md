@@ -39,8 +39,9 @@ DRI
 
 ### Area
 
-Color: <span style="background-color:#5ed666"> #5ed666 </span>
+Color: ![#5ed666](https://via.placeholder.com/15/5ed666/000000?text=+) `#5ed666`
 
+Color: ![#5ed666](https://via.placeholder.com/200x30/5ed666/000000?text=+How+will+this) `#5ed666`
 Subcategories for area
 
 Adaptive
