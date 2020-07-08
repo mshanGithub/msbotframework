@@ -37,12 +37,20 @@ Type
 Automation
 DRI
 
+<style
+  type="text/css">
+tag {color:blue;}
+</style>
+<tag>okay</tag>
+
 ### Area
 
 Color: ![#5ed666](https://via.placeholder.com/15/5ed666/000000?text=+) `#5ed666`
 
 Color: ![#5ed666](https://via.placeholder.com/200x30/5ed666/000000?text=+How+will+this) `#5ed666`
 Subcategories for area
+
+`#5ed666`
 
 Adaptive
 Adaptive Expressions
