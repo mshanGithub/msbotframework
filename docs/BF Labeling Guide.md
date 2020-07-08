@@ -39,9 +39,9 @@ This section describes the main label categories being used:
 
 ### Area
 
-Color: All the labels in this category should use ![#1d76db](https://via.placeholder.com/15/1d76db/000000?text=+) `#1d76db`
+These labels are used to map issues to a feature or functional area of the product. All the issues with `Status:Approved` should have at least one of these labels before they can be worked on.
 
-This label is used to map a particular issue to a feature or functional area of the product.
+Color: All the labels in this category should use ![#1d76db](https://via.placeholder.com/15/1d76db/000000?text=+) `#1d76db`
 
 #### Subcategories for Area
 
@@ -66,9 +66,9 @@ This label is used to map a particular issue to a feature or functional area of 
 
 ### Priority
 
-Color: This subcategory uses different colors for each label.
+Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issue will be addressed first. All the issues with `Status:Approved` should have at least one of these labels before they can be worked on.
 
-Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issue will be addressed first.
+Color: This subcategory uses different colors for each label.
 
 |Name| Description  | Color | Example
 |---|---|---|------|
@@ -79,9 +79,9 @@ Describes the priority of the issue. This label is required for any issue that i
 
 ### Status
 
-Color: This subcategory uses different colors for each label.
-
 Use these labels for providing additional information on the status of the issue.
+
+Color: This subcategory uses different colors for each label.
 
 |Name| Description  | Color | Example
 |---|---|---|------|
@@ -95,9 +95,9 @@ Use these labels for providing additional information on the status of the issue
 
 ### Community
 
-Color: All the labels in this category should use ![#874faf](https://via.placeholder.com/15/874faf/000000?text=+) `#874faf`.
-
 Use these labels to tag issues that involve the community.
+
+Color: All the labels in this category should use ![#874faf](https://via.placeholder.com/15/874faf/000000?text=+) `#874faf`.
 
 |Name| Description  | Example
 |---|---|------|
@@ -105,9 +105,9 @@ Use these labels to tag issues that involve the community.
 
 ### Type
 
-Color: This subcategory uses different colors for each label.
-
 Use these labels for providing additional information type of the issue.
+
+Color: This subcategory uses different colors for each label.
 
 |Name| Description  | Color | Example
 |---|---|---|------|
@@ -120,9 +120,9 @@ Use these labels for providing additional information type of the issue.
 
 ### Size
 
-Color: All the labels in this category should use ![#91e3ea](https://via.placeholder.com/15/91e3ea/000000?text=+) `#91e3ea`.
+Use these to assign an estimated level of effort to resolve an issue and assist with the estimation process.
 
-Use these labels to tag issues that involve the community.
+Color: All the labels in this category should use ![#91e3ea](https://via.placeholder.com/15/91e3ea/000000?text=+) `#91e3ea`.
 
 |Name| Description  | Example
 |---|---|------|
@@ -133,9 +133,9 @@ Use these labels to tag issues that involve the community.
 
 ### Automation
 
-Color: All the labels in this category should use ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+) `#cccccc`.
-
 These labels are applied to PRs and used to trigger or disable github workflows.
+
+Color: All the labels in this category should use ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+) `#cccccc`.
 
 |Name| Description  | Example
 |---|---|------|
@@ -145,13 +145,11 @@ These labels are applied to PRs and used to trigger or disable github workflows.
 |parity with Python| The PR needs to be  ported to Python. | `Automation:Parity with JS` |
 |parity with Java| The PR needs to be ported to Java. | `Automation:Parity with Java` |
 
-
-
 ### DRI
 
-Color: This subcategory uses different colors for each label.
-
 DRI labels are used for reporting outside the bot framework repositories and their names don't follow the standards described above. They should be applied based on the current DRI guide.
+
+Color: This subcategory uses different colors for each label.
 
 |Name| Description  | Color | Example
 |---|---|---|------|
