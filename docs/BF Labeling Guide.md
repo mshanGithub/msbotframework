@@ -1,4 +1,4 @@
-# Bot Framework Labeling Guidelines
+# Bot Framework Labeling Guidelines (DRAFT)
 
 This article describes the common labels used in the Bot Framework repositories to tag issues and PRs.
 
@@ -16,7 +16,7 @@ There's no limit to the number of subcategories but normally 2 or 3 levels at mo
 
 ## Label usage
 
-Same labels can be applied multiple to times to the same issue and some other shouldn't. For example, an issue could be labeled as `Area:Adaptive` and `Area:Skills` but it should only have one priority label `P:0` or `P:1`. 
+Some labels can be applied multiple times to the same issue and some other shouldn't. For example, an issue could be labeled as `Area:Adaptive` **and** `Area:Skills` but it should **only** have one priority label `P:0` or `P:1`.
 
 ## Label colors
 
@@ -28,52 +28,54 @@ This section describes the main label categories being used:
 
 |Category| Description  | Usage  | Example
 |---|---|---|------|
-|Area|Defines a functional area or feature of the product.| Multiple |<span style="background-color:#5ed666">Area:Skills</span>|
-|Priority|The priority for the issue.| Single |P:0|
-|Planning|Used to describe different planning stages for the issue.| Single |Planning:Backlog|
-|Status|Further describes the status of the issue.| Single |Status:Stale|
-|Community|Used to describe community related issues.| Single |Community:Help Wanted|
-Type
-Automation
-DRI
-
-<style
-  type="text/css">
-tag {color:blue;}
-</style>
-<tag>okay</tag>
+|[Area](#area)|Defines a functional area or feature of the product.| Multiple |`Area:Skills`|
+|[Priority](#priority)|The priority for the issue.| Single |`P:0`|
+|Planning|Used to describe different planning stages for the issue.| Single |`Planning:Backlog`|
+|Status|Further describes the status of the issue.| Single |`Status:Stale`|
+|Community|Used to describe community related issues.| Single |`Community:Help Wanted`|
+|Type|Provides additional information on the issue type (if known).| Single |`Type:Bug`|
+|Automation|Used to trigger github actions and workflows.| Single |`Automation:No parity`|
+|DRI|Special set of tags used for DRI tracking and reporting.| Multiple |`Bot Services`|
 
 ### Area
 
 Color: ![#5ed666](https://via.placeholder.com/15/5ed666/000000?text=+) `#5ed666`
 
-Color: ![#5ed666](https://via.placeholder.com/200x30/5ed666/000000?text=+How+will+this) `#5ed666`
-Subcategories for area
+This label is used to map a particular issue to a feature or functional area of the product.
 
-`#5ed666`
+#### Subcategories for Area
 
-Adaptive
-Adaptive Expressions
-AI-Luis
-AI-QnAMaker
-Authentication
-Custom Adapters
-Docs
-Functional Tests
-LG
-Schema
-Skills
-Streaming
-Teams
-Telemetry
-Testing Framework
+|Name| Description  | Example
+|---|---|------|
+|Adaptive| TODO | `Area:Adaptive` |
+|Adaptive Expressions| TODO | `Area:Adaptive Expressions` |
+|AI-Luis| TODO | `Area:AI-Luis` |
+|AI-QnAMaker| TODO | `Area:AI-QnAMaker` |
+|Authentication| TODO | `Area:Authentication` |
+|Custom Adapters| TODO | `Area:Custom Adapters` |
+|Docs| TODO | `Area:Docs` |
+|Functional Tests| TODO | `Area:Functional Tests` |
+|LG| TODO | `Area:` |
+|Samples| TODO | `Area:` |
+|Schema| TODO | `Area:` |
+|Skills| TODO | `Area:` |
+|Streaming| TODO | `Area:` |
+|Teams| TODO | `Area:` |
+|Telemetry| TODO | `Area:` |
+|Testing Framework| TODO | `Area:` |
 
+### Priority
 
-<span style="background-color:#5ed666"> Status: Backlog </span>.
-<span style="color:white;background-color:#ee0701"> Status: Blocked </span>.
+Color: This subcategory uses different colors for each label.
 
-Colors
-Except for the ones for DRI, 
+Describes the priority of the issue.
+
+|Name| Description  | Color | Example
+|---|---|---|------|
+|P:0| Must Fix.  Release-blocker | ![#ee0701](https://via.placeholder.com/15/ee0701/000000?text=+) `#ee0701` | `P:0` |
+|P:1| Painful if we don't fix, won't block releasing | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `P:1` |
+|P:2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P:2` |
+|P:3| Won't fix | ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `P:3` |
 
 Exceptions
 DRI labels are used for reporting outside the bot framework repositories and the colors and names don't follow the standards described above.
