@@ -6,18 +6,60 @@
     "type": "object",
     "additionalProperties": true,
     "properties": {
-        "form": {
-            "type": "object",
-            "title": "Form UI Options",
-            "description": "A map of component $kinds to UI options with customizations for each component.",
+        "flow": {
+            "title": "Flow UI Options",
+            "description": "A map of component $kinds to flow UI options with customizations for each component.",
             "additionalProperties": {
                 "title": "$kind",
-                "description": "UI Options object describing UI customizations for this $kind.",
+                "description": "UI Options object describing flow UI customizations for this $kind.",
+                "$ref": "#/definitions/FlowUIOptions"
+            }
+        },
+        "form": {
+            "title": "Form UI Options",
+            "description": "A map of component $kinds to form UI options with customizations for each component.",
+            "additionalProperties": {
+                "title": "$kind",
+                "description": "UI Options object describing form UI customizations for this $kind.",
                 "$ref": "#/definitions/FormUIOptions"
             }
         }
     },
     "definitions": {
+        "FlowUIOptions": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "title": "Node Header",
+                    "description": "Text used in the node header.",
+                    "type": "string"
+                },
+                "body": {
+                    "title": "Node Body",
+                    "description": "TODO",
+                    "type": "string"
+                },
+                "color": {
+                    "title": "Node Color",
+                    "description": "Background color of the node's header. Any valid CSS color string is accepted.",
+                    "type": "string",
+                    "examples": [
+                        "red",
+                        "#eee",
+                        "rgb(0, 0, 0)"
+                    ]
+                },
+                "icon": {
+                    "title": "Icon Name",
+                    "description": "Optional icon to use in the node header. List of available icons can be found at https://developer.microsoft.com/en-us/fluentui#/styles/web/icons#available-icons",
+                    "type": "string",
+                    "examples": [
+                        "ChatBot",
+                        "Robot"
+                    ]
+                }
+            }
+        },
         "FormUIOptions": {
             "type": "object",
             "properties": {
