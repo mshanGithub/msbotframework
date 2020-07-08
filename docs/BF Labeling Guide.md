@@ -133,7 +133,7 @@ Color: All the labels in this category should use ![#91e3ea](https://via.placeho
 
 ### Automation
 
-These labels are applied to PRs and used to trigger or disable github workflows.
+These labels are applied to PRs and used to trigger or disable GitHub workflows.
 
 Color: All the labels in this category should use ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+) `#cccccc`.
 
