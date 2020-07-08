@@ -55,14 +55,14 @@ This label is used to map a particular issue to a feature or functional area of 
 |Custom Adapters| TODO | `Area:Custom Adapters` |
 |Docs| TODO | `Area:Docs` |
 |Functional Tests| TODO | `Area:Functional Tests` |
-|LG| TODO | `Area:` |
-|Samples| TODO | `Area:` |
-|Schema| TODO | `Area:` |
-|Skills| TODO | `Area:` |
-|Streaming| TODO | `Area:` |
-|Teams| TODO | `Area:` |
-|Telemetry| TODO | `Area:` |
-|Testing Framework| TODO | `Area:` |
+|LG| TODO | `Area:LG` |
+|Samples| TODO | `Area:Samples` |
+|Schema| TODO | `Area:Schema` |
+|Skills| TODO | `Area:Skills` |
+|Streaming| TODO | `Area:Streaming` |
+|Teams| TODO | `Area:Teams` |
+|Telemetry| TODO | `Area:Telemetry` |
+|Testing Framework| TODO | `Area:Testing Framework` |
 
 ### Priority
 
