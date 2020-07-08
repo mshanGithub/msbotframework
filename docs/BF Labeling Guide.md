@@ -49,7 +49,7 @@ Color: All the labels in this category should use ![#1d76db](https://via.placeho
 |---|---|------|
 |Adaptive| TODO | `Area:Adaptive` |
 |Adaptive Expressions| TODO | `Area:Adaptive Expressions` |
-|AI-Luis| TODO | `Area:AI-Luis` |
+|AI-LUIS| TODO | `Area:AI-LUIS` |
 |AI-QnAMaker| TODO | `Area:AI-QnAMaker` |
 |Authentication| TODO | `Area:Authentication` |
 |Custom Adapters| TODO | `Area:Custom Adapters` |
