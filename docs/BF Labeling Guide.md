@@ -142,7 +142,7 @@ Color: All the labels in this category should use ![#cccccc](https://via.placeho
 |no parity| PR does not need to be applied to other languages. **Note:** if you don't apply the `No parity` to a dotnet PR, the automation workflow will generate parity issues in Python, JS and Java.  | `Automation:No parity` |
 |parity with dotnet| The PR needs to be ported to dotnet. | `Automation:Parity with dotnet` |
 |parity with JS| The PR needs to be ported to JS. | `Automation:Parity with JS` |
-|parity with Python| The PR needs to be  ported to Python. | `Automation:Parity with JS` |
+|parity with Python| The PR needs to be ported to Python. | `Automation:Parity with Python` |
 |parity with Java| The PR needs to be ported to Java. | `Automation:Parity with Java` |
 
 ### DRI
