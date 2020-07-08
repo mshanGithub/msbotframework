@@ -34,7 +34,7 @@ This section describes the main label categories being used:
 |[Community](#community)|Used to describe community related issues.| Single |`Community:Help Wanted`|
 |[Type](#type)|Provides additional information on the issue type.| Single |`Type:Bug`|
 |[Size](#size)|Provides an estimate for the level of effort required to resolve the issue.| Single |`Size:M`|
-|[Automation](#automation) |Used to trigger github actions and workflows.| Single |`Automation:No parity`|
+|[Automation](#automation) |Used to trigger GitHub actions and workflows.| Single |`Automation:No parity`|
 |[DRI](#dri)|Special set of tags used for DRI tracking and reporting.| Multiple |`Bot Services`|
 
 ### Area
