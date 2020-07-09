@@ -8,21 +8,15 @@
     "properties": {
         "flow": {
             "title": "Flow UI Options",
-            "description": "A map of component $kinds to flow UI options with customizations for each component.",
-            "additionalProperties": {
-                "title": "$kind",
-                "description": "UI Options object describing flow UI customizations for this $kind.",
-                "$ref": "#/definitions/FlowUIOptions"
-            }
+            "description": "UI Options object describing flow UI customizations for this $kind.",
+            "$ref": "#/definitions/FlowUIOptions",
+            "additionalProperties": false
         },
         "form": {
             "title": "Form UI Options",
-            "description": "A map of component $kinds to form UI options with customizations for each component.",
-            "additionalProperties": {
-                "title": "$kind",
-                "description": "UI Options object describing form UI customizations for this $kind.",
-                "$ref": "#/definitions/FormUIOptions"
-            }
+            "description": "UI Options object describing form UI customizations for this $kind.",
+            "$ref": "#/definitions/FormUIOptions",
+            "additionalProperties": false
         }
     },
     "definitions": {
