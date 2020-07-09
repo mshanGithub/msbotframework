@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/ui.schema",
+    "$id": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
     "title": "UI Schema",
     "description": "Visual customization options for BotFramework SDK components.",
     "type": "object",
