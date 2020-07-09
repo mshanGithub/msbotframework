@@ -148,26 +148,22 @@
             "type": "object",
             "properties": {
                 "label": {
-                    "title": "Menu Label",
+                    "title": "Menu Item Label",
                     "description": "Text that appears as the menu item. Defaults to $kind.",
                     "type": "string"
                 },
-                "group": {
-                    "title": "Menu Group",
-                    "description": "An array of category labels which get mapped to a menu hierarchy. Set to false to leave the component un-grouped.",
+                "submenu": {
+                    "title": "Submenu",
+                    "description": "An array of menu item labels which get mapped to a menu hierarchy. Set to false to leave the component un-grouped. To have a component appear in multiple submenus, provide multiple arrays.",
                     "oneOf": [
+                        {
+                            "$ref": "#/definitions/SubmenuOptions"
+                        },
                         {
                             "type": "array",
                             "items": {
-                                "title": "Group Name",
-                                "type": "string"
-                            },
-                            "examples": [
-                                [
-                                    "Top Level Menu",
-                                    "Secondary Menu"
-                                ]
-                            ]
+                                "$ref": "#/definitions/SubmenuOptions"
+                            }
                         },
                         {
                             "const": false
@@ -175,6 +171,19 @@
                     ]
                 }
             }
+        },
+        "SubmenuOptions": {
+            "type": "array",
+            "items": {
+                "title": "Group Name",
+                "type": "string"
+            },
+            "examples": [
+                [
+                    "Top Level Menu",
+                    "Secondary Menu"
+                ]
+            ]
         }
     }
 }
