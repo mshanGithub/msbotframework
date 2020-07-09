@@ -17,6 +17,12 @@
             "description": "UI Options object describing form UI customizations for this $kind.",
             "$ref": "#/definitions/FormUIOptions",
             "additionalProperties": false
+        },
+        "menu": {
+            "title": "Menu Options",
+            "description": "Configure how this component appears in the menu.",
+            "$ref": "#/definitions/MenuOptions",
+            "additionalProperties": false
         }
     },
     "definitions": {
@@ -134,6 +140,38 @@
                         "radio",
                         "select",
                         "textarea"
+                    ]
+                }
+            }
+        },
+        "MenuOptions": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "title": "Menu Label",
+                    "description": "Text that appears as the menu item. Defaults to $kind.",
+                    "type": "string"
+                },
+                "group": {
+                    "title": "Menu Group",
+                    "description": "An array of category labels which get mapped to a menu hierarchy. Set to false to leave the component un-grouped.",
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "title": "Group Name",
+                                "type": "string"
+                            },
+                            "examples": [
+                                [
+                                    "Top Level Menu",
+                                    "Secondary Menu"
+                                ]
+                            ]
+                        },
+                        {
+                            "const": false
+                        }
                     ]
                 }
             }
