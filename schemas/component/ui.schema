@@ -96,7 +96,7 @@
                 },
                 "order": {
                     "title": "Property Order",
-                    "description": "Set order of fields. Use \"*\" for all other fields. ex. [\"foo\", \"*\", \"bar\"]",
+                    "description": "Set the order of fields. Use \"*\" for all other fields. ex. [\"foo\", \"*\", \"bar\"]",
                     "type": "array",
                     "items": {
                         "type": "string"
