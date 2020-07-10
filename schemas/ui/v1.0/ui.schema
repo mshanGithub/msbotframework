@@ -9,20 +9,17 @@
         "flow": {
             "title": "Flow UI Options",
             "description": "UI Options object describing flow UI customizations for this $kind.",
-            "$ref": "#/definitions/FlowUIOptions",
-            "additionalProperties": false
+            "$ref": "#/definitions/FlowUIOptions"
         },
         "form": {
             "title": "Form UI Options",
             "description": "UI Options object describing form UI customizations for this $kind.",
-            "$ref": "#/definitions/FormUIOptions",
-            "additionalProperties": false
+            "$ref": "#/definitions/FormUIOptions"
         },
         "menu": {
             "title": "Menu Options",
             "description": "Configure how this component appears in the menu.",
-            "$ref": "#/definitions/MenuOptions",
-            "additionalProperties": false
+            "$ref": "#/definitions/MenuOptions"
         }
     },
     "definitions": {
@@ -58,7 +55,8 @@
                         "Robot"
                     ]
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "FormUIOptions": {
             "type": "object",
@@ -142,7 +140,8 @@
                         "textarea"
                     ]
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "MenuOptions": {
             "type": "object",
@@ -170,7 +169,8 @@
                         }
                     ]
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "SubmenuOptions": {
             "type": "array",
