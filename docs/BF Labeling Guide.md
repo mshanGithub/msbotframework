@@ -1,8 +1,32 @@
-# Bot Framework Labeling Guidelines (DRAFT)
 
-This article describes the common labels used in the Bot Framework repositories to tag issues and PRs.
+# Bot Framework Labeling Guidelines (DRAFT) <!-- omit in toc -->
 
-It also provides guidance on how to use them.
+Labels help us organize and prioritize work. We use the same set of labels across the different sections in a repository, such as issues and pull requests. It is important to keep the labels consistent so that we can maintain a standard workflow. Standardized labels also help us query useful data from repos to collect customer feedback for analysis.
+
+This article describes the naming conventions and categorization guidelines of the labels in the Bot Framework repositories to tag issues and PRs. It also provides guidance on how to use them.
+
+This document includes:
+
+- [Labels naming conventions and format](#labels-naming-conventions-and-format)
+  - [Label format](#label-format)
+  - [Label usage](#label-usage)
+  - [Label colors](#label-colors)
+- [Label categories](#label-categories)
+  - [Area](#area)
+  - [Priority](#priority)
+  - [Status](#status)
+  - [Community](#community)
+  - [Type](#type)
+  - [Size](#size)
+  - [Automation](#automation)
+  - [DRI](#dri)
+- [Label creation and approval](#label-creation-and-approval)
+- [Repo specific labels](#repo-specific-labels)
+- [Release labels](#release-labels)
+
+# Labels naming conventions and format
+
+There is no official GitHub documentation as to how we should name the labels. The current GitHub doc provides some basic guidelines and examples, which we follow in this article.  
 
 ## Label format
 
@@ -24,7 +48,7 @@ Some labels can be applied multiple times to the same issue and some other shoul
 
 Labels should use the same colors across repos to improve readability and in most cases, all labels within the same main category should use the same color.
 
-## Main label categories
+# Label categories
 
 This section describes the main label categories being used:
 
@@ -39,7 +63,7 @@ This section describes the main label categories being used:
 |[Automation](#automation) |Used to trigger GitHub actions and workflows.| Single |`Automation: No parity`|
 |[DRI](#dri)|Special set of tags used for DRI tracking and reporting.| Multiple |`Bot Services`|
 
-### Area
+## Area
 
 These labels are used to map issues to a feature or functional area of the product. All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
 
@@ -47,7 +71,7 @@ This category informs several reports, the labels in this category should only b
 
 Color: All the labels in this category should use ![#1d76db](https://via.placeholder.com/15/1d76db/000000?text=+) `#1d76db`
 
-#### Subcategories for Area
+### Subcategories for Area <!-- omit in toc -->
 
 |Name| Description  | Example
 |---|---|------|
@@ -68,7 +92,7 @@ Color: All the labels in this category should use ![#1d76db](https://via.placeho
 |Telemetry| TODO | `Area: Telemetry` |
 |Testing Framework| TODO | `Area: Testing framework` |
 
-### Priority
+## Priority
 
 Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issue will be addressed first. All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
 
@@ -81,7 +105,7 @@ Color: This subcategory uses different colors for each label.
 |P2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P2` |
 |P3| Won't fix | ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `P3` |
 
-### Status
+## Status
 
 Use these labels for providing additional information on the status of the issue.
 
@@ -97,7 +121,7 @@ Color: This subcategory uses different colors for each label.
 |Blocked| Current progress is blocked on something else. | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `Status: Blocked` |
 |Stale| The issue hasn't been updated in a long time and will be automatically closed. | ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `Status: Stale` |
 
-### Community
+## Community
 
 Use these labels to tag issues that involve the community.
 
@@ -107,7 +131,7 @@ Color: All the labels in this category should use ![#874faf](https://via.placeho
 |---|---|------|
 |Help wanted| This is a good issue for a contributor to take on and submit a solution | `Community: Help wanted` |
 
-### Type
+## Type
 
 Use these labels for providing additional information type of the issue.
 
@@ -122,7 +146,7 @@ Color: This subcategory uses different colors for each label.
 |Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improved test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type:Technical debt` |
 |Team agility| An issue targeted to reduce friction to releasing new versions of the SDKs.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type: Team agility` |
 
-### Size
+## Size
 
 Use these to assign an estimated level of effort to resolve an issue and assist with the estimation process.
 
@@ -135,7 +159,7 @@ Color: All the labels in this category should use ![#91e3ea](https://via.placeho
 |Large| The issue complex but it is well understood, it will take 4 to 8 days to complete | `Size: L` |
 |Extra Large| The issue very complex or not very well defined, it will take 9 to 14 days to complete. In this case, it is probably better to rethink the issue and break it down in smaller tasks | `Size: XL` |
 
-### Automation
+## Automation
 
 These labels are applied to PRs and used to trigger or disable GitHub workflows.
 
@@ -149,7 +173,7 @@ Color: All the labels in this category should use ![#cccccc](https://via.placeho
 |parity with Python| The PR needs to be ported to Python. | `Automation: Parity with Python` |
 |parity with Java| The PR needs to be ported to Java. | `Automation: Parity with Java` |
 
-### DRI
+## DRI
 
 DRI labels are used for reporting outside the bot framework repositories and their names don't follow the standards described above. They should be applied based on the current DRI guide.
 
@@ -162,14 +186,14 @@ Color: This subcategory uses different colors for each label.
 |customer-replied-to| Required for internal Azure reporting. Do not delete.| ![#2683a5](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `customer-replied-to` |
 |ExemptFromDailyDRIReport| Use this label to exclude the issue from the DRI report.| ![#bde567](https://via.placeholder.com/15/bde567/000000?text=+) `#bde567` | `ExemptFromDailyDRIReport` |
 
-## Label creation and approval
+# Label creation and approval
 
 TODO: Describe here the process for creating new labels.
 
-### Repo specific labels
+# Repo specific labels
 
 Some repo owners may need to create custom repo tags that only apply to a particular platform. This is OK but they must be aware that these tags will be used only in their repo and won't be used in cross repo reporting and tracking. If possible, try to use the labels described in this guide before creating new ones.
 
-## Release labels
+# Release labels
 
 We should not use labels to tag releases, we should use GitHub milestones instead. 
