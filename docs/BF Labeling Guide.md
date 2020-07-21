@@ -16,7 +16,7 @@ There's no limit to the number of subcategories but normally 2 or 3 levels at mo
 
 ## Label usage
 
-Some labels can be applied multiple times to the same issue and some other shouldn't. For example, an issue could be labeled as `Area:Adaptive` **and** `Area:Skills` but it should **only** have one priority label `P:0` or `P:1`.
+Some labels can be applied multiple times to the same issue and some other shouldn't. For example, an issue could be labeled as `Area:Adaptive` **and** `Area:Skills` but it should **only** have one priority label `P0` or `P1`.
 
 ## Label colors
 
@@ -29,7 +29,7 @@ This section describes the main label categories being used:
 |Category| Description  | Usage  | Example
 |---|---|---|------|
 |[Area](#area)|Defines a functional area or feature of the product.| Multiple |`Area:Skills`|
-|[Priority](#priority)|The priority for the issue.| Single |`P:0`|
+|[Priority](#priority)|The priority for the issue.| Single |`P0`|
 |[Status](#status)|Further describes the status of the issue throughout its lifecycle.| Single |`Status:New`|
 |[Community](#community)|Used to describe community related issues.| Single |`Community:Help Wanted`|
 |[Type](#type)|Provides additional information on the issue type.| Single |`Type:Bug`|
@@ -72,10 +72,10 @@ Color: This subcategory uses different colors for each label.
 
 |Name| Description  | Color | Example
 |---|---|---|------|
-|P:0| Must Fix.  Release-blocker | ![#ee0701](https://via.placeholder.com/15/ee0701/000000?text=+) `#ee0701` | `P:0` |
-|P:1| Painful if we don't fix, won't block releasing | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `P:1` |
-|P:2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P:2` |
-|P:3| Won't fix | ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `P:3` |
+|P0| Must Fix.  Release-blocker | ![#ee0701](https://via.placeholder.com/15/ee0701/000000?text=+) `#ee0701` | `P0` |
+|P1| Painful if we don't fix, won't block releasing | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `P1` |
+|P2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P2` |
+|P3| Won't fix | ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `P3` |
 
 ### Status
 
