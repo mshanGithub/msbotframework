@@ -25,9 +25,7 @@
                 "$ref": "#/definitions/UISchema"
             },
             "patternProperties": {
-                "^\\$.*$": {
-                    "type": "string"
-                }
+                "^\\$.*$": {}
             }
         },
         "FormUIOptions": {
