@@ -8,7 +8,8 @@ This article describes the naming conventions and categorization guidelines of t
 This document includes:
 
 - [Labels naming conventions and format](#labels-naming-conventions-and-format)
-  - [Label format](#label-format)
+  - [Wording](#wording)
+  - [Format](#format)
   - [Label usage](#label-usage)
   - [Label colors](#label-colors)
 - [Label categories](#label-categories)
@@ -26,23 +27,32 @@ This document includes:
 
 # Labels naming conventions and format
 
-There is no official GitHub documentation as to how we should name the labels. The current GitHub doc provides some basic guidelines and examples, which we follow in this article.  
+There is no official GitHub documentation as to how we should name the labels. This section provides some basic guidelines and examples, which we follow in this article.  
 
-## Label format
+## Wording
 
-In order to be able to parse the different labels in reports we use `: ` (with a space after the colon) to separate the categories and subcategories in a label. Categories that have multiple words should use sentence case.
+- Keep names clear and concise.
+- Keep names short. Use acronyms when necessary and provide a description.
+- Always to provide a description for a label so user know when to use them.
+- Multiple-word labels should use sentence case (i.e.: use `Area: Functional tests` instead of `Area: Functional Tests`).
+
+## Format
+
+In order to be able to parse the different labels in reports we use a colon followed by a whitespace (`": "`) to separate the categories and subcategories in a label.
 
 The general format of a label is:
 
 ```bash
-Main category: Subcategory 1: Some subcategory 2
+Main category: Some subcategory
 ```
 
-There's no limit to the number of subcategories but normally 2 or 3 levels at most should be enough.
+There's no limit to the number of subcategories in a label but it is recommended to avoid creating more than two levels.
 
 ## Label usage
 
-Some labels can be applied multiple times to the same issue and some other shouldn't. For example, an issue could be labeled as `Area: Adaptive` **and** `Area: Skills` but it should **only** have one priority label `P0` or `P1`.
+Some labels can be applied multiple times to an issue and some others shouldn't. For example, an issue can be labeled as `Area: Adaptive` **and** `Area: Skills` but it should **only** have one priority label `P0` or `P1`. Check the intended usage for each label category in the sections below.
+
+GitHub doesn't provide a way of restricting or validating the labels applied to an issue so this will be a manual check that the person updating the issue should perform.
 
 ## Label colors
 
@@ -50,7 +60,9 @@ Labels should use the same colors across repos to improve readability and in mos
 
 # Label categories
 
-This section describes the main label categories being used:
+We use labels to sort and describe issues, pull requests, and more. It is a good practice to categorize the issues with comprehensible types so that we can easily identify them for different purposes.
+
+This section describes the main label categories being used in the SDK repos:
 
 |Category| Description  | Usage  | Example
 |---|---|---|------|
@@ -61,17 +73,17 @@ This section describes the main label categories being used:
 |[Type](#type)|Provides additional information on the issue type.| Single |`Type: Bug`|
 |[Size](#size)|Provides an estimate for the level of effort required to resolve the issue.| Single |`Size: M`|
 |[Automation](#automation) |Used to trigger GitHub actions and workflows.| Single |`Automation: No parity`|
-|[DRI](#dri)|Special set of tags used for DRI tracking and reporting.| Multiple |`Bot Services`|
+|[DRI](#dri)|This is a special set of tags used for DRI tracking and reporting.| Multiple |`Bot Services`|
 
 ## Area
 
-These labels are used to map issues to a feature or functional area of the product. All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
+These labels are used to map issues to a feature or functional area in the product. This category informs several reports, the labels in this category should only be created by feature and product owners and documented in the table below.
 
-This category informs several reports, the labels in this category should only be created by feature and product owners and documented in the table below.
+All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
+
+### Area labels <!-- omit in toc -->
 
 Color: All the labels in this category should use ![#1d76db](https://via.placeholder.com/15/1d76db/000000?text=+) `#1d76db`
-
-### Subcategories for Area <!-- omit in toc -->
 
 |Name| Description  | Example
 |---|---|------|
@@ -92,6 +104,10 @@ Color: All the labels in this category should use ![#1d76db](https://via.placeho
 |Telemetry| TODO | `Area: Telemetry` |
 |Testing Framework| TODO | `Area: Testing framework` |
 
+### Repo specific labels for area <!-- omit in toc -->
+
+It is OK to create repo specific sub categories for area, for example, composer may need `Area: UX design` and BF CLI may need `Area: BF config`. 
+
 ## Priority
 
 Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issue will be addressed first. All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
@@ -105,9 +121,13 @@ Color: This subcategory uses different colors for each label.
 |P2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P2` |
 |P3| Won't fix | ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `P3` |
 
+### Repo specific labels for priority <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
+
 ## Status
 
-Use these labels for providing additional information on the status of the issue.
+Use these labels for providing information on the progress of the issue. The status label is used to triage and track issues throughout its lifecycle.
 
 Color: This subcategory uses different colors for each label.
 
@@ -121,6 +141,10 @@ Color: This subcategory uses different colors for each label.
 |Blocked| Current progress is blocked on something else. | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `Status: Blocked` |
 |Stale| The issue hasn't been updated in a long time and will be automatically closed. | ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `Status: Stale` |
 
+### Repo specific labels for status <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
+
 ## Community
 
 Use these labels to tag issues that involve the community.
@@ -131,20 +155,29 @@ Color: All the labels in this category should use ![#874faf](https://via.placeho
 |---|---|------|
 |Help wanted| This is a good issue for a contributor to take on and submit a solution | `Community: Help wanted` |
 
+### Repo specific labels for community <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
+
 ## Type
 
-Use these labels for providing additional information type of the issue.
+Use these labels describe the type of the issue.
 
 Color: This subcategory uses different colors for each label.
 
 |Name| Description  | Color | Example
 |---|---|---|------|
-|Bug| Your classic code defect.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `Type: Bug` |
-|Feature request| This is a new feature or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `Type: Feature request` |
+|Bug| Indicates an unexpected problem or an unintended behavior.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `Type: Bug` |
+|Feature request|  A request for new functionality.or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `Type: Feature request` |
+|Question| A question from customers that needs further clarification or discussion.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `Type: Feature request` |
 |Customer ask| An enhancement or feature requested by a customer (use this label if the feature request was originated by a customer).| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `Type: Customer ask` |
 |Parity| The issue describes a gap in parity between two or more platforms.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type: Parity` |
-|Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improved test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type:Technical debt` |
-|Team agility| An issue targeted to reduce friction to releasing new versions of the SDKs.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type: Team agility` |
+|Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improve test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type:Technical debt` |
+|Team agility| An issue targeted to reduce friction to SDK's development process.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Type: Team agility` |
+
+### Repo specific labels for type <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
 
 ## Size
 
@@ -158,6 +191,10 @@ Color: All the labels in this category should use ![#91e3ea](https://via.placeho
 |Medium| The issue is not very complex and it is well understood, it will take 1 to 3 days to complete | `Size: M` |
 |Large| The issue complex but it is well understood, it will take 4 to 8 days to complete | `Size: L` |
 |Extra Large| The issue very complex or not very well defined, it will take 9 to 14 days to complete. In this case, it is probably better to rethink the issue and break it down in smaller tasks | `Size: XL` |
+
+### Repo specific labels for size <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
 
 ## Automation
 
@@ -173,6 +210,10 @@ Color: All the labels in this category should use ![#cccccc](https://via.placeho
 |parity with Python| The PR needs to be ported to Python. | `Automation: Parity with Python` |
 |parity with Java| The PR needs to be ported to Java. | `Automation: Parity with Java` |
 
+### Repo specific labels for Automation <!-- omit in toc -->
+
+It is OK to create repo specific labels for this category to trigger repo specific workflows, just use prefix the label with `Automation:` (e.g.: `Automation: My action`).
+
 ## DRI
 
 DRI labels are used for reporting outside the bot framework repositories and their names don't follow the standards described above. They should be applied based on the current DRI guide.
@@ -186,13 +227,19 @@ Color: This subcategory uses different colors for each label.
 |customer-replied-to| Required for internal Azure reporting. Do not delete.| ![#2683a5](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `customer-replied-to` |
 |ExemptFromDailyDRIReport| Use this label to exclude the issue from the DRI report.| ![#bde567](https://via.placeholder.com/15/bde567/000000?text=+) `#bde567` | `ExemptFromDailyDRIReport` |
 
+### Repo specific labels for DRI <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
+
 # Label creation and approval
 
 TODO: Describe here the process for creating new labels.
 
 # Repo specific labels
 
-Some repo owners may need to create custom repo tags that only apply to a particular platform. This is OK but they must be aware that these tags will be used only in their repo and won't be used in cross repo reporting and tracking. If possible, try to use the labels described in this guide before creating new ones.
+Some repo owners may need to create custom repo tags that only apply to a particular platform. This is OK but you must be aware that these tags will be used only in their repo and won't be used in cross repo reporting and tracking. 
+
+It is recommended that you try to use one of the labels described in this document before creating new ones. Less is better.
 
 # Release labels
 
