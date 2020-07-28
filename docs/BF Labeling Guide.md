@@ -225,10 +225,12 @@ Issues created by anyone in the community that is not a collaborator in the repo
 
 Color: This subcategory uses different colors for each label.
 
-|Category| Description  | Color | Example
+|Category| Description  | Color | Labels
 |---|---|---|------|
 |Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
 |Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. <br>Do not delete. <br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
+|Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>`Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>`Client`: the issue is in the client library; client libraries access Azure resources during application runtime.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
+|Type| Indicates what the issue type is. This is a subset of the types defined in the [tyes category](#type).<br>Only use `bug`, `question` or `feature-request` for `customer-reported` issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
 
 
 OLD DRI Labels (to be removed)
