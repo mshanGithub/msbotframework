@@ -9,7 +9,7 @@ This document includes:
 
 - [Labels naming conventions and format](#labels-naming-conventions-and-format)
   - [Wording](#wording)
-  - [Format](#format)
+  - [Multi category labels format](#multi-category-labels-format)
   - [Label usage](#label-usage)
   - [Label colors](#label-colors)
 - [Label categories](#label-categories)
@@ -21,7 +21,6 @@ This document includes:
   - [Size](#size)
   - [Automation](#automation)
 - [DRI labels](#dri-labels)
-- [Label creation and approval](#label-creation-and-approval)
 - [Repo specific labels](#repo-specific-labels)
 - [Release labels](#release-labels)
 
@@ -34,11 +33,11 @@ There is no official GitHub documentation as to how we should name the labels. T
 - Keep names clear and concise.
 - Keep names short. Use acronyms when necessary and provide a description.
 - Always to provide a description for a label so user know when to use them.
-- Multiple-word labels should use sentence case (i.e.: use `Area: Functional tests` instead of `Area: Functional Tests`).
+- Multiple-category labels should use sentence case (i.e.: use `Area: Functional tests` instead of `Area: Functional Tests`).
 
-## Format
+## Multi category labels format
 
-In order to be able to parse the different labels in reports we use a colon followed by a whitespace (`": "`) to separate the categories and subcategories in a label.
+In order to be able to parse some labels in reports we use a colon followed by a whitespace (`": "`) to separate the categories and subcategories in a label.
 
 The general format of a label is:
 
@@ -66,7 +65,7 @@ This section describes the main label categories being used in the SDK repos:
 
 | Category | Description | Usage | Example |
 |---|---|---|---|
-|[Status](#status)|Describes the status of the issue throughout its lifecycle.| Single |`needs-triage`|
+|[Status](#status)|Describes the status of an issue throughout its lifecycle.| Single |`needs-triage`|
 |[Area](#area)|Defines a functional area or feature of the product for the issue.| Multiple |`Area: Skills`|
 |[Type](#type)|Provides additional information on the issue type.| Single |`bug`|
 |[Priority](#priority)|The priority for the issue.| Single |`P0`|
@@ -85,11 +84,11 @@ Color: This subcategory uses different colors for each label.
 |---|---|:-:|:--|
 |Draft| The issue definition is still being worked on and it is not ready to start development. Once the issue is ready the status should be changed to `needs-triage`,`approved` or `backlog`.| ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `draft` |
 |New| The issue has just been created and it has not been reviewed by the team. Once the issue is reviewed the status can be changed to `approved`, `backlog`, `needs-author-feedback` or just closed.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage` |
-|Needs author information| The issue as described is incomplete or not well understood. It is waiting for further information before it can continue.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-author-feedback` |
+|Needs author information| The issue as described is incomplete or not well understood. It is waiting for further information before it can continue.<br>Keep in mind that the issue author may not always flip the tag back to `needs-team-attention` when it responds so scan the issues periodically to see if the author has responded.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-author-feedback` |
 |Needs team information| The issue has a comment from the author and needs SDK Team or service team’s attention.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-team-attention` |
 |Approved| The issue has been reviewed and is ready to start working on it, it will be added to the work queue in the current iteration. | ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+) `#0e8a16` | `approved` |
 |Backlog| The issue is out of scope for the current iteration but it will be evaluated in a future release. | ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `backlog` |
-|Blocked| Current progress is blocked on something else. | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `blocked` |
+|Blocked| Current progress is blocked on something else.<br>Make sure you add a note in the issue history when you apply this tag describing what's blocking it for future reference.| ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `blocked` |
 |Stale| The issue hasn't been updated in a long time and will be automatically closed. | ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `stale` |
 
 ### Repo specific labels for status <!-- omit in toc -->
@@ -127,7 +126,7 @@ Color: All the labels in this category should use ![#1d76db](https://via.placeho
 
 ### Repo specific labels for area <!-- omit in toc -->
 
-It is OK to create repo specific sub categories for area, for example, composer may need `Area: UX design` and BF CLI may need `Area: BF config`. 
+It is OK to create repo specific sub categories for area, for example, composer may need `Area: UX design` and BF CLI may need `Area: BF config`.
 
 ## Type
 
@@ -228,11 +227,11 @@ Color: This subcategory uses different colors for each label.
 
 | Category | Description  | Color | Labels |
 |---|---|:-:|:--|
-|Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
-|Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. <br>Do not delete. <br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
-|Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>- `Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>- `Client`: the issue is in the client library; client libraries access Azure resources during application runtime.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
-|Type| Indicates what the issue type is. This is a subset of the types defined in the [tyes category](#type).<br/>Only use `bug`, `question` or `feature-request` for DRI issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
-|Status| Indicates who needs to take the next step.<br>`needs-triage`: issue needs members of SDK Team to triage.<br>`needs-team-triage`: issue needs collective members of SDK Team to triage<br>`needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>`needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
+|Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.<br>**Note:** do not use this label to create an issue on behalf of a customer, ask the customer to post the issue instead so it can be tracked to the source.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
+|Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team.<br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service`<br>`Bot Service - Libraries` |
+|Type| Indicates what the issue type is.<br>This is a subset of the types defined in the [types category](#type).<br/>Only use `bug`, `question` or `feature-request` for DRI issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
+|Status| This is a subset of the statuses defined in the [status category](#status) and indicates who needs to take the next step.<br>- `needs-triage`: issue needs members of SDK Team to triage.<br>- `needs-team-triage`: issue needs collective members of SDK Team to triage<br>- `needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>- `needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
+|Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>- `Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>- `Client`: the issue is in the client library; client libraries access Azure resources during application runtime.<br>- `Service`: the issue relates to the Azure service itself, not a library.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
 
 OLD DRI Labels (to be removed)
 
@@ -241,19 +240,17 @@ OLD DRI Labels (to be removed)
 |customer-replied-to| Required for internal Azure reporting. Do not delete.| ![#2683a5](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `customer-replied-to` |
 |ExemptFromDailyDRIReport| Use this label to exclude the issue from the DRI report.| ![#bde567](https://via.placeholder.com/15/bde567/000000?text=+) `#bde567` | `ExemptFromDailyDRIReport` |
 
-### Repo specific labels for DRI <!-- omit in toc -->
+## Repo specific labels for DRI <!-- omit in toc -->
 
 Do not create create repo specific labels for this category.
 
-# Label creation and approval
-
-TODO: Describe here the process for creating new labels.
-
 # Repo specific labels
 
-Some repo owners may need to create custom repo tags that only apply to a particular platform. This is OK but you must be aware that these tags will be used only in that repo and won't be used in cross repo reporting and tracking.
+Some repo owners may need to create custom tags that only apply to a particular platform. This is OK but you must be aware that these tags will be used only in that repo and won't be used in cross repo reporting and tracking.
 
 It is recommended that you try to use one of the labels described in this document before creating new ones. Less is better.
+
+If you create repo specific labels, make sure you document the additions on your repo and reference this article.
 
 # Release labels
 
