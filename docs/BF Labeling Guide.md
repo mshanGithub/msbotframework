@@ -13,14 +13,14 @@ This document includes:
   - [Label usage](#label-usage)
   - [Label colors](#label-colors)
 - [Label categories](#label-categories)
-  - [Area](#area)
-  - [Priority](#priority)
   - [Status](#status)
-  - [Community](#community)
+  - [Area](#area)
   - [Type](#type)
+  - [Priority](#priority)
+  - [Community](#community)
   - [Size](#size)
   - [Automation](#automation)
-  - [DRI](#dri)
+- [DRI labels](#dri-labels)
 - [Label creation and approval](#label-creation-and-approval)
 - [Repo specific labels](#repo-specific-labels)
 - [Release labels](#release-labels)
@@ -66,20 +66,41 @@ This section describes the main label categories being used in the SDK repos:
 
 | Category | Description | Usage | Example |
 |---|---|---|---|
-|[Area](#area)|Defines a functional area or feature of the product.| Multiple |`Area: Skills`|
+|[Status](#status)|Describes the status of the issue throughout its lifecycle.| Single |`needs-triage`|
+|[Area](#area)|Defines a functional area or feature of the product for the issue.| Multiple |`Area: Skills`|
+|[Type](#type)|Provides additional information on the issue type.| Single |`bug`|
 |[Priority](#priority)|The priority for the issue.| Single |`P0`|
-|[Status](#status)|Further describes the status of the issue throughout its lifecycle.| Single |`Status: New`|
 |[Community](#community)|Used to describe community related issues.| Single |`Community: Help wanted`|
-|[Type](#type)|Provides additional information on the issue type.| Single |`Type: Bug`|
 |[Size](#size)|Provides an estimate for the level of effort required to resolve the issue.| Single |`Size: M`|
-|[Automation](#automation) |Used to trigger GitHub actions and workflows.| Single |`Automation: No parity`|
-|[DRI](#dri)|This is a special set of tags used for DRI tracking and reporting.| Multiple |`Bot Services`|
+|[Automation](#automation) | Labels used to trigger GitHub actions and workflows.| Single |`Automation: No parity`|
+|[DRI](#dri)|This is a special set of labels used for DRI tracking and reporting on issues created by customers.| Multiple |`Bot Services`|
+
+## Status
+
+Use these labels for providing information on the progress of the issue. The status label is used to triage and track issues throughout its lifecycle.
+
+Color: This subcategory uses different colors for each label.
+
+| Name | Description | Color | Example |
+|---|---|:-:|:--|
+|Draft| The issue definition is still being worked on and it is not ready to start development. Once the issue is ready the status should be changed to `needs-triage`,`approved` or `backlog`.| ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `draft` |
+|New| The issue has just been created and it has not been reviewed by the team. Once the issue is reviewed the status can be changed to `approved`, `backlog`, `needs-author-feedback` or just closed.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage` |
+|Needs author information| The issue as described is incomplete or not well understood. It is waiting for further information before it can continue.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-author-feedback` |
+|Needs team information| The issue has a comment from the author and needs SDK Team or service team’s attention.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-team-attention` |
+|Approved| The issue has been reviewed and is ready to start working on it, it will be added to the work queue in the current iteration. | ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+) `#0e8a16` | `approved` |
+|Backlog| The issue is out of scope for the current iteration but it will be evaluated in a future release. | ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `backlog` |
+|Blocked| Current progress is blocked on something else. | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `blocked` |
+|Stale| The issue hasn't been updated in a long time and will be automatically closed. | ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `stale` |
+
+### Repo specific labels for status <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
 
 ## Area
 
 These labels are used to map issues to a feature or functional area in the product. This category informs several reports, the labels in this category should only be created by feature and product owners and documented in the table below.
 
-All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
+All the issues labeled as `approved` should have at least one of these labels before they can be worked on.
 
 ### Area labels <!-- omit in toc -->
 
@@ -108,6 +129,25 @@ Color: All the labels in this category should use ![#1d76db](https://via.placeho
 
 It is OK to create repo specific sub categories for area, for example, composer may need `Area: UX design` and BF CLI may need `Area: BF config`. 
 
+## Type
+
+Use these labels describe the type of the issue.
+
+Color: This subcategory uses different colors for each label.
+
+| Name | Description | Color | Example |
+|---|---|:-:|:--|
+|Bug| Indicates an unexpected problem or an unintended behavior.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `bug` |
+|Feature request|  A request for new functionality.or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `feature request` |
+|Question| A question from customers that needs further clarification or discussion.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `question` |
+|Parity| The issue describes a gap in parity between two or more platforms.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `parity` |
+|Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improve test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `technical debt` |
+|Team agility| An issue targeted to reduce friction to SDK's development process.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `team agility` |
+
+### Repo specific labels for type <!-- omit in toc -->
+
+Do not create create repo specific labels for this category.
+
 ## Priority
 
 Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issue will be addressed first. All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
@@ -125,26 +165,6 @@ Color: This subcategory uses different colors for each label.
 
 Do not create create repo specific labels for this category.
 
-## Status
-
-Use these labels for providing information on the progress of the issue. The status label is used to triage and track issues throughout its lifecycle.
-
-Color: This subcategory uses different colors for each label.
-
-| Name | Description | Color | Example |
-|---|---|:-:|:--|
-|Draft| The issue definition is still being worked on and it is not ready to start development. Once the issue is ready the status should be changed to `Approved` or `Backlog`.| ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `Status: Draft` |
-|New| The issue has just been created and it has not been reviewed by the team. Once the issue is reviewed the status be changed to `Approved`, `Backlog`, `Needs information` or just closed.| ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `Status: New` |
-|Needs information| The issue as described is incomplete or not well understood. It is waiting for further information before it can continue.| ![#ff8c00](https://via.placeholder.com/15/ff8c00/000000?text=+) `#ff8c00` | `Status: Needs information` |
-|Backlog| The issue is out of scope for the current iteration but it will be evaluated in a future release. | ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `Status: Backlog` |
-|Approved| The issue has been reviewed and is ready to start working on it, it will be added to the work queue in the current iteration. | ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+) `#0e8a16` | `Status:Approved` |
-|Blocked| Current progress is blocked on something else. | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `Status: Blocked` |
-|Stale| The issue hasn't been updated in a long time and will be automatically closed. | ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `Status: Stale` |
-
-### Repo specific labels for status <!-- omit in toc -->
-
-Do not create create repo specific labels for this category.
-
 ## Community
 
 Use these labels to tag issues that involve the community.
@@ -156,25 +176,6 @@ Color: All the labels in this category should use ![#874faf](https://via.placeho
 |Help wanted| This is a good issue for a contributor to take on and submit a solution | `Community: Help wanted` |
 
 ### Repo specific labels for community <!-- omit in toc -->
-
-Do not create create repo specific labels for this category.
-
-## Type
-
-Use these labels describe the type of the issue.
-
-Color: This subcategory uses different colors for each label.
-
-| Name | Description | Color | Example |
-|---|---|:-:|:--|
-|Bug| Indicates an unexpected problem or an unintended behavior.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `bug` |
-|Feature request|  A request for new functionality.or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `feature request` |
-|Question| A question from customers that needs further clarification or discussion.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `question` |
-|Parity| The issue describes a gap in parity between two or more platforms.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `parity` |
-|Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improve test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `technical debt` |
-|Team agility| An issue targeted to reduce friction to SDK's development process.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `team agility` |
-
-### Repo specific labels for type <!-- omit in toc -->
 
 Do not create create repo specific labels for this category.
 
@@ -213,7 +214,7 @@ Color: All the labels in this category should use ![#cccccc](https://via.placeho
 
 It is OK to create repo specific labels for this category to trigger repo specific workflows, just use prefix the label with `Automation:` (e.g.: `Automation: My action`).
 
-## DRI
+# DRI labels
 
 The DRI labels are used to support the Azure issue management process and track desired SLAs.
 
@@ -225,13 +226,13 @@ Issues created by anyone in the community that is not a collaborator in the repo
 
 Color: This subcategory uses different colors for each label.
 
-| Category | Description  | Color | Labels &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Category | Description  | Color | Labels |
 |---|---|:-:|:--|
 |Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
 |Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. <br>Do not delete. <br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
-|Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>`Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>`Client`: the issue is in the client library; client libraries access Azure resources during application runtime.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
-|Type| Indicates what the issue type is. This is a subset of the types defined in the [tyes category](#type).<br/>Only use `bug`, `question` or `feature-request` for `customer-reported` issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
-|Next step| Indicates who needs to take the next step.<br>`needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>`needs-author-feedback`: more info from the issue creator is needed to address the issue.<br>`needs-triage`: issue needs members of SDK Team to triage.<br>`needs-team-triage`: issue needs collective members of SDK Team to triage|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3`  | `needs-team-attention`<br>`needs-author-feedback`<br>`needs-triage`<br>`needs-team-triage`|
+|Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>- `Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>- `Client`: the issue is in the client library; client libraries access Azure resources during application runtime.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
+|Type| Indicates what the issue type is. This is a subset of the types defined in the [tyes category](#type).<br/>Only use `bug`, `question` or `feature-request` for DRI issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
+|Status| Indicates who needs to take the next step.<br>`needs-triage`: issue needs members of SDK Team to triage.<br>`needs-team-triage`: issue needs collective members of SDK Team to triage<br>`needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>`needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
 
 OLD DRI Labels (to be removed)
 
