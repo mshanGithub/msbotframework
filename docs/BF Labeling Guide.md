@@ -9,7 +9,7 @@ This document includes:
 
 - [Labels naming conventions and format](#labels-naming-conventions-and-format)
   - [Wording](#wording)
-  - [Multi category labels format](#multi-category-labels-format)
+  - [Multi-category labels format](#multi-category-labels-format)
   - [Label usage](#label-usage)
   - [Label colors](#label-colors)
 - [Label categories](#label-categories)
@@ -18,8 +18,8 @@ This document includes:
   - [Type](#type)
   - [Priority](#priority)
   - [Community](#community)
-  - [Size](#size)
-  - [Automation](#automation)
+  - [Size (proposal)](#size-proposal)
+  - [Automation (proposal)](#automation-proposal)
 - [DRI labels](#dri-labels)
 - [Repo specific labels](#repo-specific-labels)
 - [Release labels](#release-labels)
@@ -32,20 +32,20 @@ There is no official GitHub documentation as to how we should name the labels. T
 
 - Keep names clear and concise.
 - Keep names short. Use acronyms when necessary and provide a description.
-- Always to provide a description for a label so user know when to use them.
+- Always provide a description for a label so user know when to use them.
 - Multiple-category labels should use sentence case (i.e.: use `Area: Functional tests` instead of `Area: Functional Tests`).
 
-## Multi category labels format
+## Multi-category labels format
 
 In order to be able to parse some labels in reports we use a colon followed by a whitespace (`": "`) to separate the categories and subcategories in a label.
 
-The general format of a label is:
+The general format of a multi-category label is:
 
 ```bash
 Main category: Some subcategory
 ```
 
-There's no limit to the number of subcategories in a label but it is recommended to avoid creating more than two levels.
+There's no limit to the number of subcategories but it is recommended to avoid creating more than two levels.
 
 ## Label usage
 
@@ -72,7 +72,7 @@ This section describes the main label categories being used in the SDK repos:
 |[Community](#community)|Used to describe community related issues.| Single |`Community: Help wanted`|
 |[Size](#size)|Provides an estimate for the level of effort required to resolve the issue.| Single |`Size: M`|
 |[Automation](#automation) | Labels used to trigger GitHub actions and workflows.| Single |`Automation: No parity`|
-|[DRI](#dri)|This is a special set of labels used for DRI tracking and reporting on issues created by customers.| Multiple |`Bot Services`|
+|[DRI](#dri)|This is a special set of labels used for DRI tracking and reporting on issues created by customers.| Multiple |`Bot Service - Libraries`|
 
 ## Status
 
@@ -93,7 +93,7 @@ Color: This subcategory uses different colors for each label.
 
 ### Repo specific labels for status <!-- omit in toc -->
 
-Do not create create repo specific labels for this category.
+Do not create repo specific labels for this category.
 
 ## Area
 
@@ -130,26 +130,28 @@ It is OK to create repo specific sub categories for area, for example, composer 
 
 ## Type
 
-Use these labels describe the type of the issue.
+Use these labels to describe the type of the issue.
+
+All the issues labeled as `approved` should have one of these labels before they can be worked on.
 
 Color: This subcategory uses different colors for each label.
 
 | Name | Description | Color | Example |
 |---|---|:-:|:--|
 |Bug| Indicates an unexpected problem or an unintended behavior.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `bug` |
-|Feature request|  A request for new functionality.or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `feature request` |
+|Feature request|  A request for new functionality or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `feature request` |
 |Question| A question from customers that needs further clarification or discussion.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `question` |
 |Parity| The issue describes a gap in parity between two or more platforms.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `parity` |
 |Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improve test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `technical debt` |
-|Team agility| An issue targeted to reduce friction to SDK's development process.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `team agility` |
+|Team agility| An issue targeted to reduce friction to the SDK's development process.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `team agility` |
 
 ### Repo specific labels for type <!-- omit in toc -->
 
-Do not create create repo specific labels for this category.
+Do not create repo specific labels for this category.
 
 ## Priority
 
-Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issue will be addressed first. All the issues with `Status: Approved` should have at least one of these labels before they can be worked on.
+Describes the priority of the issue. This label is required for any issue that is in scope for an iteration. High priority issues will be addressed first. All the issues with an `approved` status should have one of these labels before they can be worked on.
 
 Color: This subcategory uses different colors for each label.
 
@@ -162,7 +164,7 @@ Color: This subcategory uses different colors for each label.
 
 ### Repo specific labels for priority <!-- omit in toc -->
 
-Do not create create repo specific labels for this category.
+Do not create repo specific labels for this category.
 
 ## Community
 
@@ -176,9 +178,11 @@ Color: All the labels in this category should use ![#874faf](https://via.placeho
 
 ### Repo specific labels for community <!-- omit in toc -->
 
-Do not create create repo specific labels for this category.
+Do not create repo specific labels for this category.
 
-## Size
+## Size (proposal)
+
+**Note:** this labels are not supported yet
 
 Use these to assign an estimated level of effort to resolve an issue and assist with the estimation process.
 
@@ -188,14 +192,16 @@ Color: All the labels in this category should use ![#91e3ea](https://via.placeho
 |---|---|---|
 |Small| The issue is simple and well understood, it will take a day or less to complete | `Size: S` |
 |Medium| The issue is not very complex and it is well understood, it will take 1 to 3 days to complete | `Size: M` |
-|Large| The issue complex but it is well understood, it will take 4 to 8 days to complete | `Size: L` |
-|Extra Large| The issue very complex or not very well defined, it will take 9 to 14 days to complete. In this case, it is probably better to rethink the issue and break it down in smaller tasks | `Size: XL` |
+|Large| The issue is complex but it is well understood, it will take 4 to 8 days to complete | `Size: L` |
+|Extra Large| The issue is very complex or not very well defined, it will take 9 to 14 days or more to complete. In this case, it is probably better to rethink the issue and break it down in smaller tasks | `Size: XL` |
 
 ### Repo specific labels for size <!-- omit in toc -->
 
-Do not create create repo specific labels for this category.
+Do not create repo specific labels for this category.
 
-## Automation
+## Automation (proposal)
+
+**Note:** this labels are not supported yet
 
 These labels are applied to PRs and used to trigger or disable GitHub workflows.
 
@@ -219,7 +225,7 @@ The DRI labels are used to support the Azure issue management process and track 
 
 The DRI labels are used when an issue is opened by someone that is not a contributor of the repo.
 
-DRI labels support reporting outside the bot framework repositories and their names don't follow the standards described above. They should be applied based on the current DRI guide.
+DRI labels support reporting outside the bot framework repositories and their names don't always follow the standards described above. They should be applied based on the current DRI guide.
 
 Issues created by anyone in the community that is not a collaborator in the repositories will initially be tagged `needs-triage`, `customer-reported`, and `question` by msft-bot. Note that issues are initially assumed to be questions because that's the most common issue type.
 
@@ -227,7 +233,7 @@ Color: This subcategory uses different colors for each label.
 
 | Category | Description  | Color | Labels |
 |---|---|:-:|:--|
-|Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.<br>**Note:** do not use this label to create an issue on behalf of a customer, ask the customer to post the issue instead so it can be tracked to the source.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
+|Customer issue| Customer reported issues, this label is automatically applied when the issue is created by anyone that is not a collaborator in the repository.<br>**Note:** do not use this label to create an issue on behalf of a customer, ask the customer to post the issue instead so it can be tracked to the source.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
 |Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team.<br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service`<br>`Bot Service - Libraries` |
 |Type| Indicates what the issue type is.<br>This is a subset of the types defined in the [types category](#type).<br/>Only use `bug`, `question` or `feature-request` for DRI issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
 |Status| This is a subset of the statuses defined in the [status category](#status) and indicates who needs to take the next step.<br>- `needs-triage`: issue needs members of SDK Team to triage.<br>- `needs-team-triage`: issue needs collective members of SDK Team to triage<br>- `needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>- `needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
@@ -242,7 +248,7 @@ OLD DRI Labels (to be removed)
 
 ## Repo specific labels for DRI <!-- omit in toc -->
 
-Do not create create repo specific labels for this category.
+Do not create repo specific labels for this category.
 
 # Repo specific labels
 
