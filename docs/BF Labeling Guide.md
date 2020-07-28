@@ -201,9 +201,9 @@ These labels are applied to PRs and used to trigger or disable GitHub workflows.
 
 Color: All the labels in this category should use ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+) `#cccccc`.
 
-|Name| Description  | Example
+|Name| Description  | Example &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
 |---|---|------|
-|no parity| PR does not need to be applied to other languages. **Note:** if you don't apply the `No parity` to a dotnet PR, the automation workflow will generate parity issues in Python, JS and Java.  | `Automation: No parity` |
+|no parity| PR does not need to be applied to other languages.<br>**Note:** if you don't apply the `No parity` to a dotnet PR, the automation workflow will generate parity issues in Python, JS and Java.  | `Automation: No parity` |
 |parity with dotnet| The PR needs to be ported to dotnet. | `Automation: Parity with dotnet` |
 |parity with JS| The PR needs to be ported to JS. | `Automation: Parity with JS` |
 |parity with Python| The PR needs to be ported to Python. | `Automation: Parity with Python` |
