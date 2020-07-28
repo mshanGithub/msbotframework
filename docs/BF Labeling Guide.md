@@ -217,18 +217,18 @@ It is OK to create repo specific labels for this category to trigger repo specif
 
 The DRI labels are used to support the Azure issue management process and track desired SLAs.
 
-The DRI labels are applied when an issue is opened by someone that is not a contributor of the repo.
+The DRI labels are used when an issue is opened by someone that is not a contributor of the repo.
 
-DRI labels are used for reporting outside the bot framework repositories and their names don't follow the standards described above. They should be applied based on the current DRI guide.
+DRI labels support reporting outside the bot framework repositories and their names don't follow the standards described above. They should be applied based on the current DRI guide.
 
 Issues created by anyone in the community that is not a collaborator in the repositories will initially be tagged `needs-triage`, `customer-reported`, and `question` by msft-bot. Note that issues are initially assumed to be questions because that's the most common issue type.
 
 Color: This subcategory uses different colors for each label.
 
-|Name| Description  | Color | Example
+|Category| Description  | Color | Example
 |---|---|---|------|
-|customer-reported| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
-|Bot Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. Do not delete. Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
+|Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
+|Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. <br>Do not delete. <br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
 
 
 OLD DRI Labels (to be removed)
