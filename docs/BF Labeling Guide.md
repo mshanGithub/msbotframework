@@ -64,8 +64,8 @@ We use labels to sort and describe issues, pull requests, and more. It is a good
 
 This section describes the main label categories being used in the SDK repos:
 
-|Category| Description  | Usage  | Example
-|---|---|---|------|
+| Category | Description | Usage | Example |
+|---|---|---|---|
 |[Area](#area)|Defines a functional area or feature of the product.| Multiple |`Area: Skills`|
 |[Priority](#priority)|The priority for the issue.| Single |`P0`|
 |[Status](#status)|Further describes the status of the issue throughout its lifecycle.| Single |`Status: New`|
@@ -85,8 +85,8 @@ All the issues with `Status: Approved` should have at least one of these labels 
 
 Color: All the labels in this category should use ![#1d76db](https://via.placeholder.com/15/1d76db/000000?text=+) `#1d76db`
 
-|Name| Description  | Example
-|---|---|------|
+| Name | Description | Example |
+|---|---|---|
 |Adaptive| TODO | `Area: Adaptive` |
 |Adaptive Expressions| TODO | `Area: Adaptive expressions` |
 |AI-LUIS| TODO | `Area: AI-LUIS` |
@@ -114,8 +114,8 @@ Describes the priority of the issue. This label is required for any issue that i
 
 Color: This subcategory uses different colors for each label.
 
-|Name| Description  | Color | Example
-|---|---|---|------|
+| Name | Description | Color | Example |
+|---|---|:-:|:--|
 |P0| Must Fix.  Release-blocker | ![#ee0701](https://via.placeholder.com/15/ee0701/000000?text=+) `#ee0701` | `P0` |
 |P1| Painful if we don't fix, won't block releasing | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `P1` |
 |P2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P2` |
@@ -131,8 +131,8 @@ Use these labels for providing information on the progress of the issue. The sta
 
 Color: This subcategory uses different colors for each label.
 
-|Name| Description  | Color | Example
-|---|---|---|------|
+| Name | Description | Color | Example |
+|---|---|:-:|:--|
 |Draft| The issue definition is still being worked on and it is not ready to start development. Once the issue is ready the status should be changed to `Approved` or `Backlog`.| ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `Status: Draft` |
 |New| The issue has just been created and it has not been reviewed by the team. Once the issue is reviewed the status be changed to `Approved`, `Backlog`, `Needs information` or just closed.| ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `Status: New` |
 |Needs information| The issue as described is incomplete or not well understood. It is waiting for further information before it can continue.| ![#ff8c00](https://via.placeholder.com/15/ff8c00/000000?text=+) `#ff8c00` | `Status: Needs information` |
@@ -151,8 +151,8 @@ Use these labels to tag issues that involve the community.
 
 Color: All the labels in this category should use ![#874faf](https://via.placeholder.com/15/874faf/000000?text=+) `#874faf`.
 
-|Name| Description  | Example
-|---|---|------|
+| Name | Description | Example |
+|---|---|---|
 |Help wanted| This is a good issue for a contributor to take on and submit a solution | `Community: Help wanted` |
 
 ### Repo specific labels for community <!-- omit in toc -->
@@ -165,8 +165,8 @@ Use these labels describe the type of the issue.
 
 Color: This subcategory uses different colors for each label.
 
-|Name| Description  | Color | Example
-|---|---|---|------|
+| Name | Description | Color | Example |
+|---|---|:-:|:--|
 |Bug| Indicates an unexpected problem or an unintended behavior.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `bug` |
 |Feature request|  A request for new functionality.or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `feature request` |
 |Question| A question from customers that needs further clarification or discussion.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `question` |
@@ -184,8 +184,8 @@ Use these to assign an estimated level of effort to resolve an issue and assist 
 
 Color: All the labels in this category should use ![#91e3ea](https://via.placeholder.com/15/91e3ea/000000?text=+) `#91e3ea`.
 
-|Name| Description  | Example
-|---|---|------|
+| Name | Description | Example |
+|---|---|---|
 |Small| The issue is simple and well understood, it will take a day or less to complete | `Size: S` |
 |Medium| The issue is not very complex and it is well understood, it will take 1 to 3 days to complete | `Size: M` |
 |Large| The issue complex but it is well understood, it will take 4 to 8 days to complete | `Size: L` |
@@ -201,8 +201,8 @@ These labels are applied to PRs and used to trigger or disable GitHub workflows.
 
 Color: All the labels in this category should use ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+) `#cccccc`.
 
-|Name|Description|                Example                |
-|---|---|------|
+|Name| Description | Example |
+|---|---|:--|
 |no parity| PR does not need to be applied to other languages.<br>**Note:** if you don't apply the `No parity` to a dotnet PR, the automation workflow will generate parity issues in Python, JS and Java.  | `Automation: No parity` |
 |parity with dotnet| The PR needs to be ported to dotnet. | `Automation: Parity with dotnet` |
 |parity with JS| The PR needs to be ported to JS. | `Automation: Parity with JS` |
@@ -225,13 +225,13 @@ Issues created by anyone in the community that is not a collaborator in the repo
 
 Color: This subcategory uses different colors for each label.
 
-|Category| Description  | Color |          Labels          |
-|---|---|---|------|
+| Category | Description  | Color | Labels |
+|---|---|:-:|:--|
 |Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
 |Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. <br>Do not delete. <br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
 |Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>`Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>`Client`: the issue is in the client library; client libraries access Azure resources during application runtime.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
-|Type| Indicates what the issue type is. This is a subset of the types defined in the [tyes category](#type).<br>Only use `bug`, `question` or `feature-request` for `customer-reported` issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
-
+|Type| Indicates what the issue type is. This is a subset of the types defined in the [tyes category](#type).<br/>Only use `bug`, `question` or `feature-request` for `customer-reported` issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
+|Next step| Indicates who needs to take the next step.<br>`needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>`needs-author-feedback`: more info from the issue creator is needed to address the issue.<br>`needs-triage`: issue needs members of SDK Team to triage.<br>`needs-team-triage`: issue needs collective members of SDK Team to triage|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3`  | `needs-team-attention`<br>`needs-author-feedback`<br>`needs-triage`<br>`needs-team-triage`|
 
 OLD DRI Labels (to be removed)
 
