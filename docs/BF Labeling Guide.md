@@ -225,7 +225,7 @@ Issues created by anyone in the community that is not a collaborator in the repo
 
 Color: This subcategory uses different colors for each label.
 
-|Category| Description  | Color | Labels
+|Category| Description  | Color |          Labels          |
 |---|---|---|------|
 |Customer issue| Customer reported issues, it is automatically applied when the issue is created by anyone that is not a collaborator in the repository.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
 |Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team. <br>Do not delete. <br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
