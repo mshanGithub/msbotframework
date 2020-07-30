@@ -1,5 +1,5 @@
 
-# Bot Framework Labeling Guidelines (DRAFT) <!-- omit in toc -->
+# Bot Framework Labeling Guidelines <!-- omit in toc -->
 
 Labels help us organize and prioritize work. We use the same set of labels across the different sections in a repository, such as issues and pull requests. It is important to keep the labels consistent so that we can maintain a standard workflow. Standardized labels also help us query useful data from repos to collect customer feedback for analysis.
 
@@ -72,7 +72,7 @@ This section describes the main label categories being used in the SDK repos:
 |[Community](#community)|Used to describe community related issues.| Single |`Community: Help wanted`|
 |[Size](#size)|Provides an estimate for the level of effort required to resolve the issue.| Single |`Size: M`|
 |[Automation](#automation) | Labels used to trigger GitHub actions and workflows.| Single |`Automation: No parity`|
-|[DRI](#dri)|This is a special set of labels used for DRI tracking and reporting on issues created by customers.| Multiple |`Bot Service - Libraries`|
+|[DRI](#dri)|This is a special set of labels used for DRI tracking and reporting on issues created by customers.| Multiple |`Bot Service`|
 
 ## Status
 
@@ -87,7 +87,7 @@ Color: This subcategory uses different colors for each label.
 |Needs author information| The issue as described is incomplete or not well understood. It is waiting for further information before it can continue.<br>Keep in mind that the issue author may not always flip the tag back to `needs-team-attention` when it responds so scan the issues periodically to see if the author has responded.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-author-feedback` |
 |Needs team information| The issue has a comment from the author and needs SDK Team or service team’s attention.| ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-team-attention` |
 |Approved| The issue has been reviewed and is ready to start working on it, it will be added to the work queue in the current iteration. | ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+) `#0e8a16` | `approved` |
-|In progress| The issue is assigned and it is being worked on. | ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+) `#0e8a16` | `in progress` |
+|In progress| The issue is assigned and it is being worked on. | ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+) `#0e8a16` | `in-progress` |
 |Backlog| The issue is out of scope for the current iteration but it will be evaluated in a future release. | ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `backlog` |
 |Blocked| Current progress is blocked on something else.<br>Make sure you add a note in the issue history when you apply this tag describing what's blocking it for future reference.| ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `blocked` |
 |Stale| The issue hasn't been updated in a long time and will be automatically closed. | ![#ededed](https://via.placeholder.com/15/ededed/000000?text=+) `#ededed` | `stale` |
@@ -108,22 +108,22 @@ Color: All the labels in this category should use ![#1d76db](https://via.placeho
 
 | Name | Description | Example |
 |---|---|---|
-|Adaptive| TODO | `Area: Adaptive` |
-|Adaptive Expressions| TODO | `Area: Adaptive expressions` |
-|AI-LUIS| TODO | `Area: AI-LUIS` |
-|AI-QnAMaker| TODO | `Area: AI-QnAMaker` |
-|Authentication| TODO | `Area: Authentication` |
-|Custom Adapters| TODO | `Area: Custom adapters` |
-|Docs| TODO | `Area: Docs` |
-|Functional Tests| TODO | `Area: Functional tests` |
-|LG| TODO | `Area: LG` |
-|Samples| TODO | `Area: Samples` |
-|Schema| TODO | `Area: Schema` |
-|Skills| TODO | `Area: Skills` |
-|Streaming| TODO | `Area: Streaming` |
-|Teams| TODO | `Area: Teams` |
-|Telemetry| TODO | `Area: Telemetry` |
-|Testing Framework| TODO | `Area: Testing framework` |
+|Adaptive| The issue is related to Adaptive dialogs | `Area: Adaptive` |
+|Adaptive Expressions| The issue is related to Adaptive expressions | `Area: Adaptive expressions` |
+|AI-LUIS| The issue is related to LUIS | `Area: AI-LUIS` |
+|AI-QnAMaker| THe issue is related to QnA Maker | `Area: AI-QnAMaker` |
+|Authentication| The issue is related to authenticating users (SSO, OAuth, etc.) | `Area: Authentication` |
+|Custom Adapters| The issue is related to custom adapters (Twilio, Facebook, etc.) | `Area: Custom adapters` |
+|Docs| Documentation issue (missing needs updates, etc.) | `Area: Docs` |
+|Functional Tests| The issue is related to end to end tests | `Area: Functional tests` |
+|LG| Language generation issues | `Area: LG` |
+|Samples| The issue is related to the product samples | `Area: Samples` |
+|Schema| The issue is related to schemas (bot schemas, skill manifest, etc.) | `Area: Schema` |
+|Skills| The issue is related to skills | `Area: Skills` |
+|Streaming| Issues related to streaming support | `Area: Streaming` |
+|Teams| The issue is related to Teams support | `Area: Teams` |
+|Telemetry| Issues related to telemetry support | `Area: Telemetry` |
+|Testing Framework| Issues related to the bot testing framework | `Area: Testing framework` |
 
 ### Repo specific labels for area <!-- omit in toc -->
 
@@ -161,7 +161,6 @@ Color: This subcategory uses different colors for each label.
 |P0| Must Fix.  Release-blocker | ![#ee0701](https://via.placeholder.com/15/ee0701/000000?text=+) `#ee0701` | `P0` |
 |P1| Painful if we don't fix, won't block releasing | ![#ff8c00](https://via.placeholder.com/15/FF8C00/000000?text=+) `#ff8c00` | `P1` |
 |P2| Nice to have | ![#ffff00](https://via.placeholder.com/15/ffff00/000000?text=+) `#ffff00` | `P2` |
-|P3| Won't fix | ![#bfd4f2](https://via.placeholder.com/15/bfd4f2/000000?text=+) `#bfd4f2` | `P3` |
 
 ### Repo specific labels for priority <!-- omit in toc -->
 
@@ -183,7 +182,7 @@ Do not create repo specific labels for this category.
 
 ## Size (proposal)
 
-**Note:** this labels are not supported yet
+**Note:** these labels are experimental and may change
 
 Use these to assign an estimated level of effort to resolve an issue and assist with the estimation process.
 
@@ -202,7 +201,7 @@ Do not create repo specific labels for this category.
 
 ## Automation (proposal)
 
-**Note:** this labels are not supported yet
+**Note:** these labels are experimental and may change
 
 These labels are applied to PRs and used to trigger or disable GitHub workflows.
 
@@ -235,16 +234,10 @@ Color: This subcategory uses different colors for each label.
 | Category | Description  | Color | Labels |
 |---|---|:-:|:--|
 |Customer issue| Customer reported issues, this label is automatically applied when the issue is created by anyone that is not a collaborator in the repository.<br>**Note:** do not use this label to create an issue on behalf of a customer, ask the customer to post the issue instead so it can be tracked to the source.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
-|Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team.<br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service`<br>`Bot Service - Libraries` |
+|Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team.<br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
 |Type| Indicates what the issue type is.<br>This is a subset of the types defined in the [types category](#type).<br/>Only use `bug`, `question` or `feature-request` for DRI issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
-|Status| This is a subset of the statuses defined in the [status category](#status) and indicates who needs to take the next step.<br>- `needs-triage`: issue needs members of SDK Team to triage.<br>- `needs-team-triage`: issue needs collective members of SDK Team to triage<br>- `needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>- `needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
-|Component| Indicates where the problem specified by the issue lies, i.e. where a fix should go.<br>- `Mgmt`: the issue is management library; management libraries provision and configure Azure resource.<br>- `Client`: the issue is in the client library; client libraries access Azure resources during application runtime.<br>- `Service`: the issue relates to the Azure service itself, not a library.| ![#e99695](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `Client`<br> `Mgmt`<br>`Service`<br>|
-
-OLD DRI Labels (to be removed)
-
-| Name | Description  | Color | Example |
-|---|---|---|---|
-|customer-replied-to| Required for internal Azure reporting. Do not delete.| ![#2683a5](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `customer-replied-to` |
+|Status| This is a subset of the statuses defined in the [status category](#status) and indicates who needs to take the next step.<br>- `needs-triage`: issue needs members of SDK Team to triage.<br>- `needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>- `needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
+|customer-replied-to| Indicates that the team has replied to the issue reported by the customer.<br>Do not delete.| ![#2683a5](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `customer-replied-to` |
 |ExemptFromDailyDRIReport| Use this label to exclude the issue from the DRI report.| ![#bde567](https://via.placeholder.com/15/bde567/000000?text=+) `#bde567` | `ExemptFromDailyDRIReport` |
 
 ## Repo specific labels for DRI <!-- omit in toc -->
