@@ -141,7 +141,6 @@ Color: This subcategory uses different colors for each label.
 |---|---|:-:|:--|
 |Bug| Indicates an unexpected problem or an unintended behavior.| ![#d73a4a](https://via.placeholder.com/15/d73a4a/000000?text=+) `#d73a4a` | `bug` |
 |Feature request|  A request for new functionality or an enhancement to an existing one.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `feature request` |
-|Question| A question from customers that needs further clarification or discussion.| ![#8f31ed](https://via.placeholder.com/15/8f31ed/000000?text=+) `#8f31ed` | `question` |
 |Parity| The issue describes a gap in parity between two or more platforms.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `parity` |
 |Technical debt| The issue involves refactoring existing code to make it easier to maintain, follow best practices, improve test coverage, etc.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `technical debt` |
 |Team agility| An issue targeted to reduce friction to the SDK's development process.| ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+) `#fbca04` | `team agility` |
@@ -227,7 +226,7 @@ The DRI labels are used when an issue is opened by someone that is not a contrib
 
 DRI labels support reporting outside the bot framework repositories and their names don't always follow the standards described above. They should be applied based on the current DRI guide.
 
-Issues created by anyone in the community that is not a collaborator in the repositories will initially be tagged `needs-triage`, `customer-reported`, and `question` by msft-bot. Note that issues are initially assumed to be questions because that's the most common issue type.
+Issues created by anyone in the community that is not a collaborator in the repositories will initially be tagged as `customer-reported`.
 
 Color: This subcategory uses different colors for each label.
 
@@ -236,7 +235,7 @@ Color: This subcategory uses different colors for each label.
 |Customer issue| Customer reported issues, this label is automatically applied when the issue is created by anyone that is not a collaborator in the repository.<br>**Note:** do not use this label to create an issue on behalf of a customer, ask the customer to post the issue instead so it can be tracked to the source.| ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+) `#c2e0c6` | `customer-reported` |
 |Service| Required for internal Azure reporting, indicates that the issue is related to the libraries and services managed by the Conversational AI team.<br>Do not change color.| ![#e99695](https://via.placeholder.com/15/e99695/000000?text=+) `#e99695` | `Bot Service` |
 |Type| Indicates what the issue type is.<br>This is a subset of the types defined in the [types category](#type).<br/>Only use `bug`, `question` or `feature-request` for DRI issues.| Multiple | `bug`<br> `question`<br>`feature-request`<br>|
-|Status| This is a subset of the statuses defined in the [status category](#status) and indicates who needs to take the next step.<br>- `needs-triage`: issue needs members of SDK Team to triage.<br>- `needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>- `needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
+|Status| This is a subset of the statuses defined in the [status category](#status) and indicates who needs to take the next step.<br>- `needs-triage`: issue needs members of SDK Team to triage.<br>- `needs-team-attention`: the issue has a comment from the author and needs SDK Team or service team’s attention.<br>- `needs-author-feedback`: more info from the issue creator is needed to address the issue.|  ![#f7ffa3](https://via.placeholder.com/15/f7ffa3/000000?text=+) `#f7ffa3` | `needs-triage`<br>`needs-team-attention`<br>`needs-author-feedback`|
 |customer-replied-to| Indicates that the team has replied to the issue reported by the customer.<br>Do not delete.| ![#2683a5](https://via.placeholder.com/15/2683a5/000000?text=+) `#2683a5` | `customer-replied-to` |
 |ExemptFromDailyDRIReport| Use this label to exclude the issue from the DRI report.| ![#bde567](https://via.placeholder.com/15/bde567/000000?text=+) `#bde567` | `ExemptFromDailyDRIReport` |
 
