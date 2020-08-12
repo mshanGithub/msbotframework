@@ -2,13 +2,13 @@
 
 ### [What's new with Bot Framework?](https://docs.microsoft.com/en-us/azure/bot-service/what-is-new?view=azure-bot-service-4.0)
 
-Bot Framework provides the most comprehensive experience for building conversation applications.  
+Bot Framework provides the most comprehensive experience for building conversation applications.
 
-With the [Bot Framework SDK](#bot-framework-sdk-v4), developers can build bots that converse free-form or with guided interactions including using simple text or rich cards that contain text, images, and action buttons.  
+With the [Bot Framework SDK](#bot-framework-sdk-v4), developers can build bots that converse free-form or with guided interactions including using simple text or rich cards that contain text, images, and action buttons.
 
-Developers can model and build sophisticated conversation using their favorite programming languages including C#, JS, Python and Java or using [Bot Framework Composer](https://aka.ms/bfcomposer), an open-source, visual authoring canvas for developers and multi-disciplinary teams to design and build conversational experiences with Language Understanding, QnA Maker and sophisticated composition of bot replies (Language Generation). 
+Developers can model and build sophisticated conversation using their favorite programming languages including C#, JS, Python and Java or using [Bot Framework Composer](https://aka.ms/bfcomposer), an open-source, visual authoring canvas for developers and multi-disciplinary teams to design and build conversational experiences with Language Understanding, QnA Maker and sophisticated composition of bot replies (Language Generation).
 
-Checkout the [Bot Framework ecosystem](#bot-framework-ecosystem) section to learn more about other tooling and services related to the Bot Framework SDK. 
+Checkout the [Bot Framework ecosystem](#bot-framework-ecosystem) section to learn more about other tooling and services related to the Bot Framework SDK.
 
 ![Bot Framework SDK](./docs/media/GitHubBannerV2.gif)
 
@@ -20,7 +20,7 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 
 |   | C#  | JS  | Python |  Java |
 |---|:---:|:---:|:------:|:-----:|
-|Stable Release |[4.9][1] | [4.9][2] | [4.9][3] | [4.6.0 (preview4)][3a]|
+|Stable Release |[4.9][1] | [4.9][2] | [4.9][3] | [4.6.0 (preview6)][3a]|
 |Docs | [docs][5] |[docs][5] |[docs][5]  | |
 |Samples |[.NET Core][6], [WebAPI][10] |[Node.js][7] , [TypeScript][8], [es6][9]  | [Python][111] | |
 
@@ -28,7 +28,7 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 [1]:https://github.com/Microsoft/botbuilder-dotnet/#packages
 [2]:https://github.com/Microsoft/botbuilder-js#packages
 [3]:https://github.com/microsoft/botbuilder-python/tree/4.9
-[3a]:https://github.com/microsoft/botbuilder-java/tree/4.6-preview4
+[3a]:https://github.com/microsoft/botbuilder-java/tree/4.6-preview6
 [4]:https://github.com/Microsoft/botbuilder-java#packages
 [5]:https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0
 [6]:https://github.com/Microsoft/BotBuilder-Samples/tree/master/samples/csharp_dotnetcore
@@ -60,7 +60,7 @@ There are two ways to connect your bot to a client experience:
 | Facebook        | [Azure][55abs] |  [SDK][55sdkcsfb]    | [Botkit][55bk]    |                    |
 | Slack           | [Azure][55abs] |  [SDK][55sdkcsslack] | [Botkit][55bk]    | [SDK][55sdkpyslack] |
 | Kik             | [Azure][55abs] |                      |                   |                    |
-| Telegram        | [Azure][55abs] |                      |                   |                    |  
+| Telegram        | [Azure][55abs] |                      |                   |                    |
 | Line            | [Azure][55abs] |                      |                   |                    |
 | GroupMe         | [Azure][55abs] |                      |                   |                    |
 | Twilio (SMS)    | [Azure][55abs] | [SDK][55sdkcstwilio] | [Botkit][55bk]    |                    |
