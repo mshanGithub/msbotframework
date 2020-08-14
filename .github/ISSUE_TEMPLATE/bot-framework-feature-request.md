@@ -2,7 +2,7 @@
 name: Feature Request
 about: Create a new Bot Framework feature request.
 title: ""
-labels: "needs-triage, feature request"
+labels: "needs-triage, feature-request"
 assignees: ""
 ---
 
