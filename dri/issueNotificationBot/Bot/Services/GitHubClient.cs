@@ -22,7 +22,9 @@ namespace IssueNotificationBot.Services
             _client.DefaultRequestHeaders.UserAgent.TryParseAdd(Constants.UserAgent);
         }
 
-        // Get GitHub user info for the user that has authenticated with the bot via OAuth.
+        /// <summary>
+        /// Get GitHub user info for the user that has authenticated with the bot via OAuth.
+        /// </summary>
         public async Task<GitHubUserResponse> GetAuthenticatedUser()
         {
             return await GetJsonResponseAsObject<GitHubUserResponse>(Constants.GitHubApiAuthenticatedUserPath).ConfigureAwait(false);

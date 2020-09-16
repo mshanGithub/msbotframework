@@ -19,11 +19,17 @@ namespace IssueNotificationBot.Services
 {
     public class NotificationHelper
     {
+        /// <summary>
+        /// Dictionary of activities, keyed by <Repo>-<IssueNumber> for tracking when we send a notification for an issue, per user.
+        /// </summary>
+        public readonly ConcurrentDictionary<string, MappedIssue> IssueActivityMap = new ConcurrentDictionary<string, MappedIssue>();
+        /// <summary>
+        /// Determines whether or not to notify the Maintainer of bot errors. Can be changed via <see cref="MaintainerCommands"/>.
+        /// </summary>
+        public bool NotifyMaintainer = true;
         private readonly IBotFrameworkHttpAdapter Adapter;
         private readonly IConfiguration Configuration;
-        public readonly ConcurrentDictionary<string, MappedIssue> IssueActivityMap = new ConcurrentDictionary<string, MappedIssue>();
         private readonly ILogger Logger;
-        public bool NotifyMaintainer = true;
         private readonly UserStorage UserStorage;
         private TrackedUser _Maintainer;
 

@@ -12,8 +12,11 @@ namespace IssueNotificationBot.Services
     // Base class for GitHub<thing>Processor
     public class GitHubDataProcessor
     {
-        internal readonly UserStorage UserStorage;
+        /// <summary>
+        /// Dictionary of <see cref="TrackedUser"/>, keyed on GitHub username.
+        /// </summary>
         internal Dictionary<string, TrackedUser> TrackedUsers = new Dictionary<string, TrackedUser>();
+        internal readonly UserStorage UserStorage;
         internal readonly NotificationHelper NotificationHelper;
         internal readonly IConfiguration Configuration;
         internal readonly ILogger Logger;
