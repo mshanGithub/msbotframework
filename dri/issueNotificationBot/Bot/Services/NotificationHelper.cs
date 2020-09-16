@@ -21,7 +21,7 @@ namespace IssueNotificationBot.Services
     {
         private readonly IBotFrameworkHttpAdapter Adapter;
         private readonly IConfiguration Configuration;
-        public readonly ConcurrentDictionary<int, MappedIssue> IssueActivityMap = new ConcurrentDictionary<int, MappedIssue>();
+        public readonly ConcurrentDictionary<string, MappedIssue> IssueActivityMap = new ConcurrentDictionary<string, MappedIssue>();
         private readonly ILogger Logger;
         public bool NotifyMaintainer = true;
         private readonly UserStorage UserStorage;
@@ -47,13 +47,12 @@ namespace IssueNotificationBot.Services
             // This is not required for production, since the AppId will have a value.
             if (string.IsNullOrEmpty(Configuration["MicrosoftAppId"]))
             {
-                Configuration["MicrosoftAppId"] = Guid.NewGuid().ToString(); //if no AppId, use a random Guid
+                Configuration["MicrosoftAppId"] = Guid.NewGuid().ToString(); // Ff no AppId, use a random GUID.
             }
 
             // Notify the maintainer of this bot of any errors via Teams.
             // We need to do this here and not in AdapterWithErrorHandler to avoid circular dependencies.
             var originalOnTurnError = (adapter as AdapterWithErrorHandler)?.OnTurnError;
-
             (adapter as AdapterWithErrorHandler)!.OnTurnError = async (turnContext, exception) =>
             {
                 if (NotifyMaintainer)
@@ -82,10 +81,10 @@ namespace IssueNotificationBot.Services
             conversationReference.User = member;
 
             // TODO: Eventually, it would be nice to begin the SignInDialog here, proactively.
-            // However, I believe the user has to have sent a message, first, before the OAuthPrompt can be sent.
+            // However, I believe the user has to have sent a message, first, before the OAuthPrompt can be sent, otherwise results in a 403.
             await CreatePersonalConversationAsync(conversationReference, async (turnContext2, cancellationToken2) =>
             {
-                var activity = MessageFactory.Text($"Hello! I am {Constants.UserAgent} and I can notify you about your GitHub issues in the Bot Framework repositories that are about to \"expire\".\n" +
+                var activity = MessageFactory.Text($"Hello! I am {Constants.UserAgent} and I can notify you about your GitHub issues and PRs in the Bot Framework repositories that are about to \"expire\".\n" +
                         "An \"expired\" issue is one with the `customer-reported` tag, and is nearing or past:\n" +
                         "* 72 hours with no `customer-replied` tag\n" +
                         "* 30 days and still open\n" +
@@ -96,6 +95,10 @@ namespace IssueNotificationBot.Services
             }, cancellationToken);
         }
 
+        /// <summary>
+        /// Helper for sending proactive messages to a user.
+        /// </summary>
+        /// <returns>activityId of the message sent.</returns>
         public async Task<ResourceResponse> SendProactiveNotificationToUserAsync(TrackedUser user, IActivity activity, CancellationToken cancellationToken = default)
         {
             var tcs = new TaskCompletionSource<ResourceResponse>();
@@ -120,7 +123,10 @@ namespace IssueNotificationBot.Services
             activity.TeamsNotifyUser();
 
             var activityId = await SendProactiveNotificationToUserAsync(user, activity, cancellationToken);
-            StoreIssueCardActivityId(activityId.Id, issue.Number, user.TeamsUserInfo.Id);
+
+            // Store information about the activity so that we can avoid sending duplicate notifications within time frames specified by TimePeriodNotificaiton.
+            var repoAndIssueNumber = GetRepoIssueNumberString(issue);
+            StoreIssueCardActivityId(activityId.Id, repoAndIssueNumber, user.TeamsUserInfo.Id);
         }
 
         public async Task SendPRNotificationToUserAsync(TrackedUser user, PRCardTemplate prs, CancellationToken cancellationToken = default)
@@ -137,7 +143,31 @@ namespace IssueNotificationBot.Services
             await SendProactiveNotificationToUserAsync(user, activity, cancellationToken);
         }
 
-        public async Task CreatePersonalConversationAsync(ConversationReference conversationReference, BotCallbackHandler callback, CancellationToken cancellationToken)
+        /// <summary>
+        /// We store when we send notifications for each user as well as an array of all users we sent it to.
+        /// This checks to see if we've sent a notification for this issue and returns the user that sent it, or null if they did not.
+        /// </summary>
+        /// <param name="repoAndIssueNumber">String with format: RepoName-IssueNumber</param>
+        /// <returns>MappedActivityUser, which stores data about when the user was sent a notification for the issue.</returns>
+        public MappedActivityUser GetMappedActivityFromIssueAndUser(string repoAndIssueNumber, string teamsUserId)
+        {
+            var mappedIssue = GetMappedIssue(repoAndIssueNumber);
+            if (mappedIssue != null && mappedIssue.Users.TryGetValue(teamsUserId, out MappedActivityUser mappedUser))
+            {
+                return mappedUser;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Helper for generating the key needed to look into MappedIssues
+        /// </summary>
+        public static string GetRepoIssueNumberString(GitHubIssue issue)
+        {
+            return $"{issue.Repository.Name}-{issue.Number}";
+        }
+
+        private async Task CreatePersonalConversationAsync(ConversationReference conversationReference, BotCallbackHandler callback, CancellationToken cancellationToken)
         {
             Logger.LogInformation($"Creating personal conversation for {conversationReference.User.Name}");
 
@@ -177,47 +207,24 @@ namespace IssueNotificationBot.Services
                 cancellationToken);
         }
 
-        private void StoreIssueCardActivityId(string activityId, int issueNumber, string teamsUserId)
+        private void StoreIssueCardActivityId(string activityId, string repoAndIssueNumber, string teamsUserId)
         {
-            Logger.LogInformation($"Storing IssueCard {issueNumber} for activityId {activityId}");
+            Logger.LogInformation($"Storing IssueCard {repoAndIssueNumber} for activityId {activityId}");
             var newMappedActivity = new MappedIssue(activityId, teamsUserId);
-            IssueActivityMap.AddOrUpdate(issueNumber, newMappedActivity, (_, oldValue) =>
+            IssueActivityMap.AddOrUpdate(repoAndIssueNumber, newMappedActivity, (_, oldValue) =>
             {
                 oldValue.Users[teamsUserId] = new MappedActivityUser(activityId);
                 return oldValue;
             });
         }
 
-        public MappedIssue GetMappedIssue(int issueNumber)
+        private MappedIssue GetMappedIssue(string repoAndIssueNumber)
         {
-            if (IssueActivityMap.TryGetValue(issueNumber, out MappedIssue mappedIssue))
+            if (IssueActivityMap.TryGetValue(repoAndIssueNumber, out MappedIssue mappedIssue))
             {
                 return mappedIssue;
             }
             return null;
-        }
-
-        public MappedActivityUser GetMappedActivityFromIssueAndUser(int issueNumber, string teamsUserId)
-        {
-            var mappedIssue = GetMappedIssue(issueNumber);
-            if (mappedIssue != null && mappedIssue.Users.TryGetValue(teamsUserId, out MappedActivityUser mappedUser))
-            {
-                return mappedUser;
-            }
-            return null;
-        }
-
-        public void HideActivity(int issueNumber, string teamsUserId)
-        {
-            if (IssueActivityMap.TryGetValue(issueNumber, out MappedIssue mappedActivity))
-            {
-                Logger.LogInformation($"Hiding issue {issueNumber} for user {teamsUserId}");
-
-                if (mappedActivity.Users.ContainsKey(teamsUserId))
-                {
-                    mappedActivity.Users[teamsUserId].Hidden = true;
-                }
-            }
         }
     }
 

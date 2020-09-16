@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace IssueNotificationBot
 {
+    // Handle all of the non-Teams-specific tasks, mainly message routing and Adaptive Card submissions.
     public class MessagesBot<TUserDialog, TMaintainerDialog> : TeamsActivityHandler
         where TUserDialog : Dialog
         where TMaintainerDialog : Dialog
@@ -68,6 +69,8 @@ namespace IssueNotificationBot
             {
                 await MaintainerDialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("MaintainerDialogState"), cancellationToken);
             }
+
+            // Handle users that haven't provided GitHub info
             else if (await UserNeedsToLogIn(turnContext))
             {
                 // We don't want to send the OAuth card to a group conversation.
@@ -131,6 +134,8 @@ namespace IssueNotificationBot
             {
                 var data = ((JObject)turnContext.Activity.Value).ToObject<AdaptiveCardIssueSubmitAction>();
                 Logger.LogInformation($"Received AdaptiveCard data: {data.action}");
+
+                // Currently, we only have one Adaptive Card with a Submit action. Add more cases if more submit actions are added.
                 switch (data.action)
                 {
                     case Constants.HideIssueNotificationAction:

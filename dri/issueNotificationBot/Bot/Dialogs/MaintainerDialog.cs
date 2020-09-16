@@ -19,9 +19,8 @@ using System.Threading.Tasks;
 
 namespace IssueNotificationBot
 {
-    /// <summary>
-    /// This is used for confirming  and handling various maintainer commands.
-    /// </summary>
+    // Handle various commands from the Maintainer. Some need dialogs and some do not,
+    // but they're all handled here just to separate the code out of Bots/<ActivityHandler>
     public class MaintainerDialog : ComponentDialog
     {
         private readonly ILogger Logger;
@@ -30,7 +29,7 @@ namespace IssueNotificationBot
         private readonly UserStorage UserStorage;
         private const string CommandKey = "Command";
 
-        public MaintainerDialog(ILogger<LogoutDialog> logger, MessageBroadcaster messageBroadcaster, NotificationHelper notificationHelper, UserStorage userStorage, SignInDialog dialog)
+        public MaintainerDialog(ILogger<InterruptDialog> logger, MessageBroadcaster messageBroadcaster, NotificationHelper notificationHelper, UserStorage userStorage, SignInDialog dialog)
             : base(nameof(MaintainerDialog))
         {
             Logger = logger;
@@ -53,8 +52,10 @@ namespace IssueNotificationBot
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+        // Some commands need a dialogs and some do not.
         private async Task<DialogTurnResult> CheckIfCommandNeedsDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            // Store the command in stepContext so we can reference it later in the flow.
             stepContext.Values[CommandKey] = stepContext.Context.Activity.Text;
 
             // Check to see if Maintainer is trying to view command list. If so, adjust their text to the ShowCommands command.
@@ -80,6 +81,7 @@ namespace IssueNotificationBot
                 }
                 else
                 {
+                    // These commands don't need a dialog, so we'll just handle them and end the dialog.
                     await HandleNonDialogCommands(stepContext, cancellationToken);
                     return await stepContext.EndDialogAsync();
                 }
@@ -94,7 +96,10 @@ namespace IssueNotificationBot
 
         private async Task<DialogTurnResult> PromptStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            // Store the command in stepContext so we can reference it later in the flow.
             stepContext.Values[CommandKey] = stepContext.Context.Activity.Text;
+
+            // Adjust the prompt sent based on the command received.
             switch (stepContext.Context.Activity.Text)
             {
                 case MaintainerCommands.SetBroadcastMessage:
@@ -131,6 +136,7 @@ namespace IssueNotificationBot
         {
             var result = stepContext.Result;
 
+            // Adjust how to handle the result based on the original command sent.
             switch (stepContext.Values[CommandKey])
             {
                 case MaintainerCommands.SetBroadcastMessage:
@@ -204,8 +210,10 @@ namespace IssueNotificationBot
             }
         }
 
+        // Send the Maintainer a card containing buttons for activating all available Maintainer Commands.
         private static async Task SendMaintainerCommands(ITurnContext turnContext, CancellationToken cancellationToken)
         {
+            // Use Reflection to get the names of the commands from the MaintainerCommands constants.
             var commands = typeof(MaintainerCommands)
                 .GetFields(BindingFlags.Public | BindingFlags.Static)
                 .Where(f => f.FieldType == typeof(string))
@@ -213,16 +221,20 @@ namespace IssueNotificationBot
 
             var actions = new List<CardAction>();
 
+            // Teams limits cards to 6 buttons/actions, so we need to send cards, each containing 6 commands, until we've sent them all.
             var itemIndex = 0;
             var cardNum = 1;
             foreach (var command in commands)
             {
                 var commandString = (string)command.GetValue(null);
+
+                // Some of the MaintainerCommands constants should not be included.
                 var ignoreCommands = new HashSet<string>()
                 {
                     MaintainerCommands.CommandPrefix,
                     MaintainerCommands.ShowCommands
                 };
+
                 if (!ignoreCommands.Contains(commandString))
                 {
                     var title = commandString.Clone().ToString().Split(":")[1];
@@ -247,9 +259,11 @@ namespace IssueNotificationBot
             }
         }
 
+        // Generate and send samples of all cards in this bot.
         private async Task SendMaintainerTestCards(ITurnContext turnContext)
         {
             var maintainer = NotificationHelper.Maintainer;
+
             var welcomeCard = TemplateCardHelper.GetUserWelcomeCard(
                         maintainer.GitHubDetails.Avatar_url,
                         maintainer.GitHubDetails.Login,
@@ -279,7 +293,11 @@ namespace IssueNotificationBot
                 maintainer
             );
 
-            await turnContext.SendActivitiesAsync(new IActivity[] { MessageFactory.Attachment(welcomeCard), MessageFactory.Attachment(issueCard), MessageFactory.Attachment(prCard) });
+            await turnContext.SendActivitiesAsync(new IActivity[] {
+                MessageFactory.Attachment(welcomeCard),
+                MessageFactory.Attachment(issueCard),
+                MessageFactory.Attachment(prCard)
+            });
         }
 
         private async Task ResendGreetings(ITurnContext turnContext, CancellationToken cancellationToken)
@@ -301,7 +319,7 @@ namespace IssueNotificationBot
                     }
                 }
                 // Users that block the bot throw Forbidden errors. We'll catch all exceptions in case
-                // unforseen errors occur; we want to message as many members as possible.
+                // unforeseen errors occur; we want to message as many members as possible.
                 catch (Exception e)
                 {
                     Logger.LogError(new EventId(1), e, $"Something went wrong when greeting { member.Name }");
@@ -324,7 +342,7 @@ namespace IssueNotificationBot
                     Title = $"{i}FAKE PR TITLE DO SOME THINGS",
                     Repository = $"{i}FAKE REPOSITORY",
                     CreatedAt = DateTime.Now.AddDays(-(10 - i)),
-                    URL = $"wwww.{i}.com",
+                    URL = $"www.{i}.com",
                     Highlight = i < 2,
                     Group = "fakeGroup"
                 };

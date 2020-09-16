@@ -10,6 +10,7 @@ using System;
 
 namespace IssueNotificationBot.Models
 {
+    // Model for PRs submitted to the bot on `api/prs` from the Azure Function.
     public class GitHubPRReviewer
     {
         [JsonProperty(PropertyName = "single")]

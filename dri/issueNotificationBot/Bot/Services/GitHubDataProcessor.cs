@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 namespace IssueNotificationBot.Services
 {
+    // Base class for GitHub<thing>Processor
     public class GitHubDataProcessor
     {
         internal readonly UserStorage UserStorage;
@@ -25,12 +26,18 @@ namespace IssueNotificationBot.Services
             Logger = logger;
         }
 
+        /// <summary>
+        /// Get the DateTime of when the PR passed in expires (can be past or future), based on the TimePeriodNotification.
+        /// </summary>
         internal static DateTime GetExpiration(GitHubPR pr, TimePeriodNotification timePeriod, DateTime now)
         {
             var adjustedExpiration = pr.CreatedAt.AddHours(timePeriod.ExpireHours);
             return GetExpiration(adjustedExpiration, pr.CreatedAt, timePeriod, now);
         }
 
+        /// <summary>
+        /// Get the DateTime of when the Issue passed in expires (can be past or future), based on the TimePeriodNotification.
+        /// </summary>
         internal static DateTime GetExpiration(GitHubIssue issue, TimePeriodNotification timePeriod, DateTime now)
         {
             var adjustedExpiration = issue.CreatedAt.AddHours(timePeriod.ExpireHours);
@@ -40,6 +47,7 @@ namespace IssueNotificationBot.Services
         private static DateTime GetExpiration(DateTime adjustedExpiration, DateTime createdAt, TimePeriodNotification timePeriod, DateTime now)
         {
             // 30d and 90d periods always include weekends.
+            // Anything <= 72 hours may not include weekends in SLAs, but the assignee should still be notified.
             if (timePeriod.ExpireHours != 72) return adjustedExpiration;
 
             // Adjust the expiration time to not include weekends.

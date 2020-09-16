@@ -10,6 +10,7 @@ using System;
 
 namespace IssueNotificationBot.Models
 {
+    // Model for issues submitted to the bot on `api/issues` from the Azure Function.
     public class GitHubIssues
     {
         [JsonProperty(PropertyName = "reportedNotReplied")]

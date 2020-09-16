@@ -59,7 +59,8 @@ namespace IssueNotificationBot.Services
                 foreach (TimePeriodNotification timePeriod in user.NotificationSettings.TimePeriodNotifications.OrderByDescending(item => item.ExpireHours).ToList())
                 {
                     // Stop checking if we've already sent the notification
-                    if (NotificationHelper.IssueActivityMap.TryGetValue(issue.Number, out MappedIssue mappedActivity) && mappedActivity.Users.TryGetValue(user.TeamsUserInfo.Id, out MappedActivityUser mappedUser))
+                    var repoAndIssueNumber = NotificationHelper.GetRepoIssueNumberString(issue);
+                    if (NotificationHelper.IssueActivityMap.TryGetValue(repoAndIssueNumber, out MappedIssue mappedActivity) && mappedActivity.Users.TryGetValue(user.TeamsUserInfo.Id, out MappedActivityUser mappedUser))
                     {
                         return;
                     }
@@ -81,6 +82,7 @@ namespace IssueNotificationBot.Services
                         expires = new DateTime(2020, 1, 1);
                     }
 
+                    // Adjust some of the card text based on whether the issue has expired, or is only nearing expiration.
                     if (IssueExpiredNeedsResponse(expires, now))
                     {
                         nearingOrExpiredMessage = Constants.PassedExpirationMessage;
@@ -115,8 +117,9 @@ namespace IssueNotificationBot.Services
 
         private bool UserNotifiedWithinWindow(TimePeriodNotification timePeriod, DateTime now, GitHubIssue issue, string teamsUserId)
         {
-            var mappedActivity = NotificationHelper.GetMappedIssue(issue.Number);
-            if (mappedActivity != null && mappedActivity.Users.TryGetValue(teamsUserId, out MappedActivityUser mappedUser))
+            var repoAndIssueNumber = NotificationHelper.GetRepoIssueNumberString(issue);
+            var mappedUser = NotificationHelper.GetMappedActivityFromIssueAndUser(repoAndIssueNumber, teamsUserId);
+            if (mappedUser != null)
             {
                 return mappedUser.SentAt.AddHours(timePeriod.NotificationFrequency) <= now;
             }

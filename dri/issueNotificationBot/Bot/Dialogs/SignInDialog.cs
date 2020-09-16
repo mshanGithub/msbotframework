@@ -14,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace IssueNotificationBot
 {
-    public class SignInDialog : LogoutDialog
+    // Dialog for getting user information via GitHub OAuth.
+    public class SignInDialog : InterruptDialog
     {
         protected readonly ILogger Logger;
         protected readonly NotificationHelper NotificationHelper;

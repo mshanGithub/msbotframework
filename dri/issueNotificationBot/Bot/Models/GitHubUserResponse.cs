@@ -8,6 +8,7 @@ using System;
 
 namespace IssueNotificationBot.Models
 {
+    // Model for the user data returned after querying the GitHub API for user data.
     public class GitHubUserResponse
     {
         [JsonProperty(PropertyName = "login")]

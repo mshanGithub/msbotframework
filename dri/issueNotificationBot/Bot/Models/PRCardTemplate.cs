@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace IssueNotificationBot.Models
 {
+    // Model used for preparing an Adaptive Card Template for the PR Card.
     public class PRCardTemplate
     {
         [JsonProperty(PropertyName = "SinglePRs")]

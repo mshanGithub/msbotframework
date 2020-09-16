@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace IssueNotificationBot
 {
+    // Handle all of the Teams-specific actions like adding team members, signing in, etc.
     public class TeamsActivityBot<TUserDialog, TMaintainerDialog> : MessagesBot<TUserDialog, TMaintainerDialog>
         where TUserDialog : Dialog
         where TMaintainerDialog : Dialog
@@ -37,16 +38,17 @@ namespace IssueNotificationBot
         {
             Logger.LogInformation($"New members added: { string.Join(", ", membersAdded.Select(m => m.Name).ToArray())}");
 
+            // This should only work in a Team conversation.
             if (turnContext.Activity.Conversation.ConversationType != Constants.PersonalConversationType)
             {
                 foreach (var member in membersAdded)
                 {
-                    // Greet each new user when user is added
+                    // Greet each new user when user is added.
                     if (member.Id != turnContext.Activity.Recipient.Id && !await UserStorage.HaveUserDetails(member.Id))
                     {
                         await NotificationHelper.GreetNewTeamMember(member, turnContext, cancellationToken);
                     }
-                    // If the bot is added, we need to get all members and message them to login, proactively, if we don't have their information already
+                    // If the **bot** is added, we need to get all members and message them to login, proactively, if we don't have their information already.
                     else
                     {
                         try
@@ -54,6 +56,7 @@ namespace IssueNotificationBot
                             var teamMembers = await TeamsInfo.GetTeamMembersAsync(turnContext);
                             foreach (var teamMember in teamMembers)
                             {
+                                // Only message team members whose information we don't already have.
                                 if (teamMember.Id != turnContext.Activity.Recipient.Id && !await UserStorage.HaveUserDetails(member.Id))
                                 {
                                     try
@@ -61,7 +64,7 @@ namespace IssueNotificationBot
                                         await NotificationHelper.GreetNewTeamMember(teamMember, turnContext, cancellationToken);
                                     }
                                     // Users that block the bot throw Forbidden errors. We'll catch all exceptions in case
-                                    // unforseen errors occur; we want to message as many members as possible.
+                                    // unforeseen errors occur; we want to message as many members as possible.
                                     catch (Exception e)
                                     {
                                         Logger.LogError(new EventId(1), e, $"Something went wrong when greeting { member.Name }");

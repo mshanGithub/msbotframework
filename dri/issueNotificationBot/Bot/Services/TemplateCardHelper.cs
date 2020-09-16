@@ -64,6 +64,7 @@ namespace IssueNotificationBot.Services
             return CreateTemplateCard("personalPRCard.json", templateData);
         }
 
+        // Helper for creating Adaptive Card Templates
         private static Attachment CreateTemplateCard(string pathInResources, object templateData)
         {
             var paths = new[] { ".", "Resources", pathInResources };

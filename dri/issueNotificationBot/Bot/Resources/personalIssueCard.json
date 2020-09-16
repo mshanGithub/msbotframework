@@ -57,8 +57,7 @@
                     "type": "Action.Submit",
                     "title": "Hide Notification",
                     "data": {
-                        "action": "hideIssueNotification",
-                        "issueNumber": "${issueNumber}"
+                        "action": "hideIssueNotification"
                     }
                 }
             ]

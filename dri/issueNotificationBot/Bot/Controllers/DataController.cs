@@ -105,6 +105,7 @@ namespace IssueNotificationBot
             return HttpStatusCode.BadRequest;
         }
 
+        // Validates whether or not the Authorization Header contains a valid token based on this bot's AppId/Password.
         private async Task<bool> IsAuthenticatedAsync(Microsoft.AspNetCore.Http.HttpRequest request)
         {
             request.Headers.TryGetValue("Authorization", out StringValues authHeader);

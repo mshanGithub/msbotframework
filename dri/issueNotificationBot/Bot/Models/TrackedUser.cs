@@ -6,6 +6,7 @@ using Microsoft.Bot.Schema.Teams;
 
 namespace IssueNotificationBot.Models
 {
+    // Model for all of a user's data that gets stored in persistent storage, keyed on their GitHub username.
     public class TrackedUser
     {
         public NotificationSettings NotificationSettings = new NotificationSettings();
@@ -21,28 +22,34 @@ namespace IssueNotificationBot.Models
 
     public class NotificationSettings
     {
+        // Global enabling of all notifications for a user.
         public bool AllEnabled = true;
 
+        // For setting user-defined notification settings. Currently, all users use default and cannot change.
         public TimePeriodNotification[] TimePeriodNotifications =
         {
+            // Issues that expire after 3 days.
             new TimePeriodNotification(
                 24 * 3,
                 "72h",
                 24,
                 6
                 ),
+            // Issues that expire after 30 days.
             new TimePeriodNotification(
                 24 * 30,
                 "30d",
                 24 * 3,
                 24
                 ),
+            // Issues that expire after 90 days.
             new TimePeriodNotification(
                 24 * 90,
                 "90d",
                 24 * 7,
                 24 * 3
                 ),
+            // PRs that expire after 3 days.
             new TimePeriodNotification(
                 24 * 3,
                 "PR Notification",
