@@ -102,21 +102,25 @@ namespace IssueNotificationBot
                     {
                         Prompt = MessageFactory.Text("What message do you want to broadcast?")
                     });
+
                 case MaintainerCommands.SendBroadcastMessage:
                     return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
                     {
                         Prompt = MessageFactory.Text($"Are you sure you want to send:\n\n{MessageBroadcaster.BroadcastMessage.Text}")
                     });
+
                 case MaintainerCommands.UpdateUserNotificationSettings:
                     return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
                     {
                         Prompt = MessageFactory.Text("Are you sure you want to send update all user notification settings?")
                     });
+
                 case MaintainerCommands.ResendGrettings:
                     return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
                     {
                         Prompt = MessageFactory.Text("Are you sure you want to resend all user greetings? **Be sure you sent this command from a Team!**")
                     });
+
                 default:
                     await stepContext.Context.SendActivityAsync($"Maintainer Dialog failed because I didn't understand {stepContext.Context.Activity.Text}");
                     return await stepContext.CancelAllDialogsAsync();
@@ -133,6 +137,7 @@ namespace IssueNotificationBot
                     MessageBroadcaster.BroadcastMessage = MessageFactory.Text(stepContext.Result as string);
                     await stepContext.Context.SendActivityAsync($"Broadcast message set to:\n\n{MessageBroadcaster.BroadcastMessage.Text}");
                     break;
+
                 case MaintainerCommands.SendBroadcastMessage:
                     if ((bool)result)
                     {
@@ -140,13 +145,16 @@ namespace IssueNotificationBot
                         await MessageBroadcaster.SendBroadcastMessage();
                     }
                     break;
+
                 case MaintainerCommands.UpdateUserNotificationSettings:
                     await UserStorage.OverwriteNotificationSettingsForAllUsers();
                     await stepContext.Context.SendActivityAsync("All users have default notification settings");
                     break;
+
                 case MaintainerCommands.ResendGrettings:
                     await ResendGreetings(stepContext.Context, cancellationToken);
                     break;
+
                 default:
                     await stepContext.Context.SendActivityAsync($"Maintainer Dialog failed because I didn't understand {stepContext.Result}");
                     return await stepContext.CancelAllDialogsAsync();
@@ -155,7 +163,7 @@ namespace IssueNotificationBot
             return await stepContext.EndDialogAsync();
         }
 
-        private bool MessageContainsCommandPrefix(string text)
+        private static bool MessageContainsCommandPrefix(string text)
         {
             return text.StartsWith(MaintainerCommands.CommandPrefix);
         }
@@ -169,29 +177,34 @@ namespace IssueNotificationBot
                 case MaintainerCommands.ShowCommands:
                     await SendMaintainerCommands(turnContext, cancellationToken);
                     break;
+
                 case MaintainerCommands.EnableMaintainerNotifications:
                     Logger.LogInformation("Enabling Maintainer Notifications");
                     NotificationHelper.NotifyMaintainer = true;
                     await turnContext.SendActivityAsync("Maintainer Notifications Enabled");
                     break;
+
                 case MaintainerCommands.DisableMaintainerNotifications:
                     Logger.LogInformation("Disabling Maintainer Notifications");
                     NotificationHelper.NotifyMaintainer = false;
                     await turnContext.SendActivityAsync("Maintainer Notifications Disabled");
                     break;
+
                 case MaintainerCommands.TestCards:
                     await SendMaintainerTestCards(turnContext);
                     break;
+
                 case MaintainerCommands.ViewBroadcastMessage:
                     await turnContext.SendActivityAsync(MessageBroadcaster.BroadcastMessage ?? MessageFactory.Text("**No Broadcast Message Set**"));
                     break;
+
                 default:
                     await turnContext.SendActivityAsync("unknown command");
                     break;
             }
         }
 
-        private async Task SendMaintainerCommands(ITurnContext turnContext, CancellationToken cancellationToken)
+        private static async Task SendMaintainerCommands(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var commands = typeof(MaintainerCommands)
                 .GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -296,7 +309,7 @@ namespace IssueNotificationBot
             }
         }
 
-        private object GetFakePRs()
+        private static object GetFakePRs()
         {
             var template = new
             {

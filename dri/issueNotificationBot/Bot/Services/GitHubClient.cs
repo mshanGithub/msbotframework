@@ -13,6 +13,7 @@ namespace IssueNotificationBot.Services
     {
         private readonly string _token;
         private readonly HttpClient _client;
+
         public GitHubClient(string token)
         {
             _token = token;

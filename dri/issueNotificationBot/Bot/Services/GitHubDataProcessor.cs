@@ -16,6 +16,7 @@ namespace IssueNotificationBot.Services
         internal readonly NotificationHelper NotificationHelper;
         internal readonly IConfiguration Configuration;
         internal readonly ILogger Logger;
+
         public GitHubDataProcessor(UserStorage userStorage, NotificationHelper notificationHelper, IConfiguration configuration, ILogger<GitHubIssueProcessor> logger)
         {
             UserStorage = userStorage;
@@ -24,17 +25,19 @@ namespace IssueNotificationBot.Services
             Logger = logger;
         }
 
-        internal DateTime GetExpiration(GitHubPR pr, TimePeriodNotification timePeriod, DateTime now)
+        internal static DateTime GetExpiration(GitHubPR pr, TimePeriodNotification timePeriod, DateTime now)
         {
             var adjustedExpiration = pr.CreatedAt.AddHours(timePeriod.ExpireHours);
             return GetExpiration(adjustedExpiration, pr.CreatedAt, timePeriod, now);
         }
-        internal DateTime GetExpiration(GitHubIssue issue, TimePeriodNotification timePeriod, DateTime now)
+
+        internal static DateTime GetExpiration(GitHubIssue issue, TimePeriodNotification timePeriod, DateTime now)
         {
             var adjustedExpiration = issue.CreatedAt.AddHours(timePeriod.ExpireHours);
             return GetExpiration(adjustedExpiration, issue.CreatedAt, timePeriod, now);
         }
-        private DateTime GetExpiration(DateTime adjustedExpiration, DateTime createdAt, TimePeriodNotification timePeriod, DateTime now)
+
+        private static DateTime GetExpiration(DateTime adjustedExpiration, DateTime createdAt, TimePeriodNotification timePeriod, DateTime now)
         {
             // 30d and 90d periods always include weekends.
             if (timePeriod.ExpireHours != 72) return adjustedExpiration;

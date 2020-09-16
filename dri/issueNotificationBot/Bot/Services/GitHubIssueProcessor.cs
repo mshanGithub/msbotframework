@@ -98,17 +98,17 @@ namespace IssueNotificationBot.Services
             }
         }
 
-        private bool IssueExpiredNeedsResolve(TimePeriodNotification timePeriod)
+        private static bool IssueExpiredNeedsResolve(TimePeriodNotification timePeriod)
         {
             return timePeriod.ExpireHours > Constants.IssueNeedsResolutionHours;
         }
 
-        private bool IssueExpiredNeedsResponse(DateTime expires, DateTime now)
+        private static bool IssueExpiredNeedsResponse(DateTime expires, DateTime now)
         {
             return now >= expires;
         }
 
-        private bool IssueNearingExpirationNeedsResponse(TimePeriodNotification timePeriod, DateTime expires, DateTime now)
+        private static bool IssueNearingExpirationNeedsResponse(TimePeriodNotification timePeriod, DateTime expires, DateTime now)
         {
             return now >= expires.AddHours(-timePeriod.NotifyPriorToExpiryHours);
         }

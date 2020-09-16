@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +26,7 @@ namespace IssueNotificationBot.Services
         public bool NotifyMaintainer = true;
         private readonly UserStorage UserStorage;
         private TrackedUser _Maintainer;
+
         public TrackedUser Maintainer
         {
             get
@@ -101,8 +101,8 @@ namespace IssueNotificationBot.Services
             var tcs = new TaskCompletionSource<ResourceResponse>();
             await CreatePersonalConversationAsync(user.ConversationReference, async (turnContext, cancellationToken2) =>
             {
-               var activityId = await turnContext.SendActivityAsync(activity, cancellationToken2);
-               tcs.SetResult(activityId);
+                var activityId = await turnContext.SendActivityAsync(activity, cancellationToken2);
+                tcs.SetResult(activityId);
             }, cancellationToken);
 
             return tcs.Task.GetAwaiter().GetResult();

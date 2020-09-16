@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>NU1701, RCS1090</NoWarn>
+    <NoWarn>NU1701, RCS1090, CA1031</NoWarn>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>NU1701, RCS1090</NoWarn>
+    <NoWarn>NU1701, RCS1090, CA1031</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

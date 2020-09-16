@@ -22,6 +22,7 @@ namespace IssueNotificationBot.Models
     public class NotificationSettings
     {
         public bool AllEnabled = true;
+
         public TimePeriodNotification[] TimePeriodNotifications =
         {
             new TimePeriodNotification(

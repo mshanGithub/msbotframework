@@ -20,7 +20,7 @@ namespace IssueNotificationBot.Services
         {
             var users = await UserStorage.GetGitHubUsers();
 
-            foreach(var user in users.Values)
+            foreach (var user in users.Values)
             {
                 await NotificationHelper.SendProactiveNotificationToUserAsync(user, activity ?? BroadcastMessage);
             }

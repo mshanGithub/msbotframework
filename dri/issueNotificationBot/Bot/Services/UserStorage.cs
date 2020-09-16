@@ -119,7 +119,7 @@ namespace IssueNotificationBot.Services
 
             var users = await GetGitHubUsers();
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 user.Value.NotificationSettings = toOverwrite;
             }

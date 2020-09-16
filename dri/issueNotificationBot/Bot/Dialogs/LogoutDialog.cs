@@ -13,6 +13,7 @@ namespace IssueNotificationBot
     public class LogoutDialog : ComponentDialog
     {
         private readonly ILogger Logger;
+
         public LogoutDialog(string id, string connectionName, ILogger<LogoutDialog> logger)
             : base(id)
         {

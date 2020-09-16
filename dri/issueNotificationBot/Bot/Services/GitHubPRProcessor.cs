@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -28,7 +27,7 @@ namespace IssueNotificationBot.Services
         {
             var now = DateTime.Now;
 
-            foreach(var user in TrackedUsers)
+            foreach (var user in TrackedUsers)
             {
                 // If we're tracking the user and they have PRs they're a reviewer for
                 if (prs.TryGetValue(user.Value.GitHubDetails.Login, out GitHubPRReviewer reviewer))
@@ -48,7 +47,7 @@ namespace IssueNotificationBot.Services
                     };
 
                     // Highlight > 3 day old PRs in Adaptive Card
-                    foreach(var pr in reviewer.Single.OrderBy(pr => pr.CreatedAt))
+                    foreach (var pr in reviewer.Single.OrderBy(pr => pr.CreatedAt))
                     {
                         var expires = GetExpiration(pr, notificationSetting, now);
                         if (now > expires)
@@ -88,7 +87,7 @@ namespace IssueNotificationBot.Services
             }
         }
 
-        private GitHubPRForCardTemplate ConvertPRtoTemplate(GitHubPR pr)
+        private static GitHubPRForCardTemplate ConvertPRtoTemplate(GitHubPR pr)
         {
             var group = !string.IsNullOrEmpty(pr.ReviewingForGroup) ? pr.ReviewingForGroup : "";
             const string groupReplacePattern = "(bf-)|(bb-)";
