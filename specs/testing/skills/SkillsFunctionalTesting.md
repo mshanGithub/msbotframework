@@ -6,10 +6,11 @@ Functional tests aim to ensure skills and skill consumers function correctly acr
 
 ### High level design goals <!-- omit in toc -->
 
-1. Validate existing functionality consistently and identify issues and potential regressions.
+1. Validate existing functionality consistently, identify issues and potential regressions.
 2. New functionality can be easily tested, without the need to recreate the complex topologies required when working with skills.
 3. The test infrastructure can be used either directly or as a template for support scenarios to repro customer issues.
-4. Execute automated functional tests regularly (as part of the CI/CD pipeline, scheduled or triggered manually).
+4. Execute automated functional tests regularly (as part of the CI/CD pipeline, on a regular schedule or triggered manually).
+5. Ensure a skill built with any of the languages supported by the SDK will work with any other bot built with a different language SDK.
 
 To support these goals, the testing infrastructure used to validate the functional tests derived from this document must be carefully considered.
 
@@ -40,6 +41,10 @@ To support these goals, the testing infrastructure used to validate the function
 - [Implementation notes](#implementation-notes)
   - [Consumers](#consumers)
   - [Skill](#skill)
+    - [GetWeather skill](#getweather-skill)
+    - [Travel skill](#travel-skill)
+    - [OAuth skill](#oauth-skill)
+    - [Teams skill](#teams-skill)
   - [Infrastructure](#infrastructure)
 - [Glossary](#glossary)
 
@@ -47,24 +52,13 @@ To support these goals, the testing infrastructure used to validate the function
 
 This section describes the testing scenarios for skills, for each one of them we provide a  high level description of the primary test case, the type of consumers used, the skill (or skills) involved and the [consumer/skill architecture](#consumerskill-architecture) used to deploy the testing components.
 
-The different permutations between consumers, skills and their implementation language are represented using a _test matrix_.
+The different permutations between consumers, skills and their implementation language are represented using a test matrix.
 
-The _variables_ section, lists the set of [variables](#variables) that apply to the test case and  need to be configured for each case in the matrix.
+The variables section lists the set of [variables](#variables) that apply to the test case and  need to be configured for each case in the matrix.
 
-Wherever is relevant, we also include a list of _alternate flows_ that describe small variations in the test case (e.g.: state of the consumer, state of the skill, error condition, special considerations).
-
-The skill bots have been implement so they implement the key BF feature at least once. Working here right now
+Wherever is relevant, we also include a list of alternate flows that describe small variations in the test case (e.g.: state of the consumer, state of the skill, error condition, special considerations, etc.).
 
 Given these elements, the number of test cases for each scenario can be calculated by multiplying the number of permutations in the matrix by the number of values for each variable and then multiplied by the number of alternate flows.
-
-The 
-
-There are four components necessary to create the full list of testing scenarios.
-
-- **[Consumer/Skill architecture](#consumerskill-architecture).** The topology used to deploy the consumer and the skills.
-- **State of the skill.** The current state of the skill, based on the *variables* list below.
-- **State of the consumer.** The current state of the consumer, based on the *variables* list below.
-- **What the skill wants to do.** This is the primary pivot for the testing scenarios, given in the *things a skill might want to do* list below.
 
 ### 1. Single turn interaction with a skill
 
@@ -72,8 +66,8 @@ There are four components necessary to create the full list of testing scenarios
 
 **Testing matrix**
 
-- Skill: GetWeather
-- Topology: Simple
+- Skill: [GetWeather](#getweather-skill)
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -95,8 +89,8 @@ There are four components necessary to create the full list of testing scenarios
 
 **Testing matrix**
 
-- Skill: BookFlight
-- Topology: Simple
+- Skill: [Travel](#travel-skill)
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -121,8 +115,8 @@ There are four components necessary to create the full list of testing scenarios
 
 **Testing matrix**
 
-- Skill: OAuthSkill
-- Topology: Simple
+- Skill: [OAuthSkill](#oauth-skill)
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -144,7 +138,7 @@ There are four components necessary to create the full list of testing scenarios
 **Testing matrix**
 
 - Skill: TBD
-- Topology: Simple
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -161,12 +155,12 @@ There are four components necessary to create the full list of testing scenarios
 
 ### 5. Skill sends a proactive message to consumer
 
-> TODO
+> A consumer calls a _timer skill_ and the skill finishes the conversation but stores some tasks. Then some time later the skill sends an update to the consumer.
 
 **Testing matrix**
 
 - Skill: TBD
-- Topology: Simple
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -189,7 +183,7 @@ There are four components necessary to create the full list of testing scenarios
 
 - Skill/Consumer: TBD
 - Skill: TBD
-- Topology: Skill chaining
+- Topology: [Skill chaning](#skill-chaining)
 
 ![Bot SDLC](media/Chaining.jpg)
 
@@ -200,7 +194,7 @@ There are four components necessary to create the full list of testing scenarios
 
 **Alternate flows**
 
-- TODO
+- Proactively initiate a multi turn conversation.
 
 **Total test cases:** 192 (not including alternate flows)
 
@@ -211,7 +205,7 @@ There are four components necessary to create the full list of testing scenarios
 **Testing matrix**
 
 - Skill: TeamsBot
-- Topology: Simple
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -236,7 +230,7 @@ There are four components necessary to create the full list of testing scenarios
 **Testing matrix**
 
 - Skill: TeamsBot
-- Topology: Simple
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -258,7 +252,7 @@ There are four components necessary to create the full list of testing scenarios
 **Testing matrix**
 
 - Skill: TBD
-- Topology: Simple
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -281,7 +275,7 @@ There are four components necessary to create the full list of testing scenarios
 **Testing matrix**
 
 - Skill: TBD
-- Topology: Simple
+- Topology: [Simple](#simple)
 
 ![Bot SDLC](media/Simple.jpg)
 
@@ -308,7 +302,9 @@ This section contains raw ideas to be incorporated in the scenarios enumerated a
 
 > The consumer is not engaged with a skill, the skill uses adaptive dialogs, and the skill wants to call `createConversation` in order to send a new proactive message.
 
-> The consumer engages with a skill in a group conversation. 
+> The consumer engages with a skill in a group conversation.
+
+> The consumer engages with a skill in a group conversation. And the skill starts a DM conversation with one of the users
 
 Using those examples, we can extrapolate a template for creating a realistic test scenario:
 
@@ -440,10 +436,21 @@ Based on the scenarios described above we will need to build the following artif
 
 ### Skill
 
-- GetWeather skill (Composer, C# no dialogs, JS no dialogs, Python no dialogs)
-- Travel skill (Composer, C# waterfall, JS waterfall, Python waterfall)
-- OAuth skill (C#, JS, Python)
-- Teams skill (C#, JS, Python)
+#### GetWeather skill
+
+Composer, C# no dialogs, JS no dialogs, Python no dialogs.
+
+#### Travel skill
+
+Composer, C# waterfall, JS waterfall, Python waterfall.
+
+#### OAuth skill
+
+C#, JS, Python
+
+#### Teams skill
+
+C#, JS, Python
 
 ### Infrastructure
 
