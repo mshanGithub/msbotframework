@@ -19,14 +19,14 @@ To support these goals, the testing infrastructure used to validate the function
 - [Scenarios](#scenarios)
   - [1. Single turn interaction with a skill](#1-single-turn-interaction-with-a-skill)
   - [2. Multi turn interaction with a skill](#2-multi-turn-interaction-with-a-skill)
-  - [3. The skill needs to authenticate the user with an OAuthCard](#3-the-skill-needs-to-authenticate-the-user-with-an-oauthcard)
-  - [4. The consumer authenticates the user and passes OAuth credentials to the skill using SSO](#4-the-consumer-authenticates-the-user-and-passes-oauth-credentials-to-the-skill-using-sso)
-  - [5. Skill sends a proactive message to consumer](#5-skill-sends-a-proactive-message-to-consumer)
-  - [6. Skill calls another skill](#6-skill-calls-another-skill)
-  - [7. A skill provides a teams task module](#7-a-skill-provides-a-teams-task-module)
-  - [8. A skill uses team specific APIs](#8-a-skill-uses-team-specific-apis)
-  - [9. A skill receives an attachment](#9-a-skill-receives-an-attachment)
-  - [10. Card actions that generate invokes and message activities.](#10-card-actions-that-generate-invokes-and-message-activities)
+  - [3. Skill sends a proactive message to consumer](#3-skill-sends-a-proactive-message-to-consumer)
+  - [4. Card actions that generate invokes and message activities](#4-card-actions-that-generate-invokes-and-message-activities)
+  - [5. The skill needs to authenticate the user with an OAuthCard](#5-the-skill-needs-to-authenticate-the-user-with-an-oauthcard)
+  - [6. The consumer authenticates the user and passes OAuth credentials to the skill using SSO](#6-the-consumer-authenticates-the-user-and-passes-oauth-credentials-to-the-skill-using-sso)
+  - [7. A skill uses team specific APIs](#7-a-skill-uses-team-specific-apis)
+  - [8. Skill calls another skill](#8-skill-calls-another-skill)
+  - [9. A skill provides a teams task module](#9-a-skill-provides-a-teams-task-module)
+  - [10. A skill receives an attachment](#10-a-skill-receives-an-attachment)
   - [XX. Draft scenarios](#xx-draft-scenarios)
 - [Reference](#reference)
   - [Things a skill might want to do](#things-a-skill-might-want-to-do)
@@ -78,7 +78,7 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Alternate flows**
 
-- TODO
+1. Negative test, a consumer tries to call a regular bot as a skill (and the bot is not a skill).
 
 **Total test cases:** 96 (not including alternate flows)
 
@@ -109,7 +109,52 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Total test cases:** 96 (not including alternate flows)
 
-### 3. The skill needs to authenticate the user with an OAuthCard
+### 3. Skill sends a proactive message to consumer
+
+> A consumer calls a _timer skill_ and the skill finishes the conversation but stores some tasks. Then, some time later the skill sends an update to the consumer as a message.
+
+**Testing matrix**
+
+- Skill: TBD
+- Topology: [Simple](#simple)
+
+![Bot SDLC](media/Simple.jpg)
+
+**Variables**
+
+- Auth context: Public Cloud, Gov Cloud, Sandboxed
+- Delivery mode: Normal, ExpectReplies
+
+**Alternate flows**
+
+1. The skill creates a conversation (in teams) and starts a 1:1 conversation with a user in the group.
+
+**Total test cases:** 96 (not including alternate flows)
+
+### 4. Card actions that generate invokes and message activities
+
+> TODO
+
+**Testing matrix**
+
+- Skill: TBD
+- Topology: [Simple](#simple)
+
+![Bot SDLC](media/Simple.jpg)
+
+**Variables**
+
+- Auth context: Public Cloud, Gov Cloud, Sandboxed
+- Delivery mode: Normal, ExpectReplies
+
+**Alternate flows**
+
+1. Skill sends proactive message that update to a card
+2. Skill sends proactive message that deletes a card.
+
+**Total test cases:** 96 (not including alternate flows)
+
+### 5. The skill needs to authenticate the user with an OAuthCard
 
 > A consumer bot starts a multi turn interaction with a skill (e.g.: how does my day look like) and the skill renders an OAuthPrompt to allow the user to log in, once the skill obtains a token it performs an operation, returns a response to the user and logs it out.
 
@@ -131,7 +176,7 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Total test cases:** 96 (not including alternate flows)
 
-### 4. The consumer authenticates the user and passes OAuth credentials to the skill using SSO
+### 6. The consumer authenticates the user and passes OAuth credentials to the skill using SSO
 
 > A consumer bot starts a multi turn interaction with a skill (e.g.: how does my day look like) and the skill renders an OAuthPrompt to allow the user to log in, once the skill obtains a token it performs an operation, returns a response to the user and logs it out.
 
@@ -153,74 +198,7 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Total test cases:** 96 (not including alternate flows)
 
-### 5. Skill sends a proactive message to consumer
-
-> A consumer calls a _timer skill_ and the skill finishes the conversation but stores some tasks. Then some time later the skill sends an update to the consumer.
-
-**Testing matrix**
-
-- Skill: TBD
-- Topology: [Simple](#simple)
-
-![Bot SDLC](media/Simple.jpg)
-
-**Variables**
-
-- Auth context: Public Cloud, Gov Cloud, Sandboxed
-- Delivery mode: Normal, ExpectReplies
-
-**Alternate flows**
-
-- TODO
-
-**Total test cases:** 96 (not including alternate flows)
-
-### 6. Skill calls another skill
-
-> TODO
-
-**Testing matrix**
-
-- Skill/Consumer: TBD
-- Skill: TBD
-- Topology: [Skill chaning](#skill-chaining)
-
-![Bot SDLC](media/Chaining.jpg)
-
-**Variables**
-
-- Auth context: Public Cloud, Gov Cloud, Sandboxed
-- Delivery mode: Normal, ExpectReplies
-
-**Alternate flows**
-
-- Proactively initiate a multi turn conversation.
-
-**Total test cases:** 192 (not including alternate flows)
-
-### 7. A skill provides a teams task module
-
-> TODO
-
-**Testing matrix**
-
-- Skill: TeamsBot
-- Topology: [Simple](#simple)
-
-![Bot SDLC](media/Simple.jpg)
-
-**Variables**
-
-- Auth context: Public Cloud, Gov Cloud, Sandboxed
-- Delivery mode: Normal, ExpectReplies
-
-**Alternate flows**
-
-- TODO
-
-**Total test cases:** 96 (not including alternate flows)
-
-### 8. A skill uses team specific APIs
+### 7. A skill uses team specific APIs
 
 > TODO: Currently not supported but it would involve things like:
 >
@@ -245,7 +223,52 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Total test cases:** 96 (not including alternate flows)
 
-### 9. A skill receives an attachment
+### 8. Skill calls another skill
+
+> TODO
+
+**Testing matrix**
+
+- Skill/Consumer: TBD
+- Skill: TBD
+- Topology: [Skill chaning](#skill-chaining)
+
+![Bot SDLC](media/Chaining.jpg)
+
+**Variables**
+
+- Auth context: Public Cloud, Gov Cloud, Sandboxed
+- Delivery mode: Normal, ExpectReplies
+
+**Alternate flows**
+
+- Proactively initiate a multi turn conversation.
+
+**Total test cases:** 192 (not including alternate flows)
+
+### 9. A skill provides a teams task module
+
+> TODO
+
+**Testing matrix**
+
+- Skill: TeamsBot
+- Topology: [Simple](#simple)
+
+![Bot SDLC](media/Simple.jpg)
+
+**Variables**
+
+- Auth context: Public Cloud, Gov Cloud, Sandboxed
+- Delivery mode: Normal, ExpectReplies
+
+**Alternate flows**
+
+- TODO
+
+**Total test cases:** 96 (not including alternate flows)
+
+### 10. A skill receives an attachment
 
 > As part of a multi turn conversation a skill is expecting a file that needs to be uploaded consumer bot and then relayed to the skill
 
@@ -267,28 +290,6 @@ Given these elements, the number of test cases for each scenario can be calculat
 - TODO
 
 **Total test cases:** 96? (not including alternate flows)
-
-### 10. Card actions that generate invokes and message activities.
-
-> TODO
-
-**Testing matrix**
-
-- Skill: TBD
-- Topology: [Simple](#simple)
-
-![Bot SDLC](media/Simple.jpg)
-
-**Variables**
-
-- Auth context: Public Cloud, Gov Cloud, Sandboxed
-- Delivery mode: Normal, ExpectReplies
-
-**Alternate flows**
-
-- TODO
-
-**Total test cases:** 96 (not including alternate flows)
 
 ### XX. Draft scenarios
 
@@ -355,7 +356,7 @@ Using those examples, we can extrapolate a template for creating a realistic tes
 - Network protocol: the consumer is accessed over straight HTTP (webchat) or Web Sockets (streaming clients)
 - BotFramework version for the skill: 4.x or 3.x.
 - Bot runtime: Composer bot, PVA or SDK coded bot.
-- Channel: Emulator, Teams, DirectLine
+- Channel: Emulator, Teams, DirectLine, DirectLine ASE (App Service Extension)
 - Bot programming language: C#, JS, Python or Java.
 - Bot Adapter: Skill or consumer use a OOTB adapter or custom channel adapter
 
