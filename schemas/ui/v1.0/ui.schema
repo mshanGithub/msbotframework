@@ -61,12 +61,12 @@
                         "properties": {
                             "title": {
                                 "title": "Title",
-                                "description": "Field set title",
+                                "description": "Field set title.",
                                 "type": "string"
                             },
                             "fields": {
                                 "title": "Fields",
-                                "description": "Array of property names",
+                                "description": "Array of property names.",
                                 "type": "array",
                                 "items": {
                                     "type": "string"
