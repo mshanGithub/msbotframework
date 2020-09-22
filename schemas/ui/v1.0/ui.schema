@@ -50,6 +50,37 @@
                         "type": "string"
                     }
                 },
+                "fieldSets": {
+                    "title": "Field sets",
+                    "description": "An array of field sets.",
+                    "type": "array",
+                    "items": {
+                        "title": "Field set",
+                        "description": "Groups fields into collapsible sections in the UI.",
+                        "type": "object",
+                        "properties": {
+                            "title": {
+                                "title": "Title",
+                                "description": "Field set title",
+                                "type": "string"
+                            },
+                            "fields": {
+                                "title": "Fields",
+                                "description": "Array of property names",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "defaultExpanded": {
+                                "title": "Default expanded",
+                                "description": "Default expanded state for the field set.",
+                                "type": "boolean",
+                                "default": false
+                            }
+                        }
+                    }
+                },
                 "label": {
                     "title": "Label",
                     "description": "Label override. Can either be a string or false to hide the label.",
