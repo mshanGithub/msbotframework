@@ -102,7 +102,7 @@ Given these elements, the number of test cases for each scenario can be calculat
 **Alternate flows**
 
 1. The consumer cancels the skill (sends EndOfConversation)
-2. The consumer sends parameters to the skill<
+2. The consumer sends parameters to the skill
 3. The skill sends a result to the consumer
 4. The skill sends an event to the consumer (GetLocation) and the consumer sends an event back to the skill.
 5. The skill throws and exception and fails (the consumer gets a 500 error)
@@ -127,13 +127,13 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Alternate flows**
 
-1. The skill creates a conversation (in teams) and starts a 1:1 conversation with a user in the group.
+1. The skill creates a conversation (in teams) and starts a 1:1 conversation with a user in the group. Note - the 1:1 conversations created persist, and there is no way to delete them. Repeated calls to createConversation will succeed however, and return the appropriate conversationId that can be re-used.
 
 **Total test cases:** 96 (not including alternate flows)
 
 ### 4. Card actions that generate invokes and message activities
 
-> TODO
+> The Consumer invokes the skill through a dialog, and the Skill sends an Adaptive Card that collects some information with a "Submit" button using Action.Submit as the action type.
 
 **Testing matrix**
 
@@ -149,8 +149,8 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Alternate flows**
 
-1. Skill sends proactive message that update to a card
-2. Skill sends proactive message that deletes a card.
+1. Skill sends proactive message that updates the card.
+2. Skill sends proactive message that deletes the card.
 
 **Total test cases:** 96 (not including alternate flows)
 
@@ -172,7 +172,7 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 **Alternate flows**
 
-- TODO
+- The Skill sends a proactive OAuthPrompt because a user token has expired.
 
 **Total test cases:** 96 (not including alternate flows)
 
@@ -204,6 +204,7 @@ Given these elements, the number of test cases for each scenario can be calculat
 >
 > - Retrieve list of channels in a team
 > - Get team info
+> - Retreive the _paged_ list of uses in a group where the group is large enough to necessitate more than one page.
 
 **Testing matrix**
 
@@ -248,7 +249,8 @@ Given these elements, the number of test cases for each scenario can be calculat
 
 ### 9. A skill provides a teams task module
 
-> TODO
+> The Skill responds to an action/submit invoke with a `taskInfo` object containing a Task Module with an Adaptive Card
+> The Skill responds to the submit action of a TaskModule
 
 **Testing matrix**
 
