@@ -51,7 +51,7 @@
                     }
                 },
                 "fieldsets": {
-                    "title": "Field sets",
+                    "title": "Field Sets",
                     "description": "An array of field sets.",
                     "type": "array",
                     "items": {
@@ -101,6 +101,11 @@
                         "type": "string"
                     },
                     "examples": [["*"]]
+                },
+                "pivotFieldsets": {
+                    "title": "Pivot Field Sets",
+                    "description": "If 'pivotFieldsets' is set to true, the field sets render in a tabbed view.",
+                    "type": "boolean"
                 },
                 "placeholder": {
                     "title": "Placeholder",
