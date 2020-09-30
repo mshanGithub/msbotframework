@@ -118,8 +118,8 @@ namespace IssueNotificationBot
 
         private bool MessageIsFromMaintainer(ITurnContext<IMessageActivity> turnContext)
         {
-            // We need to use Name here instead of ID, since ID changes between bots.
-            return turnContext.Activity.From.Name == NotificationHelper.Maintainer?.TeamsUserInfo.Name;
+            // The TeamsInfo.Id can change between bots (like dev and prod), but AadObjectId stays the same. 
+            return turnContext.Activity.From.AadObjectId == NotificationHelper.Maintainer?.TeamsUserInfo.AadObjectId;
         }
 
         private bool IsAdaptiveCardSubmitAction(ITurnContext<IMessageActivity> turnContext)
