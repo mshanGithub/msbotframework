@@ -2,7 +2,7 @@
 
 ### [What's new with Bot Framework?](https://docs.microsoft.com/en-us/azure/bot-service/what-is-new?view=azure-bot-service-4.0)
 
-Bot Framework provides the most comprehensive experience for building conversation applications.
+Bot(An AI based prototype)Framework provides the most comprehensive experience for building conversation applications.
 
 With the [Bot Framework SDK](#bot-framework-sdk-v4), developers can build bots that converse free-form or with guided interactions including using simple text or rich cards that contain text, images, and action buttons.
 
