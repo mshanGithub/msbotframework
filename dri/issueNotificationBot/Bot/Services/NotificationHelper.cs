@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using IssueNotificationBot.Models;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Teams;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -204,11 +206,28 @@ namespace IssueNotificationBot.Services
 
                     var conversationReference2 = turnContext1.Activity.GetConversationReference();
                     conversationReference2.User = conversationReference.User;
-                    await ((BotFrameworkAdapter)Adapter).ContinueConversationAsync(
-                        Configuration["MicrosoftAppId"],
-                        conversationReference2,
-                        async (turnContext2, cancellationToken2) => await callback(turnContext2, cancellationToken2),
-                        cancellationToken1);
+
+                    try
+                    {
+                        await ((BotFrameworkAdapter)Adapter).ContinueConversationAsync(
+                            Configuration["MicrosoftAppId"],
+                            conversationReference2,
+                            async (turnContext2, cancellationToken2) => await callback(turnContext2, cancellationToken2),
+                            cancellationToken1);
+                    }
+                    catch (ErrorResponseException e)
+                    {
+                        // Catch 403 error. They indicate the user has blocked the bot, so we'll also remove them from persistent storage.
+                        if (e.Message.Contains("Forbidden"))
+                        {
+                            await UserStorage.RemoveUser(conversationReference.User.Id);
+                            var errorMessage = $"{conversationReference.User.Name} has blocked the bot. Removing from persistent storage.";
+                            Logger.LogError(errorMessage);
+                            await SendProactiveNotificationToUserAsync(Maintainer, MessageFactory.Text(errorMessage));
+                        }
+
+                        throw;
+                    }
                 },
                 cancellationToken);
         }
