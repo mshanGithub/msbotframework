@@ -59,8 +59,7 @@ namespace IssueNotificationBot.Services
                 foreach (TimePeriodNotification timePeriod in user.NotificationSettings.TimePeriodNotifications.OrderByDescending(item => item.ExpireHours).ToList())
                 {
                     // Stop checking if we've already sent the notification
-                    var repoAndIssueNumber = NotificationHelper.GetRepoIssueNumberString(issue);
-                    if (NotificationHelper.IssueActivityMap.TryGetValue(repoAndIssueNumber, out MappedIssue mappedActivity) && mappedActivity.Users.TryGetValue(user.TeamsUserInfo.Id, out MappedActivityUser mappedUser))
+                    if (UserNotifiedWithinWindow(timePeriod, now, issue, user.TeamsUserInfo.Id))
                     {
                         return;
                     }
@@ -92,7 +91,7 @@ namespace IssueNotificationBot.Services
                         nearingOrExpiredMessage = Constants.NearingExpirationMessage;
                     }
 
-                    if (!string.IsNullOrEmpty(nearingOrExpiredMessage) && !UserNotifiedWithinWindow(timePeriod, now, issue, user.TeamsUserInfo.Id))
+                    if (!string.IsNullOrEmpty(nearingOrExpiredMessage))
                     {
                         await NotificationHelper.SendIssueNotificationToUserAsync(user, issue, nearingOrExpiredMessage, expires, action);
                     }
@@ -121,7 +120,7 @@ namespace IssueNotificationBot.Services
             var mappedUser = NotificationHelper.GetMappedActivityFromIssueAndUser(repoAndIssueNumber, teamsUserId);
             if (mappedUser != null)
             {
-                return mappedUser.SentAt.AddHours(timePeriod.NotificationFrequency) <= now;
+                return mappedUser.SentAt.AddHours(timePeriod.NotificationFrequency) >= now;
             }
             return false;
         }
