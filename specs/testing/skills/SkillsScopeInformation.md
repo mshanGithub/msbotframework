@@ -27,9 +27,9 @@ The purpose of this doc is to capture what is functionally in and out of scope a
 |Twilio-sms        |?|?|?|?|?|?|?|?|?|?|?|?|?|?|
 
 
-# Activity Update & Deleted supported
+# Activity Update & Delete via Adapted Card
 
-|                  |Update|Delete|
+|                  |Update Supported|Delete Supported|
 |------------------|--|-|
 |Console           |?|?|
 |Cortana           |?|?|
@@ -49,3 +49,26 @@ The purpose of this doc is to capture what is functionally in and out of scope a
 |Telegram          |?|?|
 |Webchat           |?|?|
 |Twilio-sms        |?|?|
+
+
+# Can bot initiate conversation with previously unmessaged/new user?
+|                  |Can it?|
+|------------------|--|
+|Console           |?|
+|Cortana           |?|
+|DirectLine        |?|
+|DirectLine Speech |?|
+|Email             |?|
+|Emulator          |?|
+|Facebook          |?|
+|GroupMe           |?|
+|Kik               |?|
+|Line              |?|
+|MSTeams           |✅|
+|Skype             |?|
+|Skype for Business|?|
+|Slack             |?|
+|SMS               |?|
+|Telegram          |?|
+|Webchat           |?|
+|Twilio-sms        |?|
