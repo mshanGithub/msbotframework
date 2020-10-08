@@ -52,23 +52,23 @@ The purpose of this doc is to capture what is functionally in and out of scope a
 
 
 # Can bot initiate conversation with previously unmessaged/new user?
-|                  |Can it?|
-|------------------|--|
-|Console           |?|
-|Cortana           |?|
-|DirectLine        |?|
-|DirectLine Speech |?|
-|Email             |?|
-|Emulator          |?|
-|Facebook          |?|
-|GroupMe           |?|
-|Kik               |?|
-|Line              |?|
-|MSTeams           |✅|
-|Skype             |?|
-|Skype for Business|?|
-|Slack             |?|
-|SMS               |?|
-|Telegram          |?|
-|Webchat           |?|
-|Twilio-sms        |?|
+|                  |Can it?| Notes|
+|------------------|-------| ---- |
+|Console           |?| |
+|Cortana           |?| |
+|DirectLine        |?| |
+|DirectLine Speech |?| |
+|Email             |?| |
+|Emulator          |?| |
+|Facebook          |?| |
+|GroupMe           |?| |
+|Kik               |?| |
+|Line              |?| |
+|MSTeams           |✅|Can message users in the conversation, or on the team. Can't message users it can't see.|
+|Skype             |?| |
+|Skype for Business|?| |
+|Slack             |?| |
+|SMS               |?| |
+|Telegram          |?| |
+|Webchat           |?| |
+|Twilio-sms        |?| |
