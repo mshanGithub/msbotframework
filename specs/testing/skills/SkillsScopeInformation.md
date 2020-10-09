@@ -94,3 +94,12 @@ The purpose of this doc is to capture what is functionally in and out of scope a
 |Telegram          |?|?|?|
 |Webchat           |?|?|?|
 |Twilio-sms        |?|?|?|
+
+# Auth support for environments
+|             |SSO|OAuth Card|OAuth Prompt|
+|-------------|---|----------|------------|
+|Public Cloud |?|?|?|
+|Gov Cloud    |?|?|?|
+|Sandbox      |?|?|?|
+|Composer     |?|?|?|
+|Emulator     |?|?|?|
