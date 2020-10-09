@@ -72,3 +72,25 @@ The purpose of this doc is to capture what is functionally in and out of scope a
 |Telegram          |?| |
 |Webchat           |?| |
 |Twilio-sms        |?| |
+
+# Auth support for channels
+|                  |SSO|OAuth Card|OAuth Prompt|
+|------------------|--|-|-|
+|Console           |?|?|?|
+|Cortana           |?|?|?|
+|DirectLine        |?|?|?|
+|DirectLine Speech |?|?|?|
+|Email             |?|?|?|
+|Emulator          |?|?|?|
+|Facebook          |?|?|?|
+|GroupMe           |?|?|?|
+|Kik               |?|?|?|
+|Line              |?|?|?|
+|MSTeams           |?|✅|✅|
+|Skype             |?|?|?|
+|Skype for Business|?|?|?|
+|Slack             |?|?|?|
+|SMS               |?|?|?|
+|Telegram          |?|?|?|
+|Webchat           |?|?|?|
+|Twilio-sms        |?|?|?|
