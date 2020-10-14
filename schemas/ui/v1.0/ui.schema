@@ -69,7 +69,34 @@
                                 "description": "Array of property names.",
                                 "type": "array",
                                 "items": {
-                                    "type": "string"
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "properties": {
+                                                "title": {
+                                                    "title": "Title",
+                                                    "description": "Field set title.",
+                                                    "type": "string"
+                                                },
+                                                "fields": {
+                                                    "title": "Fields",
+                                                    "description": "Array of property names.",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "defaultExpanded": {
+                                                    "title": "Default expanded",
+                                                    "description": "Default expanded state for the field set.",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                }
+                                            }
+                                        }
+                                    ]
                                 }
                             },
                             "defaultExpanded": {
