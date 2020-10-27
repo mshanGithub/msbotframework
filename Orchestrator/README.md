@@ -14,7 +14,7 @@ See https://aka.ms/bf-orchestrator.
 - [API reference](https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/API_reference.md)
 - [Roadmap](https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/API_reference.md#Roadmap)
 - [BF CLI Orchestrator plugin](https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator )
-- [Natural Language Representation](https://aka.ms/nlrversions) base models
+- [Natural Language Representation](https://aka.ms/NLRModels) base models
 
 
 
