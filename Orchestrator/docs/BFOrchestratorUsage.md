@@ -44,7 +44,7 @@ bf orchestrator:create --model <base model folder> --in <label file folder> --ou
 
 If you already have an adaptive dialogs solution with .lu label files in different dialog folders for which you would like to create a top dispatcher, you need to use the  ```bf orchestrator:build``` to process the folder hierarchy and create snapshot files for each dialog (optionally a corresponding scaffold .dialog file for declarative scenario)
 
-**TBD** Explain add & add build command
+**TBD** Explain build command
 
 ```
 bf orchestrator:build ...
@@ -84,13 +84,13 @@ At the moment only the default base model is available to Orchestrator solutions
 
 
 
-##### Non-Adaptive (V4) Scenario
+##### Dispatch Scenario
 
-**TBD**: is this waterfall?
+To migrate from legacy dispatch scenario replace the top LUIS arbitrator with Orchestrator. Simply define a [Microsoft.Bot.Builder.AI.Orchestrator.OrchestratorRecognizer][10] and use directly or via dependency injection to process user utterance for intent detection.  
 
-Once the language model is ready integrate 
+See [Dispatch Migration Example][11].
 
-**TBD**: See sample (or example line) here...
+
 
 
 
@@ -137,6 +137,9 @@ See [Report Interpretation][6] for more.
 [8]:https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language understanding"
 
 [9]:https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets "ML testing"
+[10]:https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/API_reference.md "API Reference"
+[11]:https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/DispatchMigrationExample.md "Dispatch Example"
+
 
 
 
