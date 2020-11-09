@@ -2,16 +2,24 @@
 
 
 
-# Natural Language Representation Model
+# Prebuilt Language Models
 
-
-Natural Language Representation models are generic language representation models which have been trained towards more sophisticated pretraining tasks for both monolingual as well as multilingual scenarios. Turing NLR models are used as a natural replacement for BERT-like models.
+Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios. In public preview only English models are made available.
 
 ## Models
+The public preview of Orchestrator includes the following prebuilt language models available in [versions repository][2].
 
-**TBD**: Describe models in [versions repository][2].
+### pretrained.20200924.microsoft.dte.00.03.en.onnx
+This is a fast and small base model with sufficient accuracy but if the accuracy and not speed and memory size is critical then consider other options. It is a 3-layer pretrained BERT model optimized for conversation for example-based use (KNN).
 
+### pretrained.20200924.microsoft.dte.00.06.en.onnx
+This is A high quality base model that strikes the balance between size, speed and accuracy. It is a 6-layer pretrained BERT model optimized for conversation for example-based use (KNN).
 
+### pretrained.20200924.microsoft.dte.00.12.en.onnx
+This is a highest quality base model but is larger and slower than other options. It is a 12-layer pretrained BERT model optimized for conversation for example-based use (KNN).
+
+### pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx
+This is a high quality base model but it is larger and slower than some other options. It is a 12-layer pretrained RoBERTa model optimized for conversation for example-based use (KNN).
 
 ## References
 
