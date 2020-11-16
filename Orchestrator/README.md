@@ -158,20 +158,12 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 ## Additional Reading
 
 - [Tech overview][18]
-
 - [API reference][14]
-
 - [Roadmap](./docs/Overview.md#Roadmap)
-
 - [BF CLI Orchestrator plugin][11]
-
 - [C# samples][12]
-
 - [NodeJS samples][13]
-
 - [BF Orchestrator Command Usage][23]
-
-  
 
 [1]:https://luis.ai
 [2]:https://qnamaker.ai
