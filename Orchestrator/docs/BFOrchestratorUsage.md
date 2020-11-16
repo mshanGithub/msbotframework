@@ -22,7 +22,20 @@ If you are developing a new language model, simply refer to [Language understand
 
 In case of migration from legacy dispatch, you may need to retrieve your LUIS application language model using the ```bf luis:version:export``` command to .lu file or QnA Maker knowledgebase using ```bf qnamaker:kb:export```  to .qna format. 
 
-**TBD**: See sample (or example line) here...
+Example:
+```Batch
+call bf luis:version:list --appId %APPID% --endpoint %EP% --subscriptionKey %KEY% --out %OUT%\ver.json
+
+@rem select (manually) from version list in ver.json
+set VERID=0.1
+call bf luis:version:export --appId %APPID% --endpoint %EP% --subscriptionKey %KEY% --versionId %VERID% --out %LUJSON%
+call bf luis:convert --in %LUJSON% --out %LULU%
+
+echo Retrieve and convert QnAMaker KB
+call bf qnamaker:kb:export --kbId %KBID% --subscriptionKey %QNAKEY% --qnaFormat > %QNA% 
+@rem If already in Json format, instead just convert to qna format:
+@rem call bf qnamaker:convert --in <file.json> --out <file.qna>
+```
 
 ### 2. Download base model
 
@@ -72,7 +85,7 @@ See also [bf orchestrator test](https://github.com/microsoft/botframework-cli/tr
 
 See also [Report Interpretation][6] for how to use the report to fine tune your language model. 
 
-You can improve your language model by adding or revising examples directly from [.lu][2] files, or interactively by using bf orchestrator:interactive command (see also [Interactive Command][7]).
+You can improve your language model by adding or revising examples directly from [.lu][2] files, or interactively by using ```bf orchestrator:interactive``` command (see also [Interactive Command][7]).
 
 ### 5. Integrate Orchestrator language recognizer in your bot
 
@@ -82,33 +95,34 @@ See the specific variations for your solution below.
 
 ##### Composer Scenario
 
-Once the feature flag is enabled in  [Bot Framework Composer][5] it is possible to specify  Orchestrator as a dialog recognizer and supply the resulting label file from above or use language data as you would normally for LUIS. This enables the basic  intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. See more about Composer Recognizers [here](https://docs.microsoft.com/en-us/composer/concept-dialog#recognizer).
+It is possible to specify  Orchestrator as a dialog recognizer in [Bot Framework Composer][5].  To use Orchestrator in Composer:
 
-At the moment only the default base model is available to Orchestrator solutions.
+1. Enable Orchestrator feature in Composer's Application Settings
+2. In desired dialog select Orchestrator the recognizer dropdown menu
+3. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality.
 
-**TBD**: See sample (or example line) here...
+This enables basic  intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. See more about Composer Recognizers [here](https://docs.microsoft.com/en-us/composer/concept-dialog#recognizer).
+
+###### Limitations
+
+* **Important**: Orchestrator is limited to intents only. Entity definitions in LU will be ignored and no extraction will be performed during recognition. 
+* Only the *default* base model is available to Orchestrator solutions.
+
+See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) bot sample for more. 
 
 
 
 ##### Non-Adaptive (V4) Scenario
 
-**TBD**: is this waterfall?
-
-Once the language model is ready integrate 
-
-**TBD**: See sample (or example line) here...
-
-
-
-##### Adaptive Dialog Scenario
-
-**TBD** 
+The example [NLP with Orchestrator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot#nlp-with-orchestrator) illustrates how to use Orchestrator's recognizer in code using the scenario of migrating from legacy dispatch solution.
 
 
 
 ##### Declarative Dialog Scenario
 
-**TBD**
+The best example of declarative use is by inspecting the assets (.dialog files)  produced by Bot Framework Composer.
+
+
 
 ## Advanced Command
 
