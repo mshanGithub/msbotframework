@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-## 									-- DRAFT --
-
-
-
-# Natural Language Representation Model
-
-
-Natural Language Representation models are generic language representation models which have been trained towards more sophisticated pretraining tasks for both monolingual as well as multilingual scenarios. Turing NLR models are used as a natural replacement for BERT-like models.
-
-## Models
-
-**TBD**: Describe models in [versions repository][2].
-
-
-=======
 # Prebuilt Language Models
 
 Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios. In public preview only English models are made available.
@@ -32,21 +16,10 @@ This is a highest quality base model but is larger and slower than other options
 
 ### pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx
 This is a high quality base model but it is larger and slower than some other options. It is a 12-layer pretrained RoBERTa model optimized for conversation for example-based use ([KNN][3]).
->>>>>>> origin/main
 
 ## References
 
 * [UniLMv2 Paper][1]
-<<<<<<< HEAD
-
-* [NLR Versions Repository][2]
-
-* 
-
-[1]: https://arxiv.org/abs/2002.12804 "UniLMv2: Pseudo-Masked Language Models for Unified Language Model Pre-Training"
-[2]: https://aka.ms/nlrversions
-
-=======
 * [Base Models Versions Repository][2]
 * [KNN (K nearest neighbors algorithm)][3]
 * [Model Evalutions][4]
@@ -55,4 +28,3 @@ This is a high quality base model but it is larger and slower than some other op
 [2]: https://aka.ms/nlrversions
 [3]: https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm
 [4]: ./Overview.md#evaluation-of-orchestrator-on-snips
->>>>>>> origin/main

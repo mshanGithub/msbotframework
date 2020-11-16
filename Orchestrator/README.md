@@ -1,25 +1,3 @@
-<<<<<<< HEAD
-# Orchestrator [PREVIEW]
-
-Orchestrator Preview documentation is available in the *Experimental* section:
-
-See https://aka.ms/bf-orchestrator.
-
-
-
-## References
-
-
-
-- [Tech overview](https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/Overview.md)
-- [API reference](https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/API_reference.md)
-- [Roadmap](https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/docs/API_reference.md#Roadmap)
-- [BF CLI Orchestrator plugin](https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator )
-- [Natural Language Representation](https://aka.ms/NLRModels) base models
-
-
-
-=======
 # Orchestrator (PREVIEW)
 
 Conversational AI applications today are built using disparate technologies to fulfill language understanding (LU) needs e.g. [LUIS][1], [QnA Maker][2]. Often, conversational AI applications are also built by assembling different [skills][3] each of which fulfill a specific conversation topic and can be built using different LU technologies. Hence, conversational AI applications typically require LU arbitration/ decision making to route incoming user request to an appropriate skill or to dispatch to a specific sub-component. Orchestration refers to the ability to perform LU arbitration/ decision making for a conversational AI application.  
@@ -197,4 +175,3 @@ Once the feature flag is enabled in Composer, it is possible to specify Orchestr
 [20]: https://aka.ms/NLRModels "Natural Language Representation Models"
 [21]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0	"LU file format"
 [22]:./docs/BFOrchestratorReport.md "report interpretation"
->>>>>>> origin/main
