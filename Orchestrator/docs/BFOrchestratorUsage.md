@@ -99,14 +99,7 @@ It is possible to specify  Orchestrator as a dialog recognizer in [Bot Framework
 
 1. Enable Orchestrator feature in Composer's Application Settings
 2. In desired dialog select Orchestrator the recognizer dropdown menu
-3. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality.
-
-This enables basic  intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. See more about Composer Recognizers [here](https://docs.microsoft.com/en-us/composer/concept-dialog#recognizer).
-
-###### Limitations
-
-* **Important**: Orchestrator is limited to intents only. Entity definitions in LU will be ignored and no extraction will be performed during recognition. 
-* Only the *default* base model is available to Orchestrator solutions.
+3. Review, evaluate and adjust examples in language data as you would normally for LUIS / Orchestrator to ensure recognition quality.
 
 See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) bot sample for more. 
 
