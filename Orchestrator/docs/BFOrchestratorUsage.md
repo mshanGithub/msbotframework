@@ -97,8 +97,8 @@ See the specific variations for your solution below.
 
 It is possible to specify  Orchestrator as a dialog recognizer in [Bot Framework Composer][5].  To use Orchestrator in Composer:
 
-1. Enable Orchestrator feature in Composer's Application Settings
-2. In desired dialog select Orchestrator the recognizer dropdown menu
+1. Enable Orchestrator feature in Composer's Application Settings.
+2. Select Orchestrator in the recognizer dropdown menu.
 3. Review, evaluate and adjust examples in language data as you would normally for LUIS / Orchestrator to ensure recognition quality.
 
 See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) bot sample for more. 
