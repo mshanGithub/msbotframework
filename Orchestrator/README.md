@@ -138,7 +138,7 @@ const myDialog = new AdaptiveDialog('myDialog').configure({
 
 ## Composer Integration
 
-Orchestrator has been can be used as recognizer in [Bot Framework Composer][19]. To specify Orchestrator as a dialog recognizer:
+Orchestrator can be used as recognizer in [Bot Framework Composer][19]. To specify Orchestrator as a dialog recognizer:
 
 1. Enable Orchestrator feature in Composer's Application Settings
 2. In desired dialog select Orchestrator the recognizer dropdown menu
