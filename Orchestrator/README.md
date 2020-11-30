@@ -178,7 +178,7 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [11]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator
 [12]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/csharp_dotnetcore
 [13]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/javascript_nodejs
-[14]:./docs/API_reference.md
+[14]:https://aka.ms/bforchestratorapi	"SDK API"
 [15]: TBD/AvailableIndex
 [16]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratorcreate
 [17]:TBD/AvailableIndex
