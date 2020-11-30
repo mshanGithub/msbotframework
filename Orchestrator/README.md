@@ -35,7 +35,7 @@ In most cases, the [Bot Framework CLI][7] and [Bot Framework CLI Orchestrator pl
 
 To use the CLI, install the [Bot Framework CLI Orchestrator plugin][11].
 
-On the [BF Orchestrator command usage][23] page:
+See the [BF Orchestrator command usage][23] page for instructions:
 
 - Steps 1-3 describe how to prepare and optimize a snapshot of your Orchestrator model.
 - Step 4 describes how to evaluate and improve the performance of your snapshot.
@@ -126,9 +126,9 @@ This enables basic intent recognition. For more advanced scenarios follow the st
 ## Limitations
 <!--Assuming this applies to the entire article, not just the Composer integration section.-->
 
-> **Important**:
-> Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
-> Only the *default* base model is available to Orchestrator solutions.
+**Important**:
+Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
+Only the *default* base model is available to Orchestrator solutions.
 
 See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) for an example of using Orchestrator commandlets to improve the quality of a .lu training set and using Composer to build a bot from examples in .lu format.
 
@@ -155,7 +155,7 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [11]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator
 [12]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/csharp_dotnetcore
 [13]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/javascript_nodejs
-[14]:./docs/API_reference.md <!--broken link-->
+[14]:./docs/API_reference.md
 <!--[15]: TBD/AvailableIndex unused-->
 [16]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratorcreate
 <!--[17]:TBD/AvailableIndex unused-->
