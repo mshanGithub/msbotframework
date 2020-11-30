@@ -130,17 +130,17 @@ This enables basic intent recognition. For more advanced scenarios follow the st
 Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
 Only the *default* base model is available to Orchestrator solutions.
 
-See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) for an example of using Orchestrator commandlets to improve the quality of a .lu training set and using Composer to build a bot from examples in .lu format.
-
 ## Additional Reading
 
 - [Tech overview][18]
-- [API reference][14] <!--broken link-->
+<!-- - [API reference][14] broken link -->
 - [Roadmap](./docs/Overview.md#Roadmap)
 - [BF CLI Orchestrator plugin][11]
 - [C# samples][12]
 - [NodeJS samples][13]
 - [BF Orchestrator Command Usage][23]
+
+See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) for an example of using Orchestrator commandlets to improve the quality of a .lu training set and using Composer to build a bot from examples in .lu format.
 
 [1]:https://luis.ai
 [2]:https://qnamaker.ai
