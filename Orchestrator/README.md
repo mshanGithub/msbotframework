@@ -1,34 +1,49 @@
 # Orchestrator (PREVIEW)
 
-Conversational AI applications today are built using disparate technologies to fulfill language understanding (LU) needs e.g. [LUIS][1], [QnA Maker][2]. Often, conversational AI applications are also built by assembling different [skills][3] each of which fulfill a specific conversation topic and can be built using different LU technologies. Hence, conversational AI applications typically require LU arbitration/ decision making to route incoming user request to an appropriate skill or to dispatch to a specific sub-component. Orchestration refers to the ability to perform LU arbitration/ decision making for a conversational AI application.  
+Conversational AI applications today are built using disparate technologies to fulfill language understanding (LU) needs, such as [LUIS][1] and [QnA Maker][2]. Often, conversational AI applications are also built by accessing various skill bots, such as [Virtual Assistant skills][3], each of which handle a specific conversation topic and can be built using different LU technologies. Hence, conversational AI applications typically require LU to route an incoming user request to an appropriate skill or to dispatch to a specific sub-component.
 
-[Orchestrator][18] is a [transformer][4] based solution that is optimized for conversational AI applications. It is built ground-up to run locally with your bot.
+<!-- Coining the term "orchestration" doesn't seem necessary. -->
+
+<!-- Discussing the underlying technology also doesn't seem necessary here. Mention in the technical overview, instead. -->
+
+[Orchestrator][18] is an LU solution optimized for conversational AI applications. It is built ground-up to run locally with your bot.
 
 ## Scenarios
-**Dispatch**: Orchestrator is a successor to [dispatch][5]. You can use Orchestrator instead of the current dispatch solution to arbitrate across your [LUIS][1] and [QnA Maker][2] applications. With Orchestrator, you are likely to see:
+
+**Routing**: For bots, Orchestrator can replace the [LUIS Dispatch tool][5]. You can use Orchestrator instead of Dispatch to aggregate multiple [LUIS][1] and [QnA Maker][2] applications. With Orchestrator, you are likely to see:
 
 - Improved classification accuracy
 - Higher resilience to data imbalance across your LUIS and QnA Maker authoring data.
 - Ability to correctly dispatch from relatively little authoring data.
 
-**Intent Recognizer**: You can use Orchestrator as an intent recognizer with [Adaptive dialogs][6]. Using the same approach as in the dispatch scenario above in order to route to responses within your bot logic.
+**Intent recognizer**: You can use Orchestrator as an intent recognizer with [adaptive dialogs][6] to route user input to an appropriate skill or sub-component.
 
-**Entity Extraction** is not supported yet.  It is on the planning roadmap to add entity extraction in the future.
+**Entity extraction** is not yet supported.
 
-## Authoring Experience
+## Authoring experience
 
 Orchestrator can be used in different development environments:
 
-* **Code First**: Orchestrator can be integrated into your code project by replacing LUIS for intent recognition such as for skill delegation or dispatching to subsequent language understanding services.  See [Runtime Integration](#runtime-integration) section for more.
-* [Bot Framework Composer][19]: Orchestrator can be selected as a recognizer within Bot Framework Composer. At this point there are limitations to using Orchestrator in Composer primarily around importing of existing models and tuning up recognition performance (* currently available only if the feature flag is enabled with Composer).
+- [Bot Framework SDK][24]: Orchestrator can be integrated into your code project by replacing LUIS for intent recognition such as for skill delegation or dispatching to subsequent language understanding services. See the [Runtime integration](#runtime-integration) section for more. <!--We don't yet document Orchestrator in the SDK docs. Do we need to?-->
+- [Bot Framework Composer][19]: Orchestrator can be selected as a recognizer within Bot Framework Composer. At this point there are limitations to using Orchestrator in Composer, primarily around importing of existing models and tuning recognition performance. (To use Orchestrator, enable the feature flag in your Composer settings.)
 
-Thus, use of [BF command line tool][7] to prepare and optimize the model for your domain is required in most, if not all, use cases.   To illustrate the workflow, here is a sample the end to end authoring experience:
+In most cases, use of the [Bot Framework CLI][7] and [Bot Framework CLI Orchestrator plugin][11] is required to prepare and optimize the model for your domain. [BF Orchestrator command usage][23] describes how to create, evaluate, and use an Orchestrator model. This diagram illustrates the first part of that process. <!--The diagram leaves off steps 4 and 5.-->
 
 <p align="center">
   <img width="350" src="./docs/media/authoring.png" />
 </p>
 
-### Prepare
+To use the CLI, install the [Bot Framework CLI Orchestrator plugin][11].
+
+In [BF Orchestrator command usage][23]:
+
+- Steps 1-3 describe how to prepare and optimize a snapshot of your Orchestrator model.
+- Step 4 describes how to evaluate and improve the performance of your snapshot.
+- Step 5 describes how to integrate the Orchestrator language recognizer with your bot.
+
+<!--Is there a reason to summarize this process here, instead of just linking to the **BF Orchestrator Command Usage** topic?
+
+### To prepare and optimize your Orchestrator model
 
 * Pre-requisite: Install [BF CLI Orchestrator plugin][11] first.
 
@@ -39,26 +54,32 @@ Thus, use of [BF command line tool][7] to prepare and optimize the model for you
    * See `bf orchestrator:basemodel:list` for alternate models. You may need to experiment with the different models to find which performs best for your language domain.
 3. Combine the label file .lu from (1) with the base model from (2) to create a *snapshot* file with a .blu extension.
    * Use [`bf orchestrator:create`][16] to create just a single .blu snapshot file for all Lu/json/qna tsv files for dispatch scenario.
+-->
 
-### Validate
+<!--This is insufficient information, but again the other article covers this.
+
+### To evaluate the performance of your Orchestrator model
 
 * Create another test .lu file similar to (1) with utterances that are similar but are not identical to the ones specified in the example based .lu definition in (1). This is typically variations on end-user utterances. 
 * Test quality of utterance to intent recognition. 
 * Examine report to ensure that the recognition quality is satisfactory. See more in [Report Interpretation][22].
 * If not, adjust the label file in (1) and repeat this cycle.
+-->
 
-## Runtime Integration
+## SDK integration
 
-For use in dispatch scenario, you can create `OrchestratorRecognizer` and provide it the path to the model as well the snapshot. Use the `RecognizeAsync` (C#), `recognizeAsync` (JS) method to have Orchestrator recognize user input. 
+To use Orchestrator in place of Dispatch in an existing bot:
 
-**C#:**
+- Create an _Orchestrator recognizer_ and provide it the path to the basemodel and your snapshot.
+- Use the recognizer's _recognize_ method to recognize user input.
 
-- Add reference to `Microsoft.Bot.Builder.AI.Orchestrator` package.
-- Set your project to target `x64` platform
-- Install latest supported version of [Visual C++ redistributable package](https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads)
+### In a C\# bot
 
+- Install the `Microsoft.Bot.Builder.AI.Orchestrator` NuGet package.
+- Set your project to target `x64` platform.
+- Install the latest supported version of the [Visual C++ redistributable package](https://support.microsoft.com/help/2977003/the-latest-supported-visual-c-downloads).
 
-```C# 
+```csharp
 using Microsoft.Bot.Builder.AI.Orchestrator;
 
 // Get Model and Snapshot path.
@@ -76,11 +97,11 @@ OrchestratorRecognizer orc = new OrchestratorRecognizer()
 var recoResult = await orc.RecognizeAsync(turnContext, cancellationToken);
 ```
 
-**JS:**
+### In a JavaScript bot
 
-- Add `botbuilder-ai-orchestrator` package to your bot
+- Install the `botbuilder-ai-orchestrator` npm package to your bot.
 
-```JS
+```javascript
 const { OrchestratorRecognizer } = require('botbuilder-ai-orchestrator');
 
 // Create OrchestratorRecognizer.
@@ -92,68 +113,24 @@ const dispatchRecognizer = new OrchestratorRecognizer().configure({
 const recoResult = await dispatchRecognizer.recognize(context);
 ```
 
-2. For use in adaptive dialogs, set the `recognizer` to `OrchestratorAdaptiveRecognizer`
-
-**C#:**
-- Add reference to `Microsoft.Bot.Builder.AI.Orchestrator` package.
-
-```C#
-using Microsoft.Bot.Builder.AI.Orchestrator;
-
-// Get Model and Snapshot path.
-string modelPath = Path.GetFullPath(OrchestratorConfig.ModelPath);
-string snapshotPath = Path.GetFullPath(OrchestratorConfig.SnapshotPath);
-
-// Create adaptive dialog
-const myDialog = new AdaptiveDialog()
-{
-    // Set Recognizer to OrchestratorAdaptiveRecognizer.
-    Recognizer = new OrchestratorAdaptiveRecognizer()
-    {
-        ModelPath = modelPath,
-        SnapshotPath = snapshotPath
-    }
-}
-```
-
-**JS:**
-
-- Add `botbuilder-ai-orchestrator` package to your bot.
-
-```JS
-const { OrchestratorAdaptiveRecognizer } = require('botbuilder-ai-orchestrator');
-
-// Create adaptive dialog.
-const myDialog = new AdaptiveDialog('myDialog').configure({
-    // Set recognizer to OrchestratorAdaptiveRecognizer.
-    recognizer: new OrchestratorAdaptiveRecognizer().configure(
-    {
-        modelPath: new StringExpression(process.env.ModelPath),
-        snapshotPath: new StringExpression(process.env.RootDialogSnapshotPath),
-    });
-})
-```
-
-
-
-## Composer Integration
+## Composer integration
 
 Orchestrator can be used as recognizer in [Bot Framework Composer][19]. To specify Orchestrator as a dialog recognizer:
 
-1. Enable Orchestrator feature in Composer's Application Settings.
-2. Select Orchestrator in the recognizer dropdown menu.
+1. Enable the Orchestrator feature in Composer's **Application Settings** page.
+2. Select **Orchestrator** in the **Recognizer Type** drop-down menu for your bot.
 3. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality.
 
-This enables basic  intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. See more about Composer Recognizers [here](https://docs.microsoft.com/en-us/composer/concept-dialog#recognizer).
+This enables basic intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. For more information about recognizers in Composer, see the discussion of [recognizers](https://docs.microsoft.com/composer/concept-dialog#recognizer) with respect to dialogs in Composer.
 
-###### Limitations
+## Limitations
+<!--Assuming this applies to the entire article, not just the Composer integration section.-->
 
-* **Important**: Orchestrator is limited to intents only. Entity definitions in LU will be ignored and no extraction will be performed during recognition. 
-* Only the *default* base model is available to Orchestrator solutions.
+> [!IMPORTANT]
+> Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
+> Only the *default* base model is available to Orchestrator solutions.
 
-See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) bot sample for more. 
-
-
+See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) for an example of using Orchestrator commandlets to improve the quality of a .lu training set and using Composer to build a bot from examples in .lu format.
 
 ## Additional Reading
 
@@ -167,9 +144,9 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 
 [1]:https://luis.ai
 [2]:https://qnamaker.ai
-[3]:https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-skills-overview?view=azure-bot-service-4.0
+[3]:https://microsoft.github.io/botframework-solutions/index
 [4]:https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)
-[5]:https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs
+[5]:https://docs.microsoft.com/azure/bot-service/bot-builder-tutorial-dispatch?tabs=cs
 [6]:https://aka.ms/adaptive-dialogs
 [7]:https://github.com/microsoft/botframework-cli
 [8]:https://github.com/microsoft/botframework-cli/tree/master/packages/luis#bf-luisversionexport
@@ -183,9 +160,9 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [16]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratorcreate
 [17]:TBD/AvailableIndex
 [18]:./docs/Overview.md
-[19]: https://docs.microsoft.com/en-us/composer/introduction
+[19]: https://docs.microsoft.com/composer/introduction
 [20]: https://aka.ms/NLRModels "Natural Language Representation Models"
-[21]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0	"LU file format"
+[21]:https://docs.microsoft.com/azure/bot-service/file-format/bot-builder-lu-file-format "LU file format"
 [22]:./docs/BFOrchestratorReport.md "report interpretation"
-[23]: ./docs/BFOrchestratorUsage.md "BF Orchestrator usage"
-
+[23]: ./docs/BFOrchestratorUsage.md "BF Orchestrator command usage"
+[24]:https://docs.microsoft.com/azure/bot-service/index-bf-sdk
