@@ -6,7 +6,7 @@ Conversational AI applications today are built using disparate technologies to f
 
 <!-- Discussing the underlying technology also doesn't seem necessary here. Mention in the technical overview, instead. -->
 
-[Orchestrator][18] is an LU solution optimized for conversational AI applications. It is built ground-up to run locally with your bot.
+Orchestrator is an LU solution optimized for conversational AI applications. It is built ground-up to run locally with your bot. See the [technical overview][18] for additional details.
 
 ## Scenarios
 
@@ -16,7 +16,7 @@ Conversational AI applications today are built using disparate technologies to f
 - Higher resilience to data imbalance across your LUIS and QnA Maker authoring data.
 - Ability to correctly dispatch from relatively little authoring data.
 
-**Intent recognizer**: You can use Orchestrator as an intent recognizer with [adaptive dialogs][6] to route user input to an appropriate skill or sub-component.
+**Intent recognition**: You can use Orchestrator as an intent recognizer with [adaptive dialogs][6] to route user input to an appropriate skill or sub-component.
 
 **Entity extraction** is not yet supported.
 
@@ -24,10 +24,10 @@ Conversational AI applications today are built using disparate technologies to f
 
 Orchestrator can be used in different development environments:
 
-- [Bot Framework SDK][24]: Orchestrator can be integrated into your code project by replacing LUIS for intent recognition such as for skill delegation or dispatching to subsequent language understanding services. See the [Runtime integration](#runtime-integration) section for more. <!--We don't yet document Orchestrator in the SDK docs. Do we need to?-->
-- [Bot Framework Composer][19]: Orchestrator can be selected as a recognizer within Bot Framework Composer. At this point there are limitations to using Orchestrator in Composer, primarily around importing of existing models and tuning recognition performance. (To use Orchestrator, enable the feature flag in your Composer settings.)
+- [Bot Framework SDK][24]: Orchestrator can be integrated into your code project by replacing LUIS for intent recognition, such as for skill delegation or dispatching to subsequent language understanding services. See the [SDK integration](#sdk-integration) section for more information. <!--We don't yet document Orchestrator in the SDK docs. Do we need to?-->
+- [Bot Framework Composer][19]: Orchestrator can be selected as a recognizer within Bot Framework Composer. At this point there are limitations to using Orchestrator in Composer, primarily around importing of existing models and tuning recognition performance. (To use Orchestrator, enable the feature flag in your Composer settings.) See the [Composer integration](#composer-integration) section for more information.
 
-In most cases, use of the [Bot Framework CLI][7] and [Bot Framework CLI Orchestrator plugin][11] is required to prepare and optimize the model for your domain. [BF Orchestrator command usage][23] describes how to create, evaluate, and use an Orchestrator model. This diagram illustrates the first part of that process. <!--The diagram leaves off steps 4 and 5.-->
+In most cases, the [Bot Framework CLI][7] and [Bot Framework CLI Orchestrator plugin][11] is required to prepare and optimize the model for your domain. The [BF Orchestrator command usage][23] page describes how to create, evaluate, and use an Orchestrator model. This diagram illustrates the first part of that process. <!--The diagram leaves off steps 4 and 5.-->
 
 <p align="center">
   <img width="350" src="./docs/media/authoring.png" />
@@ -35,7 +35,7 @@ In most cases, use of the [Bot Framework CLI][7] and [Bot Framework CLI Orchestr
 
 To use the CLI, install the [Bot Framework CLI Orchestrator plugin][11].
 
-In [BF Orchestrator command usage][23]:
+On the [BF Orchestrator command usage][23] page:
 
 - Steps 1-3 describe how to prepare and optimize a snapshot of your Orchestrator model.
 - Step 4 describes how to evaluate and improve the performance of your snapshot.
@@ -70,7 +70,7 @@ In [BF Orchestrator command usage][23]:
 
 To use Orchestrator in place of Dispatch in an existing bot:
 
-- Create an _Orchestrator recognizer_ and provide it the path to the basemodel and your snapshot.
+- Create an _Orchestrator recognizer_ and provide it the path to the base model and your snapshot.
 - Use the recognizer's _recognize_ method to recognize user input.
 
 ### In a C\# bot
@@ -126,7 +126,7 @@ This enables basic intent recognition. For more advanced scenarios follow the st
 ## Limitations
 <!--Assuming this applies to the entire article, not just the Composer integration section.-->
 
-> [!IMPORTANT]
+> **Important**:
 > Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
 > Only the *default* base model is available to Orchestrator solutions.
 
@@ -135,7 +135,7 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 ## Additional Reading
 
 - [Tech overview][18]
-- [API reference][14]
+- [API reference][14] <!--broken link-->
 - [Roadmap](./docs/Overview.md#Roadmap)
 - [BF CLI Orchestrator plugin][11]
 - [C# samples][12]
@@ -155,10 +155,10 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [11]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator
 [12]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/csharp_dotnetcore
 [13]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/javascript_nodejs
-[14]:./docs/API_reference.md
-[15]: TBD/AvailableIndex
+[14]:./docs/API_reference.md <!--broken link-->
+<!--[15]: TBD/AvailableIndex unused-->
 [16]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratorcreate
-[17]:TBD/AvailableIndex
+<!--[17]:TBD/AvailableIndex unused-->
 [18]:./docs/Overview.md
 [19]: https://docs.microsoft.com/composer/introduction
 [20]: https://aka.ms/NLRModels "Natural Language Representation Models"
