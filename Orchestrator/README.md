@@ -31,11 +31,7 @@ In most cases, the [Bot Framework CLI][7] and [Bot Framework CLI Orchestrator pl
 
 **Note**: To use the CLI, first install the [Bot Framework CLI Orchestrator plugin][11].
 
-See the [BF Orchestrator command usage][23] page for instructions:
-
-- Steps 1-3 describe how to prepare and optimize a snapshot of your Orchestrator model.
-- Step 4 describes how to evaluate and improve the performance of your snapshot.
-- Step 5 describes how to integrate the Orchestrator language recognizer with your bot.
+See the [BF Orchestrator command usage][23] page for instructions on how to create and optimize the language model for your bot.
 
 ## SDK integration
 
