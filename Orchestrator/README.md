@@ -2,17 +2,13 @@
 
 Conversational AI applications today are built using disparate technologies to fulfill language understanding (LU) needs, such as [LUIS][1] and [QnA Maker][2]. Often, conversational AI applications are also built by accessing various skill bots, such as [Virtual Assistant skills][3], each of which handle a specific conversation topic and can be built using different LU technologies. Hence, conversational AI applications typically require LU to route an incoming user request to an appropriate skill or to dispatch to a specific sub-component.
 
-<!-- Coining the term "orchestration" doesn't seem necessary. -->
-
-<!-- Discussing the underlying technology also doesn't seem necessary here. Mention in the technical overview, instead. -->
-
 Orchestrator is an LU solution optimized for conversational AI applications. It is built ground-up to run locally with your bot. See the [technical overview][18] for additional details.
 
 ## Scenarios
 
-**Routing**: For bots, Orchestrator can replace the [LUIS Dispatch tool][5]. You can use Orchestrator instead of Dispatch to aggregate multiple [LUIS][1] and [QnA Maker][2] applications. With Orchestrator, you are likely to see:
+**Routing**: For bots, Orchestrator can replace the [LUIS Dispatch tool][5]. You can use Orchestrator instead of Dispatch to arbitrate between multiple [LUIS][1] and [QnA Maker][2] applications. With Orchestrator, you are likely to see:
 
-- Improved classification accuracy
+- Improved classification accuracy.
 - Higher resilience to data imbalance across your LUIS and QnA Maker authoring data.
 - Ability to correctly dispatch from relatively little authoring data.
 
@@ -33,38 +29,13 @@ In most cases, the [Bot Framework CLI][7] and [Bot Framework CLI Orchestrator pl
   <img width="350" src="./docs/media/authoring.png" />
 </p>
 
-To use the CLI, install the [Bot Framework CLI Orchestrator plugin][11].
+**Note**: To use the CLI, first install the [Bot Framework CLI Orchestrator plugin][11].
 
 See the [BF Orchestrator command usage][23] page for instructions:
 
 - Steps 1-3 describe how to prepare and optimize a snapshot of your Orchestrator model.
 - Step 4 describes how to evaluate and improve the performance of your snapshot.
 - Step 5 describes how to integrate the Orchestrator language recognizer with your bot.
-
-<!--Is there a reason to summarize this process here, instead of just linking to the **BF Orchestrator Command Usage** topic?
-
-### To prepare and optimize your Orchestrator model
-
-* Pre-requisite: Install [BF CLI Orchestrator plugin][11] first.
-
-1. Author Intent-utterances example based .lu definition referred to as a *label file* using the Language Understanding practices as described in [Language Understanding][2] for dispatch (e.g. author .lu file or within the [Composer][3] GUI experience). 
-   * Alternatively, [export][8] your LUIS application and [convert][9] to .lu format or [export][10] your QnA Maker KB to .qna format.
-   * See also the [.lu file format][21] to author a .lu file from scratch. 
-2. Download Natural Language Representation ([NLR][20]) base Model (will be referred to as the *basemodel*) using the `bf orchestrator:basemodel:get` command. 
-   * See `bf orchestrator:basemodel:list` for alternate models. You may need to experiment with the different models to find which performs best for your language domain.
-3. Combine the label file .lu from (1) with the base model from (2) to create a *snapshot* file with a .blu extension.
-   * Use [`bf orchestrator:create`][16] to create just a single .blu snapshot file for all Lu/json/qna tsv files for dispatch scenario.
--->
-
-<!--This is insufficient information, but again the other article covers this.
-
-### To evaluate the performance of your Orchestrator model
-
-* Create another test .lu file similar to (1) with utterances that are similar but are not identical to the ones specified in the example based .lu definition in (1). This is typically variations on end-user utterances. 
-* Test quality of utterance to intent recognition. 
-* Examine report to ensure that the recognition quality is satisfactory. See more in [Report Interpretation][22].
-* If not, adjust the label file in (1) and repeat this cycle.
--->
 
 ## SDK integration
 
@@ -106,7 +77,7 @@ const { OrchestratorRecognizer } = require('botbuilder-ai-orchestrator');
 
 // Create OrchestratorRecognizer.
 const dispatchRecognizer = new OrchestratorRecognizer().configure({
-            modelPath: process.env.ModelPath, 
+            modelPath: process.env.ModelPath,
             snapshotPath: process.env.SnapShotPath
 });
 // To recognize user input
@@ -124,7 +95,6 @@ Orchestrator can be used as recognizer in [Bot Framework Composer][19]. To speci
 This enables basic intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. For more information about recognizers in Composer, see the discussion of [recognizers](https://docs.microsoft.com/composer/concept-dialog#recognizer) with respect to dialogs in Composer.
 
 ## Limitations
-<!--Assuming this applies to the entire article, not just the Composer integration section.-->
 
 **Important**:
 Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
@@ -133,7 +103,7 @@ Only the *default* base model is available to Orchestrator solutions.
 ## Additional Reading
 
 - [Tech overview][18]
-<!-- - [API reference][14] broken link -->
+- [API reference][14]
 - [Roadmap](./docs/Overview.md#Roadmap)
 - [BF CLI Orchestrator plugin][11]
 - [C# samples][12]
@@ -155,10 +125,10 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [11]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator
 [12]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/csharp_dotnetcore
 [13]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/javascript_nodejs
-[14]:./docs/API_reference.md
-<!--[15]: TBD/AvailableIndex unused-->
+[14]:https://aka.ms/bforchestratorapi
+
 [16]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratorcreate
-<!--[17]:TBD/AvailableIndex unused-->
+
 [18]:./docs/Overview.md
 [19]: https://docs.microsoft.com/composer/introduction
 [20]: https://aka.ms/NLRModels "Natural Language Representation Models"
