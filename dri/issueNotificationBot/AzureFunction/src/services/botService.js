@@ -14,10 +14,12 @@ module.exports = class BotService {
   }
 
   async sendIssues(issues) {
+    this.context.log(`Sending issues to bot at ${ process.env.BotBaseUrl }`);
     await this.sendData(issues, 'issues');
   }
 
   async sendPRs(prs) {
+    this.context.log(`Sending PRs to bot at ${ process.env.BotBaseUrl }`);
     await this.sendData(prs, 'prs');
   }
 
