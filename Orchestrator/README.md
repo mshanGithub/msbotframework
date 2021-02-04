@@ -142,7 +142,10 @@ Orchestrator can be used as recognizer in [Bot Framework Composer][19]. To speci
 
 1. Enable Orchestrator feature in Composer's Application Settings.
 2. Select Orchestrator in the recognizer dropdown menu.
-3. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality.
+3. Modify runtime environment to include Orchestrator assets.
+4. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality.
+
+Refer to the following [detailed walkthrough instructions][24].
 
 This enables basic  intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. See more about Composer Recognizers [here](https://docs.microsoft.com/en-us/composer/concept-dialog#recognizer).
 
@@ -188,4 +191,7 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [21]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0	"LU file format"
 [22]:./docs/BFOrchestratorReport.md "report interpretation"
 [23]: ./docs/BFOrchestratorUsage.md "BF Orchestrator usage"
+[24]: https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview "Composer integration instructions"
+
+
 
