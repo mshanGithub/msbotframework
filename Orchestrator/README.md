@@ -191,7 +191,7 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [21]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0	"LU file format"
 [22]:./docs/BFOrchestratorReport.md "report interpretation"
 [23]: ./docs/BFOrchestratorUsage.md "BF Orchestrator usage"
-[24]: https://github.com/microsoft/botframework-components/tree/peterinnesmsft/orchestrator_plugin/experimental/packages/Recognizers.Orchestrator "Composer integration instructions"
+[24]: https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview%20features/orchestrator.md "Composer integration instructions"
 
 
 
