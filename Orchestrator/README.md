@@ -14,7 +14,7 @@ Orchestrator is an LU solution optimized for conversational AI applications. It 
 
 **Intent recognition**: You can use Orchestrator as an intent recognizer with [adaptive dialogs][6] to route user input to an appropriate skill or sub-component.
 
-**Entity extraction** is currently in preview.
+**Entity extraction** is currently experimental and not yet for production use.
 
 ## Authoring experience
 

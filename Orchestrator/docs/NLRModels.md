@@ -1,17 +1,12 @@
 # Prebuilt Language Models
 
-Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios,
-including intent prediction and entity extraction.
+Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios, including intent prediction and entity extraction.
+Entity extraction is currently experimental and not yet for production use.
 
 ## Models Description
 The public preview of Orchestrator includes the following prebuilt language models available in [versions repository][2].
 
-### pretrained.20200924.microsoft.dte.00.03.en.onnx
-This is a fast and small EN-only base model for intent detection with sufficient prediction performance.
-We suggest using this model if speed and memory size is critical to your deployment environment,
-otherwise consider other options. It is a generic 3-layer pretrained
-[Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+## Default Models
 
 ### pretrained.20200924.microsoft.dte.00.06.en.onnx
 This is a high quality EN-only base model for intent detection that strikes the balance between size,
@@ -20,13 +15,22 @@ It is a 6-layer pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]),
 thus it can be used out of box. This is the default model used if none explicitly specified.
 
-### pretrained.20200924.microsoft.dte.00.12.en.onnx
-This is a high quality EN-only base model for intent detection, but is larger and slower than other options.
-It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
+### pretrained.20201210.microsoft.dte.00.06.unicoder_multilingual.onnx
+This is a high quality multilingual base model for intent detection. It's smaller and faster than its 12-layer alternative.
+It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx (preview)
-This is a high quality EN-only base model for entity extraction.
+## Alternate Models
+
+### pretrained.20200924.microsoft.dte.00.03.en.onnx
+This is a fast and small EN-only base model for intent detection with sufficient prediction performance.
+We suggest using this model if speed and memory size is critical to your deployment environment,
+otherwise consider other options. It is a generic 3-layer pretrained
+[Transformer][7] model optimized for conversation.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+
+### pretrained.20200924.microsoft.dte.00.12.en.onnx
+This is a high quality EN-only base model for intent detection, but is larger and slower than other options.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
@@ -35,32 +39,34 @@ This is a high quality multilingual base model for intent detection.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210105.microsoft.dte.00.12.bert_example_ner_multilingual.onnx (preview)
+## Experimental Models
+
+### pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
+This is a high quality EN-only base model for entity extraction.
+It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+
+### pretrained.20210105.microsoft.dte.00.12.bert_example_ner_multilingual.onnx (experimental)
 This is a high quality multilingual base model for entity extraction.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210105.microsoft.dte.00.12.tulr_example_ner_multilingual.onnx (preview)
+### pretrained.20210105.microsoft.dte.00.12.tulr_example_ner_multilingual.onnx (experimental)
 This is a high quality multilingual base model for entity extraction.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx (preview)
+### pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx (experimental)
 This is a high quality EN-only base model for entity extraction. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20201210.microsoft.dte.00.06.unicoder_multilingual.onnx
-This is a high quality multilingual base model for intent detection. It's smaller and faster than its 12-layer alternative.
-It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
-
-### pretrained.20210205.microsoft.dte.00.06.bert_example_ner_multilingual.onnx (preview)
+### pretrained.20210205.microsoft.dte.00.06.bert_example_ner_multilingual.onnx (experimental)
 This is a high quality multilingual base model for entity extraction. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210205.microsoft.dte.00.06.tulr_example_ner_multilingual.onnx (preview)
+### pretrained.20210205.microsoft.dte.00.06.tulr_example_ner_multilingual.onnx (experimental)
 This is a high quality multilingual base model for entity extraction. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
