@@ -3,7 +3,6 @@
 Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios, including intent prediction and entity extraction.
 Entity extraction is currently experimental and not yet for production use.
 
-## Models Description
 The public preview of Orchestrator includes the following prebuilt language models available in [versions repository][2].
 
 ## Default Models
