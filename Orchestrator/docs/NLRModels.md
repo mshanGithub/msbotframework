@@ -73,9 +73,10 @@ Its architecture is pretrained for example-based use ([KNN][3]), thus it can be 
 ## Models Evaluation
 For a more quantitative comparison analysis of the different models see the following performance characteristics.
 
-### Model attributes
+### English Intent Detection Models Evaluation
 
-The following table shows the size & speed performance attributes.
+- The following table shows the size & speed performance attributes.
+
 
 |  Model |Base Model   |Layers  |Encoding time per query | Disk Allocation |
 | ------------ | ------------ | ------------ | ------------ | ------------ |
@@ -83,15 +84,54 @@ The following table shows the size & speed performance attributes.
 |pretrained.20200924.microsoft.dte.00.06.en.onnx | BERT | 6  |  ~ 16 ms | 261M  |
 |pretrained.20200924.microsoft.dte.00.12.en.onnx | BERT    | 12  | ~ 26 ms  | 427M  |
 
-### Model performance, evaluated by micro-average-accuracy
+- 
+  The following table shows how accurate is each model relative to provided training sample size using [Snips NLU][4] system, evaluated by **micro-average-accuracy**.
 
-The following table shows how accurate is each model relative to provided training sample size using [Snips NLU][4] system.
 
 |Training samples per intent   |5   |10   |25   |50   |100   |200   |
 | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |------------ |
 |pretrained.20200924.microsoft.dte.00.03.en.onnx |  0.756  | 0.839  | 0.904  | 0.929  | 0.943  | 0.951  |
 |pretrained.20200924.microsoft.dte.00.06.en.onnx |   0.924 | 0.940  | 0.957  |  0.960 |  0.966 | 0.969  |
 |pretrained.20200924.microsoft.dte.00.12.en.onnx |  0.902  |  0.931 |  0.951 | 0.960  |  0.964 |  0.969 |
+
+### Multilingual Intent Detection Models Evaluation
+- The following table shows the size & speed performance attributes.
+
+| Model                                                        | Base Model | Layers | Encoding time per query | Disk Allocation |
+| ------------------------------------------------------------ | ---------- | ------ | ----------------------- | --------------- |
+| pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx | Unicoder   | 6      | ~ 16 ms                 | 896M            |
+| pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx | Unicoder   | 12     | ~ 30 ms                 | 1.08G           |
+
+- The following table shows how accurate is each model by training and testing on the same language, evaluated by **micro-average-accuracy** on an internal dataset.
+
+| Model                                                        | de-de | en-us | es-es | es-mx | fr-ca | fr-fr | it-it | ja-jp | pt-br | zh-cn |
+| ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx | 0.638 | 0.785 | 0.662 | 0.760 | 0.723 | 0.661 | 0.701 | 0.786 | 0.735 | 0.805 |
+| pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx | 0.642 | 0.764 | 0.646 | 0.754 | 0.722 | 0.636 | 0.689 | 0.789 | 0.725 | 0.809 |
+
+- The following table shows how accurate is each model by training on **en-us** and testing on the different languages, evaluated by **micro-average-accuracy** on an internal dataset.
+
+| Model                                                        | de-de | en-us | es-es | es-mx | fr-ca | fr-fr | it-it | ja-jp | pt-br | zh-cn |
+| ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx | 0.495 | 0.785 | 0.530 | 0.621 | 0.560 | 0.518 | 0.546 | 0.663 | 0.568 | 0.687 |
+| pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx | 0.499 | 0.764 | 0.529 | 0.604 | 0.562 | 0.515 | 0.547 | 0.646 | 0.555 | 0.681 |
+
+### English Entity Extraction Models Evaluation
+
+- The following table shows the size & speed performance attributes.
+
+| Model                                                        | Base Model | Layers | Encoding time per query | Disk Allocation |
+| ------------------------------------------------------------ | ---------- | ------ | ----------------------- | --------------- |
+| pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | BERT       | 6      | ~ 23 ms                 | 259M            |
+| pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx | BERT       | 12     | ~ 40 ms                 | 427M            |
+
+- The following table shows how accurate is each model relative to provided training sample size using [Snips NLU][4] system, evaluated by **macro-average-F1**.
+
+| Training samples per entity type                             | 10    | 20    | 50    | 100   | 200   |
+| ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- |
+| pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | 0.662 | 0.678 | 0.680 | 0.684 | 0.674 |
+| pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx | 0.637 | 0.658 | 0.684 | 0.698 | 0.702 |
+
 
 
 ## License
