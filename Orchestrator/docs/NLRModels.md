@@ -14,7 +14,7 @@ It is a 6-layer pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]),
 thus it can be used out of box. This is the default model used if none explicitly specified.
 
-### pretrained.20201210.microsoft.dte.00.06.unicoder_multilingual.onnx
+### pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx
 This is a high quality multilingual base model for intent detection. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
