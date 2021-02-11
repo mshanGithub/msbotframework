@@ -17,7 +17,7 @@ thus it can be used out of box. This is the default model used if none explicitl
 ### pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx
 This is a high quality multilingual base model for intent detection. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages, with 8 of them (EN, ES, DE, FR, IT, JA, PT, and ZH) we believe of [high performance](#multilingual-intent-detection-models-evaluation). The full list of languages supported by the model can be found at [XLMR Supported Languages][8]. 
 
 ## Alternate Models
 
@@ -36,7 +36,7 @@ Its architecture is pretrained for example-based use ([KNN][3]), thus it can be 
 ### pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx
 This is a high quality multilingual base model for intent detection.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages, with 8 of them (EN, ES, DE, FR, IT, JA, PT, and ZH) we believe of [high performance](#multilingual-intent-detection-models-evaluation). The full list of languages supported by the model can be found at [XLMR Supported Languages][8]. 
 
 ## Experimental Models
 
@@ -141,16 +141,12 @@ The models are released under the following [License Terms][6].
 ## References
 
 * [UniLMv2 Paper][1]
-
 * [Base Models Versions Repository][2]
-
 * [KNN (K nearest neighbors algorithm)][3]
-
 * [Snips NLU (Natural Language Understanding)][4]
-
 * [Snips NLU Metrics][5]
-
 * [Transformer][7]
+* [XLMR Supported Languages][8]
 
 [1]: https://arxiv.org/abs/2002.12804 "UniLMv2: Pseudo-Masked Language Models for Unified Language Model Pre-Training"
 [2]: https://aka.ms/nlrversions
@@ -159,3 +155,4 @@ The models are released under the following [License Terms][6].
 [5]: https://github.com/snipsco/snips-nlu-metrics "Snips NLU Metrics"
 [6]: ./LICENSE.md "License agreement"
 [7]: https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)
+[8]: https://github.com/pytorch/fairseq/tree/master/examples/xlmr#introduction
