@@ -17,7 +17,7 @@ thus it can be used out of box. This is the default model used if none explicitl
 ### pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx
 This is a high quality multilingual base model for intent detection. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages, with 8 of them (EN, ES, DE, FR, IT, JA, PT, and ZH) we believe of [high performance](#multilingual-intent-detection-models-evaluation). The full list of languages supported by the model can be found at [XLMR Supported Languages][8]. 
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages (full list can be found at [XLMR Supported Languages][8]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data (performance can be found [here](#multilingual-intent-detection-models-evaluation)). 
 
 ## Alternate Models
 
@@ -36,7 +36,9 @@ Its architecture is pretrained for example-based use ([KNN][3]), thus it can be 
 ### pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx
 This is a high quality multilingual base model for intent detection.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages, with 8 of them (EN, ES, DE, FR, IT, JA, PT, and ZH) we believe of [high performance](#multilingual-intent-detection-models-evaluation). The full list of languages supported by the model can be found at [XLMR Supported Languages][8]. 
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages (full list can be found at [XLMR Supported Languages][8]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data (performance can be found [here](#multilingual-intent-detection-models-evaluation)). 
+
+
 
 ## Experimental Models
 
