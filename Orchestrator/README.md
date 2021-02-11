@@ -82,11 +82,13 @@ const recoResult = await dispatchRecognizer.recognize(context);
 
 ## Composer integration
 
-Orchestrator can be used as recognizer in [Bot Framework Composer][19]. To specify Orchestrator as a dialog recognizer:
+Orchestrator can be used as recognizer in [Bot Framework Composer][19]. 
 
-1. Enable the Orchestrator feature in Composer's **Application Settings** page.
+In general, to specify Orchestrator as a dialog recognizer:
+
+1. Enable the Orchestrator feature in Composer's **Application Settings** page. Particularly during the *Preview Release* please make sure to follow the latest up-to-date instructions in [Composer documentation][25].
 2. Select **Orchestrator** in the **Recognizer Type** drop-down menu for your bot.
-3. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality.
+3. Review, evaluate and adjust examples in language data as you would normally for LUIS to ensure recognition quality. 
 
 This enables basic intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. For more information about recognizers in Composer, see the discussion of [recognizers](https://docs.microsoft.com/composer/concept-dialog#recognizer) with respect to dialogs in Composer.
 
@@ -130,3 +132,4 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [22]:./docs/BFOrchestratorReport.md "report interpretation"
 [23]: ./docs/BFOrchestratorUsage.md "BF Orchestrator command usage"
 [24]:https://docs.microsoft.com/azure/bot-service/index-bf-sdk
+[25]: https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview%20features/orchestrator.md "Composer integration instructions"
