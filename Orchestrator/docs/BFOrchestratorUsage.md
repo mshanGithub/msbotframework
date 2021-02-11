@@ -64,15 +64,6 @@ There are two ways to create Orchestrator snapshot file(s), depending on the usa
   The create command generates a single Orchestrator snapshot file as output.  If folder is specified as input, it scans the subfolder hierarchy for .lu/.json/.tsv/.qna files and combine all utterances/labels found into the snapshot file.  
   The *hierarchical* flag creates top level intents in the snapshot file derived from the .lu/.json/.tsv/.qna file names in the input folder.  This is useful to create a routing mechanism for further processing by subsequent skills or language services.
 
-- **For an adaptive dialogs solution with .lu label files in different dialog folders** 
-  Use the  ```bf orchestrator:build``` to process the folder hierarchy and create snapshot files for each dialog (optionally a corresponding scaffold .dialog file(s) for declarative scenario).
-
-  ```
-  bf orchestrator:build --in ./Dialogs --out ./generated --model ./model --dialog
-  ```
-
-  The build command generates one Orchestrator snapshot file for each .lu file found in input folder hierarchy.  When *dialog* flag is specified,  it generates multi language or cross train Orchestrator recognizers .
-
 ### 4. Test and refine quality of utterance to intent recognition
 
 Create a label .lu file with test data set of utterances. Run the following command to generate report for your language model
