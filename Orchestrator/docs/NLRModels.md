@@ -5,6 +5,8 @@ Entity extraction is currently experimental and not yet for production use.
 
 The public preview of Orchestrator includes the following prebuilt language models available in [versions repository][2].
 
+See the [References](#references) section for technical descriptions of the AI technology behind the models .
+
 ## Default Models
 
 ### pretrained.20200924.microsoft.dte.00.06.en.onnx
@@ -149,6 +151,9 @@ The models are released under the following [License Terms][6].
 * [Snips NLU Metrics][5]
 * [Transformer][7]
 * [XLMR Supported Languages][8]
+* [Turing Universal Language Representation model (T-ULRv2)][11]
+* [Microsoft DeBERTa - Blog][9]
+* [Microsoft  AI At Scale][10]
 
 [1]: https://arxiv.org/abs/2002.12804 "UniLMv2: Pseudo-Masked Language Models for Unified Language Model Pre-Training"
 [2]: https://aka.ms/nlrversions
@@ -158,3 +163,9 @@ The models are released under the following [License Terms][6].
 [6]: ./LICENSE.md "License agreement"
 [7]: https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)
 [8]: https://github.com/pytorch/fairseq/tree/master/examples/xlmr#introduction
+[9]: https://www.microsoft.com/en-us/research/blog/microsoft-deberta-surpasses-human-performance-on-the-superglue-benchmark/ "Microsoft DeBERTa - Microsoft Blog"
+[10]: https://innovation.microsoft.com/en-us/exploring-ai-at-scale "AI at Scale"
+[11]: https://www.microsoft.com/en-us/research/blog/microsoft-turing-universal-language-representation-model-t-ulrv2-tops-xtreme-leaderboard/ "Turing Universal Language Representation model"
+
+
+
