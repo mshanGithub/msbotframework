@@ -9,6 +9,48 @@
         },
         {
             "properties": {
+                "$policies": {
+                    "type": "array",
+                    "items": { 
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string", 
+                                        "string": "mustInclude"
+                                    },
+                                    "kinds": {
+                                        "type":"array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "type",
+                                    "kinds"
+                                ]
+                            }, 
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string", 
+                                        "enum": [
+                                            "lastAction",
+                                            "interactive",
+                                            "notInteractive"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "type"
+                                ]
+                            }
+                        ]
+                    }
+                },
                 "$role": {
                     "title": "$role",
                     "description": "Defines the roles played in the dialog schema one of [expression|interface|implements($kind)|extends($kind)].",
