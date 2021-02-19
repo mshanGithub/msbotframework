@@ -18,7 +18,7 @@
                                 "properties": {
                                     "type": {
                                         "type": "string", 
-                                        "string": "mustInclude"
+                                        "string": "requiresAction"
                                     },
                                     "kinds": {
                                         "type":"array",
