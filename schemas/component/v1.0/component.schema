@@ -9,6 +9,38 @@
         },
         {
             "properties": {
+                "$policies": {
+                    "type": "object",
+                    "properties": {
+                        "interactive": {
+                            "title": "Interactive",
+                            "description": "Dialog will wait for input.",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "nonInteractive": {
+                            "title": "Non-interactive",
+                            "description": "No child dialogs can wait for input.",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "lastAction": {
+                            "title": "Last Action",
+                            "description": "Dialog must be the last action in a list of actions.",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "requiresKind": {
+                            "title": "Requires Kind",
+                            "description": "There must be a child dialog of one of the included kinds or an extension of those kinds.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "default": []
+                        }
+                    }
+                },
                 "$role": {
                     "title": "$role",
                     "description": "Defines the roles played in the dialog schema one of [expression|interface|implements($kind)|extends($kind)].",
