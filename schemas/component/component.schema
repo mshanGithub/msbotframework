@@ -33,19 +33,11 @@
                                 ]
                             }, 
                             {
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "type": "string", 
-                                        "enum": [
-                                            "lastAction",
-                                            "interactive",
-                                            "notInteractive"
-                                        ]
-                                    }
-                                },
-                                "required": [
-                                    "type"
+                                "type": "string",
+                                "enum": [
+                                    "lastAction",
+                                    "interactive",
+                                    "notInteractive"
                                 ]
                             }
                         ]
