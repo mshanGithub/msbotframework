@@ -18,7 +18,7 @@
                                 "properties": {
                                     "type": {
                                         "type": "string", 
-                                        "string": "requiresAction"
+                                        "const": "requiresAction"
                                     },
                                     "kinds": {
                                         "type":"array",
