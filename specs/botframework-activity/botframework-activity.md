@@ -1694,7 +1694,10 @@ The Activity schema can be used when a bot initiates a request to another bot ac
 
 The authenticity of a call from a bot can be established by inspecting its JSON Web Token and ensuring it is both correctly formed and is signed with a key listed in the Azure Active Directory Open ID Metadata Document.
 
-### Telephony Channel 
+# Appendix VI - Protocols using the Command activity
+[Command activities](#command-activity) communicate a request to perform a specific action. Command activities outside the `application` are considered reserved for Bot Framework Protocols. This appendix contains a list of command activities used in Bot Framework protocols and recommended patterns for defining and using command activities.
+
+## Telephony Channel 
 
 The Microsoft Telephony channel defines channel command activities in the namespace `channel/vnd.microsoft.telephony.<action>`. 
 
