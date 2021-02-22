@@ -16,7 +16,7 @@ It is a 6-layer pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]),
 thus it can be used out of box. This is the default model used if none explicitly specified.
 
-### pretrained.20210211.microsoft.dte.00.06.unicoder_multilingual.onnx
+### pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx
 This is a high quality multilingual base model for intent detection. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages (full list can be found at [XLMR Supported Languages][8]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data (performance can be found [here](#multilingual-intent-detection-models-evaluation)). 
@@ -40,12 +40,15 @@ This is a high quality multilingual base model for intent detection.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages (full list can be found at [XLMR Supported Languages][8]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data (performance can be found [here](#multilingual-intent-detection-models-evaluation)). 
 
-
-
 ## Experimental Models
 
 ### pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
 This is a high quality EN-only base model for entity extraction.
+It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+
+### pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
+This is a yet another high quality EN-only base model for entity extraction.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
@@ -64,7 +67,12 @@ This is a high quality EN-only base model for entity extraction. It's smaller an
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210211.microsoft.dte.00.06.bert_example_ner_multilingual.onnx (experimental)
+### pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx (experimental)
+This is a high quality EN-only base model for entity extraction. It's smaller and faster than its 12-layer alternative.
+It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+
+### pretrained.20210205.microsoft.dte.00.06.bert_example_ner_multilingual.onnx (experimental)
 This is a high quality multilingual base model for entity extraction. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
@@ -103,21 +111,21 @@ For a more quantitative comparison analysis of the different models see the foll
 
 | Model                                                        | Base Model | Layers | Encoding time per query | Disk Allocation |
 | ------------------------------------------------------------ | ---------- | ------ | ----------------------- | --------------- |
-| pretrained.20210211.microsoft.dte.00.06.unicoder_multilingual.onnx | Unicoder   | 6      | ~ 16 ms                 | 896M            |
+| pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx | Unicoder   | 6      | ~ 16 ms                 | 896M            |
 | pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx | Unicoder   | 12     | ~ 30 ms                 | 1.08G           |
 
 - The following table shows how accurate is each model by training and testing on the same language, evaluated by **micro-average-accuracy** on an internal dataset.
 
 | Model                                                        | de-de | en-us | es-es | es-mx | fr-ca | fr-fr | it-it | ja-jp | pt-br | zh-cn |
 | ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| pretrained.20210211.microsoft.dte.00.06.unicoder_multilingual.onnx | 0.638 | 0.785 | 0.662 | 0.760 | 0.723 | 0.661 | 0.701 | 0.786 | 0.735 | 0.805 |
+| pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx | 0.638 | 0.785 | 0.662 | 0.760 | 0.723 | 0.661 | 0.701 | 0.786 | 0.735 | 0.805 |
 | pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx | 0.642 | 0.764 | 0.646 | 0.754 | 0.722 | 0.636 | 0.689 | 0.789 | 0.725 | 0.809 |
 
 - The following table shows how accurate is each model by training on **en-us** and testing on the different languages, evaluated by **micro-average-accuracy** on an internal dataset.
 
 | Model                                                        | de-de | en-us | es-es | es-mx | fr-ca | fr-fr | it-it | ja-jp | pt-br | zh-cn |
 | ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| pretrained.20210211.microsoft.dte.00.06.unicoder_multilingual.onnx | 0.495 | 0.785 | 0.530 | 0.621 | 0.560 | 0.518 | 0.546 | 0.663 | 0.568 | 0.687 |
+| pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx | 0.495 | 0.785 | 0.530 | 0.621 | 0.560 | 0.518 | 0.546 | 0.663 | 0.568 | 0.687 |
 | pretrained.20201210.microsoft.dte.00.12.unicoder_multilingual.onnx | 0.499 | 0.764 | 0.529 | 0.604 | 0.562 | 0.515 | 0.547 | 0.646 | 0.555 | 0.681 |
 
 ### English Entity Extraction Models Evaluation
