@@ -44,7 +44,7 @@ The language models of skills and even entire bots that are made available by th
 
 ### Ability to explain the classification results
 
-The ability to explain classification results could be important in an application. In general, attempting to interpret the results of deep learned models (like [transformers][5]) could be very challenging. Orchestrator enables this by providing the closest example in the model to the one that is evaluated. In a case of misclassification this simple mechanism helps the developer in determining whether a new example should be added that defines a skill or if the existing example in the model was mislabeled. This feature simplifies implementation of [reinforcement learning][18] for the bot which can be done by non-experts (the language fluency is only required).
+The ability to explain classification results could be important in an application. In general, attempting to interpret the results of deep learned models (like [transformers][5]) could be very challenging. Orchestrator enables this by providing the closest example in the model to the one that is evaluated. In a case of misclassification this simple mechanism helps the developer in determining whether a new example should be added that defines a skill or if the existing example in the model was mislabeled. This feature simplifies implementation of [active learning][18] for the bot which can be done by non-experts (the language fluency is only required).
 
 ### High performance
 
@@ -58,7 +58,7 @@ The [transformer][5] models in Orchestrator produce embeddings that are relative
 
 It is important to reiterate that the Orchestrator runtime has significantly more flexibility and functionality than a typical [transformer][5] or a generic [ML][12] runtime. In addition to the inference capability the developer has an option to enable the following in the bot code:
 
-*Modify the language model in real-time* - to add additional functionality (expand the language model with additional skills or examples) or perform continuous model improvements using [reinforcement learning][18] techniques (specialized tools to assist with reinforcement learning will be released in the upcoming releases).
+*Modify the language model in real-time* - to add additional functionality (expand the language model with additional skills or examples) or perform continuous model improvements using [active learning][18] techniques (specialized tools to assist with active learning will be released in the upcoming releases).
 
 *Modify the language model behavior in real-time* - the runtime parameters can be adjusted without restarting the process or even reloading the model. This includes adjusting how strict the intent triggering is (tradeoff between the [precision and recall][19]) which can be dynamically adjusted depending on the phase in the dialog; or adjusting the resiliency to mislabeled or low quality examples that define the model which is done by modifying the KNN-K value (e.g. a case where the model examples were crowd-sourced and not cleaned up yet or when the model is allowed to be adjusted dynamically by many people or when a skill language model definition was added to the bot and not evaluated yet).
 
@@ -80,9 +80,9 @@ An important extension that will be made in the upcoming releases is the support
 
 The prebuilt language models' format and the runtime supported for the initial release is [ONNX][15]. We will extend Orchestrator to directly support [PyTorch][16] and [TensorFlow][17] model formats and their corresponding runtimes.
 
-### Reinforcement learning
+### Active learning
 
-The Orchestrator design with its [flexibility](###runtime-flexibility) provides capability for efficient [reinforcement learning][18] for continuous language model improvements. Additional tools for this purpose to assist with this task and help in its automation will be released in the upcoming releases.
+The Orchestrator design with its [flexibility](###runtime-flexibility) provides capability for efficient [active learning][18] for continuous language model improvements. Additional tools for this purpose to assist with this task and help in its automation will be released in the upcoming releases.
 
 ### Expand model tuning capability
 Currently all the model parameters (hyper-params) are global for all intents/skills. In the upcoming releases the configuration per intent will be enabled. E.g. for certain intents the triggering should be more strict and for other ones more fuzzy or even with a catch-all type of behavior on the language model level ([precision vs recall][19] control per intent).
@@ -107,7 +107,7 @@ As we collect more feedback from the community during the preview there may be a
 [15]:https://onnx.ai/
 [16]:https://en.wikipedia.org/wiki/PyTorch
 [17]:https://en.wikipedia.org/wiki/TensorFlow
-[18]:https://en.wikipedia.org/wiki/Reinforcement_learning
+[18]:https://en.wikipedia.org/wiki/Active_learning_(machine_learning)
 [19]:https://en.wikipedia.org/wiki/Precision_and_recall
 [20]:https://docs.microsoft.com/en-us/dotnet/api/microsoft.bot.builder.ai.orchestrator?view=botbuilder-dotnet-stable
 [21]: https://aka.ms/nlrmodels
