@@ -98,6 +98,20 @@ This enables basic intent recognition. For more advanced scenarios follow the st
 * Only English language recognition is available in this preview release.
 * Only the *default* base model is available to Orchestrator solutions.
 
+## Platform Support
+Orchestrator supports the following platforms.
+
+### OS Support
+MacOS v10.14 / v10.15
+Ubuntu 18 / 20
+Windows 10
+
+### Language Support
+Nodejs v10, v12, v14
+C# .NET Standard 2.1 (x64-only)
+C# .NET Core 3.1 (x64-only)
+
+
 ## Additional Reading
 
 - [Tech overview][18]
