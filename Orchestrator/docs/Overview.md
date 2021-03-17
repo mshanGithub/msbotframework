@@ -16,13 +16,13 @@ In the legacy approach so far in order to train a robust language model a signif
 
 Building a language model requires multiple iterations of adding or removing training examples followed by training the model and evaluation. This process may take days or even weeks to accomplish satisfactory results. Also, when using the [transformer][5] model for the classification task a classification layer (or layers) are added and trained making this process expensive, time consuming and often requiring GPU.
 
-To address these concerns, we chose an example-based approach where the language model is defined as a set of labeled examples. In Orchestrator a model example is represented as a vector of numbers (an embedding) obtained from the [transformer model][5] for a given text that the corresponding skills is capable of handling (that's the definition of the application language model in Orchestrator). During runtime a similarity of the new example is calculated comparing it to the existing model examples per skill. The weighted average of *K* closest examples ([KNN algorithm][9]) is taken to determine the classification result. This approach does not require an explicit training step, only calculation of the embeddings for the model examples is done. It takes about 10 milliseconds per example to accomplish that, so a modification of an existing model that adds 100 new examples will take about 1 second which is done locally without GPU and without remote server roundtrips.
+To address these concerns, we chose an example-based approach where the language model is defined as a set of labeled examples. In Orchestrator a model example is represented as a vector of numbers (an embedding) obtained from the [transformer model][5] for a given text that the corresponding skills is capable of handling (that's the definition of the application language model in Orchestrator). During runtime a similarity of the new example is calculated comparing it to the existing model examples per skill. The weighted average of *K* closest examples ([KNN algorithm][9]) is taken to determine the classification result. This approach does not require an explicit training step, only calculation of the embeddings for the model examples is done. The operation is performed locally without GPU and without remote server roundtrips.
 
 ### Local, fast library, not a remote service
 
 The Orchestrator core is written in C++ and is available as a library in C#, Node.js and soon Python and Java. The library can be used directly by the bot code (a preferred approach) or can be hosted out-of-proc or on a remote server. Running locally eliminates additional service round trip costs (latency and pricing meters). This is especially helpful when using Orchestrator to dispatch across disparate LU/ QnA services.
 
-Loading the English pretrained language model released for the initial preview takes about 2 sec with the memory footprint of a little over 200MB. Classification of a new example with this initial model takes about 10 milliseconds (depending on the text length). These numbers are for illustration only to give a sense of performance. As we improve the models or include additional languages these numbers will likely change.
+As an example, using the English pretrained language model (pretrained.20200924.microsoft.dte.00.06.en.onnx) is roughly 260 MB, classification of a new example with this initial model takes about 10 milliseconds (depending on the text length). These numbers are for illustration only to give a sense of performance. As we improve the models or include additional languages these numbers will likely change.
 
 ### State-of-the-art classification with few training examples
 
@@ -36,7 +36,7 @@ The classification of the "unknown" intent is done without the need for any exam
 
 ### Extend to support Bot Builder Skills
 
-While the [Dispatcher's][1] focus was to aid in triggering between multiple [LUIS][3] apps and [QnA Maker][4] KBs the Orchestrator expands this functionality into supporting generic [Bot Builder Skills][2] to allow composability of bot skills. The skills developed and made available by the community may be easily reused and integrated in a new bot with no language model retraining required. Orchestrator provides a toolkit to evaluate this extension identifying ambiguous examples that should be reviewed by the developer. Also, an optional fine-tuning functionality is available in the CLI but this step is not required in most cases.
+While the [Dispatcher's][1] focus was to aid in triggering between multiple [LUIS][3] apps and [QnA Maker][4] KBs the Orchestrator expands this functionality into supporting generic [Bot Builder Skills][2] to allow composability of bot skills. The skills developed and made available by the community may be easily reused and integrated in a new bot with no language model retraining required. Orchestrator provides a toolkit to evaluate this extension identifying ambiguous examples that should be reviewed by the developer. 
 
 ### Ease of composability
 
@@ -76,22 +76,13 @@ A commonly requested feature as the part of intent triggering is to provide the 
 
 An important extension that will be made in the upcoming releases is the support for multi-lingual models and possibly also specialized international models prioritized by languages supported by other Microsoft offerings.
 
-### Extensibility with custom pretrained language models
 
-The prebuilt language models' format and the runtime supported for the initial release is [ONNX][15]. We will extend Orchestrator to directly support [PyTorch][16] and [TensorFlow][17] model formats and their corresponding runtimes.
-
-### Active learning
-
-The Orchestrator design with its [flexibility](###runtime-flexibility) provides capability for efficient [active learning][18] for continuous language model improvements. Additional tools for this purpose to assist with this task and help in its automation will be released in the upcoming releases.
-
-### Expand model tuning capability
-Currently all the model parameters (hyper-params) are global for all intents/skills. In the upcoming releases the configuration per intent will be enabled. E.g. for certain intents the triggering should be more strict and for other ones more fuzzy or even with a catch-all type of behavior on the language model level ([precision vs recall][19] control per intent).
 
 ### Possible additional improvements based on the preview feedback
 As we collect more feedback from the community during the preview there may be additional areas of improvements that we’ll address in the upcoming releases. We encourage users to submit them through GitHub.
 
-[1]:https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs
-[2]:https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-skills-overview?view=azure-bot-service-4.0
+[1]:https://docs.microsoft.com/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs
+[2]:https://docs.microsoft.com/azure/bot-service/bot-builder-skills-overview?view=azure-bot-service-4.0
 [3]:https://www.luis.ai/
 [4]:https://www.qnamaker.ai/
 [5]:https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)
@@ -109,7 +100,7 @@ As we collect more feedback from the community during the preview there may be a
 [17]:https://en.wikipedia.org/wiki/TensorFlow
 [18]:https://en.wikipedia.org/wiki/Active_learning_(machine_learning)
 [19]:https://en.wikipedia.org/wiki/Precision_and_recall
-[20]:https://docs.microsoft.com/en-us/dotnet/api/microsoft.bot.builder.ai.orchestrator?view=botbuilder-dotnet-stable
-[21]: https://aka.ms/nlrmodels
+[20]:https://docs.microsoft.com/dotnet/api/microsoft.bot.builder.ai.orchestrator?view=botbuilder-dotnet-stable
+[21]: https://aka.ms/nlrmodels_0.2
 
 
