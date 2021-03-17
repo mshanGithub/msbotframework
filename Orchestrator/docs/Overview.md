@@ -101,6 +101,6 @@ As we collect more feedback from the community during the preview there may be a
 [18]:https://en.wikipedia.org/wiki/Active_learning_(machine_learning)
 [19]:https://en.wikipedia.org/wiki/Precision_and_recall
 [20]:https://docs.microsoft.com/dotnet/api/microsoft.bot.builder.ai.orchestrator?view=botbuilder-dotnet-stable
-[21]: https://aka.ms/nlrmodels_0.2
+[21]: https://aka.ms/nlrversions_0.2
 
 
