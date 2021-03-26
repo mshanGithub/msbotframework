@@ -162,7 +162,7 @@ See [Report Interpretation][6] for more.
 [8]:https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language understanding"
 [9]:https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets "ML testing"
 [10]:https://machinelearningmastery.com/difference-test-validation-datasets/ "Machine Learning Mastery"
-[11]:/DispatchMigrationExample.md "Dispatch Migration"
+[11]:https://github.com/microsoft/botframework-sdk/blob/main/Orchestrator/docs/DispatchMigrationExample.md "Dispatch Migration"
 
 
 
