@@ -43,7 +43,6 @@ To use Orchestrator in place of Dispatch in an existing bot:
 ### In a C\# bot
 
 - Install the `Microsoft.Bot.Builder.AI.Orchestrator` NuGet package.
-- Set your project to target `x64` platform.
 - Install the latest supported version of the [Visual C++ redistributable package](https://support.microsoft.com/help/2977003/the-latest-supported-visual-c-downloads).
 
 ```csharp
@@ -108,8 +107,8 @@ Windows 10
 
 ### Language Support
 Nodejs v10, v12, v14
-C# .NET Standard 2.1 (x64-only)
-C# .NET Core 3.1 (x64-only)
+C# .NET Standard 2.1
+C# .NET Core 3.1
 
 
 ## Additional Reading
