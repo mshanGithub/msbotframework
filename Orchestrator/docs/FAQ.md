@@ -33,7 +33,7 @@ We recommend evaluating each solution against your data and see which performs b
 Unfortunately not.  However, Orchestrator Recognizer could take external entity recognizers.  Look [here][7] for supported entity recognizers.
 
 ### How do you migrate from Dispatch solution to Orchestrator solution?
-[BF Orchestrator CLI][6] comes with commands similar to [Dispatch CLI][5] commands.  bf orchestrator:create command also takes existing .dispatch file generated from Dispatch CLI for easy migration.  See [Dispatch Migration][12] guide for more information.
+[BF Orchestrator CLI][6] comes with commands similar to [Dispatch CLI][5] commands.  bf orchestrator:create command also takes existing .dispatch file generated from Dispatch CLI for easy migration.  See [Dispatch Migration][12] documentation for more information.
 
 ### References
 * [Orchestrator][8]
@@ -52,4 +52,4 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 [9]:https://github.com/microsoft/BotFramework-Composer
 [10]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/what-is-luis
 [11]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/overview
-[12]:/DispatchMigrationExample.md
+[12]:https://github.com/microsoft/botframework-sdk/blob/tiens-patch-1/Orchestrator/docs/DispatchMigrationExample.md
