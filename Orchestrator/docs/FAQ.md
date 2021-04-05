@@ -33,6 +33,11 @@ We recommend evaluating each solution against your data and see which performs b
 Unfortunately not.  However, Orchestrator Recognizer could take external entity recognizers.  Look [here][7] for supported entity recognizers.
 
 ### References
+* [Orchestrator][8]
+* [Composer][9]
+* [LUIS][10]
+* [QnAMaker][11]
+
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-how-to-use-dashboard
 [2]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/test-knowledge-base?tabs=v1
 [3]:https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/CLI/ModelTuning/README.md
@@ -40,3 +45,7 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 [5]:https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch
 [6]:https://github.com/microsoft/botframework-cli/tree/main/packages/Orchestrator
 [7]:https://github.com/microsoft/botbuilder-dotnet/tree/main/libraries/Microsoft.Bot.Builder.Dialogs.Adaptive/Recognizers/EntityRecognizers
+[8]:https://aka.ms/bf-orchestrator
+[9]:https://github.com/microsoft/BotFramework-Composer
+[10]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/what-is-luis
+[11]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/overview
