@@ -4,6 +4,9 @@
 Primary scenario currently supported is routing/dispatching (intent only).  We are working on supporting entities extraction for future releases.
 
 
+### Can Orchestrator be used from Composer?
+Yes.  Follow documentation [here][13] to use Orchestrator as recognizer in Composer.
+
 ### Can you use both Orchestrator and LUIS in the same bot?
 Yes, definitely.  You could use Orchestrator (OrchestratorRecognizer) to route incoming utterances to the right child applications (i.e., LUISRecognizer, QnAMakerRecognizer).
 
@@ -53,3 +56,4 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 [10]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/what-is-luis
 [11]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/overview
 [12]:https://github.com/microsoft/botframework-sdk/blob/tiens-patch-1/Orchestrator/docs/DispatchMigrationExample.md
+[13]:https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview%20features/orchestrator.md
