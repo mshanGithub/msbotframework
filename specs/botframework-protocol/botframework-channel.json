@@ -579,7 +579,7 @@
         ],
         "summary": "GetConversationMember",
         "description": "Get a single member of a conversation.\r\n\r\nThis REST API takes a ConversationId and MemberId and returns a single ChannelAccount object, if that member is found in this conversation.",
-        "operationId": "Conversations_GetConversationMembers",
+        "operationId": "Conversations_GetConversationMember",
         "consumes": [],
         "produces": [
           "application/json",
