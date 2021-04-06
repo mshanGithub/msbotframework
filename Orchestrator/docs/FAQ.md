@@ -19,7 +19,7 @@ We recommend tuning the sub app models (i.e. LUIS/QnAMaker/Orchestrator) using t
 
 
 ### Which languages will be supported in Orchestrator multilingual models?
-The model supports 100 languages (full list can be found at [XLMR Supported Languages][4]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data.  We are constantly looking to expand the number of supported languages and if a language is not yet supported, Azure translation could be used to translate incoming utterance to English first before passing it to Orchestrator.  
+Orchestrator multilingual models currently supports 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH).  See [Orchestrator base models][14] for more information on specific models.  We are constantly looking to expand the number of supported languages and if a language is not yet supported, Azure translation could be used to translate incoming utterance to English first before passing it to Orchestrator.  
 
 ### Does Orchestrator replace LUIS Dispatch?
 LUIS based [Dispatch][5] is on the path to be deprecated, although the exact timeline is not yet finalized.  Now is a good time to start evaluating Orchestrator as an alternative to Dispatch.
@@ -57,3 +57,4 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 [11]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/overview
 [12]:https://github.com/microsoft/botframework-sdk/blob/tiens-patch-1/Orchestrator/docs/DispatchMigrationExample.md
 [13]:https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview%20features/orchestrator.md
+[14]:https://github.com/microsoft/botframework-sdk/blob/main/Orchestrator/docs/NLRModels.md
