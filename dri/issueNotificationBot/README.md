@@ -89,7 +89,7 @@ The Bot has some additional commands that it only responds to if they come from 
 
 ## Links
 
-* [Bot Web App](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/0389857f-2464-451b-ac83-5f54d565b1a7/resourceGroups/v-micricMAIN/providers/Microsoft.BotService/botServices/IssueNotificationBot/overview)
-* [Bot App Service](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/0389857f-2464-451b-ac83-5f54d565b1a7/resourceGroups/v-micricMAIN/providers/Microsoft.Web/sites/issuenotificationbot/appServices)
-* [Azure Function](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/0389857f-2464-451b-ac83-5f54d565b1a7/resourceGroups/v-micricMAIN/providers/Microsoft.Web/sites/IssueNotificationIssueRetriever/appServices)
-* [Cosmos Storage](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/0389857f-2464-451b-ac83-5f54d565b1a7/resourceGroups/v-micricMAIN/providers/Microsoft.DocumentDb/databaseAccounts/vmicriccosmos/dataExplorer)
+* [Bot Web App](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/174c5021-8109-4087-a3e2-a1de20420569/resourceGroups/mdrichardson-IssueNotificationBot/providers/Microsoft.BotService/botServices/micric-issueNotificationBotTEST)
+* [Bot App Service](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/174c5021-8109-4087-a3e2-a1de20420569/resourceGroups/mdrichardson-IssueNotificationBot/providers/Microsoft.Web/sites/micric-issueNotificationBot)
+* [Azure Function](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/174c5021-8109-4087-a3e2-a1de20420569/resourceGroups/mdrichardson-IssueNotificationBot/providers/Microsoft.Web/sites/micric-notificationBotFunction)
+* [Cosmos Storage](https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/174c5021-8109-4087-a3e2-a1de20420569/resourceGroups/mdrichardson-IssueNotificationBot/providers/Microsoft.DocumentDb/databaseAccounts/vmicriccosmos)

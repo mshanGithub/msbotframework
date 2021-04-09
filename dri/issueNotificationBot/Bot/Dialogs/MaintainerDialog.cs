@@ -281,7 +281,7 @@ namespace IssueNotificationBot
 
             var issueCard = TemplateCardHelper.GetPersonalIssueCard(
                 JsonConvert.DeserializeObject<GitHubIssue>(JsonConvert.SerializeObject(fakeIssue)),
-                "TEST EXIRE MESSAGE",
+                "TEST EXPIRE MESSAGE",
                 new DateTime(),
                 "TEST ACTION",
                 maintainer);
