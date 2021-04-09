@@ -53,12 +53,15 @@ REPOS = [
     'botbuilder-python',
     'botbuilder-java',
     'botbuilder-samples',
+    'botframework-composer',
+    'botframework-samples',
+    'botframework-solutions',
     'botframework-emulator',
     'botframework-webchat',
     'botbuilder-tools',
     'botframework-directlinejs',
     'botframework-cli',
-    'azure/azure-cli',
+    # 'azure/azure-cli',
 ]
 
 # Do not apply user filters to these repos.
@@ -82,6 +85,7 @@ MICROSFT_EMPLOYEES = [
     'shikhamishra11',
     'washingtonkayaker',
     'yochay', # Not a MSFT employee anymore, but still owner of lots of issues. Adding here until they are cleaned up.
+    'vishwacsena', # Not a MSFT employee anymore, but still owner of lots of issues. Adding here until they are cleaned up.
     'ryanlengel',
     'zerryth',
     'stevkan',
@@ -90,7 +94,11 @@ MICROSFT_EMPLOYEES = [
     'diegocardozo94',
     'v-madhal',
     'v-kydela',
-    'corinagum'
+    'corinagum',
+    'mrichardson',
+    'mdrichardson',
+    'github-actions[bot]',
+    'zxyanliu',
 ]
 
 # When to begin searching for issues.
@@ -128,6 +136,7 @@ def main():
 
         # Filter out adaptive issues
         open_issues = [issue for issue in open_issues if not filter_adaptive_label(issue) and not filter_exempt_from_dri_label(issue)]
+
         user_filtered = True
         if repo.name in BYPASS_USERFILTER_REPOS:
             user_filtered_issues = [issue for issue in open_issues if not issue.pull_request]
