@@ -99,6 +99,10 @@ namespace IssueNotificationBot
             {
                 Logger.LogInformation($"Unable to handle message: {turnContext.Activity.Text} from: {turnContext.Activity.From.Name}");
                 await turnContext.SendActivityAsync(Constants.NoConversationResponse);
+
+                var maintainer = NotificationHelper.Maintainer;
+
+                await turnContext.SendActivityAsync($"If you need help with this bot, please contact {maintainer.TeamsUserInfo.Name} ({maintainer.TeamsUserInfo.Email}).");
             }
         }
 

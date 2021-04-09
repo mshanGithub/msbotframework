@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using IssueNotificationBot.Models;
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Teams;
@@ -13,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -123,9 +121,7 @@ namespace IssueNotificationBot.Services
         {
             Logger.LogInformation($"Sending Issue notification to {user.TeamsUserInfo.Name} for {issue.Number}");
 
-            var maintainer = await UserStorage.GetTrackedUserFromGitHubUserId(Constants.MaintainerGitHubId);
-
-            var card = TemplateCardHelper.GetPersonalIssueCard(issue, nearingOrExpiredMessage, expires, action, maintainer);
+            var card = TemplateCardHelper.GetPersonalIssueCard(issue, nearingOrExpiredMessage, expires, action, Maintainer);
 
             var activity = MessageFactory.Attachment(card);
             activity.TeamsNotifyUser();
@@ -141,9 +137,7 @@ namespace IssueNotificationBot.Services
         {
             Logger.LogInformation($"Sending PR notification to {user.TeamsUserInfo.Name} with {prs.SinglePRs.Count} single and {prs.GroupPRs.Count} group");
 
-            var maintainer = await UserStorage.GetTrackedUserFromGitHubUserId(Constants.MaintainerGitHubId);
-
-            var card = TemplateCardHelper.GetPersonalPRCard(prs, maintainer);
+            var card = TemplateCardHelper.GetPersonalPRCard(prs, Maintainer);
 
             var activity = MessageFactory.Attachment(card);
             activity.TeamsNotifyUser();
