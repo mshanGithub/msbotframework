@@ -93,7 +93,7 @@ Create a label .lu file with test data set of utterances. Run the following comm
 bf orchestrator:test --in <snapshot file> --model <base model file> --out <report folder> --test <test data file>
 ```
 
-See also [bf orchestrator test](https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratortest) for full command line options.
+See also [bf orchestrator test](https://github.com/microsoft/botframework-cli/tree/main/packages/orchestrator#bf-orchestratortest) for full command line options.
 
 See also [Report Interpretation][6] for how to use the report to fine tune your language model. 
 
