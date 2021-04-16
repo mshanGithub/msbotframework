@@ -91,6 +91,23 @@ In general, to specify Orchestrator as a dialog recognizer:
 
 This enables basic intent recognition. For more advanced scenarios follow the steps above to import and tune up routing quality. For more information about recognizers in Composer, see the discussion of [recognizers](https://docs.microsoft.com/composer/concept-dialog#recognizer) with respect to dialogs in Composer.
 
+### Model Versions 
+Composer is using the pre-selected default base models. With the CLI one can download & use alternate models. To force Composer to use different models, one can specify in the bot advanced settings as follows.
+
+The user can change the model by adding the following to appsettings.json:
+
+```
+"orchestrator": {
+    "model": {
+      "en_intent": "pretrained.20200924.microsoft.dte.00.03.en.onnx",
+      "multilingual_intent": "pretrained.20200924.microsoft.dte.00.03.multilingual.onnx"
+    }
+  }
+ ```
+If this section is blank or unreadable, we simply use the Orchestrator defaults. If the model is not in the supported Orchestrator list, we throw an error message.
+
+See more on models [here][20].
+
 ## Limitations
 
 * Orchestrator is limited to intents only. Entity definitions are ignored and no entity extraction is performed during recognition.
