@@ -1,4 +1,4 @@
-# Orchestrator (PREVIEW)
+# Orchestrator
 
 Conversational AI applications today are built using disparate technologies to fulfill language understanding (LU) needs, such as [LUIS][1] and [QnA Maker][2]. Often, conversational AI applications are also built by accessing subsequent [skills][3], each of which handle a specific conversation topic and can be built using different LU technologies. Hence, conversational AI applications typically require LU to route an incoming user request to an appropriate skill or to dispatch to a specific sub-component.
 

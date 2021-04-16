@@ -1,9 +1,9 @@
 # Prebuilt Language Models
 
 Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios, including intent prediction and entity extraction.
-Entity extraction is currently experimental and not yet for production use.
+Entity extraction is currently experimental and not yet readt for production use.
 
-The public preview of Orchestrator includes the following prebuilt language models available in [versions repository][2].
+The following prebuilt language models are now available in [versions repository][2].
 
 See the [References](#references) section for technical descriptions of the AI technology behind the models .
 
@@ -148,7 +148,7 @@ The models are released under the following [License Terms][6].
 * [Microsoft  AI At Scale][10]
 
 [1]: https://arxiv.org/abs/2002.12804 "UniLMv2: Pseudo-Masked Language Models for Unified Language Model Pre-Training"
-[2]: https://aka.ms/nlrversions
+[2]: https://aka.ms/nlrversions_0.2
 [3]: https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm
 [4]: https://github.com/snipsco/snips-nlu "Snips NLU"
 [5]: https://github.com/snipsco/snips-nlu-metrics "Snips NLU Metrics"

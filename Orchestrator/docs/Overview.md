@@ -77,9 +77,8 @@ A commonly requested feature as the part of intent triggering is to provide the 
 An important extension that will be made in the upcoming releases is the support for multi-lingual models and possibly also specialized international models prioritized by languages supported by other Microsoft offerings.
 
 
-
-### Possible additional improvements based on the preview feedback
-As we collect more feedback from the community during the preview there may be additional areas of improvements that we’ll address in the upcoming releases. We encourage users to submit them through GitHub.
+### Possible additional improvements based on community feedback
+As we collect more feedback from the community, there may be additional areas of improvements that we’ll address in the upcoming releases. We encourage users to submit them through GitHub.
 
 [1]:https://docs.microsoft.com/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs
 [2]:https://docs.microsoft.com/azure/bot-service/bot-builder-skills-overview?view=azure-bot-service-4.0
@@ -101,6 +100,6 @@ As we collect more feedback from the community during the preview there may be a
 [18]:https://en.wikipedia.org/wiki/Active_learning_(machine_learning)
 [19]:https://en.wikipedia.org/wiki/Precision_and_recall
 [20]:https://docs.microsoft.com/dotnet/api/microsoft.bot.builder.ai.orchestrator?view=botbuilder-dotnet-stable
-[21]: https://aka.ms/nlrversions_0.2
+[21]:https://aka.ms/nlrversions_0.2
 
 
