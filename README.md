@@ -114,9 +114,9 @@ We track functional issues and features asks for the Bot Framework SDK, tools an
 | Item                        | Description                                                                                        | Link                              |
 |-----------------------------|----------------------------------------------------------------------------------------------------|-----------------------------------|
 | SDK v4 .NET                 | core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue][70csissues]       |
-| SDK v4 JavaScript           | core bot runtime for Typescript/Javascript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue][70csissues]       |
-| SDK v4 Python               | core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA                | [File an issue][70csissues]       |
-| SDK v4 Java                 | core bot runtime for Java, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue][70csissues]       |
+| SDK v4 JavaScript           | core bot runtime for Typescript/Javascript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue][70jsissues]       |
+| SDK v4 Python               | core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA                | [File an issue][70pyissues]       |
+| SDK v4 Java                 | core bot runtime for Java, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue][70jaissues]       |
 | Bot Framework Composer      | bot framework composer electron and web app                                                        | [File an issue][70composerissues] |
 | Bot Framework CLI           | bot framework cli tools                                                                            | [File an issue][70cliissues]  |
 | Webchat                     | bot framework web chat tool                                                                        | [File an issue][70webchatissues]  |
