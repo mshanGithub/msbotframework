@@ -5,9 +5,7 @@ Entity extraction is currently experimental and not yet readt for production use
 
 The following prebuilt language models are now available in [versions repository][2].
 
-See the [References](#references) section for technical descriptions of the AI technology behind the models .
-
-See the [References](#references) section for technical descriptions of the AI technology behind the models .
+See the [References](#references) section for technical descriptions of the AI technology behind the models.
 
 ## Default Models
 
