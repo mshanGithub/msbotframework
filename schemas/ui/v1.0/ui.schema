@@ -22,6 +22,16 @@
                     "title": "Flow UI Options",
                     "description": "UI Options object describing flow UI customizations for this $kind.",
                     "$ref": "#/definitions/FlowUIOptions"
+                },
+                "trigger": {
+                    "title": "Trigger UI Options",
+                    "description": "UI Options object describing how this component appreas in the Trigger dropdown.",
+                    "$ref": "#/definitions/TriggerUIOptions"
+                },
+                "recognizer": {
+                    "title": "Recognizer UI Options",
+                    "description": "UI Options object describing how this component appreas in the Recognizer dropdown.",
+                    "$ref": "#/definitions/RecognizerUIOptions"
                 }
             },
             "additionalProperties": {
@@ -205,6 +215,100 @@
             },
             "additionalProperties": true
         },
+        "TriggerUIOptions": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "title": "Displayed trigger name",
+                    "description": "Displayed trigger name in trigger creation flow.",
+                    "type": "string",
+                    "examples": ["Intent recognized"]
+                },
+                "submenu": {
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "description": "Label name of the submenu."
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "label": {
+                                    "title": "Submenu name",
+                                    "type": "string",
+                                    "examples": ["Dialog events"]
+                                },
+                                "prompt": {
+                                    "title": "Submenu prompt",
+                                    "description": "Prompt of next level Trigger menu.",
+                                    "type": "string",
+                                    "examples": ["Which event?"]
+                                },
+                                "placeholder": {
+                                    "title": "Submenu placeholder",
+                                    "description": "Placeholder text to show when no trigger selected.",
+                                    "type": "string",
+                                    "examples": ["Select an event type"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                "disabled": {
+                    "title": "Trigger disabled",
+                    "description": "When set to true, the trigger will be hidden from the creation flow.",
+                    "type": "boolean"
+                },
+                "order": {
+                    "title": "Trigger order (Optional)",
+                    "description": "Indexing order of a Trigger, be used to sort the Trigger menu.",
+                    "type": "number"
+                }
+            }
+        },
+        "RecognizerUIOptions": {
+            "type": "object",
+            "properties": {
+                "displayName": {
+                    "title": "Recognizer name",
+                    "description": "Recognizer name displayed in the dropdown option.",
+                    "type": "string",
+                    "examples": ["Regular expression recognizer"]
+                },
+                "intentEditor": {
+                    "title": "Trigger phrases editor name",
+                    "description": "Hook a trigger phrases editor to all child triggers.",
+                    "type": "string",
+                    "examples": ["LuIntentEditor", "RegexIntentEditor"]
+                },
+                "fields": {
+                    "title": "Fields initializer object",
+                    "description": "A template of the recognizer to define a custom initializer. LG, Expression is supported.",
+                    "type": "object",
+                    "additionalProperties": true,
+                    "examples": [
+                        {
+                            "luFileId": "${dialogId}.lu"
+                        }
+                    ]
+                },
+                "default": {
+                    "title": "Default recognizer",
+                    "description": "When set to true, new dialogs will use this recognizer by default.",
+                    "type": "boolean"
+                },
+                "disabled": {
+                    "title": "Recognizer disabled",
+                    "description": "When set to true, the recognizer will be hidden from the dropdown.",
+                    "type": "boolean"
+                },
+                "order": {
+                    "title": "Recognizer order (Optional)",
+                    "description": "Indexing order of a Recognizer, be used to sort the Recognizer dropdown.",
+                    "type": "number"
+                }
+            }
+        },
         "MenuOptions": {
             "oneOf": [
                 {
@@ -249,6 +353,16 @@
                             "description": "Do not put menu item in a submenu."
                         }
                     ]
+                },
+                "disabled": {
+                    "title": "Menu disabled",
+                    "description": "When set to true, current $kind will be hidden from the Action flyout menu.",
+                    "type": "boolean"
+                },
+                "order": {
+                    "title": "Action menu order (Optional)",
+                    "description": "A float number as the indexing order of an Action, be used to sort the Action menu.",
+                    "type": "number"
                 }
             },
             "additionalProperties": false

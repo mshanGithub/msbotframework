@@ -176,4 +176,4 @@ This evaluation report is created using several thresholds that they can also be
 [2]:https://en.wikipedia.org/wiki/Confusion_matrix	"Wikipedia: Confusion matrix"
 [3]:https://aka.ms/nlrmodels	"NLR Models"
 [4]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0 ".LU format"
-[5]: https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratortest "bf orchestrator:test"
+[5]: https://github.com/microsoft/botframework-cli/tree/main/packages/orchestrator#bf-orchestratortest "bf orchestrator:test"
