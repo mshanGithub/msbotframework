@@ -21,7 +21,6 @@ Here, we will modify that sample to use Orchestrator in place of the top LUIS ar
   * Have access to create & use [LUIS][4] and [QnAMaker][5] services.
   * See [Dispatch Sample documentation][1] for full details.
 * Install [BF CLI][6]
-* Install BF CLI [Orchestrator Plugin][7]
 * Bot project must target x64 platform
 * Install latest supported version of [Visual C++ runtime](https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads)
 
@@ -34,20 +33,20 @@ Start with fully working  [NLP With Dispatch][2] C# Sample including all languag
 
 
 ## Prepare
-* Export your LUIS application language model(s) and/or QnA Maker knowledge bases(s) 
+* Add your LUIS application language model(s) and/or QnA Maker knowledge bases(s) as Orchestrator data sources
 
 ```
 > md CognitiveModels
-> bf luis:version:list --appId <luis-app-id> --endpoint <luis-endpoint> --subscriptionKey <luis-subscription-key> --out <ver.json>
-@rem select (manually) from version list in ver.json
-> bf luis:version:export --appId <luis-app-id> --endpoint <luis-endpoint> --subscriptionKey <luis-subscription-key> --versionId <version-id> --out <CognitiveModels\luis.json>
+@rem -v <luis-app-version> is optional, default to 0.1
+@rem --routingName is optional, default to l_<luis-app-name> found in the exported lu file
+@rem sample luis-endpoint: https://westus.api.cognitive.microsoft.com
+> bf orchestrator:add -t luis --id <luis-app-id> --endpoint <luis-endpoint> -k <luis-subscription-key> -v <luis-app-version> --routingName l_<luis-app-name>
 
-> bf qnamaker:kb:export --kbId <kb-id> --subscriptionKey <qna-subscription-key> --qnaFormat > <CognitiveModels\kb.qna>
+@rem --routingName is optional, default to q_<kb-id>
+> bf orchestrator:add -t qna --id <kb-id> -k <qna-subscription-key> --routingName q_<kb-name>
 ```
 
 * Add the ```Microsoft.Bot.Builder.AI.Orchestrator``` assembly and dependencies to your project from nuget package manager.
-
-
 
 ## Create Orchestrator Language model
 
@@ -59,13 +58,38 @@ Start with fully working  [NLP With Dispatch][2] C# Sample including all languag
 
 ```
 > md model
-> md generated
 > bf orchestrator:basemodel:get --out model
-> bf orchestrator:create --in CognitiveModels\ --model model --out generated
-"Processing c:\\...\\CognitiveModels\\luis.json...\n"
-"Processing c:\\...\\CognitiveModels\\kb.qna...\n"
+
+> md generated
+> bf orchestrator:create --in CognitiveModels --model model --out generated
+"Processing c:\\...\\CognitiveModels\\datasources\\l_<luis-app-name>.lu...\n"
+"Processing c:\\...\\CognitiveModels\\datasources\\q_<kb-name>.qna...\n"
 "Snapshot written to c:\\...\\generated\\Orchestrator.blu"
 ```
+
+* If you have previously used [**Dispatch CLI tool**][8] to create and refresh LUIS based Dispatch application, you could simply pass in path to the **.dispatch** file (created by Dispatch CLI tool) to bf:orchestrator:create command and skip the bf:orchestrator:add steps above.
+
+  Example:
+
+  ```
+  > md generated
+  > cd CognitiveModels
+  > bf orchestrator:create --in c:\\LuisDispatchBot.dispatch --model model --out ..\\generated
+  "Processing c:\\...\\CognitiveModels\\datasources\\l_<luis-app-name>.lu...\n"
+  "Processing c:\\...\\CognitiveModels\\datasources\\q_<kb-name>.qna...\n"
+  "Snapshot written to c:\\...\\generated\\Orchestrator.blu"
+  ```
+
+- To refresh *Orchestrator snapshot* with latest changes from your LUIS application(s) or QnAMaker knowledge base(s),  simply rerun the bf orchestrator:create command above or run the following command from the same directory previous create command was run from.
+
+  Example:
+
+  ```
+  > bf orchestrator:create --refresh
+  "Processing c:\\...\\CognitiveModels\\datasources\\l_<luis-app-name>.lu...\n"
+  "Processing c:\\...\\CognitiveModels\\datasources\\q_<kb-name>.qna...\n"
+  "Snapshot written to c:\\...\\generated\\Orchestrator.blu"
+  ```
 
 
 
@@ -97,7 +121,7 @@ Start with fully working  [NLP With Dispatch][2] C# Sample including all languag
   
     "Orchestrator": {
       "ModelPath": ".\\model",
-      "SnapshotPath": ".\\generated\\NLPDispatchSample14.blu"
+      "SnapshotPath": ".\\generated\\Orchestrator.blu"
     },
   
     "AllowedHosts": "*"
@@ -497,5 +521,5 @@ Compile and run. The sample will use Orchestrator to arbitrate ("dispatch") to t
 [4]:https://luis.ai "LUIS"
 [5]:https://qnamaker.ai "QnAMaker"
 [6]:https://github.com/microsoft/botframework-cli "BF CLI"
-[7]:https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator "Orchestrator plugin"
-
+[7]:https://github.com/microsoft/botframework-cli/tree/main/packages/orchestrator "Orchestrator plugin"
+[8]:https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch "Dispatch CLI"

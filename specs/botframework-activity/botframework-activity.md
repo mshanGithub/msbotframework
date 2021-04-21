@@ -24,13 +24,16 @@ This schema is used within the Bot Framework protocol and is implemented by Micr
 13. [Trace activity](#trace-activity)
 14. [Typing activity](#typing-activity)
 15. [Handoff activity](#handoff-activity)
-16. [Complex types](#complex-types)
-17. [References](#references)
-18. [Appendix I - Changes](#appendix-i---changes)
-19. [Appendix II - Non-IRI entity types](#appendix-ii---non-iri-entity-types)
-20. [Appendix III - Protocols using the Invoke activity](#appendix-iii---protocols-using-the-invoke-activity)
-21. [Appendix IV - Priming format](#appendix-iv---priming-format)
-22. [Appendix V - Caller ID values](#appendix-v---caller-id-values)
+16. [Command activity](#command-activity)
+17. [Command result activity](#command-result-activity)
+18. [Complex types](#complex-types)
+19. [References](#references)
+20. [Appendix I - Changes](#appendix-i---changes)
+21. [Appendix II - Non-IRI entity types](#appendix-ii---non-iri-entity-types)
+22. [Appendix III - Protocols using the Invoke activity](#appendix-iii---protocols-using-the-invoke-activity)
+23. [Appendix IV - Priming format](#appendix-iv---priming-format)
+24. [Appendix V - Caller ID values](#appendix-v---caller-id-values)
+25. [Appendix VI - Protocols using the Command activity](#appendix-vi---protocols-using-the-command-activity)
 
 ## Introduction
 
@@ -748,6 +751,66 @@ Handoff activities are identified by a `type` value of `handoff`.
 
 `A6200`: Channels SHOULD drop handoff activities if they are not supported.
 
+## Command activity
+
+Command activities communicate a request to perform a specific action. They are identified by a `type` value of `command` and specific values of the `name` field. 
+
+Commands look similar in structure to events but have different semantics. Commands are requests to perform an action and receivers typically respond with one or more commandResult activities. Receivers are also expected to explicitly reject unsupported command activities.
+
+`A6300`: Channels MAY allow application-defined command activities between clients and bots, if the clients allow application customization.
+
+`A6301`: Application-defined command activities MUST be declared in the `application/*` namespace.
+
+`A6302`: Command activities outside the `application/*` are considered reserved for Bot Framework Protocols.
+
+The list of all Bot Framework protocols using command activities is included in [Appendix VI](#appendix-vi---protocols-using-the-command-activity).
+
+### Name
+
+The `name` field defines the meaning of the command activity. The value of the `name` field is of type string.
+
+`A6310`: Command activities MUST contain a `name` field.
+
+`A6311`: The `name` of a command activity MUST use a [MIME media type](https://www.iana.org/assignments/media-types/media-types.xhtml) [[9](#references)] format.
+
+`A6312`: Receivers MUST ignore command activities with missing or invalid `name` field.
+
+The recommended patterns for rejecting command activities are included in [Appendix VI](#appendix-vi---protocols-using-the-command-activity).
+
+### Value
+
+The `value` field contains the command metadata and parameters specific to a command, as defined by the command `name`. The `value` field is a complex object of the [command value](#command-value) type.
+
+`A6321`: Command activities MUST contain a `value` field. 
+
+`A6322`: Receivers MUST ignore command activities with missing or invalid `value` field.
+
+## Command result activity
+
+Command result activities communicate the result of a [command activity](#command-activity). 
+
+Command result activities are identified by a `type` value of `commandResult` and specific values of the `name` field. The `name` field of a command result is always set to the `name` of the original command activity. 
+
+`A6400`: Senders MAY send one or more command result activities to communicate the result of the command.
+
+### Name
+
+The `name` field defines the meaning of the command result activity. The value of the `name` field is of type string.
+
+`A6411`: Command result activities MUST contain a `name` field. 
+
+`A6412`: Receivers MUST ignore command activities with missing or invalid `name` field.
+
+`A6413`: The `name` of a command result activity MUST be the same as the `name` of the original command activity.
+
+### Value
+
+The `value` field contains the command metadata and additional information specific to a command result, as defined by the command result `name`. The value of the `value` field is a complex object of type [command result value](#command-result-value) type.
+
+`A6421`: Command result activities MUST contain a `value` field. 
+
+`A6422`: Receivers MUST reject command result activities with missing or invalid `value` field.
+
 ## Complex types
 
 This section defines complex types used within the activity schema, described above.
@@ -1352,6 +1415,44 @@ The `semanticEntityInstance` type references to source information about where t
 
 `A7753`: The contents of the `text` field within `$instance` MUST contain characters ordinally identical to the value of the `text` field in the activity root starting at `startIndex` characters from the beginning and ending immediately before `endIndex` characters from the beginning.
 
+### Command value
+The `value` field of a [command activity](#command-activity) contains metadata related to a command. An optional extensible `data` payload may be included if defined by the command activity `name`.
+
+#### Command Id
+
+`A10100`: A command value MAY include the `commandId` field with the unique ID that the sender assigns to this command.
+
+#### Data
+
+The `data` field contains optional parameters specific to this command activity, as defined by the `name`. The value of the `data` field is a complex type.
+
+`A10200`: The `data` field MAY be missing or empty, if defined by the command activity `name`.
+
+`A10201`: Extensions to the command activity SHOULD NOT require receivers to use any information other than the activity `type` and `name` fields to understand the schema of the `data` field.
+
+### Command result Value
+The `value` field of a [command result activity](#command-result-activity) contains metadata related to a command. An optional extensible `data` payload may be included if defined by the command result activity `name`. The presence of an `error` field indicates that the original command failed to complete. 
+
+#### Command Id
+
+`A11100`: If the original command includes a valid `commandId`, then the command result value MUST include the same value in `commandId` to allow the result to be correlated to the original command instance.
+
+#### Data
+
+The `data` field contains optional additional information specific to this command result activity, as defined by the `name`. The value of the `data` field is a complex type.
+
+`A11200`: The `data` field MAY be missing or empty, if defined by the command result activity name. 
+
+`A11201`: Extensions to the command result activity SHOULD NOT require receivers to use any information other than the activity `type` and `name` fields to understand the schema of the `data` field.
+
+#### Error
+
+The `error` field contains the reason the original [command activity](#command-activity) failed to complete.
+
+`A11300`: Senders MUST include the `error` field when the command was not successful. The value of the `error` field is of type  [Error Object](../botframework-protocol/botframework-protocol.md#error-object)
+
+`A11301`: Senders MUST NOT include the `error` field when the command was successful.
+
 ## References
 
 1. [Bot Framework Protocol](../botframework-protocol/botframework-channel.json) -- *Bot Framework Protocol swagger definition*
@@ -1592,3 +1693,33 @@ The authenticity of a call from Bot Framework US Government Cloud can be establi
 The Activity schema can be used when a bot initiates a request to another bot acting as a skill. The caller ID for these calls is the prefix `urn:botframework:aadappid:` followed by the Azure Active Directory App ID used by the bot initiating the call.
 
 The authenticity of a call from a bot can be established by inspecting its JSON Web Token and ensuring it is both correctly formed and is signed with a key listed in the Azure Active Directory Open ID Metadata Document.
+
+# Appendix VI - Protocols using the Command activity
+[Command activities](#command-activity) communicate a request to perform a specific action. Command activities outside the `application` are considered reserved for Bot Framework Protocols. This appendix contains a list of command activities used in Bot Framework protocols and recommended patterns for defining and using command activities.
+
+## Telephony Channel 
+
+The Microsoft Telephony channel defines channel command activities in the namespace `channel/vnd.microsoft.telephony.<action>`. 
+
+## Patterns for rejecting commands
+
+### General pattern for rejecting commands
+The general pattern for rejecting commands is to send an asynchronous commands result with an error. This is used in most cases when the receiver needs to process the command before rejecting it. 
+
+Here is an example of a command result indicating that the command was not supported by the receiver:
+```
+    {
+        'type': 'commandResult'
+        'name': 'channel/vnd.microsoft.telephony.<action>'
+        'value': {                        
+            'error' : {
+                'code': 'NotSupported',
+                'message' : 'Command channel/vnd.microsoft.telephony.<action> is not supported'
+            }
+        }
+    }
+```
+
+### Channel rejecting commands
+Some channels may may not support the command protocol or not allow for application customization of commands. In this case, the channel can reject commands with a transport-level response codes to allow a sender to detect the command activity was rejected. Example: When the transport is HTTP, 200 indicates acceptance and 400 indicates that the Activity name is not supported.
+

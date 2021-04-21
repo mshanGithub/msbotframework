@@ -20,21 +20,12 @@ We will use the primary workflow to illustrate how to use Orchestrator commands 
 
 If you are developing a new language model, simply refer to [Language understanding][8] documentation to author label files. Depending on how you plan to design your bot, you may use a single label file corresponding to a single snapshot file for the entire bot or multiple pairs, each for every adaptive dialog where you plan to use Orchestrator as a recognizer. 
 
-In case of migration from legacy dispatch, you may need to retrieve your LUIS application language model using the ```bf luis:version:export``` command to .lu file or QnA Maker knowledgebase using ```bf qnamaker:kb:export```  to .qna format. 
+In case of **migration from legacy dispatch**, simply add LUIS app(s) or QnAMaker kb(s) as Orchestrator data sources.  Refer to the Dispatch migration documentation [here][11] for more information.
 
 Example:
-```Batch
-call bf luis:version:list --appId %APPID% --endpoint %EP% --subscriptionKey %KEY% --out %OUT%\ver.json
-
-@rem select (manually) from version list in ver.json
-set VERID=0.1
-call bf luis:version:export --appId %APPID% --endpoint %EP% --subscriptionKey %KEY% --versionId %VERID% --out %LUJSON%
-call bf luis:convert --in %LUJSON% --out %LULU%
-
-echo Retrieve and convert QnAMaker KB
-call bf qnamaker:kb:export --kbId %KBID% --subscriptionKey %QNAKEY% --qnaFormat > %QNA% 
-@rem If already in Json format, instead just convert to qna format:
-@rem call bf qnamaker:convert --in <file.json> --out <file.qna>
+```
+> bf orchestrator:add -t luis --id <luis-app-id> --endpoint <luis-endpoint> -k <luis-subscription-key> -v <luis-app-version> --routingName l_<luis-app-name>
+> bf orchestrator:add -t qna --id <kb-id> -k <qna-subscription-key> --routingName q_<kb-name>
 ```
 
 ### 2. Download base model
@@ -63,6 +54,36 @@ There are two ways to create Orchestrator snapshot file(s), depending on the usa
 
   The create command generates a single Orchestrator snapshot file as output.  If folder is specified as input, it scans the subfolder hierarchy for .lu/.json/.tsv/.qna files and combine all utterances/labels found into the snapshot file.  
   The *hierarchical* flag creates top level intents in the snapshot file derived from the .lu/.json/.tsv/.qna file names in the input folder.  This is useful to create a routing mechanism for further processing by subsequent skills or language services.
+  
+  In case of **migration from legacy dispatch**, runs orchestrate:create after orchestrator:add commands from (1).   If LUIS app(s) or QnA Maker kb(s) have been updated, add the **--refresh** flag to orchestrator:create command so latest application models will be downloaded to be used to create Orchestrator snapshot file.
+  
+  Example:
+  
+  ```
+  > bf orchestrator:create 
+  ```
+  
+  
+  
+  If you have previously used Dispatch CLI to create LUIS based Dispatch application, you could use .dispatch file (created by Dispatch CLI) as input to orchestrator:create command and skip step (1)  above.
+  
+  Example:
+  
+  ```
+  > bf orchestrator:create --in c:\LuisDispatchBot.dispatch
+  ```
+  
+  
+  
+- **To recognize intent from incoming user utterance (entity recognition is TBD)**
+
+  Use ```bf orchestrator:create``` command to combine the base model with the label file(s) to create snapshot file for use by the orchestrator recognizer. If using a single folder, create it prior, say *generated*, and specify it in --out parameter:
+
+  ```
+  bf orchestrator:create --model <base model folder> --in <label file/folder> --out <generated folder>
+  ```
+
+  
 
 ### 4. Test and refine quality of utterance to intent recognition
 
@@ -72,7 +93,7 @@ Create a label .lu file with test data set of utterances. Run the following comm
 bf orchestrator:test --in <snapshot file> --model <base model file> --out <report folder> --test <test data file>
 ```
 
-See also [bf orchestrator test](https://github.com/microsoft/botframework-cli/tree/beta/packages/orchestrator#bf-orchestratortest) for full command line options.
+See also [bf orchestrator test](https://github.com/microsoft/botframework-cli/tree/main/packages/orchestrator#bf-orchestratortest) for full command line options.
 
 See also [Report Interpretation][6] for how to use the report to fine tune your language model. 
 
@@ -141,6 +162,7 @@ See [Report Interpretation][6] for more.
 [8]:https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language understanding"
 [9]:https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets "ML testing"
 [10]:https://machinelearningmastery.com/difference-test-validation-datasets/ "Machine Learning Mastery"
+[11]:https://github.com/microsoft/botframework-sdk/blob/main/Orchestrator/docs/DispatchMigrationExample.md "Dispatch Migration"
 
 
 

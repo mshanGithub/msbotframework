@@ -1,9 +1,11 @@
 # Prebuilt Language Models
 
 Prebuilt language models have been trained towards more sophisticated tasks for both monolingual as well as multilingual scenarios, including intent prediction and entity extraction.
-Entity extraction is currently experimental and not yet for production use.
+Entity extraction is currently experimental and not yet readt for production use.
 
-The public preview of Orchestrator includes the following prebuilt language models available in [versions repository][2].
+The following prebuilt language models are now available in [versions repository][2].
+
+See the [References](#references) section for technical descriptions of the AI technology behind the models.
 
 See the [References](#references) section for technical descriptions of the AI technology behind the models .
 
@@ -40,8 +42,6 @@ This is a high quality multilingual base model for intent detection.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages (full list can be found at [XLMR Supported Languages][8]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data (performance can be found [here](#multilingual-intent-detection-models-evaluation)). 
 
-
-
 ## Experimental Models
 
 ### pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
@@ -49,13 +49,8 @@ This is a high quality EN-only base model for entity extraction.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210105.microsoft.dte.00.12.bert_example_ner_multilingual.onnx (experimental)
-This is a high quality multilingual base model for entity extraction.
-It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
-
-### pretrained.20210105.microsoft.dte.00.12.tulr_example_ner_multilingual.onnx (experimental)
-This is a high quality multilingual base model for entity extraction.
+### pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
+This is a yet another high quality EN-only base model for entity extraction.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
@@ -64,13 +59,8 @@ This is a high quality EN-only base model for entity extraction. It's smaller an
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
-### pretrained.20210205.microsoft.dte.00.06.bert_example_ner_multilingual.onnx (experimental)
-This is a high quality multilingual base model for entity extraction. It's smaller and faster than its 12-layer alternative.
-It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
-
-### pretrained.20210205.microsoft.dte.00.06.tulr_example_ner_multilingual.onnx (experimental)
-This is a high quality multilingual base model for entity extraction. It's smaller and faster than its 12-layer alternative.
+### pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx (experimental)
+This is a high quality EN-only base model for entity extraction. It's smaller and faster than its 12-layer alternative.
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
@@ -128,13 +118,17 @@ For a more quantitative comparison analysis of the different models see the foll
 | ------------------------------------------------------------ | ---------- | ------ | ----------------------- | --------------- |
 | pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | BERT       | 6      | ~ 23 ms                 | 259M            |
 | pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx | BERT       | 12     | ~ 40 ms                 | 427M            |
+| pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx | BERT       | 6      | ~ 23 ms                 | 259M            |
+| pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx | BERT       | 12     | ~ 40 ms                 | 425M            |
 
 - The following table shows how accurate is each model relative to provided training sample size using [Snips NLU][4] system, evaluated by **macro-average-F1**.
 
 | Training samples per entity type                             | 10    | 20    | 50    | 100   | 200   |
 | ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- |
-| pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | 0.662 | 0.678 | 0.680 | 0.684 | 0.674 |
+| pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | 0.615 | 0.636 | 0.647 | 0.661 | 0.665 |
 | pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx | 0.637 | 0.658 | 0.684 | 0.698 | 0.702 |
+| pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx | 0.637 | 0.658 | 0.673 | 0.686 | 0.684 |
+| pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx | 0.661 | 0.664 | 0.670 | 0.685 | 0.681 |
 
 
 
@@ -156,7 +150,7 @@ The models are released under the following [License Terms][6].
 * [Microsoft  AI At Scale][10]
 
 [1]: https://arxiv.org/abs/2002.12804 "UniLMv2: Pseudo-Masked Language Models for Unified Language Model Pre-Training"
-[2]: https://aka.ms/nlrversions
+[2]: https://aka.ms/nlrversions_0.2
 [3]: https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm
 [4]: https://github.com/snipsco/snips-nlu "Snips NLU"
 [5]: https://github.com/snipsco/snips-nlu-metrics "Snips NLU Metrics"
