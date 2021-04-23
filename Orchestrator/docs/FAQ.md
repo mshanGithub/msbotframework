@@ -55,6 +55,6 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 [9]:https://github.com/microsoft/BotFramework-Composer
 [10]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/what-is-luis
 [11]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/overview
-[12]:https://github.com/microsoft/botframework-sdk/blob/tiens-patch-1/Orchestrator/docs/DispatchMigrationExample.md
+[12]:https://github.com/microsoft/botframework-sdk/blob/main/Orchestrator/docs/DispatchMigrationExample.md
 [13]:https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview%20features/orchestrator.md
 [14]:https://aka.ms/NLRModels
