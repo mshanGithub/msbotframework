@@ -47,6 +47,6 @@
       "modelUri": "https://aka.ms/pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx",
       "description": "Bot Framework SDK release 4.12 - Multilingual ONNX V1.4 6-layer per-token intent base model",
       "minSDKVersion": "4.12.0"
-    },
+    }
   }
 }
