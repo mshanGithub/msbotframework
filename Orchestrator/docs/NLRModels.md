@@ -21,6 +21,11 @@ This is a high quality multilingual base model for intent detection. It's smalle
 It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box. The model supports in total 100 languages (full list can be found at [XLMR Supported Languages][8]). 8 languages (EN, ES, DE, FR, IT, JA, PT, and ZH) are fine-tuned with additional data (performance can be found [here](#multilingual-intent-detection-models-evaluation)). 
 
+### pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx (experimental)
+This is a high quality EN-only base model for entity extraction. It's smaller and faster than its 12-layer alternative.
+It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
+Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
+
 ## Alternate Models
 
 ### pretrained.20200924.microsoft.dte.00.03.en.onnx
@@ -42,24 +47,9 @@ Its architecture is pretrained for example-based use ([KNN][3]), thus it can be 
 
 ## Experimental Models
 
-### pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
-This is a high quality EN-only base model for entity extraction.
-It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
-
 ### pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx (experimental)
 This is a yet another high quality EN-only base model for entity extraction.
 It is a 12-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
-
-### pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx (experimental)
-This is a high quality EN-only base model for entity extraction. It's smaller and faster than its 12-layer alternative.
-It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
-Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
-
-### pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx (experimental)
-This is a high quality EN-only base model for entity extraction. It's smaller and faster than its 12-layer alternative.
-It is a 6-layer pretrained pretrained [Transformer][7] model optimized for conversation.
 Its architecture is pretrained for example-based use ([KNN][3]), thus it can be used out of box.
 
 ## Models Evaluation
@@ -114,8 +104,6 @@ For a more quantitative comparison analysis of the different models see the foll
 
 | Model                                                        | Base Model | Layers | Encoding time per query | Disk Allocation |
 | ------------------------------------------------------------ | ---------- | ------ | ----------------------- | --------------- |
-| pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | BERT       | 6      | ~ 23 ms                 | 259M            |
-| pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx | BERT       | 12     | ~ 40 ms                 | 427M            |
 | pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx | BERT       | 6      | ~ 23 ms                 | 259M            |
 | pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx | BERT       | 12     | ~ 40 ms                 | 425M            |
 
@@ -123,8 +111,6 @@ For a more quantitative comparison analysis of the different models see the foll
 
 | Training samples per entity type                             | 10    | 20    | 50    | 100   | 200   |
 | ------------------------------------------------------------ | ----- | ----- | ----- | ----- | ----- |
-| pretrained.20210205.microsoft.dte.00.06.bert_example_ner.en.onnx | 0.615 | 0.636 | 0.647 | 0.661 | 0.665 |
-| pretrained.20210205.microsoft.dte.00.12.bert_example_ner.en.onnx | 0.637 | 0.658 | 0.684 | 0.698 | 0.702 |
 | pretrained.20210218.microsoft.dte.00.06.bert_example_ner.en.onnx | 0.637 | 0.658 | 0.673 | 0.686 | 0.684 |
 | pretrained.20210218.microsoft.dte.00.12.bert_example_ner.en.onnx | 0.661 | 0.664 | 0.670 | 0.685 | 0.681 |
 
