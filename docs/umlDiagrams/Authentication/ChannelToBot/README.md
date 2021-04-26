@@ -5,7 +5,7 @@ It is helpful to read the [Authentication](https://docs.microsoft.com/en-us/azur
 
 ___
 
-In order for Channels and Bots to communicate with each other securely, the framework implements OAuth 2.0 authorization flows with [OpenID Connect](https://openid.net/connect/) authentication. For a Channel to send activities to a Bot, the Bot must receive a Token, detailing that the Channel is *authorized* to send activites to the Bot.
+In order for Channels and Bots to communicate with each other securely, the framework implements OAuth 2.0 authorization flows with [OpenID Connect](https://openid.net/connect/) authentication. For a Channel to send activities to a Bot, the Bot must receive a Token, detailing that the Channel is *authorized* to send activities to the Bot.
 
 ![Channel with Token communicates with Bot](./SimpleChannelWithTokenToBot.svg "Channel with Token communicates with Bot")
 
