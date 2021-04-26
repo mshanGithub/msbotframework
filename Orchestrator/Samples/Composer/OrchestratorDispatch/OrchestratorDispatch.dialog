@@ -268,7 +268,7 @@
           "skillAppId": "=settings.skill['theSkill'].msAppId"
         }
       ],
-      "condition": "=turn.recognized.score > 0.7"
+      "condition": "turn.recognized.score > 0.7"
     }
   ],
   "generator": "OrchestratorDispatch.lg",
