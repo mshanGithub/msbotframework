@@ -181,7 +181,7 @@
           "dialog": "PartnersDialog"
         }
       ],
-      "condition": "=turn.recognized.score > 0.7"
+      "condition": "turn.recognized.score > 0.7"
     },
     {
       "$kind": "Microsoft.OnUnknownIntent",
@@ -237,7 +237,7 @@
           }
         }
       ],
-      "condition": "==turn.recognized.score > 0.7"
+      "condition": "turn.recognized.score > 0.7"
     },
     {
       "$kind": "Microsoft.OnIntent",
@@ -268,7 +268,7 @@
           "skillAppId": "=settings.skill['theSkill'].msAppId"
         }
       ],
-      "condition": "==turn.recognized.score > 0.7"
+      "condition": "=turn.recognized.score > 0.7"
     }
   ],
   "generator": "OrchestratorDispatch.lg",
