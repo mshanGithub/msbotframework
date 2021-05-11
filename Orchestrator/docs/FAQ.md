@@ -46,7 +46,7 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-how-to-use-dashboard
 [2]:https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/test-knowledge-base?tabs=v1
-[3]:https://github.com/microsoft/BotBuilder-Samples/blob/main/experimental/orchestrator/CLI/ModelTuning/README.md
+[3]:https://github.com/microsoft/botframework-sdk/tree/main/orchestrator/CLI/ModelTuning/README.md
 [4]:https://github.com/pytorch/fairseq/tree/master/examples/xlmr#introduction
 [5]:https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch
 [6]:https://github.com/microsoft/botframework-cli/tree/main/packages/Orchestrator

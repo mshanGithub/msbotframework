@@ -135,7 +135,7 @@ C# .NET Core 3.1
 - [NodeJS samples][13]
 - [BF Orchestrator Command Usage][23]
 
-See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) for an example of using Orchestrator commandlets to improve the quality of a .lu training set and using Composer to build a bot from examples in .lu format.
+See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/composer-samples/csharp_dotnetcore/projects/OrchestratorSchoolNavigator) for an example of using Orchestrator commandlets to improve the quality of a .lu training set and using Composer to build a bot from examples in .lu format.
 
 [1]:https://luis.ai
 [2]:https://qnamaker.ai

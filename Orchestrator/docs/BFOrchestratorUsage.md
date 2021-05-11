@@ -113,7 +113,7 @@ It is possible to specify  Orchestrator as a dialog recognizer in [Bot Framework
 2. Select Orchestrator in the recognizer dropdown menu.
 3. Review, evaluate and adjust examples in language data as you would normally for LUIS / Orchestrator to ensure recognition quality.
 
-See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/Composer/01.school-skill-navigator#school-skill-navigator-bot) bot sample for more. 
+See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples/tree/main/composer-samples/csharp_dotnetcore/projects/OrchestratorSchoolNavigator) bot sample for more. 
 
 
 
