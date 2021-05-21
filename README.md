@@ -20,15 +20,15 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 
 |   | C#  | JS  | Python |  Java |
 |---|:---:|:---:|:------:|:-----:|
-|Stable Release |[packages][1] | [packages][2] | [packages][3] | [4.6.0 (preview6)][3a]|
-|Docs | [docs][5] |[docs][5] |[docs][5]  | |
-|Samples |[.NET Core][6], [WebAPI][10] |[Node.js][7] , [TypeScript][8], [es6][9]  | [Python][111] | |
+|Stable Release |[packages][1] | [packages][2] | [packages][3] | [packages][3a]|
+|Docs | [docs][5] |[docs][5] |[docs][5]  |[docs][5] |
+|Samples |[.NET Core][6], [WebAPI][10] |[Node.js][7] , [TypeScript][8], [es6][9]  | [Python][111] | [Java][112] |
 
 [1a]:https://github.com/microsoft/botframework-sdk/#readme
 [1]:https://github.com/Microsoft/botbuilder-dotnet/#packages
 [2]:https://github.com/Microsoft/botbuilder-js#packages
 [3]:https://github.com/microsoft/botbuilder-python/#packages
-[3a]:https://github.com/microsoft/botbuilder-java/blob/4.6-preview6/README.md
+[3a]:https://github.com/microsoft/botbuilder-java/#packages
 [4]:https://github.com/Microsoft/botbuilder-java#packages
 [5]:https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0
 [6]:https://github.com/Microsoft/BotBuilder-Samples/tree/main/samples/csharp_dotnetcore
@@ -37,13 +37,7 @@ The Bot Framework SDK v4 is an [open source SDK][1a] that enable developers to m
 [9]:https://github.com/Microsoft/BotBuilder-Samples/tree/main/samples/javascript_es6
 [10]:https://github.com/Microsoft/BotBuilder-Samples/tree/main/samples/csharp_webapi
 [111]:https://github.com/microsoft/BotBuilder-Samples/tree/main/samples/python
-
-<a name="V4-whats-new"></a>
-### Current Bot Framework SDK v4 preview features
-
-- [Dialog Generation][40] :: The Bot Framework has a rich collection of conversational building blocks, but creating a bot that feels natural to converse with requires understanding and coordinating across language understanding, language generation and dialog management. To simplify this process and capture best practices, we've created the bf-generate plugin for the Bot Framework CLI tool. The generated dialogs make use of event-driven adaptive dialogs with a rich and evolving set of capabilities.
-
-[40]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/generation#readme
+[112]: https://github.com/microsoft/BotBuilder-Samples/tree/main/samples/java_springboot
 
 ## Channels and Adapters
 There are two ways to connect your bot to a client experience:
