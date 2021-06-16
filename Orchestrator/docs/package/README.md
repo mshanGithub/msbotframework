@@ -7,11 +7,8 @@ Embedded recognizer package for detecting and routing user intents.
 To use Orchestrator is an intent router:
 
 1. Install this Orchestrator package.
-
 2. Select it as the dialog recognizer where you want to perform the routing.
-
 3. Author your LU as you would normally do for **intents only**. 
-
 4. Connect your intents to subsequent handlers such as skills, or LUIS dialogs. 
 
 ## Notes
