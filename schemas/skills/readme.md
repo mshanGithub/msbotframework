@@ -10,7 +10,7 @@ The skill manifest JSON schema is published at:
 
 Example:
 
-`https://schemas.botframework.com/schemas/skills/v2.1/skill-manifest.json`
+`https://schemas.botframework.com/schemas/skills/v2.2/skill-manifest.json`
 
 You should use the published version when referencing this schema.
 
