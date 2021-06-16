@@ -20,6 +20,8 @@ To use Orchestrator is an intent router:
 * Orchestrator does not process entity declarations or does any entity extraction today.
 
 ## See Also
+* [Dotnet package sources](https://github.com/microsoft/botbuilder-dotnet/tree/main/libraries/Microsoft.Bot.Builder.AI.Orchestrator)
+* [JS package sources](https://github.com/microsoft/botbuilder-js/tree/main/libraries/botbuilder-ai-orchestrator)
 * [Orchestrator main documentation](https://aka.ms/bf-orchestrator)
 * [Orchestrator in Github](https://github.com/microsoft/botframework-sdk/tree/main/Orchestrator)
 
