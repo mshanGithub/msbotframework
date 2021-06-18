@@ -36,12 +36,19 @@ namespace SchemaManifestTests
         }
 
         [Theory]
-        [InlineData("2._2.skill-manifest.json", "2._2.Samples.RelativeUris.complex-skillmanifest.json")]
+        [InlineData("2._0.skill-manifest.json", "2._0.Samples.complex-skillmanifest.json")]
+        [InlineData("2._0.skill-manifest.json", "2._0.Samples.echo-skillmanifest.json")]
+        [InlineData("2._0.skill-manifest.json", "2._0.Samples.simple-skillmanifest.json")]
+        [InlineData("2._1.skill-manifest.json", "2._1.Samples.complex-pva-manifest.json")]
+        [InlineData("2._1.skill-manifest.json", "2._1.Samples.complex-skillmanifest.json")]
+        [InlineData("2._1.skill-manifest.json", "2._1.Samples.echo-skillmanifest.json")]
+        [InlineData("2._1.skill-manifest.json", "2._1.Samples.simple-skillmanifest.json")]
+        [InlineData("2._2.skill-manifest.json", "2._2.Samples.relativeUris.complex-skillmanifest.json")]
         [InlineData("2._2.skill-manifest.json", "2._2.Samples.complex-pva-manifest.json")]
         [InlineData("2._2.skill-manifest.json", "2._2.Samples.complex-skillmanifest.json")]
         [InlineData("2._2.skill-manifest.json", "2._2.Samples.echo-skillmanifest.json")]
         [InlineData("2._2.skill-manifest.json", "2._2.Samples.simple-skillmanifest.json")]
-        public async Task Verify2_2(string schema, string manifest)
+        public async Task VerifySchemas(string schema, string manifest)
         {
             var rawManifest = JsonConvert.DeserializeObject<JObject>(GetContent(manifest));
 
