@@ -27,7 +27,7 @@
 	"pretrained.20210521.microsoft.dte.01.06.int.en.onnx": {
       "releaseDate": "06/14/2021",
       "modelUri": "https://models.botframework.com/models/dte/onnx/pretrained.20210521.microsoft.dte.01.06.int.en.onnx.zip",
-      "description": "Bot Framework SDK release 4.10 - English ONNX V1.4 6-layer int per-token intent base model with CDF threshold config",
+      "description": "Bot Framework SDK release 4.10 - English ONNX V1.4 6-layer int per-token intent base model with updated calibration thresholds",
       "minSDKVersion": "4.10.0"
     },
 	"pretrained.20210205.microsoft.dte.00.06.unicoder_multilingual.onnx": {
@@ -45,7 +45,7 @@
 	"pretrained.20210608.microsoft.dte.01.06.int.unicoder_multilingual.onnx": {
       "releaseDate": "06/14/2021",
       "modelUri": "https://models.botframework.com/models/dte/onnx/pretrained.20210608.microsoft.dte.01.06.int.unicoder_multilingual.onnx.zip",
-      "description": "Bot Framework SDK release 4.12 - Multilingual ONNX V1.4 6-layer int per-token intent base model with CDF threshold config",
+      "description": "Bot Framework SDK release 4.12 - Multilingual ONNX V1.4 6-layer int per-token intent base model with updated calibration thresholds",
       "minSDKVersion": "4.12.0"
     },
 	"pretrained.20210401.microsoft.dte.00.06.bert_example_ner_addon_free.en.onnx": {
