@@ -17,49 +17,60 @@
         "$schema": {
             "type": "string",
             "format": "uri",
+            "title": "Manifest schema",
             "description": "The schema to verify this skill manifest against"
         },
         "$id": {
             "type": "string",
+            "title": "Manifest ID",
             "description": "The identifier for the skill manifest"
         },
         "name": {
             "type": "string",
+            "title": "Skill name",
             "description": "Name of the skill"
         },
         "version": {
             "type": "string",
+            "title": "Skill version",
             "description": "Skill version"
         },
         "description": {
             "type": "string",
+            "title": "Skill description",
             "description": "A human readable description for the skill"
         },
         "publisherName": {
             "type": "string",
+            "title": "Publisher name",
             "description": "The name of the skill publisher"
         },
         "privacyUrl": {
             "type": "string",
             "format": "uri-reference",
+            "title": "Privacy URL",
             "description": "The URL with the privacy description for the skill"
         },
         "copyright": {
             "type": "string",
+            "title": "Copyright",
             "description": "The copyright for the skill"
         },
         "license": {
             "type": "string",
+            "title": "License",
             "description": "The license agreement for the skill"
         },
         "iconUrl": {
             "type": "string",
             "format": "uri-reference",
+            "title": "Icon URL",
             "description": "Optional icon to be shown for the skill"
         },
         "tags": {
             "type": "array",
             "uniqueItems": true,
+            "title": "Tags",
             "description": "An array of strings with tags for the skill",
             "items": {
                 "type": "string"
@@ -69,6 +80,7 @@
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
+            "title": "Skill endpoints",
             "description": "List of endpoints supported by the skill",
             "items": {
                 "$ref": "#/definitions/endpoint"
@@ -76,6 +88,7 @@
         },
         "dispatchModels": {
             "type": "object",
+            "title": "Language models",
             "description": "Language models and top level intents for the skill",
             "properties": {
                 "languages": {
@@ -105,6 +118,7 @@
         },
         "activities": {
             "type": "object",
+            "title": "Activities",
             "description": "Definition of activities to enable skill host tooling to programmatically interact with the skill.",
             "additionalProperties": {
                 "oneOf": [
@@ -125,6 +139,7 @@
         },
         "activitiesSent": {
             "type": "object",
+            "title": "Activities sent",
             "description": "Definitions of activities to enable skill host tooling to handle activities which may be sent by the skill.",
             "additionalProperties": {
                 "oneOf": [
@@ -152,6 +167,7 @@
     "definitions": {
         "endpoint": {
             "type": "object",
+            "title": "Skill endpoint",
             "description": "Skill endpoint definition",
             "required": [
                 "name",
@@ -161,17 +177,19 @@
             "properties": {
                 "name": {
                     "type": "string",
+                    "title": "Endpoint name",
                     "description": "Unique name for the endpoint",
                     "default": "default"
                 },
                 "protocol": {
                     "type": "string",
+                    "title": "Endpoint protocol",
                     "description": "Supported protocol",
                     "default": "BotFrameworkV3"
                 },
                 "description": {
                     "type": "string",
-                    "title": "Description",
+                    "title": "Endpoint description",
                     "description": "Description of the endpoint",
                     "examples": [
                         "Production bot"
@@ -179,8 +197,8 @@
                 },
                 "endpointUrl": {
                     "type": "string",
-                    "title": "Endpoint Url",
                     "format": "uri",
+                    "title": "Endpoint URL", 
                     "description": "Endpoint for the skill",
                     "examples": [
                         "http://contoso.com/api/messaages"
@@ -206,7 +224,7 @@
             "properties": {
                 "type": {
                     "type": "string",
-                    "title": "Activity Type",
+                    "title": "Activity type",
                     "description": "The activity type",
                     "enum": [
                         "event"
@@ -214,6 +232,7 @@
                 },
                 "name": {
                     "type": "string",
+                    "title": "Event name",
                     "description": "The name for the event",
                     "examples": [
                         "BookFlight"
@@ -221,17 +240,19 @@
                 },
                 "description": {
                     "type": "string",
-                    "title": "Description",
+                    "title": "Event description",
                     "description": "Description for the activity"
                 },
                 "value": {
                     "$ref": "http://json-schema.org/draft-07/schema#",
                     "type": "object",
+                    "title": "Value",
                     "description": "The JsonSchema definition of the shape of the value property that this event expects"
                 },
                 "resultValue": {
                     "$ref": "http://json-schema.org/draft-07/schema#",
                     "type": "object",
+                    "title": "Result",
                     "description": "The JsonSchema definition of the shape of the resultValue that this event may produce"
                 }
             },
@@ -248,7 +269,7 @@
             "properties": {
                 "type": {
                     "type": "string",
-                    "title": "Activity Type",
+                    "title": "Activity type",
                     "description": "The activity type",
                     "enum": [
                         "invoke"
@@ -256,6 +277,7 @@
                 },
                 "name": {
                     "type": "string",
+                    "title": "Invoke name",
                     "description": "The name property for the invoke activity",
                     "examples": [
                         "GetWeather"
@@ -268,11 +290,13 @@
                 },
                 "value": {
                     "type": "object",
+                    "title": "Value",
                     "description": "The JsonSchema definition of the shape of the value property that this event expects",
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 },
                 "resultValue": {
                     "type": "object",
+                    "title": "Result",
                     "description": "The JsonSchema definition of the shape of the resultValue that this event may produce",
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
@@ -289,6 +313,7 @@
             "properties": {
                 "type": {
                     "type": "string",
+                    "title": "Activity type",
                     "description": "The activity type",
                     "enum": [
                         "message"
@@ -301,11 +326,13 @@
                 },
                 "value": {
                     "type": "object",
+                    "title": "Value",
                     "description": "The JsonSchema definition of the shape of the value property that this message would like to have",
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 },
                 "resultValue": {
                     "type": "object",
+                    "title": "Result",
                     "description": "The JsonSchema definition of the shape of the resultValue that this message may produce",
                     "$ref": "http://json-schema.org/draft-07/schema#"
                 }
@@ -321,7 +348,7 @@
             "properties": {
                 "type": {
                     "type": "string",
-                    "title": "Activity Type",
+                    "title": "Activity type",
                     "description": "The activity type",
                     "enum": [
                         "messageReaction",
@@ -343,6 +370,7 @@
         },
         "languageModel": {
             "type": "object",
+            "title": "Language model",
             "description": "A language model for a given culture. The name is a combination of an ISO 639 two-letter lowercase culture code associated with a language and an ISO 3166 two-letter uppercase subculture code associated with a country or region",
             "required": [
                 "name",
@@ -352,15 +380,18 @@
             "properties": {
                 "name": {
                     "type": "string",
+                    "title": "Language model name",
                     "description": "Name for the language model"
                 },
                 "contentType": {
                     "type": "string",
+                    "title": "Language model content type",
                     "description": "Type of the language model"
                 },
                 "url": {
                     "type": "string",
                     "format": "uri-reference",
+                    "title": "Language model URL",
                     "description": "An absolute or relative URI for the location of the language model file"
                 },
                 "description": {
