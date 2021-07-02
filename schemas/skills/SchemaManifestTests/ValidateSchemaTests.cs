@@ -1,31 +1,104 @@
-using Newtonsoft.Json;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using NJsonSchema;
 using NJsonSchema.Generation;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
+using JsonSchema = NJsonSchema.JsonSchema;
+using JsonSchemaResolver = NJsonSchema.Generation.JsonSchemaResolver;
 
 namespace SchemaManifestTests
 {
+    /// <summary>
+    /// Validates sample manifests against schemas.
+    /// </summary>
+    /// <remarks>
+    /// There are some differences on the validation provided by Newtonsoft and NJsonSchema so we use both libraries in the tests
+    /// to ensure better compatibility.
+    /// </remarks>
     public class ValidateSchemaTests
     {
-        private static string GetContent(string manifesResourcetName)
+        // List of schema version folders to test.
+        private static readonly List<string> _schemaVersionFolders = new List<string>
         {
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(r => r.EndsWith(manifesResourcetName, StringComparison.InvariantCulture));
-            using (var f = new System.IO.StreamReader(assembly.GetManifestResourceStream(resourceName)))
+            "v2.0",
+            "v2.1",
+            "v2.2"
+        };
+
+        // Path to the folder containing the schema files and samples (relative to where the test is executing).
+        private static readonly string _schemasRootFolder = Path.Combine(Directory.GetCurrentDirectory(), "../../../../");
+
+        /// <summary>
+        /// Builds the list of manifest schemas and samples to validate from the file system.
+        /// </summary>
+        public static TheoryData<string, string> GetManifestAndSamples()
+        {
+            var manifestAndSamples = new TheoryData<string, string>();
+
+            foreach (var schemaVersion in _schemaVersionFolders)
             {
-                return f.ReadToEnd();
+                var schemaFolder = Path.Combine(_schemasRootFolder, schemaVersion);
+                var samplesFolder = Path.Combine(schemaFolder, "Samples");
+                var sampleManifestFiles = Directory.GetFileSystemEntries(samplesFolder, "*.json", SearchOption.AllDirectories);
+                foreach (var manifestFile in sampleManifestFiles)
+                {
+                    var manifestRelativePath = Path.GetRelativePath(schemaFolder, manifestFile);
+                    manifestAndSamples.Add(schemaVersion, manifestRelativePath);
+                }
             }
+
+            return manifestAndSamples;
         }
 
-        private static Task<JsonSchema> GetSchema(string schemaName)
+        [Theory]
+        [MemberData(nameof(GetManifestAndSamples))]
+        public async Task ValidateManifestSamplesAgainstSchemasUsingNJsonSchemaAsync(string schemaVersion, string sampleManifest)
         {
-            var skillManifestSchema = GetContent(schemaName);
+            // Arrange
+            var manifestSchemaPath = Path.Combine(_schemasRootFolder, schemaVersion, "skill-manifest.json");
+            var manifestSchema = await GetSchemaAsync(manifestSchemaPath);
 
-            return JsonSchema.FromJsonAsync(skillManifestSchema, null, (x) =>
+            var sampleManifestPath = Path.Combine(_schemasRootFolder, schemaVersion, sampleManifest);
+            var sampleManifestText = await File.ReadAllTextAsync(sampleManifestPath);
+
+            // Act
+            var validationErrors = manifestSchema.Validate(sampleManifestText);
+
+            // Assert
+            Assert.Empty(validationErrors);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetManifestAndSamples))]
+        public async Task ValidateManifestSamplesAgainstSchemasUsingNewtonsoftSchemaAsync(string schemaVersion, string sampleManifest)
+        {
+            // Note: you can use https://www.jsonschemavalidator.net/ for an interactive version.
+
+            // Arrange
+            var manifestSchemaPath = Path.Combine(_schemasRootFolder, schemaVersion, "skill-manifest.json");
+            var manifestSchema = JSchema.Parse(await File.ReadAllTextAsync(manifestSchemaPath), new JSchemaUrlResolver());
+
+            var sampleManifestPath = Path.Combine(_schemasRootFolder, schemaVersion, sampleManifest);
+            var json = JToken.Parse(await File.ReadAllTextAsync(sampleManifestPath));
+
+            // Act
+            json.IsValid(manifestSchema, out IList<ValidationError> validationErrors);
+
+            // Assert
+            Assert.Empty(validationErrors);
+        }
+
+        private static async Task<JsonSchema> GetSchemaAsync(string schemaPath)
+        {
+            var rawSchemaText = await File.ReadAllTextAsync(schemaPath);
+
+            return await JsonSchema.FromJsonAsync(rawSchemaText, null, x =>
             {
                 var schemaResolver = new JsonSchemaResolver(x, new JsonSchemaGeneratorSettings());
                 var referenceResolver = new JsonReferenceResolver(schemaResolver);
@@ -34,29 +107,5 @@ namespace SchemaManifestTests
                 return referenceResolver;
             });
         }
-
-        [Theory]
-        [InlineData("2._0.skill-manifest.json", "2._0.Samples.complex-skillmanifest.json")]
-        [InlineData("2._0.skill-manifest.json", "2._0.Samples.echo-skillmanifest.json")]
-        [InlineData("2._0.skill-manifest.json", "2._0.Samples.simple-skillmanifest.json")]
-        [InlineData("2._1.skill-manifest.json", "2._1.Samples.complex-pva-manifest.json")]
-        [InlineData("2._1.skill-manifest.json", "2._1.Samples.complex-skillmanifest.json")]
-        [InlineData("2._1.skill-manifest.json", "2._1.Samples.echo-skillmanifest.json")]
-        [InlineData("2._1.skill-manifest.json", "2._1.Samples.simple-skillmanifest.json")]
-        [InlineData("2._2.skill-manifest.json", "2._2.Samples.relativeUris.complex-skillmanifest.json")]
-        [InlineData("2._2.skill-manifest.json", "2._2.Samples.complex-pva-manifest.json")]
-        [InlineData("2._2.skill-manifest.json", "2._2.Samples.complex-skillmanifest.json")]
-        [InlineData("2._2.skill-manifest.json", "2._2.Samples.echo-skillmanifest.json")]
-        [InlineData("2._2.skill-manifest.json", "2._2.Samples.simple-skillmanifest.json")]
-        public async Task VerifySchemas(string schema, string manifest)
-        {
-            var rawManifest = JsonConvert.DeserializeObject<JObject>(GetContent(manifest));
-
-            var schemaErrors = (await GetSchema(schema)).Validate(rawManifest);
-
-            Assert.Empty(schemaErrors);
-        }
-
-
     }
 }
