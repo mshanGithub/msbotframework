@@ -1,7 +1,7 @@
 {
     "$id": "https://schemas.botframework.com/schemas/skills/v2.1/skill-manifest.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$version": "2.1.0",
+    "$version": "2.1.1",
     "title": "Skill Manifest Schema",
     "description": "A schema for Bot Framework skill manifests",
     "type": "object",
@@ -206,8 +206,11 @@
             "properties": {
                 "type": {
                     "type": "string",
+                    "title": "Activity Type",
                     "description": "The activity type",
-                    "const": "event"
+                    "enum": [
+                        "event"
+                    ]
                 },
                 "name": {
                     "type": "string",
@@ -245,8 +248,11 @@
             "properties": {
                 "type": {
                     "type": "string",
+                    "title": "Activity Type",
                     "description": "The activity type",
-                    "const": "invoke"
+                    "enum": [
+                        "invoke"
+                    ]
                 },
                 "name": {
                     "type": "string",
@@ -284,8 +290,9 @@
                 "type": {
                     "type": "string",
                     "description": "The activity type",
-                    "const": "message",
-                    "default": "message"
+                    "enum": [
+                        "message"
+                    ]
                 },
                 "description": {
                     "type": "string",
@@ -315,11 +322,8 @@
                 "type": {
                     "type": "string",
                     "title": "Activity Type",
-                    "description": "Contains the activity type (message, event, invoke, etc.)",
+                    "description": "The activity type",
                     "enum": [
-                        "message",
-                        "event",
-                        "invoke",
                         "messageReaction",
                         "endOfConversation",
                         "handoff",
@@ -332,8 +336,7 @@
                         "deleteUserData",
                         "messageUpdate",
                         "messageDelete"
-                    ],
-                    "pattern":"^(?!(message|event|invoke)$)((messageReaction|endOfConversation|handoff|typing|conversationUpdate|trace|installationUpdate|contactRelationUpdate|suggestion|deleteUserData|messageUpdate|messageDelete)$)"
+                    ]
                 }
             },
             "additionalProperties": true
