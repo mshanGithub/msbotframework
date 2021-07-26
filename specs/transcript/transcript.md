@@ -19,9 +19,9 @@ This schema is used within Bot Builder SDKs and tools, and may be consumed or em
 
 ### Overview
 
-The Transcript schema represents conversational behaviors made by humans and automated software (typically within chat applications) and corresponding processing artifacts, such as natural-language processing results or calls to APIs. Transcript extends the [Bot Framework Activity](botframework-activity.md) format [[1](#References)] to include structured extensibility points. It also provides a format for serializing collections of Activities, which is not provided by the core activity schema.
+The Transcript schema represents conversational behaviors made by humans and automated software (typically within chat applications) and corresponding processing artifacts, such as natural-language processing results or calls to APIs. Transcript extends the [Bot Framework Activity](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md) format [[1](#References)] to include structured extensibility points. It also provides a format for serializing collections of Activities, which is not provided by the core activity schema.
 
-This specification contains additions to the core Bot Framework Activity schema, and includes new fields, specific guidance for existing Activity fields when used within Transcript, and minimal explanations required for understanding Activity fields in context. For a complete description, see the [Bot Framework Activity](botframework-activity.md) specification [[1](#References)].
+This specification contains additions to the core Bot Framework Activity schema, and includes new fields, specific guidance for existing Activity fields when used within Transcript, and minimal explanations required for understanding Activity fields in context. For a complete description, see the [Bot Framework Activity](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md) specification [[1](#References)].
 
 ### Requirements
 
@@ -86,7 +86,7 @@ Transcripts are ordered collections of Activity objects. JSON is used as the com
 
 `T2000`: Transcript contents MUST be serializable to the JSON format, including adherence to e.g. field uniqueness constraints.
 
-`T2001`: Transcripts MUST contain only child activities, as defined by [Bot Framework Activity](botframework-activity.md) [[1](#References)]. Activities MUST adhere to the requirements of that specification for the transcript to be valid.
+`T2001`: Transcripts MUST contain only child activities, as defined by [Bot Framework Activity](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md) [[1](#References)]. Activities MUST adhere to the requirements of that specification for the transcript to be valid.
 
 `T2002`: Processors MAY allow improperly-cased field names, although this is not required. Processors MAY reject activities that do not include fields with the proper casing.
 
@@ -143,7 +143,7 @@ Typically attachments of the first two types are self-contained and are meaningf
 
 Transcript aims to faithfully reproduce content expressed within the Bot Framework activity schema. In some cases, the stored form of these activities must be augmented or modified to retain their meaning when the activities are archived within storage.
 
-For example, a [`timestamp`](botframework-activity.md#Timestamp) is not strictly required as part of an activity when transmitted because both the sender and the receiver have an internal timestamp correlated with the activity transmission. However, in stored form, a timestamp becomes necessary to reconstruct the meaning that was self-evident at runtime.
+For example, a [`timestamp`](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#Timestamp) is not strictly required as part of an activity when transmitted because both the sender and the receiver have an internal timestamp correlated with the activity transmission. However, in stored form, a timestamp becomes necessary to reconstruct the meaning that was self-evident at runtime.
 
 Additionally, some fields become less important. For example, the [`channelId](botframework-activity.md#Channel-ID) field is required at runtime for activity receivers to understand the meaning and equivalency of ID fields, but may not be required when processing a single transcript when it is safe to assume they come from the same source. This allows the synthesis of transcripts from sources that did not contain Bot Framework-compatible activities (e.g. human chat logs).
 
@@ -155,7 +155,7 @@ Additionally, some fields become less important. For example, the [`channelId](b
 
 ## References
 
-1. [Bot Framework Activity](botframework-activity.md)
+1. [Bot Framework Activity](https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md)
 2. [RFC 2119](https://tools.ietf.org/html/rfc2119)
 3. [Adaptive Cards](https://adaptivecards.io)
 4. [RFC 2397](https://tools.ietf.org/html/rfc2397)
