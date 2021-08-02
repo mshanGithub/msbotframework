@@ -30,8 +30,12 @@ namespace IssueNotificationBot.Services
             Logger.LogInformation($"Storing GitHub User: {user.GitHubDetails.Name}");
 
             var users = await GetGitHubUsers();
-            users.TryAdd(user.GitHubDetails.Login, user);
-            await OverwriteGitHubUsersDatabase(users);
+
+            if (users != null)
+            {
+                users.TryAdd(user.GitHubDetails.Login, user);
+                await OverwriteGitHubUsersDatabase(users);
+            }
         }
 
         /// <summary>
@@ -42,8 +46,12 @@ namespace IssueNotificationBot.Services
             Logger.LogInformation($"Removing GitHub User: {gitHubUserLogin}");
 
             var users = await GetGitHubUsers();
-            users.Remove(gitHubUserLogin);
-            await OverwriteGitHubUsersDatabase(users);
+
+            if (users != null)
+            {
+                users.Remove(gitHubUserLogin);
+                await OverwriteGitHubUsersDatabase(users);
+            }
         }
 
         /// <summary>
@@ -61,8 +69,11 @@ namespace IssueNotificationBot.Services
         {
             var userMap = await GetTeamsUserToGitHubMap(teamsUserId);
 
-            await RemoveFromTeamsUserToGitHubUserMap(userMap);
-            await RemoveGitHubUser(userMap.GitHubUserLogin);
+            if (userMap != null)
+            {
+                await RemoveFromTeamsUserToGitHubUserMap(userMap);
+                await RemoveGitHubUser(userMap.GitHubUserLogin);
+            }
         }
 
         /// <summary>
@@ -73,8 +84,12 @@ namespace IssueNotificationBot.Services
             Logger.LogInformation($"Adding Teams User: {user.TeamsUserId}/{user.GitHubUserLogin} to GitHubUsersMap");
 
             var users = await GetTeamsUsers();
-            users.TryAdd(user.TeamsUserId, user);
-            await OverwriteTeamsUsersDatabase(users);
+
+            if (users != null)
+            {
+                users.TryAdd(user.TeamsUserId, user);
+                await OverwriteTeamsUsersDatabase(users);
+            }
         }
 
         /// <summary>
@@ -85,8 +100,12 @@ namespace IssueNotificationBot.Services
             Logger.LogInformation($"Removing Teams User: {user.TeamsUserId}/{user.GitHubUserLogin} to GitHubUsersMap");
 
             var users = await GetTeamsUsers();
-            users.Remove(user.TeamsUserId);
-            await OverwriteTeamsUsersDatabase(users);
+
+            if (users != null)
+            {
+                users.Remove(user.TeamsUserId);
+                await OverwriteTeamsUsersDatabase(users);
+            }
         }
 
         /// <summary>
@@ -101,6 +120,7 @@ namespace IssueNotificationBot.Services
             {
                 return user;
             }
+
             return null;
         }
 
@@ -122,6 +142,7 @@ namespace IssueNotificationBot.Services
             {
                 return false;
             }
+
             var gitHubUsers = await GetGitHubUsers();
             return gitHubUsers.ContainsKey(user.GitHubUserLogin);
         }
@@ -136,6 +157,7 @@ namespace IssueNotificationBot.Services
             {
                 return trackedUser;
             }
+
             return null;
         }
 
