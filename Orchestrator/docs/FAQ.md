@@ -24,11 +24,11 @@ Orchestrator multilingual models currently supports 8 languages (EN, ES, DE, FR,
 ### Does Orchestrator replace LUIS Dispatch?
 LUIS based [Dispatch][5] is on the path to be deprecated, although the exact timeline is not yet finalized.  Now is a good time to start evaluating Orchestrator as an alternative to Dispatch.
 
-### Does Orchestrator support LUIS patterns and what is the workaround?  
-Not at the moment.  Expanding LUIS patterns as Orchestrator examples is the recommended workaround, i.e. for pattern "do {stuff}", add a few examples to the intent of the pattern, "do clean up", "do homework", etc.   
-
 ### Does Orchestrator support entity extraction?
-Not at the moment, but we are working on it for future releases.
+Entity extraction is not yet generally available, however, a simple named entity recognition could be enabled.  See [NLP with entities sample][15] for instructions to enable entity recognition using Orchestrator.
+
+### Does Orchestrator support LUIS patterns and what is the current workaround?  
+Not at the moment.  Expanding LUIS patterns as Orchestrator examples is the recommended workaround, i.e. for pattern "do {stuff}", add a few examples to the intent of the pattern, "do clean up", "do homework", etc.  Another alternative is to convert the pattern into examples with entity, i.e.  "do {@stuff=clean up}", "do {@stuff=homework}".  See [NLP with entities sample][15] for instructions to enable entity recognition using Orchestrator.
 
 ### What is the guidelines in choosing Orchestrator vs LUIS?
 We recommend evaluating each solution against your data and see which performs better.  Both LUIS based [Dispatch CLI][5] and [BF Orchestrator CLI][6] come with a command to evaluate training and test data.
@@ -59,3 +59,5 @@ Unfortunately not.  However, Orchestrator Recognizer could take external entity 
 [12]:https://github.com/microsoft/botframework-sdk/blob/main/Orchestrator/docs/DispatchMigrationExample.md
 [13]:https://github.com/microsoft/BotFramework-Composer/blob/main/docs/preview%20features/orchestrator.md
 [14]:https://aka.ms/NLRModels
+[15]:https://github.com/microsoft/botframework-sdk/tree/main/Orchestrator/Samples/dotnet/nlp-with-entities
+
