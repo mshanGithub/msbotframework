@@ -28,7 +28,7 @@ LUIS based [Dispatch][5] is on the path to be deprecated, although the exact tim
 Entity extraction is not yet generally available, however, a simple named entity recognition could be enabled.  See [NLP with entities sample][15] for instructions to enable entity recognition using Orchestrator.
 
 ### Does Orchestrator support LUIS patterns and what is the current workaround?  
-Not at the moment.  Expanding LUIS patterns as Orchestrator examples is the recommended workaround, i.e. for pattern "do {stuff}", add a few examples to the intent of the pattern, "do clean up", "do homework", etc.  Another alternative is to convert the pattern into examples with entity, i.e.  "do {@stuff=clean up}", "do {@stuff=homework}".  See [NLP with entities sample][15] for instructions to enable entity recognition using Orchestrator.
+Not at the moment.  Expanding LUIS patterns as Orchestrator examples is the recommended workaround, i.e. for pattern "do {stuff}", add a few examples to the intent of the pattern, "do clean up", "do homework", etc.  Another alternative is to convert LUIS pattern into examples with entity, i.e.  "do {@stuff=clean up}", "do {@stuff=homework}".  See [NLP with entities sample][15] for instructions to enable entity recognition using Orchestrator.
 
 ### What is the guidelines in choosing Orchestrator vs LUIS?
 We recommend evaluating each solution against your data and see which performs better.  Both LUIS based [Dispatch CLI][5] and [BF Orchestrator CLI][6] come with a command to evaluate training and test data.
