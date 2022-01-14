@@ -85,6 +85,7 @@ The following open source communities make various components available to exten
 |----------------------------|:--------------:|:----------:|:--------------:|:------------:|
 | [Bot Framework Community][56] | [C#][56dotnet] | [JavaScript][56js] | [Python][56py] | [Java][56ja] |
 | [Botkit][56bk]             |                | [JavaScript][56bk] |                |              |
+｜[PowerBotKit](56pb]        |                | [JavaScript][56bp] ｜               ｜ [Java][56bpj] ｜
 
 [56]:https://github.com/botbuildercommunity#readme
 [56dotnet]:https://github.com/botbuildercommunity/botbuilder-community-dotnet#readme
@@ -92,6 +93,8 @@ The following open source communities make various components available to exten
 [56py]:https://github.com/botbuildercommunity/botbuilder-community-python#readme
 [56ja]:https://github.com/botbuildercommunity/botbuilder-community-java#readme
 [56bk]:https://github.com/howdyai/botkit#readme
+[56pb]:https://github.com/PowerBotKit/powerbot#readme
+[56bpj]:https://github.com/PowerBotKit/botbuilder-spring-boot#readme
 
 ## Questions and Help
 If you have questions about Bot Framework SDK or using Azure Bot Service, we encourage you to reach out to the community and Azure Bot Service dev team for help.
