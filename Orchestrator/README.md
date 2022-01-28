@@ -148,8 +148,8 @@ See the [School skill navigator](https://github.com/microsoft/BotBuilder-Samples
 [9]:https://github.com/microsoft/botframework-cli/tree/main/packages/luis#bf-luisconvert
 [10]:https://github.com/microsoft/botframework-cli/tree/main/packages/qnamaker#bf-qnamakerkbexport
 [11]:https://github.com/microsoft/botframework-cli/tree/main/packages/orchestrator
-[12]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/csharp_dotnetcore
-[13]:https://github.com/microsoft/BotBuilder-Samples/tree/main/experimental/orchestrator/javascript_nodejs
+[12]:https://github.com/microsoft/BotBuilder-Samples/tree/main/samples/csharp_dotnetcore/14.nlp-with-orchestrator
+[13]:https://github.com/microsoft/BotBuilder-Samples/tree/main/samples/javascript_nodejs/14.nlp-with-orchestrator
 [14]:https://aka.ms/bforchestratorapi
 [16]:https://github.com/microsoft/botframework-cli/tree/main/packages/orchestrator#bf-orchestratorcreate
 [18]:./docs/Overview.md
