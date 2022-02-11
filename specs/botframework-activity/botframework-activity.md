@@ -685,7 +685,7 @@ The `textHighlights` field contains a list of text to highlight in the `text` fi
 
 ## Trace activity
 
-The Trace activity is an activity which the developer inserts in to the stream of activities to represent a point in the developers bot logic. The trace activity typically is logged by transcript history components to become part of a [Transcript-format](../../fileformats/transcript/transcript.md) history file.  In remote debugging scenarios the Trace activity can be sent to the client so that the activity can be inspected as part of the debug flow.
+The Trace activity is an activity which the developer inserts in to the stream of activities to represent a point in the developers bot logic. The trace activity typically is logged by transcript history components to become part of a [Transcript-format](../transcript/transcript.md) history file.  In remote debugging scenarios the Trace activity can be sent to the client so that the activity can be inspected as part of the debug flow.
 
 Trace activities are normally not shown to the user, and are internal to transcript logging and developer debugging.
 
@@ -1122,7 +1122,7 @@ The `aadObjectId` field is an optional ID corresponding to the account's object 
 
 #### Channel account role
 
-The `role` field indicates whether entity behind the account is a user or bot. This field is intended for use in the [Transcript format](../../fileformats/transcript/transcript.md) [[16](#references)] to distinguish between activities sent by users and activities sent by bots. The value of the `role` field is a string.
+The `role` field indicates whether entity behind the account is a user or bot. This field is intended for use in the [Transcript format](../transcript/transcript.md) [[16](#references)] to distinguish between activities sent by users and activities sent by bots. The value of the `role` field is a string.
 
 `A7511`: Senders SHOULD NOT include this field. Receivers SHOULD ignore this field.
 
@@ -1154,7 +1154,7 @@ If the channel distinguishes between types of conversations (e.g. group vs. pers
 
 #### Conversation account role
 
-The `role` field indicates whether entity behind the account is a user or bot. This field is intended for use in the [Transcript format](../../fileformats/transcript/transcript.md) [[16](#references)] to distinguish between activities sent by users and activities sent by bots. The value of the `role` field is a string.
+The `role` field indicates whether entity behind the account is a user or bot. This field is intended for use in the [Transcript format](../transcript/transcript.md) [[16](#references)] to distinguish between activities sent by users and activities sent by bots. The value of the `role` field is a string.
 
 `A7512`:Senders SHOULD NOT include this field. Receivers SHOULD ignore this field.
 
@@ -1272,7 +1272,7 @@ The `occurrence` field is optional. It gives the sender the ability to specify w
 
 ### Semantic action type
 
-The semantic action type represents a programmatic reference. It is used within the [`semanticAction`](#semantic-action) field in [message activities](#message-activity). Actions are defined and registered externally to this protocol, typically as part of the [Bot Framework Manifest](../../fileformats/manifest/botframework-manifest.md) [[14](#references)]. The action definition declares the ID for the action and associates it with named entities, each of which has a corresponding type. Senders are receivers of actions use these names and types to create and parse actions that conform to the action definition.
+The semantic action type represents a programmatic reference. It is used within the [`semanticAction`](#semantic-action) field in [message activities](#message-activity). Actions are defined and registered externally to this protocol, typically as part of the [Bot Framework Manifest](../manifest/botframework-manifest.md) [[14](#references)]. The action definition declares the ID for the action and associates it with named entities, each of which has a corresponding type. Senders are receivers of actions use these names and types to create and parse actions that conform to the action definition.
 
 Actions proceed through a lifecycle, described by the [`state`](#semantic-action-state) and [`id`](#semantic-action-id) fields.
 
@@ -1470,7 +1470,7 @@ The `error` field contains the reason the original [command activity](#command-a
 13. [Adaptive Cards](https://adaptivecards.io)
 14. [Bot Framework Manifest](../manifest/botframework-manifest.md)
 15. [RFC 4627](http://www.ietf.org/rfc/rfc4627.txt) -- *The application/json Media Type for JavaScript Object Notation (JSON)*
-16. [Transcript](../../fileformats/transcript/transcript.md)
+16. [Transcript](../transcript/transcript.md)
 17. [RFC 6557](https://tools.ietf.org/html/rfc6557)
 18. [JSON-LD](https://www.w3.org/TR/json-ld/) -- *A JSON-based serialization for Linked Data*
 19. [IETF BCP-47](https://tools.ietf.org/html/bcp47) -- *Language tag*
@@ -1670,7 +1670,7 @@ The short form for these IDs is:
 
 # Appendix V - Caller ID Values
 
-The Activity schema includes a ['callerId'](#caller-Id) field that identifies the caller sending an activity. The field is not populated on the wire but is used for internal routing within a bot, and for tracking this data when an Activity is committed to storage (in e.g. the [Transcript](../../fileformats/transcript/transcript.md) [[#16](#references)] format).
+The Activity schema includes a ['callerId'](#caller-Id) field that identifies the caller sending an activity. The field is not populated on the wire but is used for internal routing within a bot, and for tracking this data when an Activity is committed to storage (in e.g. the [Transcript](../transcript/transcript.md) [[#16](#references)] format).
 
 This specification defines three IRI schemes for caller IDs.
 
