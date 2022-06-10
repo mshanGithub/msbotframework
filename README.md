@@ -130,7 +130,6 @@ We track functional issues and features asks for the Bot Framework SDK, tools an
 ## Bot Framework ecosystem
 
 - [Bot Framework Composer](#Bot-Framework-Composer)
-- [Bot Framework Solutions](#Bot-Framework-Solutions)
 - [Botkit](#Botkit)
 - [Azure Bot Service](#Azure-Bot-Service)
 - [Bot Framework Emulator](#Bot-Framework-Emulator)
@@ -161,16 +160,6 @@ Botkit is part of Microsoft Bot Framework and is released under the [MIT Open So
 [105]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-facebook#readme
 [106]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-twilio-sms#readme
 [107]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-web#readme
-
-### Bot Framework Virtual Assistant Solution Accelerator
-
-The [Bot Framework Solutions repository](https://github.com/Microsoft/botframework-solutions#readme) is home to the [Virtual Assistant Solution Accelerator](https://aka.ms/bfvadocs), which provides a set of templates, solution accelerators and skills to help build sophisticated conversational experiences.
-
-- [**Virtual Assistant.**](https://aka.ms/bfvadocs) Customers and partners have a significant need to deliver a conversational assistant tailored to their brand, personalized to their users, and made available across a broad range of canvases and devices. <br/><br/>  This brings together all of the supporting components and greatly simplifies the creation of a new bot project including: basic conversational intents, Dispatch integration, QnA Maker, Application Insights and an automated deployment.
-
-- [**Skills.**](https://aka.ms/bfskillsdocs) A library of re-usable conversational skill building-blocks enabling you to add functionality to a Bot. We currently provide: Calendar, Email, Task, Point of Interest, Automotive, Weather and News skills. Skills include LUIS models, Dialogs, and integration code delivered in source code form to customize and extend as required.
-
-- [**Analytics.**](https://github.com/Microsoft/AI/blob/main/docs/readme.md#analytics) Gain key insights into your bot’s health and behavior with the Bot Framework Analytics solutions, which includes: sample Application Insights queries, and Power BI dashboards to understand the full breadth of your bot’s conversations with users.
 
 ### Azure Bot Service
 Azure Bot Service enables you to host intelligent, enterprise-grade bots with complete ownership and control of your data. Developers can register and connect their bots to users on Skype, Microsoft Teams, Cortana, Web Chat, and more. [[Docs][28]]
