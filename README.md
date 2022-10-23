@@ -134,7 +134,7 @@ We track functional issues and features asks for the Bot Framework SDK, tools an
 - [Azure Bot Service](#Azure-Bot-Service)
 - [Bot Framework Emulator](#Bot-Framework-Emulator)
 - [Bot Framework Web Chat](#Bot-Framework-Web-Chat)
-- [Bot Framework Tools](#Bot-Framework-CLI-Tools)
+- [Bot Framework CLI Tools](#Bot-Framework-CLI-Tools)
 - [Language Understanding](#Language-Understanding)
 - [QnA Maker](#QnA-Maker)
 - [Dispatch](#Dispatch)
@@ -192,7 +192,7 @@ The Bot Framework [Web Chat][23] is a highly customizable web-based client chat 
 [25]:https://github.com/Microsoft/BotFramework-WebChat/tree/main/doc
 [26]:https://github.com/Microsoft/BotFramework-WebChat/tree/main/samples
 
-### Bot Framework CLI
+### Bot Framework CLI Tools
 The Bot Framework CLI Tools hosts the [open source](https://github.com/microsoft/botframework-cli) cross-platform Bot Framework CLI tool, designed to support building robust end-to-end development workflows. The Bot Framework CLI tool replaced the [legacy standalone tools](https://github.com/Microsoft/BotBuilder-Tools) used to manage bots and related services. BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
 
 ## Related Services
