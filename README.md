@@ -104,7 +104,6 @@ We track functional issues and features asks for the Bot Framework SDK, tools an
 | SDK v4 .NET                 | core bot runtime for .NET, connectors, middleware, dialogs, prompts, LUIS and QnA                  | [File an issue][70csissues]       |
 | SDK v4 JavaScript           | core bot runtime for Typescript/Javascript, connectors, middleware, dialogs, prompts, LUIS and QnA | [File an issue][70jsissues]       |
 | SDK v4 Python               | core bot runtime for Python, connectors, middleware, dialogs, prompts, LUIS and QnA                | [File an issue][70pyissues]       |
-| Bot Framework Composer      | bot framework composer electron and web app                                                        | [File an issue][70composerissues] |
 | Bot Framework CLI           | bot framework cli tools                                                                            | [File an issue][70cliissues]  |
 | Webchat                     | bot framework web chat tool                                                                        | [File an issue][70webchatissues]  |
 
@@ -112,7 +111,6 @@ We track functional issues and features asks for the Bot Framework SDK, tools an
 [70jsissues]:https://github.com/Microsoft/botbuilder-js/issues
 [70pyissues]:https://github.com/Microsoft/botbuilder-python/issues
 [70cliissues]:https://github.com/Microsoft/botframework-cli/issues
-[70composerissues]:https://github.com/Microsoft/botframework-composer/issues
 [70webchatissues]:https://github.com/Microsoft/botframework-webchat/issues
 
 ## Prior releases
@@ -121,37 +119,18 @@ We track functional issues and features asks for the Bot Framework SDK, tools an
 
 ## Bot Framework ecosystem
 
-- [Bot Framework Composer](#Bot-Framework-Composer)
-- [Botkit](#Botkit)
 - [Azure Bot Service](#Azure-Bot-Service)
 - [Bot Framework Emulator](#Bot-Framework-Emulator)
 - [Bot Framework Web Chat](#Bot-Framework-Web-Chat)
-- [Bot Framework Tools](#Bot-Framework-CLI-Tools)
+- [Bot Framework CLI](#Bot-Framework-CLI)
 - [Language Understanding](#Language-Understanding)
 - [QnA Maker](#QnA-Maker)
 - [Dispatch](#Dispatch)
 - [Speech Services](#Speech-Services)
 - [Adaptive cards](#Adaptive-Cards)
 - [Analytics](#Analytics)
-
-### Bot Framework Composer
-[Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer/blob/main/README.md) is an integrated development tool for developers and multi-disciplinary teams to build bots and conversational experiences with the Microsoft Bot Framework. Within this tool, you'll find everything you need to build a sophisticated conversational experience.
-
-### Botkit
-[Botkit][100] is a developer tool and SDK for building chat bots, apps and custom integrations for major messaging platforms. Botkit bots `hear()` triggers, `ask()` questions and `say()` replies. Developers can use this syntax to build dialogs - now cross compatible with the latest version of Bot Framework SDK.
-
-In addition, Botkit brings with it 6 platform adapters allowing Javascript bot applications to communicate directly with messaging platforms: [Slack][102], [Webex Teams][103], [Google Hangouts][104], [Facebook Messenger][105], [Twilio][106], and [Web chat][107].
-
-Botkit is part of Microsoft Bot Framework and is released under the [MIT Open Source license][101]
-
-[100]:https://github.com/howdyai/botkit#readme
-[101]:https://github.com/howdyai/botkit/blob/main/LICENSE.md
-[102]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-slack#readme
-[103]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-webex#readme
-[104]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-hangouts#readme
-[105]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-facebook#readme
-[106]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-twilio-sms#readme
-[107]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-web#readme
+- [Bot Framework Composer](#Bot-Framework-Composer)
+- [Botkit](#Botkit)
 
 ### Azure Bot Service
 Azure Bot Service enables you to host intelligent, enterprise-grade bots with complete ownership and control of your data. Developers can register and connect their bots to users on Skype, Microsoft Teams, Cortana, Web Chat, and more. [[Docs][28]]
@@ -186,6 +165,25 @@ The Bot Framework [Web Chat][23] is a highly customizable web-based client chat 
 
 ### Bot Framework CLI
 The Bot Framework CLI Tools hosts the [open source](https://github.com/microsoft/botframework-cli) cross-platform Bot Framework CLI tool, designed to support building robust end-to-end development workflows. The Bot Framework CLI tool replaced the [legacy standalone tools](https://github.com/Microsoft/BotBuilder-Tools) used to manage bots and related services. BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
+
+### Bot Framework Composer
+[Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer/blob/main/README.md) is an integrated development tool for developers and multi-disciplinary teams to build bots and conversational experiences with the Microsoft Bot Framework. Within this tool, you'll find everything you need to build a sophisticated conversational experience.
+
+### Botkit
+[Botkit][100] is a developer tool and SDK for building chat bots, apps and custom integrations for major messaging platforms. Botkit bots `hear()` triggers, `ask()` questions and `say()` replies. Developers can use this syntax to build dialogs - now cross compatible with the latest version of Bot Framework SDK.
+
+In addition, Botkit brings with it 6 platform adapters allowing Javascript bot applications to communicate directly with messaging platforms: [Slack][102], [Webex Teams][103], [Google Hangouts][104], [Facebook Messenger][105], [Twilio][106], and [Web chat][107].
+
+Botkit is part of Microsoft Bot Framework and is released under the [MIT Open Source license][101]
+
+[100]:https://github.com/howdyai/botkit#readme
+[101]:https://github.com/howdyai/botkit/blob/main/LICENSE.md
+[102]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-slack#readme
+[103]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-webex#readme
+[104]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-hangouts#readme
+[105]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-facebook#readme
+[106]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-twilio-sms#readme
+[107]:https://github.com/howdyai/botkit/tree/main/packages/botbuilder-adapter-web#readme
 
 ## Related Services
 
