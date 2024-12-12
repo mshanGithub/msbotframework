@@ -1,5 +1,9 @@
 # Bot Framework -- Activity
 
+Version: 3.1.12
+
+**This specification has moved to [Agents SDK](https://github.com/microsoft/agents)**
+
 ## Abstract
 
 The Bot Framework Activity schema is an application-level representation of conversational actions made by humans and automated software. The schema includes provisions for communicating text, multimedia, and non-content actions like social interactions and typing indicators.

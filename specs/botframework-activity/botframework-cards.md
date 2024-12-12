@@ -1,5 +1,9 @@
 # Bot Framework -- Cards
 
+Version: 3.1.12
+
+**This specification has moved to [Agents SDK](https://github.com/microsoft/agents)**
+
 ## Abstract
 
 The Bot Framework Card schema is an application-level representation of interactive cards for use within chat and other applications. The schema includes provisions for controlling the content, layout, and interactive elements of a card.

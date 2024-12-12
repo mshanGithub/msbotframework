@@ -1,4 +1,7 @@
 # Updating the botframework-channel swagger file
+Version: 3.1.12
+
+**This specification has moved to [Agents SDK](https://github.com/microsoft/agents)**
 
 ## Abstract
 This document describe specific guidelines for updating the [swagger definition file](https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-protocol/botframework-channel.json) hosted in this repo. These guidelines specify the steps and requirements to maintaining a consistent source of truth that describes the state of connector-features in each SDK codebase. This source of truth is the combination of 2 concepts:
